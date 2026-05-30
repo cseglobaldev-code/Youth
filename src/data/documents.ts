@@ -1,0 +1,58 @@
+import type { DocumentItem } from '@/types';
+
+export const DOCUMENTS_DATA: DocumentItem[] = [
+  {
+    id: 'doc-1',
+    title: 'Y.O.U Constitution & Bylaws',
+    category: 'governance',
+    fileType: 'pdf',
+    fileUrl: '/documents/you-constitution.pdf',
+    fileSize: '2.4 MB',
+    updatedAt: '2024-12-01',
+  },
+  {
+    id: 'doc-2',
+    title: 'Membership Application Guide',
+    category: 'membership',
+    fileType: 'pdf',
+    fileUrl: '/documents/membership-guide.pdf',
+    fileSize: '1.1 MB',
+    updatedAt: '2024-11-15',
+  },
+  {
+    id: 'doc-3',
+    title: 'Annual Report 2024',
+    category: 'annual-reports',
+    fileType: 'pdf',
+    fileUrl: '/documents/annual-report-2024.pdf',
+    fileSize: '5.8 MB',
+    updatedAt: '2025-01-20',
+  },
+  {
+    id: 'doc-4',
+    title: 'Financial Statement 2024',
+    category: 'annual-reports',
+    fileType: 'xls',
+    fileUrl: '/documents/financial-2024.xlsx',
+    fileSize: '890 KB',
+    updatedAt: '2025-01-20',
+  },
+  {
+    id: 'doc-5',
+    title: 'Strategic Plan 2025-2030',
+    category: 'governance',
+    fileType: 'ppt',
+    fileUrl: '/documents/strategic-plan.pptx',
+    fileSize: '3.2 MB',
+    updatedAt: '2024-10-05',
+  },
+  {
+    id: 'doc-6',
+    title: 'Membership Benefits Overview',
+    category: 'membership',
+    fileType: 'doc',
+    fileUrl: '/documents/membership-benefits.docx',
+    fileSize: '450 KB',
+    updatedAt: '2024-09-20',
+  },
+];
