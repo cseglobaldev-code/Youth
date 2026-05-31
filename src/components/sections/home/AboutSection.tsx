@@ -1,31 +1,45 @@
+import { useState } from 'react';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { ROUTES } from '@/routes/paths';
 
 const ABOUT_ITEMS = [
-  { id: 'vision', title: 'Our Vision', color: '#E42C27', expanded: true },
-  { id: 'mission', title: 'Our Mission', color: '#FBAB1A', expanded: false },
-  { id: 'approach', title: 'Our Approach', color: '#10984F', expanded: false },
-  { id: 'why', title: 'Why join us', color: '#1771B9', expanded: false },
+  { id: 'vision', title: 'Our Vision', color: '#FFECEF', description: 'A world where every young person has the platform and tools to lead positive change in their community and beyond.' },
+  { id: 'mission', title: 'Our Mission', color: '#D2FFD9', description: 'To connect, support, and amplify youth-led organizations globally through collaboration, capacity building, and shared resources for sustainable development.' },
+  { id: 'approach', title: 'Our Approach', color: '#E3F4FF', description: 'We build bridges across borders, cultures, and generations by facilitating partnerships, joint programs, and knowledge exchange between youth organizations worldwide.' },
+  { id: 'why', title: 'Why join us', color: '#FFF7EA', description: 'Join a global network of 50+ organizations across 30 countries, access funding opportunities, leadership training, and collaborative projects aligned with the UN SDGs.' },
 ];
 
 export function AboutSection() {
+  const [activeId, setActiveId] = useState('vision');
+
   return (
     <>
       {/* Part 1: SDG Goals + CTA + Stats — white background */}
       <section className="py-16 lg:py-20 bg-white">
         <Container>
-          {/* SDG Goals logo */}
-          <div className="flex flex-col items-center text-center gap-6 mb-12">
-            <img
-              src="/sdg-goals-logo.png"
-              alt="UN Sustainable Development Goals"
-              className="h-[87px] w-auto object-contain"
-            />
-            <Button as="router-link" to={ROUTES.MEMBERS} variant="primary" size="md" className="bg-[#EE334E] hover:bg-[#d42a43]">
-              Join 1,500+ Youth Leaders
-            </Button>
+          {/* SDG Goals logo + text + CTA — 2 columns */}
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
+            {/* Left: SDG logo */}
+            <div className="flex-shrink-0">
+              <img
+                src="/sdg-goals-logo.png"
+                alt="UN Sustainable Development Goals"
+                className="h-[87px] w-auto object-contain"
+              />
+            </div>
+            {/* Right: text + CTA */}
+            <div className="flex flex-col items-start gap-6 max-w-[500px]">
+              <p className="text-neutral-700 text-[24px] font-normal leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
+                Y.O.U is a coalition of youth organizations united by a shared commitment to the UN
+                Sustainable Development Goals - building bridges across borders, cultures, and
+                generations.
+              </p>
+              <Button as="router-link" to={ROUTES.MEMBERS} variant="primary" size="lg" className="bg-[#EE334E] hover:bg-[#d42a43] rounded-full px-8 mb-[120px]">
+                Join 1,500+ Youth Leaders
+              </Button>
+            </div>
           </div>
 
           {/* Stats row */}
@@ -56,12 +70,12 @@ export function AboutSection() {
         </Container>
       </section>
 
-      {/* Part 2: About Vision — white background */}
+      {/* Part 2: About Vision */}
       <section className="py-16 lg:py-24 bg-white">
         <Container>
           {/* Heading */}
-          <div className="text-center mb-12">
-            <h2 className="font-heading font-bold text-3xl lg:text-4xl italic">
+          <div className="text-left mb-12">
+            <h2 className="font-heading font-semibold text-[48px] leading-tight">
               <span className="text-neutral-900">A Global Alliance for </span>
               <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
                 Youth-Led Impact
@@ -74,45 +88,69 @@ export function AboutSection() {
             {/* Left: list items */}
             <div className="flex-1 max-w-[602px]">
               <div className="space-y-0">
-                {ABOUT_ITEMS.map((item, i) => (
-                  <div key={item.id}>
-                    <div className="flex items-center gap-5 py-5">
-                      {/* Circle icon with Group.png */}
-                      <div
-                        className="w-[48px] h-[48px] rounded-full flex items-center justify-center flex-shrink-0"
-                        style={{ backgroundColor: item.color }}
+                {ABOUT_ITEMS.map((item, i) => {
+                  const isActive = activeId === item.id;
+                  return (
+                    <div key={item.id}>
+                      <button
+                        className="w-full flex items-start gap-5 py-5 text-left"
+                        onClick={() => setActiveId(item.id)}
                       >
-                        <img src="/Group.png" alt="" className="w-6 h-6 object-contain brightness-0 invert" aria-hidden="true" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-neutral-900 text-lg">
-                          {item.title}
-                        </h4>
-                        {item.expanded && (
-                          <button className="mt-2 flex items-center gap-1 text-[#EE334E] text-sm font-medium hover:underline">
-                            See more
-                            <Icon name="lucide:arrow-right" size={16} />
-                          </button>
-                        )}
-                      </div>
+                        {/* Circle icon with Group.png */}
+                        <div
+                          className="w-[48px] h-[48px] rounded-full flex items-center justify-center flex-shrink-0"
+                          style={{ backgroundColor: item.color }}
+                        >
+                          <img src="/group.svg" alt="" className="w-[30px] h-[30px] object-contain" aria-hidden="true" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-[#111111] text-[28px]">
+                            {item.title}
+                          </h4>
+                          {isActive && (
+                            <>
+                              <p className="text-neutral-600 text-[20px] font-normal leading-relaxed mt-2 line-clamp-2">
+                                {item.description}
+                              </p>
+                              <span className="mt-3 inline-flex items-center gap-1 text-[#EE334E] text-[20px] font-semibold hover:underline">
+                                See more
+                                <Icon name="lucide:arrow-up-right" size={20} />
+                              </span>
+                            </>
+                          )}
+                        </div>
+                      </button>
+                      {/* Divider */}
+                      {i < ABOUT_ITEMS.length - 1 && (
+                        isActive
+                          ? <div className="h-[3px] bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] rounded-full" />
+                          : <hr className="border-dashed border-neutral-300" />
+                      )}
                     </div>
-                    {i < ABOUT_ITEMS.length - 1 && (
-                      <hr className="border-dashed border-neutral-300" />
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
-            {/* Right: image */}
+            {/* Right: image with logo overlay */}
             <div className="flex-shrink-0 w-full lg:w-[702px]">
-              <div className="rounded-2xl overflow-hidden aspect-[702/513]">
+              <div className="rounded-2xl overflow-hidden aspect-[702/513] relative">
                 <img
                   src="/about-image.png"
                   alt="Youth leaders"
                   className="w-full h-full object-cover"
                   loading="lazy"
                 />
+                {/* Logo overlay */}
+                <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+                  <img
+                    src="/group.svg"
+                    alt=""
+                    aria-hidden="true"
+                    className="w-[18%] h-auto object-contain opacity-20"
+                    style={{ marginTop: '15%', marginLeft: '5%' }}
+                  />
+                </div>
               </div>
             </div>
           </div>

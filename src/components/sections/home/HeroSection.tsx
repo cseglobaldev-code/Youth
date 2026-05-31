@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Icon } from '@/components/ui/Icon';
 
 const YOUTUBE_ID = '2cgswCXiaYE';
 
@@ -10,7 +9,7 @@ export function HeroSection() {
     <section className="relative bg-white overflow-hidden">
       {/* Heading row */}
       <div className="px-4 md:px-8 lg:px-[90px]">
-        <div className="pt-[120px] pb-[80px] flex flex-col lg:flex-row lg:items-center justify-between gap-10">
+        <div className="pt-[120px] pb-[120px] flex flex-col lg:flex-row lg:items-center justify-between gap-10">
           <h1 className="font-heading font-semibold text-neutral-900 text-4xl md:text-5xl lg:text-[86px] leading-[1.1]">
             Uniting Youth
             <br />
@@ -26,7 +25,7 @@ export function HeroSection() {
       </div>
 
       {/* Video thumbnail */}
-      <div className="relative mx-4 md:mx-8 lg:mx-[90px] rounded-2xl overflow-hidden aspect-[1740/693]">
+      <div className="relative mx-4 md:mx-8 lg:mx-[90px] rounded-2xl overflow-hidden aspect-[1740/693] mb-[120px]">
         {playing ? (
           <iframe
             className="w-full h-full"
@@ -48,7 +47,7 @@ export function HeroSection() {
               loading="eager"
             />
             <span className="absolute inset-0 flex items-center justify-center">
-              <Icon name="icon-park-solid:play" size={113} className="text-white drop-shadow-lg group-hover:scale-105 transition-transform" />
+              <img src="/play-video.svg" alt="Play" className="w-[113px] h-[113px] drop-shadow-lg group-hover:scale-105 transition-transform" />
             </span>
           </button>
         )}
