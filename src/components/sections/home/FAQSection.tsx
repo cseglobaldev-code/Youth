@@ -13,52 +13,48 @@ export function FAQSection() {
   const [openId, setOpenId] = useState<string | null>('faq-1');
 
   return (
-    <section className="bg-white py-[120px] px-[288px]">
+    <section className="bg-white py-[120px] px-[407px]">
       {/* Header */}
       <div className="flex items-center justify-between mb-[40px]">
-        <h2 className="font-semibold text-[48px] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-          Frequently Asked{' '}
-          <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
-            Questions
-          </span>
+        <h2 className="font-semibold text-[48px] text-[#111111] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          Frequently Asked Questions
         </h2>
-        <button className="px-6 py-2.5 border-2 border-[#EE334E] text-[#EE334E] text-[16px] font-semibold rounded-full hover:bg-[#EE334E] hover:text-white transition-colors" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+        <button className="px-6 py-2.5 border-2 border-[#EE334E] text-[#EE334E] text-[16px] font-semibold rounded-full hover:bg-[#EE334E] hover:text-white transition-colors flex-shrink-0" style={{ fontFamily: 'Open Sans, sans-serif' }}>
           View all
         </button>
       </div>
 
       {/* FAQ items */}
       <div>
-        {FAQ_DATA.map((faq, i) => {
+        {FAQ_DATA.map((faq) => {
           const isOpen = openId === faq.id;
           return (
             <div key={faq.id}>
               <button
-                className="w-full flex items-center justify-between py-6 text-left"
+                className="w-full flex items-center justify-between py-5 text-left"
                 onClick={() => setOpenId(isOpen ? null : faq.id)}
               >
-                <span className="font-medium text-[24px] text-[#111111] italic pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                <span className="font-medium text-[22px] text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                   {faq.question}
                 </span>
                 <Icon
-                  name={isOpen ? 'lucide:chevron-up' : 'lucide:chevron-down'}
-                  size={24}
+                  name="lucide:chevron-down"
+                  size={22}
                   className="text-[#EE334E] flex-shrink-0"
                 />
               </button>
 
               {isOpen && (
-                <p className="pb-6 text-[18px] text-neutral-600 font-normal leading-relaxed" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                <p className="pb-5 text-[16px] text-neutral-600 font-normal leading-relaxed" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                   {faq.answer}
                 </p>
               )}
 
               {/* Divider */}
-              {i < FAQ_DATA.length - 1 && (
-                isOpen
-                  ? <div className="h-[3px] bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] rounded-full" />
-                  : <hr className="border-dashed border-neutral-300" />
-              )}
+              {isOpen
+                ? <div className="h-[2px] bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] rounded-full" />
+                : <hr className="border-dashed border-[#C0D8FF]" />
+              }
             </div>
           );
         })}
