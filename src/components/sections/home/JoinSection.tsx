@@ -1,7 +1,3 @@
-import { Container } from '@/components/ui/Container';
-import { Icon } from '@/components/ui/Icon';
-import { ICONS } from '@/config/icons';
-
 const ORG_BENEFITS = [
   'Official Y.O.U member status & certification',
   'Access to global partnership network',
@@ -18,94 +14,74 @@ const INDIVIDUAL_BENEFITS = [
 
 export function JoinSection() {
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden">
-      {/* Background image */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src="/join-bg.png"
-          alt=""
-          className="w-full h-full object-cover"
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 bg-neutral-900/60" />
+    <section className="bg-[#F2F7FF] py-[120px] px-[288px]">
+      {/* Header */}
+      <div className="text-center mb-[60px]">
+        <h2 className="font-semibold text-[48px] leading-tight mb-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          Join the{' '}
+          <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
+            Movement
+          </span>
+        </h2>
+        <p className="text-neutral-600 text-[20px] font-normal" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          Two pathways to become part of the Youth Organization Union.
+        </p>
       </div>
 
-      <Container className="relative z-10">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h2 className="font-heading font-bold text-3xl lg:text-4xl text-white mb-3">
-            Join <span className="text-accent">Y.O.U</span>
-          </h2>
-          <p className="text-white/80 text-base">
-            Two pathways to become part of the Youth Organization Union.
+      {/* Two cards */}
+      <div className="grid grid-cols-2 gap-8">
+        {/* For Organizations */}
+        <div className="bg-white rounded-2xl p-10 flex flex-col">
+          <span className="inline-block bg-[#EE334E] text-white text-[14px] font-medium px-4 py-1.5 rounded-full mb-5 w-fit">
+            For Organizations
+          </span>
+          <h3 className="font-semibold text-[28px] text-[#111111] mb-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            Organization Membership
+          </h3>
+          <p className="text-neutral-600 text-[18px] font-normal leading-relaxed mb-6" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            Register your youth-led organization as an official Y.O.U member and gain access to a global network, joint programs, and shared resources.
           </p>
+
+          <ul className="space-y-3 mb-8 flex-1">
+            {ORG_BENEFITS.map((benefit) => (
+              <li key={benefit} className="flex items-center gap-3 text-[16px] text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                <img src="/group.svg" alt="" className="w-5 h-5" aria-hidden="true" />
+                {benefit}
+              </li>
+            ))}
+          </ul>
+
+          <button className="w-full py-4 bg-[#EE334E] text-white font-semibold text-[18px] rounded-full hover:opacity-90 transition-opacity" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            Register Your Organization
+          </button>
         </div>
 
-        {/* Two cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* For Organizations */}
-          <div className="bg-white rounded-2xl p-10 flex flex-col">
-            <div className="mb-6">
-              <span className="inline-block bg-brand text-white text-sm font-medium px-4 py-1.5 rounded-full mb-4">
-                For Organizations
-              </span>
-              <h3 className="font-heading font-bold text-2xl text-neutral-900 mb-3">
-                Become a Member Organization
-              </h3>
-              <p className="text-neutral-600 text-sm leading-relaxed">
-                Register your youth-led organization as an official Y.O.U member and gain access to
-                a global network, joint programs, and shared resources.
-              </p>
-            </div>
+        {/* For Individuals */}
+        <div className="bg-white rounded-2xl p-10 flex flex-col">
+          <span className="inline-block bg-[#1771B9] text-white text-[14px] font-medium px-4 py-1.5 rounded-full mb-5 w-fit">
+            For Individuals
+          </span>
+          <h3 className="font-semibold text-[28px] text-[#111111] mb-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            Leadership Roles
+          </h3>
+          <p className="text-neutral-600 text-[18px] font-normal leading-relaxed mb-6" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            Apply to serve as a Continental Director or Country Director and take on a formal leadership role within the alliance's global structure.
+          </p>
 
-            <ul className="space-y-3 mb-8 flex-1">
-              {ORG_BENEFITS.map((benefit) => (
-                <li key={benefit} className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-brand-50 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Icon name={ICONS.check} size={14} className="text-brand" />
-                  </div>
-                  <span className="text-neutral-700 text-sm">{benefit}</span>
-                </li>
-              ))}
-            </ul>
+          <ul className="space-y-3 mb-8 flex-1">
+            {INDIVIDUAL_BENEFITS.map((benefit) => (
+              <li key={benefit} className="flex items-center gap-3 text-[16px] text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                <img src="/group.svg" alt="" className="w-5 h-5" aria-hidden="true" />
+                {benefit}
+              </li>
+            ))}
+          </ul>
 
-            <button className="w-full py-4 bg-brand text-white font-semibold rounded-xl hover:bg-brand-dark transition-colors">
-              Register Your Organization
-            </button>
-          </div>
-
-          {/* For Individuals */}
-          <div className="bg-white rounded-2xl p-10 flex flex-col">
-            <div className="mb-6">
-              <span className="inline-block bg-accent text-neutral-900 text-sm font-medium px-4 py-1.5 rounded-full mb-4">
-                For Individuals
-              </span>
-              <h3 className="font-heading font-bold text-2xl text-neutral-900 mb-3">
-                Apply for a Leadership Role
-              </h3>
-              <p className="text-neutral-600 text-sm leading-relaxed">
-                Apply to serve as a Continental Director or Country Director and take on a formal
-                leadership role within the alliance's global structure.
-              </p>
-            </div>
-
-            <ul className="space-y-3 mb-8 flex-1">
-              {INDIVIDUAL_BENEFITS.map((benefit) => (
-                <li key={benefit} className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Icon name={ICONS.check} size={14} className="text-accent-dark" />
-                  </div>
-                  <span className="text-neutral-700 text-sm">{benefit}</span>
-                </li>
-              ))}
-            </ul>
-
-            <button className="w-full py-4 border-2 border-brand text-brand font-semibold rounded-xl hover:bg-brand-50 transition-colors">
-              Apply for a Role
-            </button>
-          </div>
+          <button className="w-full py-4 bg-[#1771B9] text-white font-semibold text-[18px] rounded-full hover:opacity-90 transition-opacity" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            Apply for a Role
+          </button>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }
