@@ -29,24 +29,26 @@ export function AboutSection() {
           </div>
 
           {/* Stats row */}
-          <div className="bg-[#E8F1FF] rounded-2xl px-10 py-8">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-0">
+          <div className="bg-[#F2F7FF] rounded-[40px] px-10 py-10">
+            <div className="flex items-center justify-between">
               {[
                 { label: 'Member Organizations', value: '+50' },
                 { label: 'Continents', value: '+6' },
                 { label: 'Countries', value: '+30' },
                 { label: 'Volunteers from Global', value: '+1 500' },
               ].map((stat, i, arr) => (
-                <div
-                  key={stat.label}
-                  className={`flex flex-col items-center text-center py-4 ${
-                    i < arr.length - 1 ? 'lg:border-r border-neutral-300' : ''
-                  }`}
-                >
-                  <span className="text-neutral-600 text-sm mb-2">{stat.label}</span>
-                  <span className="font-heading font-bold text-4xl lg:text-5xl text-neutral-900">
-                    {stat.value}
-                  </span>
+                <div key={stat.label} className="flex items-center flex-1">
+                  <div className="flex flex-col items-center text-center w-full py-2">
+                    <span className="text-neutral-500 text-sm mb-2">{stat.label}</span>
+                    <span className="font-heading font-bold text-5xl lg:text-6xl text-[#1E293B]">
+                      {stat.value}
+                    </span>
+                  </div>
+                  {i < arr.length - 1 && (
+                    <svg width="24" height="100" viewBox="0 0 24 100" className="flex-shrink-0" aria-hidden="true">
+                      <line x1="20" y1="0" x2="4" y2="100" stroke="#C0D8FF" strokeWidth="1.5" />
+                    </svg>
+                  )}
                 </div>
               ))}
             </div>

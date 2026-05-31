@@ -55,8 +55,8 @@ export const tokens = {
     surface: '#F8FAFC',
   },
   fontFamily: {
-    sans: ['Inter', 'system-ui', 'sans-serif'],
-    heading: ['Poppins', 'sans-serif'],
+    sans: ['Open Sans', 'system-ui', 'sans-serif'],
+    heading: ['Open Sans', 'sans-serif'],
   },
   fontSize: {
     display: ['3.5rem', { lineHeight: '1.1', fontWeight: '700' }] as const,
