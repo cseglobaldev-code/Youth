@@ -6,14 +6,14 @@ import { JoinSection } from '@/components/sections/home/JoinSection';
 import { TeamSection } from '@/components/sections/home/TeamSection';
 import { FAQSection } from '@/components/sections/home/FAQSection';
 import { CTASection } from '@/components/sections/home/CTASection';
-import { MEMBERS_DATA, NEWS_DATA, TEAM_DATA, FAQS_DATA } from '@/data';
+import { NEWS_DATA, TEAM_DATA, FAQS_DATA } from '@/data';
 
 export function HomePage() {
   return (
     <>
       <HeroSection />
       <AboutSection />
-      <MembersSection members={MEMBERS_DATA} />
+      <MembersSection />
       <NewsSection items={NEWS_DATA} />
       <JoinSection />
       <TeamSection members={TEAM_DATA} />
