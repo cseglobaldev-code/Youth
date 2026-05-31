@@ -1,3 +1,5 @@
+import { Icon } from '@/components/ui/Icon';
+
 const LEADERS = [
   { id: 'leader-1', name: 'Minh Anh Nguyen', role: 'President & Chair', imageUrl: '/leadershi1p.png' },
   { id: 'leader-2', name: 'Safeen H. Mohammed', role: 'Vice President', imageUrl: '/leadership2.png' },
@@ -29,8 +31,21 @@ export function TeamSection() {
       <div className="flex justify-center gap-[40px] mb-[40px]">
         {LEADERS.map((leader) => (
           <div key={leader.id} className="flex flex-col items-center">
-            <div className="w-[240px] h-[240px] rounded-full overflow-hidden border-4 border-neutral-200 mb-4">
-              <img src={leader.imageUrl} alt={leader.name} className="w-full h-full object-cover" />
+            <div className="w-[240px] h-[240px] rounded-full overflow-hidden border-4 border-neutral-200 mb-4 relative group cursor-pointer">
+              <img src={leader.imageUrl} alt={leader.name} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" />
+              <div className="absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="flex gap-3">
+                  <a href="#" className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform">
+                    <Icon name="jam:facebook" size={16} className="text-[#1877F2]" />
+                  </a>
+                  <a href="#" className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform">
+                    <Icon name="jam:linkedin" size={16} className="text-[#0A66C2]" />
+                  </a>
+                  <a href="#" className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform">
+                    <Icon name="ic:baseline-tiktok" size={16} className="text-[#111111]" />
+                  </a>
+                </div>
+              </div>
             </div>
             <h4 className="font-semibold text-[20px] text-[#111111] text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               {leader.name}
@@ -55,8 +70,21 @@ export function TeamSection() {
       <div className="flex justify-center gap-[32px] mb-[60px]">
         {DIRECTORS.map((dir) => (
           <div key={dir.id} className="flex flex-col items-center">
-            <div className="w-[180px] h-[180px] rounded-full overflow-hidden border-4 border-neutral-200 mb-3">
-              <img src={dir.imageUrl} alt={dir.name} className="w-full h-full object-cover" />
+            <div className="w-[180px] h-[180px] rounded-full overflow-hidden border-4 border-neutral-200 mb-3 relative group cursor-pointer">
+              <img src={dir.imageUrl} alt={dir.name} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" />
+              <div className="absolute inset-0 flex items-end justify-center pb-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="flex gap-2">
+                  <a href="#" className="w-7 h-7 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform">
+                    <Icon name="jam:facebook" size={14} className="text-[#1877F2]" />
+                  </a>
+                  <a href="#" className="w-7 h-7 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform">
+                    <Icon name="jam:linkedin" size={14} className="text-[#0A66C2]" />
+                  </a>
+                  <a href="#" className="w-7 h-7 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform">
+                    <Icon name="ic:baseline-tiktok" size={14} className="text-[#111111]" />
+                  </a>
+                </div>
+              </div>
             </div>
             <h4 className="font-semibold text-[16px] text-[#111111] text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               {dir.name}
