@@ -6,7 +6,7 @@ import { JoinSection } from '@/components/sections/home/JoinSection';
 import { TeamSection } from '@/components/sections/home/TeamSection';
 import { FAQSection } from '@/components/sections/home/FAQSection';
 import { CTASection } from '@/components/sections/home/CTASection';
-import { NEWS_DATA, TEAM_DATA, FAQS_DATA } from '@/data';
+import { TEAM_DATA, FAQS_DATA } from '@/data';
 
 export function HomePage() {
   return (
@@ -14,7 +14,7 @@ export function HomePage() {
       <HeroSection />
       <AboutSection />
       <MembersSection />
-      <NewsSection items={NEWS_DATA} />
+      <NewsSection />
       <JoinSection />
       <TeamSection members={TEAM_DATA} />
       <CTASection />

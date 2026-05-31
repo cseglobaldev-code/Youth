@@ -1,106 +1,136 @@
-import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
-import { ICONS } from '@/config/icons';
-import { Button } from '@/components/ui/Button';
-import type { NewsItem } from '@/types';
 
-interface NewsSectionProps {
-  items: NewsItem[];
-}
+const NEWS_DATA = [
+  {
+    id: 'news-1',
+    title: 'Global Diplomacy Leadership Certification',
+    description: 'A world where every young person has the platform and tools to lead positive change in their community and beyond.',
+    location: 'Asia, Africa',
+    author: 'Maria Santos',
+    period: '2021 → nay',
+    imageUrl: '/image-new.png',
+  },
+  {
+    id: 'news-2',
+    title: 'ASEAN China Media Cooperation',
+    description: 'The agenda included welcoming remarks, institutional presentations, discussions on future collaboration opportunities.',
+    location: 'Asia, Africa',
+    author: 'Maria Santos',
+    imageUrl: '/image-new1.png',
+  },
+  {
+    id: 'news-3',
+    title: 'The Moon-Like Volcanic Landscape...',
+    description: 'On Friday, 15 May 2026, ASEAN Youth Organization (AYO), through the implementation of the AI Ready ASEAN Program.',
+    location: 'Asia, Africa',
+    author: 'Maria Santos',
+    imageUrl: '/image-new2.png',
+  },
+  {
+    id: 'news-4',
+    title: 'What Motivates Students to Join Or...',
+    description: 'Rangsit University on 15 May 2026 to strengthen collaboration in AI literacy and youth empowerment.',
+    location: 'Asia, Africa',
+    author: 'Maria Santos',
+    imageUrl: '/image-new3.png',
+  },
+  {
+    id: 'news-5',
+    title: 'ASEAN Youth Organization Establis...',
+    description: 'ASEAN Youth Organization, through the AI Ready ASEAN program, officially signed a Memorandum of Understanding (MoU).',
+    location: 'Asia, Africa',
+    author: 'Maria Santos',
+    imageUrl: '/image-new4.png',
+  },
+];
 
-function NewsRow({ item }: { item: NewsItem }) {
+export function NewsSection() {
+  const featured = NEWS_DATA[0];
+  const sideNews = NEWS_DATA.slice(1);
+
   return (
-    <div className="flex gap-4 py-5 border-b border-neutral-200 last:border-0 hover:bg-neutral-50 transition-colors cursor-pointer">
-      <div className="w-[203px] h-[140px] flex-shrink-0 rounded-lg overflow-hidden bg-neutral-100">
-        <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" loading="lazy" />
+    <section className="bg-white py-[120px] px-[288px]">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-[40px]">
+        <h2 className="font-semibold text-[48px] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          Impact Aligned with{' '}
+          <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
+            Global Goals
+          </span>
+        </h2>
+        <button className="px-6 py-2.5 border-2 border-[#EE334E] text-[#EE334E] text-[16px] font-semibold rounded-full hover:bg-[#EE334E] hover:text-white transition-colors">
+          View all
+        </button>
       </div>
-      <div className="flex-1 flex flex-col justify-between py-1">
-        <div>
-          <h4 className="font-semibold text-neutral-900 text-base leading-snug mb-2 line-clamp-2">
-            {item.title}
-          </h4>
-          <div className="flex items-center gap-4 text-sm text-neutral-500">
-            <span className="flex items-center gap-1">
-              <Icon name={ICONS.mapPin} size={16} />
-              {item.category || 'Global'}
-            </span>
-            <span className="flex items-center gap-1">
-              <Icon name="solar:user-linear" size={16} />
-              Y.O.U Team
-            </span>
+
+      {/* Content: featured left + list right */}
+      <div className="flex gap-8">
+        {/* Left: featured article — 50% */}
+        <div className="w-1/2 flex flex-col">
+          <div className="rounded-2xl overflow-hidden aspect-[652/436] mb-4">
+            <img
+              src={featured.imageUrl}
+              alt={featured.title}
+              className="w-full h-full object-cover"
+            />
           </div>
+          {/* Meta */}
+          <div className="flex items-center gap-6 text-[16px] text-neutral-500 mb-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            <span className="flex items-center gap-1">
+              <Icon name="mynaui:map-pin" size={18} />
+              {featured.location}
+            </span>
+            <span className="flex items-center gap-1">
+              <Icon name="solar:user-linear" size={18} />
+              {featured.author}
+            </span>
+            {featured.period && (
+              <span className="flex items-center gap-1">
+                <Icon name="iconoir:clock" size={18} />
+                {featured.period}
+              </span>
+            )}
+          </div>
+          {/* Description */}
+          <p className="text-neutral-600 text-[18px] font-normal leading-relaxed line-clamp-2 mb-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            {featured.description}
+          </p>
+          {/* See more */}
+          <button className="flex items-center gap-1 text-[#EE334E] text-[18px] font-semibold hover:underline" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            See more
+            <Icon name="lucide:arrow-up-right" size={18} />
+          </button>
         </div>
-        <p className="text-sm text-neutral-600 line-clamp-2 mt-2">{item.excerpt}</p>
-      </div>
-    </div>
-  );
-}
 
-export function NewsSection({ items }: NewsSectionProps) {
-  const featured = items[0];
-  const rest = items.slice(1, 5);
-
-  return (
-    <section className="py-16 lg:py-24 bg-white">
-      <Container>
-        {/* Header */}
-        <div className="flex items-center justify-between mb-10">
-          <h2 className="font-heading font-bold text-3xl lg:text-4xl text-neutral-900">
-            Latest <span className="text-brand">News</span>
-          </h2>
-          <Button as="router-link" to="/news" variant="outline" size="sm">
-            View all
-          </Button>
-        </div>
-
-        {/* 2-col layout: featured left + list right */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Featured article */}
-          {featured && (
-            <div className="flex flex-col cursor-pointer group">
-              <div className="rounded-2xl overflow-hidden bg-neutral-100 aspect-[652/436] mb-6">
-                <img
-                  src={featured.imageUrl}
-                  alt={featured.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
+        {/* Right: news list — 50% */}
+        <div className="w-1/2 flex flex-col gap-4">
+          {sideNews.map((news) => (
+            <div key={news.id} className="flex gap-4 cursor-pointer hover:bg-neutral-50 rounded-xl transition-colors p-2">
+              <div className="w-[200px] h-[130px] flex-shrink-0 rounded-xl overflow-hidden">
+                <img src={news.imageUrl} alt={news.title} className="w-full h-full object-cover" />
               </div>
-              <div>
-                <h3 className="font-semibold text-neutral-900 text-xl leading-snug mb-3">
-                  {featured.title}
-                </h3>
-                <div className="flex items-center gap-4 text-sm text-neutral-500 mb-3">
+              <div className="flex-1 flex flex-col justify-center">
+                <h4 className="font-semibold text-[20px] text-[#111111] mb-1 line-clamp-1" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                  {news.title}
+                </h4>
+                <div className="flex items-center gap-4 text-[14px] text-neutral-500" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                   <span className="flex items-center gap-1">
-                    <Icon name={ICONS.mapPin} size={16} />
-                    Asia, Africa
+                    <Icon name="mynaui:map-pin" size={14} />
+                    {news.location}
                   </span>
                   <span className="flex items-center gap-1">
-                    <Icon name="solar:user-linear" size={16} />
-                    Y.O.U Team
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Icon name="iconoir:clock" size={16} />
-                    {featured.date}
+                    <Icon name="solar:user-linear" size={14} />
+                    {news.author}
                   </span>
                 </div>
-                <p className="text-sm text-neutral-600 line-clamp-2">{featured.excerpt}</p>
-                <button className="mt-4 flex items-center gap-1 text-brand text-sm font-medium hover:underline">
-                  See more
-                  <Icon name="lucide:arrow-right" size={16} />
-                </button>
+                <p className="text-neutral-500 text-[14px] font-normal line-clamp-2 mt-1" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                  {news.description}
+                </p>
               </div>
             </div>
-          )}
-
-          {/* News list */}
-          <div className="flex flex-col divide-y divide-neutral-200">
-            {rest.map((item) => (
-              <NewsRow key={item.id} item={item} />
-            ))}
-          </div>
+          ))}
         </div>
-      </Container>
+      </div>
     </section>
   );
 }

@@ -17,7 +17,7 @@ export function AboutSection() {
   return (
     <>
       {/* Part 1: SDG Goals + CTA + Stats — white background */}
-      <section className="py-16 lg:py-20 bg-white">
+      <section className="pt-0 pb-16 lg:pb-20 bg-white">
         <Container>
           {/* SDG Goals logo + text + CTA — 2 columns */}
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
@@ -53,14 +53,14 @@ export function AboutSection() {
               ].map((stat, i, arr) => (
                 <div key={stat.label} className="flex items-center flex-1">
                   <div className="flex flex-col items-center text-center w-full py-2">
-                    <span className="text-neutral-500 text-sm mb-2">{stat.label}</span>
-                    <span className="font-heading font-bold text-5xl lg:text-6xl text-[#1E293B]">
+                    <span className="text-neutral-500 text-[24px] font-normal" style={{ fontFamily: 'Open Sans, sans-serif' }}>{stat.label}</span>
+                    <span className="font-semibold text-[48px] text-[#1E293B]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                       {stat.value}
                     </span>
                   </div>
                   {i < arr.length - 1 && (
-                    <svg width="24" height="100" viewBox="0 0 24 100" className="flex-shrink-0" aria-hidden="true">
-                      <line x1="20" y1="0" x2="4" y2="100" stroke="#C0D8FF" strokeWidth="1.5" />
+                    <svg width="24" height="120" viewBox="0 0 24 120" className="flex-shrink-0" aria-hidden="true">
+                      <line x1="20" y1="0" x2="4" y2="120" stroke="#C0D8FF" strokeWidth="1.5" />
                     </svg>
                   )}
                 </div>
