@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Icon } from '@/components/ui/Icon';
 
 const MOCK_MEMBER = {
@@ -10,8 +11,8 @@ const MOCK_MEMBER = {
   logoUrl: '/small-logo1.png',
 };
 
-// Render 6 cards from 1 mock data
-const MEMBERS = Array.from({ length: 6 }, (_, i) => ({
+// Render 30 cards from mock data
+const MEMBERS = Array.from({ length: 30 }, (_, i) => ({
   ...MOCK_MEMBER,
   id: `member-${i + 1}`,
   coverUrl: i % 3 === 0 ? '/cover-image1.png' : i % 3 === 1 ? '/cover-image2.png' : '/cover-image3.png',
@@ -21,7 +22,7 @@ const MEMBERS = Array.from({ length: 6 }, (_, i) => ({
 
 function MemberCard({ member }: { member: typeof MOCK_MEMBER & { id: string } }) {
   return (
-    <div className="w-[426.67px] h-[456.68px] bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col">
+    <div className="w-[426.67px] h-[456.68px] bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col cursor-pointer transition-shadow duration-200 hover:shadow-xl">
       {/* Cover */}
       <div className="relative w-[426.67px] h-[214.68px] flex-shrink-0">
         <img
@@ -30,7 +31,7 @@ function MemberCard({ member }: { member: typeof MOCK_MEMBER & { id: string } })
           className="w-full h-full object-cover"
         />
         {/* Logo circle */}
-        <div className="absolute bottom-[-30px] left-4 w-[80px] h-[80px] rounded-full border-4 border-white overflow-hidden bg-white shadow">
+        <div className="absolute bottom-[-40px] left-4 w-[80px] h-[80px] rounded-full border-4 border-white overflow-hidden bg-white shadow">
           <img src={member.logoUrl} alt={`${member.name} logo`} className="w-full h-full object-cover" />
         </div>
       </div>
@@ -78,6 +79,11 @@ function MemberCard({ member }: { member: typeof MOCK_MEMBER & { id: string } })
 }
 
 export function MembersSection() {
+  const [page, setPage] = useState(0);
+  const pageSize = 6;
+  const totalPages = Math.ceil(MEMBERS.length / pageSize);
+  const visibleMembers = MEMBERS.slice(page * pageSize, (page + 1) * pageSize);
+
   return (
     <section className="bg-[#F2F7FF] py-[120px] px-[288px]">
       {/* Title */}
@@ -87,9 +93,32 @@ export function MembersSection() {
 
       {/* Grid 3 cols × 2 rows */}
       <div className="grid grid-cols-3 gap-6">
-        {MEMBERS.map((member) => (
+        {visibleMembers.map((member) => (
           <MemberCard key={member.id} member={member} />
         ))}
+      </div>
+
+      {/* Pagination: arrows + page number */}
+      <div className="flex justify-center items-center gap-4 mt-[40px]">
+        <button
+          onClick={() => setPage(Math.max(0, page - 1))}
+          disabled={page === 0}
+          className="w-8 h-8 flex items-center justify-center text-neutral-500 hover:text-neutral-900 disabled:opacity-30 disabled:cursor-not-allowed"
+          aria-label="Previous page"
+        >
+          <Icon name="lucide:arrow-left" size={20} />
+        </button>
+        <span className="text-sm text-neutral-600 font-medium">
+          {page + 1}/{totalPages}
+        </span>
+        <button
+          onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
+          disabled={page === totalPages - 1}
+          className="w-8 h-8 flex items-center justify-center text-[#EE334E] hover:text-[#d42a43] disabled:opacity-30 disabled:cursor-not-allowed"
+          aria-label="Next page"
+        >
+          <Icon name="lucide:arrow-right" size={20} />
+        </button>
       </div>
     </section>
   );
