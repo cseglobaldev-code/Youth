@@ -61,3 +61,9 @@ _bmad/
 _bmad-output/
 .agents/
 .claude/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+. wrangler.jsonc

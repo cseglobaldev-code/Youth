@@ -7,9 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview": "npm run build && wrangler dev",
     "test": "vitest",
-    "test:run": "vitest --run"
+    "test:run": "vitest --run",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@iconify/react": "^6.0.2",
@@ -23,6 +24,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
+    "@cloudflare/vite-plugin": "^1.39.2",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.60.0",
     "@rolldown/plugin-babel": "^0.2.3",
@@ -46,6 +48,7 @@
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.12",
-    "vitest": "^4.1.7"
+    "vitest": "^4.1.7",
+    "wrangler": "^4.97.0"
   }
 }
