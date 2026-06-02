@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { CollapseProps } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { Collapse, Image } from 'antd';
@@ -13,6 +14,15 @@ const ABOUT_ITEMS = [
 
 export function AboutSection() {
   const [activeId, setActiveId] = useState('vision');
+
+  const handleCollapseChange: NonNullable<CollapseProps['onChange']> = (key) => {
+    if (Array.isArray(key)) {
+      setActiveId(key[0] ?? '');
+      return;
+    }
+
+    setActiveId(key ?? '');
+  };
 
   return (
     <>
@@ -93,7 +103,7 @@ export function AboutSection() {
                 accordion
                 ghost
                 activeKey={activeId ?? undefined}
-                onChange={(key) => setActiveId(Array.isArray(key) ? (key[0] ?? '') : (key ?? ''))}
+                onChange={handleCollapseChange}
                 expandIcon={() => null}
                 items={ABOUT_ITEMS.map((item) => ({
                   key: item.id,
