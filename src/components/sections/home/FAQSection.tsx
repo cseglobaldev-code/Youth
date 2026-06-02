@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { Button, Collapse } from 'antd';
 import { Icon } from '@/components/ui/Icon';
+import { cn } from '@/lib/utils';
 
 const FAQ_DATA = [
   { id: 'faq-1', question: 'What is Y.O.U and who can join?', answer: 'Y.O.U – Youth Organization Union is a global alliance of youth-led organizations and individual leaders committed to the UN\'s SDGs. Any registered youth organization or young leader can apply.' },
@@ -10,8 +11,6 @@ const FAQ_DATA = [
 ];
 
 export function FAQSection() {
-  const [openId, setOpenId] = useState<string | null>('faq-1');
-
   return (
     <section className="bg-white py-[120px] px-[407px]">
       {/* Header */}
@@ -19,46 +18,27 @@ export function FAQSection() {
         <h2 className="font-semibold text-[48px] text-[#111111] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
           Frequently Asked Questions
         </h2>
-        <button className="px-6 py-2.5 border-2 border-[#EE334E] text-[#EE334E] text-[16px] font-semibold rounded-full hover:bg-[#EE334E] hover:text-white transition-colors flex-shrink-0" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+        <Button ghost danger shape="round" className="!border-2 !font-semibold !h-auto flex-shrink-0" style={{ padding: '10px 24px', fontFamily: 'Open Sans, sans-serif' }}>
           View all
-        </button>
+        </Button>
       </div>
 
       {/* FAQ items */}
-      <div>
-        {FAQ_DATA.map((faq) => {
-          const isOpen = openId === faq.id;
-          return (
-            <div key={faq.id}>
-              <button
-                className="w-full flex items-center justify-between py-5 text-left"
-                onClick={() => setOpenId(isOpen ? null : faq.id)}
-              >
-                <span className="font-medium text-[22px] text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                  {faq.question}
-                </span>
-                <Icon
-                  name="lucide:chevron-down"
-                  size={22}
-                  className="text-[#EE334E] flex-shrink-0"
-                />
-              </button>
-
-              {isOpen && (
-                <p className="pb-5 text-[16px] text-neutral-600 font-normal leading-relaxed" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                  {faq.answer}
-                </p>
-              )}
-
-              {/* Divider */}
-              {isOpen
-                ? <div className="h-[2px] bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] rounded-full" />
-                : <hr className="border-dashed border-[#C0D8FF]" />
-              }
-            </div>
-          );
-        })}
-      </div>
+      <Collapse
+        defaultActiveKey={['faq-1']}
+        ghost
+        expandIconPosition="end"
+        expandIcon={({ isActive }) => (
+          <Icon name="lucide:chevron-down" size={22} className={cn('text-[#EE334E] transition-transform duration-200', isActive && 'rotate-180')} />
+        )}
+        items={FAQ_DATA.map((faq) => ({
+          key: faq.id,
+          label: <span className="font-medium text-[22px] text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.question}</span>,
+          children: <p className="pb-5 text-[16px] text-neutral-600 font-normal leading-relaxed" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.answer}</p>,
+          style: { borderBottom: '1px solid #E5E7EB' },
+        }))}
+        className="!bg-transparent"
+      />
     </section>
   );
 }

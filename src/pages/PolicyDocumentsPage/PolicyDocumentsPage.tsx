@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { Button, Empty } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { DocumentRow } from '@/components/common/DocumentRow';
@@ -37,18 +38,20 @@ export function PolicyDocumentsPage() {
           {/* Sidebar */}
           <aside className="space-y-1">
             {CATEGORIES.map((cat) => (
-              <button
+              <Button
                 key={cat.key}
+                type="text"
+                block
                 onClick={() => setActiveCategory(cat.key)}
                 className={cn(
-                  'w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                  '!w-full !text-left !px-4 !py-2.5 !rounded-lg !text-sm !font-medium !h-auto !justify-start',
                   activeCategory === cat.key
-                    ? 'bg-brand-50 text-brand'
-                    : 'text-neutral-600 hover:bg-neutral-50'
+                    ? '!bg-brand-50 !text-brand'
+                    : '!text-neutral-600 hover:!bg-neutral-50'
                 )}
               >
                 {cat.label}
-              </button>
+              </Button>
             ))}
           </aside>
 
@@ -58,7 +61,7 @@ export function PolicyDocumentsPage() {
               <DocumentRow key={doc.id} document={doc} />
             ))}
             {filteredDocs.length === 0 && (
-              <p className="text-center text-neutral-500 py-8">No documents in this category.</p>
+              <Empty description="No documents in this category." className="py-8" />
             )}
           </div>
         </div>

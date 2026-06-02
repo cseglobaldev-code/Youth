@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import { tokens } from '@/config/theme/tokens';
+import { Tag } from 'antd';
 
 export interface SDGTagProps {
   sdgId: number;
@@ -16,19 +17,31 @@ export function getSdgColor(sdgId: number): string {
 export function SDGTag({ sdgId, variant = 'solid', size = 'sm', className }: SDGTagProps) {
   const color = getSdgColor(sdgId);
 
-  const sizeClasses = size === 'sm' ? 'px-2 py-0.5 text-xs' : 'px-3 py-1 text-sm';
-
   const style =
     variant === 'solid'
-      ? { backgroundColor: color, color: '#fff' }
-      : { backgroundColor: `${color}20`, color };
+      ? {
+          backgroundColor: color,
+          color: '#fff',
+          borderColor: color,
+          borderRadius: '9999px',
+          fontWeight: size === 'sm' ? 400 : 500,
+          fontSize: size === 'sm' ? '0.75rem' : '0.875rem',
+        }
+      : {
+          backgroundColor: `${color}20`,
+          color,
+          borderColor: `${color}20`,
+          borderRadius: '9999px',
+          fontWeight: size === 'sm' ? 400 : 500,
+          fontSize: size === 'sm' ? '0.75rem' : '0.875rem',
+        };
 
   return (
-    <span
-      className={cn('inline-flex items-center rounded-pill font-medium whitespace-nowrap', sizeClasses, className)}
+    <Tag
+      className={cn('!inline-flex !items-center !whitespace-nowrap', className)}
       style={style}
     >
       #{`SDG${sdgId}`}
-    </span>
+    </Tag>
   );
 }

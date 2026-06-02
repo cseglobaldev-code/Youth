@@ -1,3 +1,5 @@
+import { PillButton } from '@/components/ui/PillButton';
+
 const CTA_GRADIENT =
   'linear-gradient(to right, #EE334E 0%, #F14D48 7%, #F56F40 16%, #F88F39 24%, #FCB131 33%, #C3AF38 41%, #79AB42 51%, #00A651 67%, #0081C8 100%)';
 
@@ -25,9 +27,9 @@ export function CTASection() {
               Join thousands of youth leaders across ASEAN who are making a difference in their communities.
             </p>
           </div>
-          <button className="px-8 py-3.5 bg-white text-[#EE334E] text-[18px] font-semibold rounded-full hover:bg-neutral-50 transition-colors flex-shrink-0" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <PillButton variant="white" size="md" className="flex-shrink-0">
             Register Now
-          </button>
+          </PillButton>
         </div>
       </div>
     </section>

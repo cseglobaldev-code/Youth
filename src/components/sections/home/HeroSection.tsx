@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Button } from 'antd';
 
 const YOUTUBE_ID = '2cgswCXiaYE';
 
@@ -35,11 +36,7 @@ export function HeroSection() {
             allowFullScreen
           />
         ) : (
-          <button
-            className="absolute inset-0 flex items-center justify-center group w-full h-full"
-            onClick={() => setPlaying(true)}
-            aria-label="Play video"
-          >
+          <Button type="text" className="!absolute !inset-0 !flex !items-center !justify-center !w-full !h-full !rounded-none !h-auto group" onClick={() => setPlaying(true)} aria-label="Play video">
             <img
               src="/hero-video.png"
               alt="Youth collaboration"
@@ -49,7 +46,7 @@ export function HeroSection() {
             <span className="absolute inset-0 flex items-center justify-center">
               <img src="/play-video.svg" alt="Play" className="w-[113px] h-[113px] drop-shadow-lg group-hover:scale-105 transition-transform" />
             </span>
-          </button>
+          </Button>
         )}
       </div>
     </section>

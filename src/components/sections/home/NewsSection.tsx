@@ -1,3 +1,4 @@
+import { Button, Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 
 const NEWS_DATA = [
@@ -58,9 +59,9 @@ export function NewsSection() {
             Global Goals
           </span>
         </h2>
-        <button className="px-6 py-2.5 border-2 border-[#EE334E] text-[#EE334E] text-[16px] font-semibold rounded-full hover:bg-[#EE334E] hover:text-white transition-colors">
+        <Button ghost danger shape="round" className="!border-2 !font-semibold !h-auto" style={{ padding: '10px 24px', fontFamily: 'Open Sans, sans-serif' }}>
           View all
-        </button>
+        </Button>
       </div>
 
       {/* Content: featured left + list right */}
@@ -68,10 +69,13 @@ export function NewsSection() {
         {/* Left: featured article — 50% */}
         <div className="w-1/2 flex flex-col">
           <div className="rounded-2xl overflow-hidden aspect-[652/436] mb-4">
-            <img
+            <Image
               src={featured.imageUrl}
               alt={featured.title}
+              preview={false}
               className="w-full h-full object-cover"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              wrapperStyle={{ width: '100%', height: '100%' }}
             />
           </div>
           {/* Meta */}
@@ -96,10 +100,10 @@ export function NewsSection() {
             {featured.description}
           </p>
           {/* See more */}
-          <button className="flex items-center gap-1 text-[#EE334E] text-[18px] font-semibold hover:underline" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <Button type="link" danger className="!flex !items-center !gap-1 !text-[18px] !font-semibold !p-0 !h-auto" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             See more
             <Icon name="lucide:arrow-up-right" size={18} />
-          </button>
+          </Button>
         </div>
 
         {/* Right: news list — 50% */}
@@ -107,7 +111,7 @@ export function NewsSection() {
           {sideNews.map((news) => (
             <div key={news.id} className="flex gap-4 cursor-pointer hover:bg-neutral-50 rounded-xl transition-colors p-2">
               <div className="w-[200px] h-[130px] flex-shrink-0 rounded-xl overflow-hidden">
-                <img src={news.imageUrl} alt={news.title} className="w-full h-full object-cover" />
+                <Image src={news.imageUrl} alt={news.title} preview={false} className="w-full h-full object-cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
               </div>
               <div className="flex-1 flex flex-col justify-center">
                 <h4 className="font-semibold text-[20px] text-[#111111] mb-1 line-clamp-1" style={{ fontFamily: 'Open Sans, sans-serif' }}>

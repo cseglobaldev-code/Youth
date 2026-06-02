@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { Avatar as AntAvatar } from 'antd';
 
 export interface AvatarProps {
   src?: string;
@@ -8,11 +8,11 @@ export interface AvatarProps {
   className?: string;
 }
 
-const sizeClasses = {
-  sm: 'w-8 h-8 text-xs',
-  md: 'w-10 h-10 text-sm',
-  lg: 'w-14 h-14 text-base',
-  xl: 'w-20 h-20 text-lg',
+const sizeMap: Record<string, number> = {
+  sm: 32,
+  md: 40,
+  lg: 56,
+  xl: 80,
 };
 
 function getInitials(name: string): string {
@@ -25,26 +25,16 @@ function getInitials(name: string): string {
 }
 
 export function Avatar({ src, alt, size = 'md', className }: AvatarProps) {
-  const [error, setError] = useState(false);
+  const antdSize = sizeMap[size];
 
   return (
-    <div
-      className={cn(
-        'relative inline-flex items-center justify-center rounded-full bg-neutral-200 overflow-hidden',
-        sizeClasses[size],
-        className
-      )}
+    <AntAvatar
+      src={src}
+      size={antdSize}
+      style={{ flexShrink: 0 }}
+      className={cn('bg-neutral-200 text-neutral-600', className)}
     >
-      {src && !error ? (
-        <img
-          src={src}
-          alt={alt}
-          className="w-full h-full object-cover"
-          onError={() => setError(true)}
-        />
-      ) : (
-        <span className="font-semibold text-neutral-600">{getInitials(alt)}</span>
-      )}
-    </div>
+      {!src && getInitials(alt)}
+    </AntAvatar>
   );
 }

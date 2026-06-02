@@ -1,3 +1,5 @@
+import { Button } from 'antd';
+
 const ORG_BENEFITS = [
   'Official Y.O.U member status & certification',
   'Access to global partnership network',
@@ -51,9 +53,9 @@ export function JoinSection() {
             ))}
           </ul>
 
-          <button className="w-full py-4 bg-[#EE334E] text-white font-semibold text-[20px] rounded-full hover:opacity-90 transition-opacity" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <Button danger type="primary" shape="round" block className="!h-auto !font-semibold !text-[20px]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }}>
             Register Your Organization
-          </button>
+          </Button>
         </div>
 
         {/* For Individuals */}
@@ -77,9 +79,9 @@ export function JoinSection() {
             ))}
           </ul>
 
-          <button className="w-full py-4 bg-[#005D9A] text-white font-semibold text-[20px] rounded-full hover:opacity-90 transition-opacity" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <Button type="primary" shape="round" block className="!h-auto !font-semibold !text-[20px] !bg-[#005D9A] !border-[#005D9A]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }}>
             Apply for a Role
-          </button>
+          </Button>
         </div>
       </div>
     </section>

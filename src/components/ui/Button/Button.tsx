@@ -1,3 +1,4 @@
+import { Button as AntButton } from 'antd';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Icon } from '@/components/ui/Icon';
@@ -87,8 +88,8 @@ export function Button({
   }
 
   return (
-    <button className={classes} disabled={disabled} onClick={onClick} type="button">
+    <AntButton className={classes} disabled={disabled} onClick={onClick} htmlType="button">
       {content}
-    </button>
+    </AntButton>
   );
 }

@@ -1,19 +1,24 @@
 import { useState, useMemo } from 'react';
+import { Button, Empty } from 'antd';
 import { Container } from '@/components/ui/Container';
-import { SectionHeading } from '@/components/common/SectionHeading';
 import { ProjectCard } from '@/components/common/ProjectCard';
-import { FilterTabs } from '@/components/common/FilterTabs';
 import { filterBySdg } from '@/lib/utils';
-import { PROJECTS_DATA, SDGS_DATA } from '@/data';
+import { PROJECTS_DATA, SDGS_DATA, MEMBERS_DATA } from '@/data';
+import { cn } from '@/lib/utils';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
+
+const MEMBER_MAP = Object.fromEntries(MEMBERS_DATA.map((m) => [m.id, m.name]));
 
 export function ProjectsPage() {
   const [activeFilter, setActiveFilter] = useState('all');
+  const { ref: heroRef, visible: heroVisible } = useScrollReveal(0.05);
+  const { ref: cardsRef, visible: cardsVisible } = useScrollReveal(0.05);
 
   const filterItems = useMemo(
     () => [
-      { key: 'all', label: 'All' },
+      { key: 'all', label: 'All Project' },
       ...SDGS_DATA.filter((sdg) => PROJECTS_DATA.some((p) => p.focusSdgs.includes(sdg.id))).map(
-        (sdg) => ({ key: `sdg-${sdg.id}`, label: sdg.code })
+        (sdg) => ({ key: `sdg-${sdg.id}`, label: `SDG ${sdg.id} – ${sdg.title}` })
       ),
     ],
     []
@@ -25,31 +30,120 @@ export function ProjectsPage() {
   );
 
   return (
-    <div className="py-section-sm lg:py-section">
-      <Container>
-        <SectionHeading
-          eyebrow="Impact"
-          title="Our Projects"
-          description="Explore youth-led projects making a difference across the globe."
+    <div className="bg-white min-h-screen">
+      {/* Decorative ellipses */}
+      <div className="relative overflow-hidden">
+        <div
+          className="absolute top-0 left-0 w-[458px] h-[336px] rounded-full pointer-events-none"
+          style={{ background: '#2980B9', filter: 'blur(600px)', opacity: 0.43 }}
+        />
+        <div
+          className="absolute top-0 right-0 w-[570px] h-[205px] rounded-full pointer-events-none"
+          style={{ background: '#EE334E', filter: 'blur(600px)', opacity: 0.43 }}
         />
 
-        <FilterTabs
-          items={filterItems}
-          activeKey={activeFilter}
-          onChange={setActiveFilter}
-          className="mb-8"
-        />
+        <Container>
+          <div className="flex flex-col items-center gap-6 lg:gap-[40px] pt-10 lg:pt-[80px]">
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProjects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </div>
+            {/* Hero */}
+            <div
+              ref={heroRef as React.RefObject<HTMLDivElement>}
+              className={cn(
+                'flex flex-col items-center gap-4 lg:gap-6 w-full transition-all duration-700',
+                heroVisible ? 'animate-fade-in-up' : 'opacity-0'
+              )}
+            >
+              <div className="flex justify-center items-center w-full gap-4 lg:gap-6 flex-wrap">
+                <span
+                  className="font-semibold bg-clip-text text-transparent"
+                  style={{
+                    fontSize: 'clamp(2.25rem, 4.17vw, 5rem)',
+                    lineHeight: '110%',
+                    fontFamily: 'Open Sans, sans-serif',
+                    backgroundImage:
+                      'linear-gradient(90deg, #EE334E 0%, #FCB131 33%, #00A651 67%, #0081C8 100%)',
+                  }}
+                >
+                  SDGs
+                </span>
+                <span
+                  className="font-semibold text-black"
+                  style={{ fontSize: 'clamp(2.25rem, 4.17vw, 5rem)', lineHeight: '110%', fontFamily: 'Open Sans, sans-serif' }}
+                >
+                  Projects
+                </span>
+              </div>
+              <p
+                className="text-black font-normal text-center mx-auto"
+                style={{
+                  fontSize: 'clamp(0.9375rem, 1.35vw, 1.625rem)',
+                  lineHeight: '140%',
+                  maxWidth: '1056px',
+                  fontFamily: 'Open Sans, sans-serif',
+                }}
+              >
+                Explore the initiatives our member organizations are running in alignment with the
+                United Nations&apos; 17 Sustainable Development Goals. Filter by goal to find
+                projects in your area of interest.
+              </p>
+            </div>
 
-        {filteredProjects.length === 0 && (
-          <p className="text-center text-neutral-500 py-12">No projects found for this SDG.</p>
-        )}
-      </Container>
+            {/* Filter + Cards */}
+            <div className="flex flex-col w-full gap-8 lg:gap-[60px] pb-10 lg:pb-[80px]">
+
+              {/* Filter pills */}
+              <div className="flex flex-wrap justify-center gap-[11px]">
+                {filterItems.map((item) => (
+                  <Button
+                    key={item.key}
+                    shape="round"
+                    onClick={() => setActiveFilter(item.key)}
+                    className={cn(
+                      '!font-medium !transition-all !duration-200 !whitespace-nowrap hover:!scale-[1.03] active:!scale-[0.97] !h-auto',
+                      activeFilter === item.key ? '!text-white !shadow-md' : '!text-[#151515]'
+                    )}
+                    style={{
+                      fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
+                      backgroundColor: activeFilter === item.key ? '#005D9A' : '#E3F2FD',
+                      borderColor: activeFilter === item.key ? '#005D9A' : '#E3F2FD',
+                      fontFamily: 'Open Sans, sans-serif',
+                      lineHeight: '140%',
+                      padding: '10px 24px',
+                    }}
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+              </div>
+
+              {/* Cards grid — stagger fade on mount & filter change */}
+              <div
+                ref={cardsRef as React.RefObject<HTMLDivElement>}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10"
+              >
+                {filteredProjects.map((project, index) => (
+                  <div
+                    key={`${activeFilter}-${project.id}`}
+                    className={cn(
+                      cardsVisible ? 'animate-fade-in-up' : 'opacity-0'
+                    )}
+                    style={{ animationDelay: `${index * 80}ms` }}
+                  >
+                    <ProjectCard
+                      project={project}
+                      ledBy={MEMBER_MAP[project.memberId]}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {filteredProjects.length === 0 && (
+                <Empty description="No projects found for this SDG." className="py-12" />
+              )}
+            </div>
+          </div>
+        </Container>
+      </div>
     </div>
   );
 }

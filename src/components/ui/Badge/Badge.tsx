@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { Tag } from 'antd';
 
 export interface BadgeProps {
   children: React.ReactNode;
@@ -15,14 +16,14 @@ const variantClasses = {
 
 export function Badge({ children, variant = 'default', className }: BadgeProps) {
   return (
-    <span
+    <Tag
       className={cn(
-        'inline-flex items-center px-2.5 py-0.5 rounded-pill text-xs font-medium',
+        '!inline-flex !items-center !px-2.5 !py-0.5 !rounded-pill !text-xs !font-medium',
         variantClasses[variant],
         className
       )}
     >
       {children}
-    </span>
+    </Tag>
   );
 }

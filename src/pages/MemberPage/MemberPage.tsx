@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { Empty } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { MemberCard } from '@/components/common/MemberCard';
@@ -57,7 +58,7 @@ export function MemberPage() {
         </div>
 
         {pageItems.length === 0 && (
-          <p className="text-center text-neutral-500 py-12">No members found for this filter.</p>
+          <Empty description="No members found for this filter." className="py-12" />
         )}
 
         <Pagination

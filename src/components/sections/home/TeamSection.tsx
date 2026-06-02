@@ -1,3 +1,4 @@
+import { Button, Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 
 const LEADERS = [
@@ -32,7 +33,7 @@ export function TeamSection() {
         {LEADERS.map((leader) => (
           <div key={leader.id} className="flex flex-col items-center">
             <div className="w-[240px] h-[240px] rounded-full overflow-hidden border-4 border-neutral-200 mb-4 relative group cursor-pointer">
-              <img src={leader.imageUrl} alt={leader.name} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" />
+              <Image src={leader.imageUrl} alt={leader.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
               <div className="absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="flex gap-3">
                   <a href="#" className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform">
@@ -71,7 +72,7 @@ export function TeamSection() {
         {DIRECTORS.map((dir) => (
           <div key={dir.id} className="flex flex-col items-center">
             <div className="w-[180px] h-[180px] rounded-full overflow-hidden border-4 border-neutral-200 mb-3 relative group cursor-pointer">
-              <img src={dir.imageUrl} alt={dir.name} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" />
+              <Image src={dir.imageUrl} alt={dir.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
               <div className="absolute inset-0 flex items-end justify-center pb-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="flex gap-2">
                   <a href="#" className="w-7 h-7 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform">
@@ -98,9 +99,9 @@ export function TeamSection() {
 
       {/* View all button */}
       <div className="flex justify-center">
-        <button className="px-8 py-3 border-2 border-[#EE334E] text-[#EE334E] text-[18px] font-semibold rounded-full hover:bg-[#EE334E] hover:text-white transition-colors" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+        <Button ghost danger shape="round" className="!border-2 !font-semibold !h-auto" style={{ padding: '10px 24px', fontFamily: 'Open Sans, sans-serif' }}>
           View all
-        </button>
+        </Button>
       </div>
     </section>
   );
