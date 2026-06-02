@@ -1,21 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useSyncExternalStore } from 'react';
 
+/**
+ * Theo dõi một media query và trả về true khi khớp.
+ * Dùng useSyncExternalStore để đăng ký/huỷ đăng ký an toàn,
+ * tránh setState trong effect (cascading renders).
+ */
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.matchMedia(query).matches;
-    }
-    return false;
-  });
-
-  useEffect(() => {
+  const subscribe = (onChange: () => void) => {
+    if (typeof window === 'undefined') return () => {};
     const mql = window.matchMedia(query);
-    const handler = (e: MediaQueryListEvent) => setMatches(e.matches);
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  };
 
-    setMatches(mql.matches);
-    mql.addEventListener('change', handler);
-    return () => mql.removeEventListener('change', handler);
-  }, [query]);
+  const getSnapshot = () =>
+    typeof window !== 'undefined' ? window.matchMedia(query).matches : false;
 
-  return matches;
+  const getServerSnapshot = () => false;
+
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
