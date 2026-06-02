@@ -1,6 +1,8 @@
-import { Button, Collapse } from 'antd';
+import { Collapse } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/utils';
+import { ViewAllButton } from '@/components/common/ViewAllButton';
+import { ROUTES } from '@/routes/paths';
 
 const FAQ_DATA = [
   { id: 'faq-1', question: 'What is Y.O.U and who can join?', answer: 'Y.O.U – Youth Organization Union is a global alliance of youth-led organizations and individual leaders committed to the UN\'s SDGs. Any registered youth organization or young leader can apply.' },
@@ -18,9 +20,7 @@ export function FAQSection() {
         <h2 className="font-semibold text-[48px] text-[#111111] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
           Frequently Asked Questions
         </h2>
-        <Button ghost danger shape="round" className="!border-2 !font-semibold !h-auto flex-shrink-0" style={{ padding: '10px 24px', fontFamily: 'Open Sans, sans-serif' }}>
-          View all
-        </Button>
+        <ViewAllButton to={ROUTES.POLICY_DOCUMENTS} className="flex-shrink-0" />
       </div>
 
       {/* FAQ items */}

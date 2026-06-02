@@ -1,5 +1,7 @@
 import { Button, Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
+import { ViewAllButton } from '@/components/common/ViewAllButton';
+import { ROUTES } from '@/routes/paths';
 
 const NEWS_DATA = [
   {
@@ -59,21 +61,19 @@ export function NewsSection() {
             Global Goals
           </span>
         </h2>
-        <Button ghost danger shape="round" className="!border-2 !font-semibold !h-auto" style={{ padding: '10px 24px', fontFamily: 'Open Sans, sans-serif' }}>
-          View all
-        </Button>
+        <ViewAllButton to={ROUTES.PROJECTS} />
       </div>
 
       {/* Content: featured left + list right */}
       <div className="flex gap-8">
         {/* Left: featured article — 50% */}
-        <div className="w-1/2 flex flex-col">
+        <div className="w-1/2 flex flex-col group cursor-pointer">
           <div className="rounded-2xl overflow-hidden aspect-[652/436] mb-4">
             <Image
               src={featured.imageUrl}
               alt={featured.title}
               preview={false}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               wrapperStyle={{ width: '100%', height: '100%' }}
             />
@@ -102,19 +102,19 @@ export function NewsSection() {
           {/* See more */}
           <Button type="link" danger className="!flex !items-center !gap-1 !text-[18px] !font-semibold !p-0 !h-auto" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             See more
-            <Icon name="lucide:arrow-up-right" size={18} />
+            <Icon name="lucide:arrow-up-right" size={18} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
           </Button>
         </div>
 
         {/* Right: news list — 50% */}
         <div className="w-1/2 flex flex-col gap-4">
           {sideNews.map((news) => (
-            <div key={news.id} className="flex gap-4 cursor-pointer hover:bg-neutral-50 rounded-xl transition-colors p-2">
+            <div key={news.id} className="flex gap-4 cursor-pointer hover:bg-neutral-50 rounded-xl transition-colors p-2 group">
               <div className="w-[200px] h-[130px] flex-shrink-0 rounded-xl overflow-hidden">
-                <Image src={news.imageUrl} alt={news.title} preview={false} className="w-full h-full object-cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
+                <Image src={news.imageUrl} alt={news.title} preview={false} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
               </div>
               <div className="flex-1 flex flex-col justify-center">
-                <h4 className="font-semibold text-[20px] text-[#111111] mb-1 line-clamp-1" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                <h4 className="font-semibold text-[20px] text-[#111111] mb-1 line-clamp-1 transition-colors group-hover:text-[#EE334E]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                   {news.title}
                 </h4>
                 <div className="flex items-center gap-4 text-[14px] text-neutral-500" style={{ fontFamily: 'Open Sans, sans-serif' }}>

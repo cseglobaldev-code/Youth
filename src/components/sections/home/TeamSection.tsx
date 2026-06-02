@@ -1,5 +1,7 @@
-import { Button, Image } from 'antd';
+import { Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
+import { ViewAllButton } from '@/components/common/ViewAllButton';
+import { ROUTES } from '@/routes/paths';
 
 const LEADERS = [
   { id: 'leader-1', name: 'Minh Anh Nguyen', role: 'President & Chair', imageUrl: '/leadershi1p.png' },
@@ -99,9 +101,7 @@ export function TeamSection() {
 
       {/* View all button */}
       <div className="flex justify-center">
-        <Button ghost danger shape="round" className="!border-2 !font-semibold !h-auto" style={{ padding: '10px 24px', fontFamily: 'Open Sans, sans-serif' }}>
-          View all
-        </Button>
+        <ViewAllButton to={ROUTES.LEADERSHIP} />
       </div>
     </section>
   );

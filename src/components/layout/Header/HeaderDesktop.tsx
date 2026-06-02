@@ -24,35 +24,37 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
     >
       <div className="px-4 md:px-8 lg:px-[90px]">
         <div className="flex items-center justify-between h-[84px]">
-          {/* Left: Logo + Nav */}
-          <div className="flex items-center gap-10">
+          {/* Left group: Logo + Nav (nav spans ~half the screen) */}
+          <div className="flex items-center gap-10 flex-1">
             <Logo />
-            <nav className="flex items-center h-full gap-7">
+            <nav className="flex items-center justify-between h-full w-[50vw] max-w-[760px]">
               {items.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
+                  style={{ fontFamily: 'Open Sans, sans-serif' }}
                   className={cn(
-                    'text-sm font-medium transition-colors hover:text-brand relative h-[84px] inline-flex items-center',
-                    pathname === item.path
-                      ? 'text-brand after:absolute after:bottom-[-1px] after:left-0 after:w-full after:h-[3px] after:bg-brand after:rounded-t'
-                      : 'text-neutral-700'
+                    'text-[20px] font-semibold leading-[135%] transition-colors hover:text-[#005D9A] relative h-[84px] inline-flex items-center py-[28.5px] whitespace-nowrap',
+                    pathname === item.path ? 'text-[#005D9A]' : 'text-black'
                   )}
                 >
                   {item.label}
+                  {pathname === item.path && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[3px] bg-[#005D9A] rounded-full" />
+                  )}
                 </Link>
               ))}
             </nav>
           </div>
 
           {/* Right: CTA + Language */}
-          <div className="flex items-center gap-4">
-            <Link
-              to="/members"
+          <div className="flex items-center gap-4 flex-shrink-0">
+            <button
+              type="button"
               className="px-5 py-2.5 bg-[#EE334E] text-white text-sm font-semibold rounded-full hover:opacity-90 transition-opacity"
             >
               Join 1500+ Youth Organizations
-            </Link>
+            </button>
             <Button type="text" className="!flex !items-center !gap-1.5 !px-3 !py-2 !text-sm !text-neutral-700 !h-auto">
               <Icon name="lucide:globe" size={16} />
               English

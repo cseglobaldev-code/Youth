@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Button, Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
+import { ViewAllButton } from '@/components/common/ViewAllButton';
 import { ROUTES } from '@/routes/paths';
 
 const MOCK_MEMBER = {
@@ -97,9 +97,7 @@ export function MembersSection() {
         <h2 className="font-semibold text-[48px] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
           Member of <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">Y.O.U</span>
         </h2>
-        <Link to={ROUTES.MEMBERS} className="px-6 py-2.5 border-2 border-[#EE334E] text-[#EE334E] text-[16px] font-semibold rounded-full hover:bg-[#EE334E] hover:text-white transition-colors">
-          View all
-        </Link>
+        <ViewAllButton to={ROUTES.MEMBERS} />
       </div>
 
       {/* Grid 3 cols × 2 rows */}

@@ -1,4 +1,7 @@
+import { useState } from 'react';
 import { Button } from 'antd';
+import { RegisterOrganizationModal } from '@/components/common/RegisterOrganizationModal';
+import { ApplyRoleModal } from '@/components/common/ApplyRoleModal';
 
 const ORG_BENEFITS = [
   'Official Y.O.U member status & certification',
@@ -15,6 +18,9 @@ const INDIVIDUAL_BENEFITS = [
 ];
 
 export function JoinSection() {
+  const [orgModalOpen, setOrgModalOpen] = useState(false);
+  const [roleModalOpen, setRoleModalOpen] = useState(false);
+
   return (
     <section className="bg-[#F2F7FF] py-[120px] px-[288px]">
       {/* Header */}
@@ -53,7 +59,7 @@ export function JoinSection() {
             ))}
           </ul>
 
-          <Button danger type="primary" shape="round" block className="!h-auto !font-semibold !text-[20px]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }}>
+          <Button danger type="primary" shape="round" block className="!h-auto !font-semibold !text-[20px]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={() => setOrgModalOpen(true)}>
             Register Your Organization
           </Button>
         </div>
@@ -79,11 +85,14 @@ export function JoinSection() {
             ))}
           </ul>
 
-          <Button type="primary" shape="round" block className="!h-auto !font-semibold !text-[20px] !bg-[#005D9A] !border-[#005D9A]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }}>
+          <Button type="primary" shape="round" block className="!h-auto !font-semibold !text-[20px] !bg-[#005D9A] !border-[#005D9A]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={() => setRoleModalOpen(true)}>
             Apply for a Role
           </Button>
         </div>
       </div>
+
+      <RegisterOrganizationModal open={orgModalOpen} onClose={() => setOrgModalOpen(false)} />
+      <ApplyRoleModal open={roleModalOpen} onClose={() => setRoleModalOpen(false)} />
     </section>
   );
 }
