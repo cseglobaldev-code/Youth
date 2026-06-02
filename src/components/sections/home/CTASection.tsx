@@ -1,3 +1,5 @@
+import { Button } from 'antd';
+
 export function CTASection() {
   return (
     <section className="mx-[288px] my-[60px] rounded-[40px] overflow-hidden relative" style={{ background: 'linear-gradient(to right, #E8A0A0, #A8D8B0, #A0C8E8)' }}>
@@ -10,9 +12,9 @@ export function CTASection() {
             Join thousands of youth leaders across ASEAN who are making a difference in their communities.
           </p>
         </div>
-        <button className="px-8 py-3 border-2 border-[#EE334E] text-[#EE334E] text-[18px] font-semibold rounded-full hover:bg-[#EE334E] hover:text-white transition-colors flex-shrink-0" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+        <Button ghost danger shape="round" className="!border-2 !font-semibold !text-[18px] !flex-shrink-0 !px-8 !h-auto" style={{ fontFamily: 'Open Sans, sans-serif', padding: '12px 32px' }}>
           Register Now
-        </button>
+        </Button>
       </div>
     </section>
   );

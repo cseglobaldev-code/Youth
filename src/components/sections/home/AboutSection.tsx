@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
-import { Icon } from '@/components/ui/Icon';
+import { Collapse, Image } from 'antd';
 import { ROUTES } from '@/routes/paths';
 
 const ABOUT_ITEMS = [
@@ -23,10 +23,12 @@ export function AboutSection() {
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
             {/* Left: SDG logo */}
             <div className="flex-shrink-0">
-              <img
+              <Image
                 src="/sdg-goals-logo.png"
                 alt="UN Sustainable Development Goals"
+                preview={false}
                 className="h-[87px] w-auto object-contain"
+                style={{ height: '87px', width: 'auto', objectFit: 'contain' }}
               />
             </div>
             {/* Right: text + CTA */}
@@ -87,59 +89,39 @@ export function AboutSection() {
           <div className="flex flex-col lg:flex-row gap-12">
             {/* Left: list items */}
             <div className="flex-1 max-w-[602px]">
-              <div className="space-y-0">
-                {ABOUT_ITEMS.map((item, i) => {
-                  const isActive = activeId === item.id;
-                  return (
-                    <div key={item.id}>
-                      <button
-                        className="w-full flex items-start gap-5 py-5 text-left"
-                        onClick={() => setActiveId(item.id)}
-                      >
-                        {/* Circle icon with Group.png */}
-                        <div
-                          className="w-[48px] h-[48px] rounded-full flex items-center justify-center flex-shrink-0"
-                          style={{ backgroundColor: item.color }}
-                        >
-                          <img src="/group.svg" alt="" className="w-[30px] h-[30px] object-contain" aria-hidden="true" />
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-[#111111] text-[28px]">
-                            {item.title}
-                          </h4>
-                          {isActive && (
-                            <>
-                              <p className="text-neutral-600 text-[20px] font-normal leading-relaxed mt-2 line-clamp-2">
-                                {item.description}
-                              </p>
-                              <span className="mt-3 inline-flex items-center gap-1 text-[#EE334E] text-[20px] font-semibold hover:underline">
-                                See more
-                                <Icon name="lucide:arrow-up-right" size={20} />
-                              </span>
-                            </>
-                          )}
-                        </div>
-                      </button>
-                      {/* Divider */}
-                      {i < ABOUT_ITEMS.length - 1 && (
-                        isActive
-                          ? <div className="h-[3px] bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] rounded-full" />
-                          : <hr className="border-dashed border-neutral-300" />
-                      )}
+              <Collapse
+                accordion
+                ghost
+                activeKey={activeId ?? undefined}
+                onChange={(key) => setActiveId(key as string | null)}
+                expandIcon={() => null}
+                items={ABOUT_ITEMS.map((item) => ({
+                  key: item.id,
+                  label: (
+                    <div className="flex items-start gap-5 py-3">
+                      <div className="w-[48px] h-[48px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: item.color }}>
+                        <img src="/group.svg" alt="" className="w-[30px] h-[30px] object-contain" aria-hidden="true" />
+                      </div>
+                      <h4 className="font-semibold text-[#111111] text-[28px]">{item.title}</h4>
                     </div>
-                  );
-                })}
-              </div>
+                  ),
+                  children: (
+                    <p className="text-neutral-600 text-[20px] font-normal leading-relaxed">{item.description}</p>
+                  ),
+                }))}
+              />
             </div>
 
             {/* Right: image with logo overlay */}
             <div className="flex-shrink-0 w-full lg:w-[702px]">
               <div className="rounded-2xl overflow-hidden aspect-[702/513] relative">
-                <img
+                <Image
                   src="/about-image.png"
                   alt="Youth leaders"
+                  preview={false}
                   className="w-full h-full object-cover"
-                  loading="lazy"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  wrapperStyle={{ width: '100%', height: '100%' }}
                 />
                 {/* Logo overlay */}
                 <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">

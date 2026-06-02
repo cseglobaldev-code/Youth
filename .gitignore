@@ -57,3 +57,7 @@ Thumbs.db
 # ===== Agent / skill / spec tooling =====
 .kiro/
 .omc/
+_bmad/
+_bmad-output/
+.agents/
+.claude/

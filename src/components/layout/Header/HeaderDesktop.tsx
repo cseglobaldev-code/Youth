@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import { Button } from 'antd';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/layout/Logo';
 import { Icon } from '@/components/ui/Icon';
@@ -52,11 +53,11 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
             >
               Join 1500+ Youth Organizations
             </Link>
-            <button className="flex items-center gap-1.5 px-3 py-2 text-sm text-neutral-700 hover:text-brand transition-colors">
+            <Button type="text" className="!flex !items-center !gap-1.5 !px-3 !py-2 !text-sm !text-neutral-700 !h-auto">
               <Icon name="lucide:globe" size={16} />
               English
               <Icon name="lucide:chevron-down" size={14} />
-            </button>
+            </Button>
           </div>
         </div>
       </div>

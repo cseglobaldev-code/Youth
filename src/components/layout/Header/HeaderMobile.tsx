@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Drawer } from 'antd';
+import { Button, Drawer } from 'antd';
 import { cn } from '@/lib/utils';
 import { Container } from '@/components/ui/Container';
 import { Logo } from '@/components/layout/Logo';
@@ -29,13 +29,9 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
       <Container>
         <div className="flex items-center justify-between h-14">
           <Logo />
-          <button
-            onClick={open}
-            className="p-2 text-neutral-700 hover:text-brand"
-            aria-label="Open menu"
-          >
+          <Button type="text" className="!p-2 !text-neutral-700 !h-auto" onClick={open} aria-label="Open menu">
             <Icon name={ICONS.menu} size={24} />
-          </button>
+          </Button>
         </div>
       </Container>
 
