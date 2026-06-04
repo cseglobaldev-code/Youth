@@ -47,16 +47,6 @@ export function CTABanner({
         {/* White overlay to soften into pastel */}
         <div className="absolute inset-0 bg-white" style={{ opacity: overlayOpacity / 100 }} />
 
-        {/* Star watermark */}
-        {!hideStar && (
-          <img
-            src="/start.svg"
-            alt=""
-            aria-hidden="true"
-            className="absolute right-[200px] top-1/2 -translate-y-1/2 w-[120px] h-[120px] opacity-30 pointer-events-none"
-          />
-        )}
-
         <div className="relative px-[60px] py-[40px] flex items-center justify-between gap-8">
           <div>
             <h2
@@ -74,17 +64,26 @@ export function CTABanner({
               </p>
             )}
           </div>
-          <PillButton
-            variant="white"
-            size="md"
-            as={buttonAs}
-            to={ctaTo}
-            href={ctaHref}
-            onClick={onCtaClick}
-            className="flex-shrink-0"
-          >
-            {ctaLabel}
-          </PillButton>
+          <div className="flex items-center gap-[22px] flex-shrink-0">
+            {!hideStar && (
+              <img
+                src="/start.svg"
+                alt=""
+                aria-hidden="true"
+                className="w-[120px] h-[120px] opacity-90 pointer-events-none"
+              />
+            )}
+            <PillButton
+              variant="white"
+              size="md"
+              as={buttonAs}
+              to={ctaTo}
+              href={ctaHref}
+              onClick={onCtaClick}
+            >
+              {ctaLabel}
+            </PillButton>
+          </div>
         </div>
       </div>
     </section>

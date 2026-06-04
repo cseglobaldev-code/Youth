@@ -6,6 +6,15 @@ import { Icon } from '@/components/ui/Icon';
 import { NAV_ITEMS } from '@/data';
 import type { NavItem } from '@/types';
 
+function scrollToJoinSection() {
+  const el = document.getElementById('join-section');
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    window.location.href = '/#join-section';
+  }
+}
+
 interface HeaderDesktopProps {
   navItems?: NavItem[];
   className?: string;
@@ -27,7 +36,7 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
           {/* Left group: Logo + Nav (nav spans ~half the screen) */}
           <div className="flex items-center gap-10 flex-1">
             <Logo />
-            <nav className="flex items-center justify-between h-full w-[50vw] max-w-[760px]">
+            <nav className="flex items-center gap-8 lg:gap-[48px] h-full w-[50vw] max-w-[760px]">
               {items.map((item) => (
                 <Link
                   key={item.path}
@@ -51,6 +60,7 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
           <div className="flex items-center gap-4 flex-shrink-0">
             <button
               type="button"
+              onClick={scrollToJoinSection}
               className="px-5 py-2.5 bg-[#EE334E] text-white text-sm font-semibold rounded-full hover:opacity-90 transition-opacity"
             >
               Join 1500+ Youth Organizations
