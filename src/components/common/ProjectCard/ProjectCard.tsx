@@ -50,10 +50,10 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
           {project.name}
         </h3>
 
-        <div className="flex items-end justify-between gap-3">
-          <div className="flex flex-col gap-[6px]">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col gap-[6px] flex-1">
             {/* Led by */}
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-start gap-2 flex-wrap">
               <span
                 style={{
                   fontSize: 'clamp(0.75rem, 0.94vw, 1.125rem)',
@@ -61,6 +61,7 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
                   fontWeight: 400,
                   color: '#6B7280',
                   lineHeight: '140%',
+                  marginTop: '2px'
                 }}
               >
                 Led by
@@ -81,7 +82,7 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
             </div>
 
             {/* Local */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-start gap-2">
               <span
                 style={{
                   fontSize: 'clamp(0.75rem, 0.94vw, 1.125rem)',
@@ -111,7 +112,7 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
           <Button
             type="text"
             shape="circle"
-            className="!w-8 !h-8 !bg-white !text-[#0F172A] !flex-shrink-0 transition-all duration-200 hover:!bg-[#EE334E] hover:!text-white hover:!scale-110 hover:!shadow-md active:!scale-95 !min-w-0"
+            className="!w-8 !h-8 !bg-white !text-[#0F172A] !flex-shrink-0 transition-all duration-200 hover:!bg-[#EE334E] hover:!text-white hover:!scale-110 hover:!shadow-md active:!scale-95 !min-w-0 mt-0.5"
             style={{ border: '1px solid #EE334E', padding: 0 }}
             onClick={(e) => { e.stopPropagation(); navigate(ROUTES.PROJECT_DETAIL(project.id)); }}
             aria-label={`View ${project.name}`}

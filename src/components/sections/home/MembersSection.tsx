@@ -3,13 +3,14 @@ import { Button, Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { ViewAllButton } from '@/components/common/ViewAllButton';
 import { ROUTES } from '@/routes/paths';
+import { SDGTag } from '@/components/ui/SDGTag';
 
 const MOCK_MEMBER = {
   name: 'YouthBridge PH',
   country: 'Philippines',
   period: '2021 → nay',
   leader: 'Maria Santos',
-  tags: ['#SDG 1', '#SDG 4', '#SDG 8'],
+  focusSdgs: [1, 4, 8],
   coverUrl: '/cover-image1.png',
   logoUrl: '/small-logo1.png',
 };
@@ -69,14 +70,8 @@ function MemberCard({ member }: { member: typeof MOCK_MEMBER & { id: string } })
 
         {/* Tags */}
         <div className="flex flex-wrap gap-2 mt-auto pt-3">
-          {member.tags.map((tag) => (
-            <span
-              key={tag}
-              className="bg-[#E3F2FD] text-[#111111] text-[18px] font-medium px-3 py-1.5 rounded"
-              style={{ fontFamily: 'Open Sans, sans-serif', padding: '6px 12px' }}
-            >
-              {tag}
-            </span>
+          {member.focusSdgs.map((sdgId) => (
+            <SDGTag key={sdgId} sdgId={sdgId} size="md" />
           ))}
         </div>
       </div>
