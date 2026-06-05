@@ -3,7 +3,8 @@ export type SocialPlatform =
   | 'facebook'
   | 'twitter'
   | 'instagram'
-  | 'linkedin';
+  | 'linkedin'
+  | 'tiktok';
 
 export interface SocialLink {
   platform: SocialPlatform;

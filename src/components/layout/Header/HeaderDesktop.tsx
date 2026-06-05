@@ -1,5 +1,5 @@
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Button } from 'antd';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/layout/Logo';
 import { Icon } from '@/components/ui/Icon';
@@ -14,53 +14,72 @@ interface HeaderDesktopProps {
 export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
   const items = navItems ?? NAV_ITEMS;
   const { pathname } = useLocation();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   return (
     <header
       className={cn(
-        'hidden lg:block sticky top-0 z-50 bg-white border-b border-neutral-200',
+        'hidden lg:block sticky top-0 z-50 bg-white transition-shadow duration-300',
+        scrolled ? 'shadow-sm' : 'border-b border-neutral-100',
         className
       )}
     >
-      <div className="px-4 md:px-8 lg:px-[90px]">
-        <div className="flex items-center justify-between h-[84px]">
-          {/* Left group: Logo + Nav (nav spans ~half the screen) */}
-          <div className="flex items-center gap-10 flex-1">
-            <Logo />
-            <nav className="flex items-center justify-between h-full w-[50vw] max-w-[760px]">
-              {items.map((item) => (
+      {/* Figma: padding 12px 90px, height 84px, row space-between */}
+      <div className="flex items-center justify-between h-[84px] px-[90px]">
+
+        {/* Left: Logo + Nav — row, gap: 60px */}
+        <div className="flex items-center gap-[60px]">
+          <Logo />
+
+          {/* Nav items — row, gap: 44px */}
+          <nav className="flex items-center gap-[44px]">
+            {items.map((item) => {
+              const active = pathname === item.path;
+              return (
                 <Link
                   key={item.path}
                   to={item.path}
                   style={{ fontFamily: 'Open Sans, sans-serif' }}
                   className={cn(
-                    'text-[20px] font-semibold leading-[135%] transition-colors hover:text-[#005D9A] relative h-[84px] inline-flex items-center py-[28.5px] whitespace-nowrap',
-                    pathname === item.path ? 'text-[#005D9A]' : 'text-black'
+                    'relative text-[20px] font-semibold leading-[135%] h-[84px] inline-flex items-center whitespace-nowrap transition-colors hover:text-[#005D9A]',
+                    active ? 'text-[#005D9A]' : 'text-black'
                   )}
                 >
                   {item.label}
-                  {pathname === item.path && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[3px] bg-[#005D9A] rounded-full" />
+                  {active && (
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[38px] h-[2px] bg-[#005D9A] rounded-full" />
                   )}
                 </Link>
-              ))}
-            </nav>
-          </div>
+              );
+            })}
+          </nav>
+        </div>
 
-          {/* Right: CTA + Language */}
-          <div className="flex items-center gap-4 flex-shrink-0">
-            <button
-              type="button"
-              className="px-5 py-2.5 bg-[#EE334E] text-white text-sm font-semibold rounded-full hover:opacity-90 transition-opacity"
-            >
-              Join 1500+ Youth Organizations
-            </button>
-            <Button type="text" className="!flex !items-center !gap-1.5 !px-3 !py-2 !text-sm !text-neutral-700 !h-auto">
-              <Icon name="lucide:globe" size={16} />
-              English
-              <Icon name="lucide:chevron-down" size={14} />
-            </Button>
-          </div>
+        {/* Right: CTA + Language — row, gap: 24px */}
+        <div className="flex items-center gap-6 flex-shrink-0">
+          <button
+            type="button"
+            className="px-[28px] py-3 bg-[#EE334E] text-white text-[18px] font-semibold rounded-full hover:opacity-90 active:scale-[0.98] transition-all duration-200 whitespace-nowrap"
+            style={{ fontFamily: 'Open Sans, sans-serif' }}
+          >
+            Join 1500+ Youth Organizations
+          </button>
+
+          <button
+            type="button"
+            className="flex items-center gap-[8px] text-[20px] font-medium text-black hover:text-[#005D9A] transition-colors"
+            style={{ fontFamily: 'Open Sans, sans-serif' }}
+          >
+            <Icon name="lucide:globe" size={20} />
+            English
+            <Icon name="lucide:chevron-down" size={16} />
+          </button>
         </div>
       </div>
     </header>

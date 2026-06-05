@@ -250,33 +250,7 @@ export function ProjectDetailPage() {
     `https://youthorgunion.org/projects/${project.id}`;
 
   return (
-    <div className="bg-white min-h-screen relative overflow-hidden">
-      {/* Decorative ellipses */}
-      <div
-        className="absolute pointer-events-none rounded-full"
-        style={{
-          top: "-23px",
-          left: "-258px",
-          width: "963px",
-          height: "166px",
-          background: "#2980B9",
-          filter: "blur(600px)",
-          opacity: 0.43,
-        }}
-      />
-      <div
-        className="absolute pointer-events-none rounded-full"
-        style={{
-          top: "-46px",
-          left: "1354px",
-          width: "570px",
-          height: "205px",
-          background: "#EE334E",
-          filter: "blur(600px)",
-          opacity: 0.43,
-        }}
-      />
-
+    <div>
       {/* ── Hero: title (left) + QR section (right) ── */}
       <div className="pt-10 lg:pt-[120px] px-4 sm:px-8 lg:px-[90px] flex flex-col xl:flex-row items-start xl:justify-between gap-8 xl:gap-10">
         {/* Left — title + meta + SDG tags */}
