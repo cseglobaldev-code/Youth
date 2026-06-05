@@ -22,7 +22,7 @@ export function JoinSection() {
   const [roleModalOpen, setRoleModalOpen] = useState(false);
 
   return (
-    <section className="bg-[#F2F7FF] py-[120px] px-[288px]">
+    <section id="join-section" className="bg-[#F2F7FF] py-[120px] px-[288px]">
       {/* Header */}
       <div className="text-center mb-[60px]">
         <h2 className="font-semibold text-[48px] leading-tight mb-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
@@ -85,7 +85,7 @@ export function JoinSection() {
             ))}
           </ul>
 
-          <Button type="primary" shape="round" block className="!h-auto !font-semibold !text-[20px] !bg-[#005D9A] !border-[#005D9A]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={() => setRoleModalOpen(true)}>
+          <Button type="primary" shape="round" block className="!h-auto !font-semibold !text-[20px] !bg-[#005D9A] !border-[#005D9A] hover:opacity-90 transition-opacity" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={() => setRoleModalOpen(true)}>
             Apply for a Role
           </Button>
         </div>

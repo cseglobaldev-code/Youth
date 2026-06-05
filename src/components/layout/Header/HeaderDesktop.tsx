@@ -6,6 +6,15 @@ import { Icon } from '@/components/ui/Icon';
 import { NAV_ITEMS } from '@/data';
 import type { NavItem } from '@/types';
 
+function scrollToJoinSection() {
+  const el = document.getElementById('join-section');
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth' });
+  } else {
+    window.location.href = '/#join-section';
+  }
+}
+
 interface HeaderDesktopProps {
   navItems?: NavItem[];
   className?: string;
@@ -30,14 +39,10 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
         className
       )}
     >
-      {/* Figma: padding 12px 90px, height 84px, row space-between */}
       <div className="flex items-center justify-between h-[84px] px-[90px]">
-
-        {/* Left: Logo + Nav — row, gap: 60px */}
         <div className="flex items-center gap-[60px]">
           <Logo />
 
-          {/* Nav items — row, gap: 44px */}
           <nav className="flex items-center gap-[44px]">
             {items.map((item) => {
               const active = pathname === item.path;
@@ -61,10 +66,10 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
           </nav>
         </div>
 
-        {/* Right: CTA + Language — row, gap: 24px */}
         <div className="flex items-center gap-6 flex-shrink-0">
           <button
             type="button"
+            onClick={scrollToJoinSection}
             className="px-[28px] py-3 bg-[#EE334E] text-white text-[18px] font-semibold rounded-full hover:opacity-90 active:scale-[0.98] transition-all duration-200 whitespace-nowrap"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >

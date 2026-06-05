@@ -1,0 +1,556 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - link "Y.O.U Home" [ref=e8] [cursor=pointer]:
+          - /url: /
+          - img "Y.O.U" [ref=e9]
+        - navigation [ref=e10]:
+          - link "About us" [ref=e11] [cursor=pointer]:
+            - /url: /
+            - text: About us
+          - link "Leadership" [ref=e13] [cursor=pointer]:
+            - /url: /leadership
+          - link "Members" [ref=e14] [cursor=pointer]:
+            - /url: /members
+          - link "Projects" [ref=e15] [cursor=pointer]:
+            - /url: /projects
+          - link "Policy" [ref=e16] [cursor=pointer]:
+            - /url: /policy-documents
+          - link "Contact" [ref=e17] [cursor=pointer]:
+            - /url: /contact
+      - generic [ref=e18]:
+        - button "Join 1500+ Youth Organizations" [ref=e19] [cursor=pointer]
+        - button "English" [ref=e20] [cursor=pointer]:
+          - img [ref=e21]
+          - generic [ref=e25]: English
+          - img [ref=e26]
+  - main [ref=e28]:
+    - generic [ref=e29]:
+      - generic [ref=e31]:
+        - heading "Uniting Youth Shaping Tomorrow" [level=1] [ref=e32]:
+          - text: Uniting Youth
+          - text: Shaping Tomorrow
+        - paragraph [ref=e33]: Youth Organization Union brings together youth-led organizations across continents to drive sustainable development, global diplomacy, and meaningful change.
+      - button "Play video" [ref=e35] [cursor=pointer]:
+        - img "Youth collaboration" [ref=e36]
+        - img "Play" [ref=e38]
+    - generic [ref=e40]:
+      - generic [ref=e41]:
+        - img "UN Sustainable Development Goals" [ref=e44]
+        - generic [ref=e45]:
+          - paragraph [ref=e46]: Y.O.U is a coalition of youth organizations united by a shared commitment to the UN Sustainable Development Goals - building bridges across borders, cultures, and generations.
+          - link "Join 1,500+ Youth Leaders" [ref=e47] [cursor=pointer]:
+            - /url: /members
+      - generic [ref=e49]:
+        - generic [ref=e50]:
+          - generic [ref=e51]:
+            - generic [ref=e52]: Member Organizations
+            - generic [ref=e53]: "+50"
+          - img [ref=e54]
+        - generic [ref=e56]:
+          - generic [ref=e57]:
+            - generic [ref=e58]: Continents
+            - generic [ref=e59]: "+6"
+          - img [ref=e60]
+        - generic [ref=e62]:
+          - generic [ref=e63]:
+            - generic [ref=e64]: Countries
+            - generic [ref=e65]: "+30"
+          - img [ref=e66]
+        - generic [ref=e69]:
+          - generic [ref=e70]: Volunteers from Global
+          - generic [ref=e71]: +1 500
+    - generic [ref=e73]:
+      - heading "A Global Alliance for Youth-Led Impact" [level=2] [ref=e75]
+      - generic [ref=e76]:
+        - tablist [ref=e78]:
+          - generic [ref=e79]:
+            - tab "Our Vision" [expanded] [ref=e80] [cursor=pointer]:
+              - generic [ref=e82]:
+                - img [ref=e84]
+                - heading "Our Vision" [level=4] [ref=e85]
+            - tabpanel [ref=e86]:
+              - paragraph [ref=e88]: A world where every young person has the platform and tools to lead positive change in their community and beyond.
+          - tab "Our Mission" [ref=e90] [cursor=pointer]:
+            - generic [ref=e92]:
+              - img [ref=e94]
+              - heading "Our Mission" [level=4] [ref=e95]
+          - tab "Our Approach" [ref=e97] [cursor=pointer]:
+            - generic [ref=e99]:
+              - img [ref=e101]
+              - heading "Our Approach" [level=4] [ref=e102]
+          - tab "Why join us" [ref=e104] [cursor=pointer]:
+            - generic [ref=e106]:
+              - img [ref=e108]
+              - heading "Why join us" [level=4] [ref=e109]
+        - generic [ref=e111]:
+          - img "Youth leaders" [ref=e113]
+          - generic:
+            - img
+    - generic [ref=e114]:
+      - generic [ref=e115]:
+        - heading "Member of Y.O.U" [level=2] [ref=e116]
+        - link "View all" [ref=e117] [cursor=pointer]:
+          - /url: /members
+      - generic [ref=e118]:
+        - generic [ref=e119] [cursor=pointer]:
+          - generic [ref=e120]:
+            - img "YouthBridge PH" [ref=e122]
+            - img "YouthBridge PH logo" [ref=e125]
+          - generic [ref=e126]:
+            - heading "YouthBridge PH" [level=3] [ref=e127]
+            - generic [ref=e128]:
+              - generic [ref=e129]:
+                - generic [ref=e130]:
+                  - img [ref=e131]
+                  - text: Philippines
+                - generic [ref=e135]:
+                  - img [ref=e136]
+                  - text: 2021 → nay
+              - generic [ref=e140]:
+                - img [ref=e141]
+                - text: Maria Santos
+            - generic [ref=e145]:
+              - generic [ref=e146]: "#SDG 1"
+              - generic [ref=e147]: "#SDG 4"
+              - generic [ref=e148]: "#SDG 8"
+        - generic [ref=e149] [cursor=pointer]:
+          - generic [ref=e150]:
+            - img "CSE Global" [ref=e152]
+            - img "CSE Global logo" [ref=e155]
+          - generic [ref=e156]:
+            - heading "CSE Global" [level=3] [ref=e157]
+            - generic [ref=e158]:
+              - generic [ref=e159]:
+                - generic [ref=e160]:
+                  - img [ref=e161]
+                  - text: Philippines
+                - generic [ref=e165]:
+                  - img [ref=e166]
+                  - text: 2021 → nay
+              - generic [ref=e170]:
+                - img [ref=e171]
+                - text: Maria Santos
+            - generic [ref=e175]:
+              - generic [ref=e176]: "#SDG 1"
+              - generic [ref=e177]: "#SDG 4"
+              - generic [ref=e178]: "#SDG 8"
+        - generic [ref=e179] [cursor=pointer]:
+          - generic [ref=e180]:
+            - img "Future Leaders Kenya" [ref=e182]
+            - img "Future Leaders Kenya logo" [ref=e185]
+          - generic [ref=e186]:
+            - heading "Future Leaders Kenya" [level=3] [ref=e187]
+            - generic [ref=e188]:
+              - generic [ref=e189]:
+                - generic [ref=e190]:
+                  - img [ref=e191]
+                  - text: Philippines
+                - generic [ref=e195]:
+                  - img [ref=e196]
+                  - text: 2021 → nay
+              - generic [ref=e200]:
+                - img [ref=e201]
+                - text: Maria Santos
+            - generic [ref=e205]:
+              - generic [ref=e206]: "#SDG 1"
+              - generic [ref=e207]: "#SDG 4"
+              - generic [ref=e208]: "#SDG 8"
+        - generic [ref=e209] [cursor=pointer]:
+          - generic [ref=e210]:
+            - img "YouthBridge PH" [ref=e212]
+            - img "YouthBridge PH logo" [ref=e215]
+          - generic [ref=e216]:
+            - heading "YouthBridge PH" [level=3] [ref=e217]
+            - generic [ref=e218]:
+              - generic [ref=e219]:
+                - generic [ref=e220]:
+                  - img [ref=e221]
+                  - text: Philippines
+                - generic [ref=e225]:
+                  - img [ref=e226]
+                  - text: 2021 → nay
+              - generic [ref=e230]:
+                - img [ref=e231]
+                - text: Maria Santos
+            - generic [ref=e235]:
+              - generic [ref=e236]: "#SDG 1"
+              - generic [ref=e237]: "#SDG 4"
+              - generic [ref=e238]: "#SDG 8"
+        - generic [ref=e239] [cursor=pointer]:
+          - generic [ref=e240]:
+            - img "CSE Global" [ref=e242]
+            - img "CSE Global logo" [ref=e245]
+          - generic [ref=e246]:
+            - heading "CSE Global" [level=3] [ref=e247]
+            - generic [ref=e248]:
+              - generic [ref=e249]:
+                - generic [ref=e250]:
+                  - img [ref=e251]
+                  - text: Philippines
+                - generic [ref=e255]:
+                  - img [ref=e256]
+                  - text: 2021 → nay
+              - generic [ref=e260]:
+                - img [ref=e261]
+                - text: Maria Santos
+            - generic [ref=e265]:
+              - generic [ref=e266]: "#SDG 1"
+              - generic [ref=e267]: "#SDG 4"
+              - generic [ref=e268]: "#SDG 8"
+        - generic [ref=e269] [cursor=pointer]:
+          - generic [ref=e270]:
+            - img "Future Leaders Kenya" [ref=e272]
+            - img "Future Leaders Kenya logo" [ref=e275]
+          - generic [ref=e276]:
+            - heading "Future Leaders Kenya" [level=3] [ref=e277]
+            - generic [ref=e278]:
+              - generic [ref=e279]:
+                - generic [ref=e280]:
+                  - img [ref=e281]
+                  - text: Philippines
+                - generic [ref=e285]:
+                  - img [ref=e286]
+                  - text: 2021 → nay
+              - generic [ref=e290]:
+                - img [ref=e291]
+                - text: Maria Santos
+            - generic [ref=e295]:
+              - generic [ref=e296]: "#SDG 1"
+              - generic [ref=e297]: "#SDG 4"
+              - generic [ref=e298]: "#SDG 8"
+      - generic [ref=e299]:
+        - button "Previous page" [disabled] [ref=e300]:
+          - img
+        - generic [ref=e301]: 1/5
+        - button "Next page" [ref=e302] [cursor=pointer]:
+          - img [ref=e303]
+    - generic [ref=e305]:
+      - generic [ref=e306]:
+        - heading "Impact Aligned with Global Goals" [level=2] [ref=e307]
+        - link "View all" [ref=e308] [cursor=pointer]:
+          - /url: /projects
+      - generic [ref=e309]:
+        - generic [ref=e310] [cursor=pointer]:
+          - img "Global Diplomacy Leadership Certification" [ref=e313]
+          - generic [ref=e314]:
+            - generic [ref=e315]:
+              - img [ref=e316]
+              - text: Asia, Africa
+            - generic [ref=e320]:
+              - img [ref=e321]
+              - text: Maria Santos
+            - generic [ref=e325]:
+              - img [ref=e326]
+              - text: 2021 → nay
+          - paragraph [ref=e330]: A world where every young person has the platform and tools to lead positive change in their community and beyond.
+          - button "See more" [ref=e331]:
+            - generic [ref=e332]: See more
+            - img [ref=e333]
+        - generic [ref=e335]:
+          - generic [ref=e336] [cursor=pointer]:
+            - img "ASEAN China Media Cooperation" [ref=e339]
+            - generic [ref=e340]:
+              - heading "ASEAN China Media Cooperation" [level=4] [ref=e341]
+              - generic [ref=e342]:
+                - generic [ref=e343]:
+                  - img [ref=e344]
+                  - text: Asia, Africa
+                - generic [ref=e348]:
+                  - img [ref=e349]
+                  - text: Maria Santos
+              - paragraph [ref=e353]: The agenda included welcoming remarks, institutional presentations, discussions on future collaboration opportunities.
+          - generic [ref=e354] [cursor=pointer]:
+            - img "The Moon-Like Volcanic Landscape..." [ref=e357]
+            - generic [ref=e358]:
+              - heading "The Moon-Like Volcanic Landscape..." [level=4] [ref=e359]
+              - generic [ref=e360]:
+                - generic [ref=e361]:
+                  - img [ref=e362]
+                  - text: Asia, Africa
+                - generic [ref=e366]:
+                  - img [ref=e367]
+                  - text: Maria Santos
+              - paragraph [ref=e371]: On Friday, 15 May 2026, ASEAN Youth Organization (AYO), through the implementation of the AI Ready ASEAN Program.
+          - generic [ref=e372] [cursor=pointer]:
+            - img "What Motivates Students to Join Or..." [ref=e375]
+            - generic [ref=e376]:
+              - heading "What Motivates Students to Join Or..." [level=4] [ref=e377]
+              - generic [ref=e378]:
+                - generic [ref=e379]:
+                  - img [ref=e380]
+                  - text: Asia, Africa
+                - generic [ref=e384]:
+                  - img [ref=e385]
+                  - text: Maria Santos
+              - paragraph [ref=e389]: Rangsit University on 15 May 2026 to strengthen collaboration in AI literacy and youth empowerment.
+          - generic [ref=e390] [cursor=pointer]:
+            - img "ASEAN Youth Organization Establis..." [ref=e393]
+            - generic [ref=e394]:
+              - heading "ASEAN Youth Organization Establis..." [level=4] [ref=e395]
+              - generic [ref=e396]:
+                - generic [ref=e397]:
+                  - img [ref=e398]
+                  - text: Asia, Africa
+                - generic [ref=e402]:
+                  - img [ref=e403]
+                  - text: Maria Santos
+              - paragraph [ref=e407]: ASEAN Youth Organization, through the AI Ready ASEAN program, officially signed a Memorandum of Understanding (MoU).
+    - generic [ref=e408]:
+      - generic [ref=e409]:
+        - heading "Join the Movement" [level=2] [ref=e410]
+        - paragraph [ref=e411]: Two pathways to become part of the Youth Organization Union.
+      - generic [ref=e412]:
+        - generic [ref=e413]:
+          - generic [ref=e414]: For Organizations
+          - heading "Organization Membership" [level=3] [ref=e415]
+          - paragraph [ref=e416]: Register your youth-led organization as an official Y.O.U member and gain access to a global network, joint programs, and shared resources.
+          - list [ref=e417]:
+            - listitem [ref=e418]:
+              - img [ref=e419]
+              - text: Official Y.O.U member status & certification
+            - listitem [ref=e420]:
+              - img [ref=e421]
+              - text: Access to global partnership network
+            - listitem [ref=e422]:
+              - img [ref=e423]
+              - text: Joint project opportunities
+            - listitem [ref=e424]:
+              - img [ref=e425]
+              - text: Invitation to Annual Summit & events
+          - button "Register Your Organization" [ref=e426] [cursor=pointer]:
+            - generic [ref=e427]: Register Your Organization
+        - generic [ref=e428]:
+          - generic [ref=e429]: For Individuals
+          - heading "Leadership Roles" [level=3] [ref=e430]
+          - paragraph [ref=e431]: Apply to serve as a Continental Director or Country Director and take on a formal leadership role within the alliance's global structure.
+          - list [ref=e432]:
+            - listitem [ref=e433]:
+              - img [ref=e434]
+              - text: Continental Director (one per continent)
+            - listitem [ref=e435]:
+              - img [ref=e436]
+              - text: Country Director (one per country)
+            - listitem [ref=e437]:
+              - img [ref=e438]
+              - text: Formal leadership title & credentials
+            - listitem [ref=e439]:
+              - img [ref=e440]
+              - text: Access to leadership training programs
+          - button "Apply for a Role" [ref=e441] [cursor=pointer]:
+            - generic [ref=e442]: Apply for a Role
+    - generic [ref=e443]:
+      - heading "The People Behind Y.O.U" [level=2] [ref=e445]
+      - generic [ref=e446]:
+        - generic [ref=e447]:
+          - generic [ref=e448] [cursor=pointer]:
+            - img "Minh Anh Nguyen" [ref=e450]
+            - generic [ref=e452]:
+              - link [ref=e453]:
+                - /url: "#"
+                - img [ref=e454]
+              - link [ref=e456]:
+                - /url: "#"
+                - img [ref=e457]
+              - link [ref=e459]:
+                - /url: "#"
+                - img [ref=e460]
+          - heading "Minh Anh Nguyen" [level=4] [ref=e462]
+          - paragraph [ref=e463]: President & Chair
+        - generic [ref=e464]:
+          - generic [ref=e465] [cursor=pointer]:
+            - img "Safeen H. Mohammed" [ref=e467]
+            - generic [ref=e469]:
+              - link [ref=e470]:
+                - /url: "#"
+                - img [ref=e471]
+              - link [ref=e473]:
+                - /url: "#"
+                - img [ref=e474]
+              - link [ref=e476]:
+                - /url: "#"
+                - img [ref=e477]
+          - heading "Safeen H. Mohammed" [level=4] [ref=e479]
+          - paragraph [ref=e480]: Vice President
+        - generic [ref=e481]:
+          - generic [ref=e482] [cursor=pointer]:
+            - img "Muhammad Younas" [ref=e484]
+            - generic [ref=e486]:
+              - link [ref=e487]:
+                - /url: "#"
+                - img [ref=e488]
+              - link [ref=e490]:
+                - /url: "#"
+                - img [ref=e491]
+              - link [ref=e493]:
+                - /url: "#"
+                - img [ref=e494]
+          - heading "Muhammad Younas" [level=4] [ref=e496]
+          - paragraph [ref=e497]: Secretary General
+      - separator [ref=e498]
+      - heading "Continental Directors" [level=3] [ref=e500]
+      - generic [ref=e501]:
+        - generic [ref=e502]:
+          - generic [ref=e503] [cursor=pointer]:
+            - img "Sophie Martin" [ref=e505]
+            - generic [ref=e507]:
+              - link [ref=e508]:
+                - /url: "#"
+                - img [ref=e509]
+              - link [ref=e511]:
+                - /url: "#"
+                - img [ref=e512]
+              - link [ref=e514]:
+                - /url: "#"
+                - img [ref=e515]
+          - heading "Sophie Martin" [level=4] [ref=e517]
+          - paragraph [ref=e518]: Continental Director
+        - generic [ref=e519]:
+          - generic [ref=e520] [cursor=pointer]:
+            - img "Yuki Tanaka" [ref=e522]
+            - generic [ref=e524]:
+              - link [ref=e525]:
+                - /url: "#"
+                - img [ref=e526]
+              - link [ref=e528]:
+                - /url: "#"
+                - img [ref=e529]
+              - link [ref=e531]:
+                - /url: "#"
+                - img [ref=e532]
+          - heading "Yuki Tanaka" [level=4] [ref=e534]
+          - paragraph [ref=e535]: Continental Director
+        - generic [ref=e536]:
+          - generic [ref=e537] [cursor=pointer]:
+            - img "Sarah Johnson" [ref=e539]
+            - generic [ref=e541]:
+              - link [ref=e542]:
+                - /url: "#"
+                - img [ref=e543]
+              - link [ref=e545]:
+                - /url: "#"
+                - img [ref=e546]
+              - link [ref=e548]:
+                - /url: "#"
+                - img [ref=e549]
+          - heading "Sarah Johnson" [level=4] [ref=e551]
+          - paragraph [ref=e552]: Continental Director
+        - generic [ref=e553]:
+          - generic [ref=e554] [cursor=pointer]:
+            - img "Amara Okafor" [ref=e556]
+            - generic [ref=e558]:
+              - link [ref=e559]:
+                - /url: "#"
+                - img [ref=e560]
+              - link [ref=e562]:
+                - /url: "#"
+                - img [ref=e563]
+              - link [ref=e565]:
+                - /url: "#"
+                - img [ref=e566]
+          - heading "Amara Okafor" [level=4] [ref=e568]
+          - paragraph [ref=e569]: Continental Director
+        - generic [ref=e570]:
+          - generic [ref=e571] [cursor=pointer]:
+            - img "Hans Mueller" [ref=e573]
+            - generic [ref=e575]:
+              - link [ref=e576]:
+                - /url: "#"
+                - img [ref=e577]
+              - link [ref=e579]:
+                - /url: "#"
+                - img [ref=e580]
+              - link [ref=e582]:
+                - /url: "#"
+                - img [ref=e583]
+          - heading "Hans Mueller" [level=4] [ref=e585]
+          - paragraph [ref=e586]: Continental Director
+      - link "View all" [ref=e588] [cursor=pointer]:
+        - /url: /leadership
+    - generic [ref=e590]:
+      - img
+      - generic [ref=e592]:
+        - generic [ref=e593]:
+          - heading "Ready to Make an Impact?" [level=2] [ref=e594]
+          - paragraph [ref=e595]: Join thousands of youth leaders across ASEAN who are making a difference in their communities.
+        - button "Register Now" [ref=e596] [cursor=pointer]
+    - generic [ref=e597]:
+      - generic [ref=e598]:
+        - heading "Frequently Asked Questions" [level=2] [ref=e599]
+        - link "View all" [ref=e600] [cursor=pointer]:
+          - /url: /policy-documents
+      - generic [ref=e601]:
+        - generic [ref=e602]:
+          - button "What is Y.O.U and who can join?" [expanded] [ref=e603] [cursor=pointer]:
+            - img [ref=e605]
+            - generic [ref=e607]: What is Y.O.U and who can join?
+          - paragraph [ref=e610]: Y.O.U – Youth Organization Union is a global alliance of youth-led organizations and individual leaders committed to the UN's SDGs. Any registered youth organization or young leader can apply.
+        - button "What are the benefits of joining as an organization?" [ref=e612] [cursor=pointer]:
+          - img [ref=e614]
+          - generic [ref=e616]: What are the benefits of joining as an organization?
+        - button "What are the benefits of joining as an organization?" [ref=e618] [cursor=pointer]:
+          - img [ref=e620]
+          - generic [ref=e622]: What are the benefits of joining as an organization?
+        - button "What is the difference between Continental and Country Directors?" [ref=e624] [cursor=pointer]:
+          - img [ref=e626]
+          - generic [ref=e628]: What is the difference between Continental and Country Directors?
+        - button "Are there membership fees?" [ref=e630] [cursor=pointer]:
+          - img [ref=e632]
+          - generic [ref=e634]: Are there membership fees?
+  - contentinfo [ref=e635]:
+    - generic [ref=e636]:
+      - generic [ref=e637]:
+        - generic [ref=e638]:
+          - link "Y.O.U Home" [ref=e639] [cursor=pointer]:
+            - /url: /
+            - img "Youth Organization Union" [ref=e640]
+          - generic [ref=e641]:
+            - link "youtube" [ref=e642] [cursor=pointer]:
+              - /url: https://youtube.com/@you-alliance
+              - img [ref=e643]
+            - link "facebook" [ref=e645] [cursor=pointer]:
+              - /url: https://facebook.com/you.alliance
+              - img [ref=e646]
+            - link "twitter" [ref=e648] [cursor=pointer]:
+              - /url: https://twitter.com/you_alliance
+              - img [ref=e649]
+            - link "instagram" [ref=e651] [cursor=pointer]:
+              - /url: https://instagram.com/you.alliance
+              - img [ref=e652]
+            - link "linkedin" [ref=e657] [cursor=pointer]:
+              - /url: https://linkedin.com/company/you-alliance
+              - img [ref=e658]
+        - generic [ref=e660]:
+          - heading "Infomation" [level=4] [ref=e661]
+          - generic [ref=e662]:
+            - generic [ref=e663]:
+              - img [ref=e664]
+              - generic [ref=e668]: Global - Operating across 6 continents
+            - generic [ref=e669]:
+              - img [ref=e670]
+              - generic [ref=e672]: 098.242.1109
+            - generic [ref=e673]:
+              - img [ref=e674]
+              - generic [ref=e678]: info@youthorgunion.org
+            - generic [ref=e679]:
+              - img [ref=e680]
+              - generic [ref=e684]: Within 5-7 business days
+        - generic [ref=e685]:
+          - heading "Discover" [level=4] [ref=e686]
+          - navigation [ref=e687]:
+            - link "About us" [ref=e688] [cursor=pointer]:
+              - /url: /
+            - link "Leadership" [ref=e689] [cursor=pointer]:
+              - /url: /leadership
+            - link "Members" [ref=e690] [cursor=pointer]:
+              - /url: /members
+            - link "Projects" [ref=e691] [cursor=pointer]:
+              - /url: /projects
+      - generic [ref=e692]:
+        - paragraph [ref=e693]: © 2026 Youth Organization Union · All rights reserved
+        - generic [ref=e694]:
+          - link "Terms of Service" [ref=e695] [cursor=pointer]:
+            - /url: "#"
+          - link "Privacy Policy" [ref=e696] [cursor=pointer]:
+            - /url: "#"
