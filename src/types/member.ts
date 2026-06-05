@@ -21,4 +21,6 @@ export interface Member {
   projectIds: string[];
   gallery: GalleryImage[];
   donationQrUrl?: string;
+  period?: string;
+  leader?: string;
 }

@@ -22,6 +22,8 @@ export const MEMBERS_DATA: Member[] = [
       { id: 'g3', src: '/images/gallery/member1-3.jpg', alt: 'Community event' },
     ],
     donationQrUrl: '/images/qr/member-1-qr.png',
+    period: '2019 → nay',
+    leader: 'Dr. Hue Tran',
   },
   {
     id: 'member-2',
@@ -42,6 +44,8 @@ export const MEMBERS_DATA: Member[] = [
       { id: 'g4', src: '/images/gallery/member2-1.jpg', alt: 'Tree planting' },
       { id: 'g5', src: '/images/gallery/member2-2.jpg', alt: 'Solar panel installation' },
     ],
+    period: '2020 → nay',
+    leader: 'James Kipchoge',
   },
   {
     id: 'member-3',
@@ -60,6 +64,8 @@ export const MEMBERS_DATA: Member[] = [
     gallery: [
       { id: 'g6', src: '/images/gallery/member3-1.jpg', alt: 'Coding bootcamp' },
     ],
+    period: '2021 → nay',
+    leader: 'Carlos Silva',
   },
   {
     id: 'member-4',
@@ -75,6 +81,8 @@ export const MEMBERS_DATA: Member[] = [
     ],
     projectIds: ['project-5'],
     gallery: [],
+    period: '2018 → nay',
+    leader: 'Markus Hoffmann',
   },
   {
     id: 'member-5',
@@ -93,6 +101,8 @@ export const MEMBERS_DATA: Member[] = [
       { id: 'g7', src: '/images/gallery/member5-1.jpg', alt: 'Beach cleanup' },
       { id: 'g8', src: '/images/gallery/member5-2.jpg', alt: 'Coral restoration' },
     ],
+    period: '2021 → nay',
+    leader: 'Sophie Chen',
   },
   {
     id: 'member-6',
@@ -108,5 +118,7 @@ export const MEMBERS_DATA: Member[] = [
     ],
     projectIds: [],
     gallery: [],
+    period: '2020 → nay',
+    leader: 'Priya Sharma',
   },
 ];
