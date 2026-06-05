@@ -4,7 +4,7 @@ import { Avatar as AntAvatar } from 'antd';
 export interface AvatarProps {
   src?: string;
   alt: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
   className?: string;
 }
 
@@ -13,6 +13,9 @@ const sizeMap: Record<string, number> = {
   md: 40,
   lg: 56,
   xl: 80,
+  '2xl': 120,
+  '3xl': 160,
+  '4xl': 180,
 };
 
 function getInitials(name: string): string {

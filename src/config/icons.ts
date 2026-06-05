@@ -31,6 +31,7 @@ export const ICONS = {
   twitter: 'jam:twitter',
   instagram: 'jam:instagram',
   linkedin: 'jam:linkedin',
+  tiktok: 'simple-icons:tiktok',
 
   // Misc
   globe: 'lucide:globe',

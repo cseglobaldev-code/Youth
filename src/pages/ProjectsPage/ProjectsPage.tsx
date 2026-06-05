@@ -30,19 +30,8 @@ export function ProjectsPage() {
   );
 
   return (
-    <div className="bg-white min-h-screen">
-      {/* Decorative ellipses */}
-      <div className="relative overflow-hidden">
-        <div
-          className="absolute top-0 left-0 w-[458px] h-[336px] rounded-full pointer-events-none"
-          style={{ background: '#2980B9', filter: 'blur(600px)', opacity: 0.43 }}
-        />
-        <div
-          className="absolute top-0 right-0 w-[570px] h-[205px] rounded-full pointer-events-none"
-          style={{ background: '#EE334E', filter: 'blur(600px)', opacity: 0.43 }}
-        />
-
-        <Container>
+    <div>
+      <Container>
           <div className="flex flex-col items-center gap-6 lg:gap-[40px] pt-10 lg:pt-[80px]">
 
             {/* Hero */}
@@ -143,7 +132,6 @@ export function ProjectsPage() {
             </div>
           </div>
         </Container>
-      </div>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { Divider, Image } from "antd";
 import { Icon } from "@/components/ui/Icon";
 import { ProjectCard } from "@/components/common/ProjectCard";
+import { SDGTag } from "@/components/ui/SDGTag";
 import { PROJECTS_DATA, MEMBERS_DATA } from "@/data";
 import { cn } from "@/lib/utils";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
@@ -20,131 +21,6 @@ const SOCIAL_ICON_MAP: Record<string, string> = {
 // ─── QR section ───────────────────────────────────────────────────────────────
 const QR_CONIC =
   "conic-gradient(from 0deg at 50% 50%, #EE334E 0deg, #FCB131 90deg, #00A651 180deg, #0081C8 270deg, #EE334E 360deg)";
-
-// function QRSection({ value }: { value: string }) {
-//   return (
-//     // Wrapper: relative to hold the absolute arrow below xl
-//     <div
-//       className="flex-shrink-0 relative pb-0 xl:pb-[100px]"
-//       // min-width ensures it never squeezes to zero on mid-range desktops
-//       style={{ minWidth: 0 }}
-//     >
-//       {/* Row: text (right-aligned) + rotated QR box */}
-//       <div className="flex items-center gap-[18px]">
-
-//         {/* Text — fluid width, right-aligned, italic */}
-//         <div style={{ width: 'clamp(160px, 16vw, 307px)', textAlign: 'right', flexShrink: 0 }}>
-//           <span
-//             style={{
-//               display: 'block',
-//               fontFamily: 'Open Sans, sans-serif',
-//               fontWeight: 600,
-//               fontStyle: 'italic',
-//               fontSize: 'clamp(0.875rem, 1.04vw, 1.25rem)',
-//               lineHeight: '150%',
-//               color: '#000000',
-//             }}
-//           >
-//             Support our Mission
-//           </span>
-//           <span
-//             style={{
-//               display: 'block',
-//               fontFamily: 'Open Sans, sans-serif',
-//               fontWeight: 400,
-//               fontStyle: 'italic',
-//               fontSize: 'clamp(0.75rem, 0.94vw, 1.125rem)',
-//               lineHeight: '150%',
-//               color: '#000000',
-//             }}
-//           >
-//             Send your spiritual or financial support to this organization
-//           </span>
-//         </div>
-
-//         {/* QR box — outer rotated + inner float animation */}
-//         {/* Outer: static 15° rotation */}
-//         <div style={{ transform: 'rotate(15deg)', transformOrigin: 'center', flexShrink: 0 }}>
-//           {/* Inner: float-y animation (pure translateY, no rotation conflict) */}
-//           <div className="animate-float-y">
-//             <div
-//               style={{
-//                 width: 'clamp(120px, 8.75vw, 168px)',
-//                 height: 'clamp(120px, 8.75vw, 168px)',
-//                 background: QR_CONIC,
-//                 borderRadius: '16px',
-//                 padding: '8px',
-//                 boxSizing: 'border-box',
-//               }}
-//             >
-//               <div
-//                 style={{
-//                   width: '100%',
-//                   height: '100%',
-//                   background: '#ffffff',
-//                   borderRadius: '11px',
-//                   display: 'flex',
-//                   alignItems: 'center',
-//                   justifyContent: 'center',
-//                 }}
-//               >
-//                 <QRCodeSVG value={value} size={100} bgColor="#ffffff" fgColor="#000000" />
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Dashed rainbow arrow — scales proportionally with viewport so it never overlaps QR box.
-//           Container width/left use clamp() to match the proportional position of the text area. */}
-//       <div
-//         className="hidden xl:block absolute pointer-events-none"
-//         style={{
-//           top: 'clamp(90px, 6.5vw, 125px)',
-//           left: 'clamp(40px, 3.1vw, 60px)',
-//           width: 'clamp(150px, 12.5vw, 240px)',
-//         }}
-//       >
-//         {/* preserveAspectRatio keeps the curve shape; vectorEffect keeps stroke at 2px regardless of scale */}
-//         <svg
-//           width="100%"
-//           height="auto"
-//           viewBox="0 0 280 115"
-//           preserveAspectRatio="xMinYMin meet"
-//           fill="none"
-//           xmlns="http://www.w3.org/2000/svg"
-//         >
-//           <defs>
-//             <linearGradient id="arrowRainbow" x1="0%" y1="0%" x2="100%" y2="0%">
-//               <stop offset="0%"   stopColor="#EE334E" />
-//               <stop offset="33%"  stopColor="#FCB131" />
-//               <stop offset="67%"  stopColor="#00A651" />
-//               <stop offset="100%" stopColor="#0081C8" />
-//             </linearGradient>
-//           </defs>
-//           <path
-//             d="M 8,105 C 45,95 65,58 92,68 C 119,78 104,40 133,32 C 162,24 210,20 268,14"
-//             stroke="url(#arrowRainbow)"
-//             strokeWidth="2"
-//             strokeDasharray="5,5"
-//             strokeLinecap="round"
-//             fill="none"
-//             vectorEffect="non-scaling-stroke"
-//           />
-//           <path
-//             d="M 260,6 L 272,16 L 262,24"
-//             stroke="#0081C8"
-//             strokeWidth="2"
-//             strokeLinecap="round"
-//             strokeLinejoin="round"
-//             fill="none"
-//             vectorEffect="non-scaling-stroke"
-//           />
-//         </svg>
-//       </div>
-//     </div>
-//   );
-// }
 
 // ─── Detail row ───────────────────────────────────────────────────────────────
 function QRSection({ value }: { value: string }) {
@@ -235,8 +111,6 @@ function QRSection({ value }: { value: string }) {
         </div>
       </div>
 
-      {/* ── ĐÃ FIX CHỨT ĐIỂM: Mũi tên vươn dài, đầu V khóa chặt trỏ thẳng góc 1h ── */}
-      {/* ── ĐÃ FIX: Giữ nguyên góc chuẩn 1h nhưng lùi mũi tên lại để tạo khoảng hở với QR ── */}
       <div
         className="hidden xl:block absolute pointer-events-none"
         style={{
@@ -376,33 +250,7 @@ export function ProjectDetailPage() {
     `https://youthorgunion.org/projects/${project.id}`;
 
   return (
-    <div className="bg-white min-h-screen relative overflow-hidden">
-      {/* Decorative ellipses */}
-      <div
-        className="absolute pointer-events-none rounded-full"
-        style={{
-          top: "-23px",
-          left: "-258px",
-          width: "963px",
-          height: "166px",
-          background: "#2980B9",
-          filter: "blur(600px)",
-          opacity: 0.43,
-        }}
-      />
-      <div
-        className="absolute pointer-events-none rounded-full"
-        style={{
-          top: "-46px",
-          left: "1354px",
-          width: "570px",
-          height: "205px",
-          background: "#EE334E",
-          filter: "blur(600px)",
-          opacity: 0.43,
-        }}
-      />
-
+    <div>
       {/* ── Hero: title (left) + QR section (right) ── */}
       <div className="pt-10 lg:pt-[120px] px-4 sm:px-8 lg:px-[90px] flex flex-col xl:flex-row items-start xl:justify-between gap-8 xl:gap-10">
         {/* Left — title + meta + SDG tags */}
@@ -433,21 +281,16 @@ export function ProjectDetailPage() {
             </p>
             <div className="flex flex-wrap gap-2">
               {project.focusSdgs.map((sdgId) => (
-                <span
+                <SDGTag
                   key={sdgId}
-                  className="inline-block text-white transition-transform duration-200 hover:scale-105"
+                  sdgId={sdgId}
+                  size="md"
+                  className="transition-transform duration-200 hover:scale-105"
                   style={{
-                    background: "#55B4F3",
-                    borderRadius: "124px",
-                    padding: "clamp(4px,0.42vw,8px) clamp(10px,1.04vw,20px)",
-                    fontFamily: "Open Sans, sans-serif",
-                    fontWeight: 500,
+                    padding: "clamp(6px,0.5vw,10px) clamp(12px,1.25vw,24px)",
                     fontSize: "clamp(0.75rem, 1.04vw, 1.25rem)",
-                    lineHeight: "140%",
                   }}
-                >
-                  #SDG{sdgId}
-                </span>
+                />
               ))}
             </div>
           </div>
@@ -574,20 +417,12 @@ export function ProjectDetailPage() {
             <DetailRow label="Focus SDGs">
               <div className="flex flex-wrap gap-2">
                 {project.focusSdgs.map((sdgId) => (
-                  <span
+                  <SDGTag
                     key={sdgId}
-                    className="inline-block text-white"
-                    style={{
-                      background: "#55B4F3",
-                      borderRadius: "124px",
-                      padding: "6px 16px",
-                      fontFamily: "Open Sans, sans-serif",
-                      fontWeight: 500,
-                      fontSize: "clamp(0.75rem, 1.04vw, 1.25rem)",
-                    }}
-                  >
-                    #SDG{sdgId}
-                  </span>
+                    sdgId={sdgId}
+                    size="md"
+                    className="!py-1.5 !px-4"
+                  />
                 ))}
               </div>
             </DetailRow>

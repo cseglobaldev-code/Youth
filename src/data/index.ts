@@ -1,7 +1,7 @@
 export { MEMBERS_DATA } from './members';
 export { PROJECTS_DATA } from './projects';
 export { DOCUMENTS_DATA } from './documents';
-export { TEAM_DATA } from './team';
+export { TEAM_DATA, EXECUTIVE_LEADERSHIP } from './team';
 export { SDGS_DATA } from './sdgs';
 export { NEWS_DATA } from './news';
 export { STATS_DATA } from './stats';
