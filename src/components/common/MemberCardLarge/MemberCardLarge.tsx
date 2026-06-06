@@ -1,30 +1,37 @@
 import { Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
+import { SDGTag } from '@/components/ui/SDGTag';
 import { cn } from '@/lib/utils';
 
 export interface MemberCardLargeProps {
-  name: string;
-  country: string;
-  period: string;
-  leader: string;
-  tags: string[];
-  coverUrl: string;
-  logoUrl: string;
+  member: {
+    name: string;
+    country: string;
+    period?: string;
+    leader?: string;
+    focusSdgs: number[];
+    coverUrl?: string;
+    logoUrl: string;
+  };
   onClick?: () => void;
   className?: string;
 }
 
 export function MemberCardLarge({
-  name,
-  country,
-  period,
-  leader,
-  tags,
-  coverUrl,
-  logoUrl,
+  member,
   onClick,
   className,
 }: MemberCardLargeProps) {
+  const {
+    name,
+    country,
+    period = '2020 → nay',
+    leader = 'TBD',
+    focusSdgs,
+    coverUrl = '',
+    logoUrl = '',
+  } = member;
+
   return (
     <div
       className={cn(
@@ -89,14 +96,15 @@ export function MemberCardLarge({
         </div>
 
         <div className="flex flex-wrap gap-2 mt-auto pt-3">
-          {tags.map((tag) => (
-            <span
-              key={tag}
-              className="bg-[#E3F2FD] text-[#111111] text-[18px] font-medium rounded"
-              style={{ fontFamily: 'Open Sans, sans-serif', padding: '6px 12px' }}
-            >
-              {tag}
-            </span>
+          {focusSdgs.map((sdgId) => (
+            <SDGTag
+              key={sdgId}
+              sdgId={sdgId}
+              variant="solid"
+              size="md"
+              className="!rounded-[6px]"
+              style={{ fontFamily: 'Open Sans, sans-serif' }}
+            />
           ))}
         </div>
       </div>

@@ -14,3 +14,18 @@
     @apply font-sans text-neutral-800 bg-background antialiased;
   }
 }
+
+.member-sort-popover .ant-popover-arrow {
+  display: none;
+}
+
+.member-sort-popover .ant-popover-inner {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.member-sort-popover .ant-popover-inner-content {
+  padding: 0;
+}

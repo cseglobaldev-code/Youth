@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { ViewAllButton } from '@/components/common/ViewAllButton';
-import { MemberCardLarge } from '@/components/common/MemberCard';
+import { MemberCardLarge } from '@/components/common/MemberCardLarge/MemberCardLarge';
 import { ROUTES } from '@/routes/paths';
 
 const MOCK_MEMBER = {
@@ -43,7 +43,18 @@ export function MembersSection() {
       {/* Grid 3 cols × 2 rows */}
       <div className="grid grid-cols-3 gap-6">
         {visibleMembers.map((member) => (
-          <MemberCardLarge key={member.id} member={member} />
+          <MemberCardLarge
+            key={member.id}
+            member={{
+              name: member.name,
+              country: member.country,
+              period: member.period || '2020 → nay',
+              leader: member.leader || 'TBD',
+              focusSdgs: member.focusSdgs,
+              coverUrl: member.coverUrl || '',
+              logoUrl: member.logoUrl,
+            }}
+          />
         ))}
       </div>
 
