@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Button, Empty } from 'antd';
+import { Empty } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { DocumentRow } from '@/components/common/DocumentRow';
@@ -9,8 +9,8 @@ import type { DocCategory } from '@/types';
 
 const CATEGORIES: { key: DocCategory | 'all'; label: string }[] = [
   { key: 'all', label: 'All Documents' },
-  { key: 'governance', label: 'Governance' },
-  { key: 'membership', label: 'Membership' },
+  { key: 'governance', label: 'Governance Documents' },
+  { key: 'membership', label: 'Membership Documents' },
   { key: 'annual-reports', label: 'Annual Reports' },
 ];
 
@@ -29,34 +29,41 @@ export function PolicyDocumentsPage() {
     <div className="py-section-sm lg:py-section">
       <Container>
         <SectionHeading
-          eyebrow="Resources"
           title="Policy & Documents"
-          description="Access governance documents, membership guides, and annual reports."
+          description="All official Y.O.U governance documents, membership agreements, policy frameworks, and annual reports are available here for full transparency."
         />
 
-        <div className="grid lg:grid-cols-[240px_1fr] gap-8">
+        <div className="grid lg:grid-cols-[260px_1fr] gap-10 lg:gap-16 mt-4">
           {/* Sidebar */}
-          <aside className="space-y-1">
-            {CATEGORIES.map((cat) => (
-              <Button
-                key={cat.key}
-                type="text"
-                block
-                onClick={() => setActiveCategory(cat.key)}
-                className={cn(
-                  '!w-full !text-left !px-4 !py-2.5 !rounded-lg !text-sm !font-medium !h-auto !justify-start',
-                  activeCategory === cat.key
-                    ? '!bg-brand-50 !text-brand'
-                    : '!text-neutral-600 hover:!bg-neutral-50'
-                )}
-              >
-                {cat.label}
-              </Button>
-            ))}
+          <aside className="flex flex-col gap-1">
+            {CATEGORIES.map((cat) => {
+              const active = activeCategory === cat.key;
+              return (
+                <button
+                  key={cat.key}
+                  type="button"
+                  onClick={() => setActiveCategory(cat.key)}
+                  className={cn(
+                    'group flex items-center gap-3 text-left py-2.5 text-base font-semibold transition-colors',
+                    active ? 'text-brand' : 'text-neutral-700 hover:text-brand'
+                  )}
+                >
+                  <span
+                    className={cn(
+                      'h-0.5 rounded-full transition-all duration-200',
+                      active
+                        ? 'w-6 bg-brand'
+                        : 'w-0 bg-brand group-hover:w-6'
+                    )}
+                  />
+                  {cat.label}
+                </button>
+              );
+            })}
           </aside>
 
           {/* Document list */}
-          <div className="space-y-3">
+          <div className="divide-y divide-neutral-200">
             {filteredDocs.map((doc) => (
               <DocumentRow key={doc.id} document={doc} />
             ))}

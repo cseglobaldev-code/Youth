@@ -13,6 +13,7 @@ export const ICONS = {
   chevronDown: 'lucide:chevron-down',
   arrowRight: 'lucide:arrow-right',
   arrowLeft: 'lucide:arrow-left',
+  arrowUpRight: 'lucide:arrow-up-right',
   externalLink: 'lucide:external-link',
 
   // Actions
