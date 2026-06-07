@@ -53,7 +53,7 @@ export function JoinSection() {
           <ul className="space-y-3 mb-8 flex-1">
             {ORG_BENEFITS.map((benefit) => (
               <li key={benefit} className="flex items-center gap-3 text-[20px] font-medium text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                <img src="/group.svg" alt="" className="w-5 h-5" aria-hidden="true" />
+                <img src="/images/common/decor/group.svg" alt="" className="w-5 h-5" aria-hidden="true" />
                 {benefit}
               </li>
             ))}
@@ -79,7 +79,7 @@ export function JoinSection() {
           <ul className="space-y-3 mb-8 flex-1">
             {INDIVIDUAL_BENEFITS.map((benefit) => (
               <li key={benefit} className="flex items-center gap-3 text-[20px] font-medium text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                <img src="/group.svg" alt="" className="w-5 h-5" aria-hidden="true" />
+                <img src="/images/common/decor/group.svg" alt="" className="w-5 h-5" aria-hidden="true" />
                 {benefit}
               </li>
             ))}

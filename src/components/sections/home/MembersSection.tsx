@@ -11,16 +11,16 @@ const MOCK_MEMBER = {
   period: '2021 → nay',
   leader: 'Maria Santos',
   focusSdgs: [1, 4, 8],
-  coverUrl: '/cover-image1.png',
-  logoUrl: '/small-logo1.png',
+  coverUrl: '/images/members/covers/cover-image1.png',
+  logoUrl: '/images/members/logos/small-logo1.png',
 };
 
 // Render 30 cards from mock data
 const MEMBERS = Array.from({ length: 30 }, (_, i) => ({
   ...MOCK_MEMBER,
   id: `member-${i + 1}`,
-  coverUrl: i % 3 === 0 ? '/cover-image1.png' : i % 3 === 1 ? '/cover-image2.png' : '/cover-image3.png',
-  logoUrl: i % 3 === 0 ? '/small-logo1.png' : i % 3 === 1 ? '/small-logo2.png' : '/small-logo3.png',
+  coverUrl: i % 3 === 0 ? '/images/members/covers/cover-image1.png' : i % 3 === 1 ? '/images/members/covers/cover-image2.png' : '/images/members/covers/cover-image3.png',
+  logoUrl: i % 3 === 0 ? '/images/members/logos/small-logo1.png' : i % 3 === 1 ? '/images/members/logos/small-logo2.png' : '/images/members/logos/small-logo3.png',
   name: i % 3 === 0 ? 'YouthBridge PH' : i % 3 === 1 ? 'CSE Global' : 'Future Leaders Kenya',
 }));
 

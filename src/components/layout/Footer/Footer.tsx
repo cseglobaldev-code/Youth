@@ -19,7 +19,7 @@ export function Footer({ className }: FooterProps) {
           <div>
             <Link to={ROUTES.HOME} aria-label="Y.O.U Home">
               <img
-                src="/footer-logo.svg"
+                src="/images/common/brand/footer-logo.svg"
                 alt="Youth Organization Union"
                 className="w-[225px] h-[100px] object-contain"
               />

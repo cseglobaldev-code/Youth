@@ -38,13 +38,13 @@ export function HeroSection() {
         ) : (
           <Button type="text" className="!absolute !inset-0 !flex !items-center !justify-center !w-full !h-full !rounded-none !h-auto group" onClick={() => setPlaying(true)} aria-label="Play video">
             <img
-              src="/hero-video.png"
+              src="/images/home/hero/hero-video.png"
               alt="Youth collaboration"
               className="w-full h-full object-cover"
               loading="eager"
             />
             <span className="absolute inset-0 flex items-center justify-center">
-              <img src="/play-video.svg" alt="Play" className="w-[113px] h-[113px] drop-shadow-lg group-hover:scale-105 transition-transform" />
+              <img src="/images/home/hero/play-video.svg" alt="Play" className="w-[113px] h-[113px] drop-shadow-lg group-hover:scale-105 transition-transform" />
             </span>
           </Button>
         )}

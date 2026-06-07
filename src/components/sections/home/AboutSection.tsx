@@ -34,7 +34,7 @@ export function AboutSection() {
             {/* Left: SDG logo */}
             <div className="flex-shrink-0">
               <Image
-                src="/sdg-goals-logo.png"
+                src="/images/home/about/sdg-goals-logo.png"
                 alt="UN Sustainable Development Goals"
                 preview={false}
                 className="h-[87px] w-auto object-contain"
@@ -110,7 +110,7 @@ export function AboutSection() {
                   label: (
                     <div className="flex items-start gap-5 py-3">
                       <div className="w-[48px] h-[48px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: item.color }}>
-                        <img src="/group.svg" alt="" className="w-[30px] h-[30px] object-contain" aria-hidden="true" />
+                        <img src="/images/common/decor/group.svg" alt="" className="w-[30px] h-[30px] object-contain" aria-hidden="true" />
                       </div>
                       <h4 className="font-semibold text-[#111111] text-[28px]">{item.title}</h4>
                     </div>
@@ -126,7 +126,7 @@ export function AboutSection() {
             <div className="flex-shrink-0 w-full lg:w-[702px]">
               <div className="rounded-2xl overflow-hidden aspect-[702/513] relative">
                 <Image
-                  src="/about-image.png"
+                  src="/images/home/about/about-image.png"
                   alt="Youth leaders"
                   preview={false}
                   className="w-full h-full object-cover"
@@ -136,7 +136,7 @@ export function AboutSection() {
                 {/* Logo overlay */}
                 <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
                   <img
-                    src="/group.svg"
+                    src="/images/common/decor/group.svg"
                     alt=""
                     aria-hidden="true"
                     className="w-[18%] h-auto object-contain opacity-20"

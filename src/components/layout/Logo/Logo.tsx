@@ -13,7 +13,7 @@ export function Logo({ variant = 'full', to = ROUTES.HOME, className, invert = f
   return (
     <Link to={to} className={cn('inline-flex items-center', className)} aria-label="Y.O.U Home">
       <img
-        src="/logo.svg"
+        src="/images/common/brand/logo.svg"
         alt="Y.O.U"
         className={cn(
           'w-auto object-contain',

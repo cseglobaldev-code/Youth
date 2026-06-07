@@ -67,7 +67,7 @@ export function CTABanner({
           <div className="flex items-center gap-[22px] flex-shrink-0">
             {!hideStar && (
               <img
-                src="/start.svg"
+                src="/images/common/decor/start.svg"
                 alt=""
                 aria-hidden="true"
                 className="w-[120px] h-[120px] opacity-90 pointer-events-none"

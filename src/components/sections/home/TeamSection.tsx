@@ -4,17 +4,17 @@ import { ViewAllButton } from '@/components/common/ViewAllButton';
 import { ROUTES } from '@/routes/paths';
 
 const LEADERS = [
-  { id: 'leader-1', name: 'Minh Anh Nguyen', role: 'President & Chair', imageUrl: '/leadershi1p.png' },
-  { id: 'leader-2', name: 'Safeen H. Mohammed', role: 'Vice President', imageUrl: '/leadership2.png' },
-  { id: 'leader-3', name: 'Muhammad Younas', role: 'Secretary General', imageUrl: '/leadership3.png' },
+  { id: 'leader-1', name: 'Minh Anh Nguyen', role: 'President & Chair', imageUrl: '/images/home/team/leadershi1p.png' },
+  { id: 'leader-2', name: 'Safeen H. Mohammed', role: 'Vice President', imageUrl: '/images/home/team/leadership2.png' },
+  { id: 'leader-3', name: 'Muhammad Younas', role: 'Secretary General', imageUrl: '/images/home/team/leadership3.png' },
 ];
 
 const DIRECTORS = [
-  { id: 'dir-1', name: 'Sophie Martin', role: 'Continental Director', imageUrl: '/directors1.png' },
-  { id: 'dir-2', name: 'Yuki Tanaka', role: 'Continental Director', imageUrl: '/directors2.png' },
-  { id: 'dir-3', name: 'Sarah Johnson', role: 'Continental Director', imageUrl: '/directors3.png' },
-  { id: 'dir-4', name: 'Amara Okafor', role: 'Continental Director', imageUrl: '/directors4.png' },
-  { id: 'dir-5', name: 'Hans Mueller', role: 'Continental Director', imageUrl: '/directors1.png' },
+  { id: 'dir-1', name: 'Sophie Martin', role: 'Continental Director', imageUrl: '/images/home/team/directors1.png' },
+  { id: 'dir-2', name: 'Yuki Tanaka', role: 'Continental Director', imageUrl: '/images/home/team/directors2.png' },
+  { id: 'dir-3', name: 'Sarah Johnson', role: 'Continental Director', imageUrl: '/images/home/team/directors3.png' },
+  { id: 'dir-4', name: 'Amara Okafor', role: 'Continental Director', imageUrl: '/images/home/team/directors4.png' },
+  { id: 'dir-5', name: 'Hans Mueller', role: 'Continental Director', imageUrl: '/images/home/team/directors1.png' },
 ];
 
 export function TeamSection() {
