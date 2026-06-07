@@ -11,7 +11,7 @@ const NEWS_DATA = [
     location: 'Asia, Africa',
     author: 'Maria Santos',
     period: '2021 → nay',
-    imageUrl: '/image-new.png',
+    imageUrl: '/images/home/news/image-new.png',
   },
   {
     id: 'news-2',
@@ -19,7 +19,7 @@ const NEWS_DATA = [
     description: 'The agenda included welcoming remarks, institutional presentations, discussions on future collaboration opportunities.',
     location: 'Asia, Africa',
     author: 'Maria Santos',
-    imageUrl: '/image-new1.png',
+    imageUrl: '/images/home/news/image-new1.png',
   },
   {
     id: 'news-3',
@@ -27,7 +27,7 @@ const NEWS_DATA = [
     description: 'On Friday, 15 May 2026, ASEAN Youth Organization (AYO), through the implementation of the AI Ready ASEAN Program.',
     location: 'Asia, Africa',
     author: 'Maria Santos',
-    imageUrl: '/image-new2.png',
+    imageUrl: '/images/home/news/image-new2.png',
   },
   {
     id: 'news-4',
@@ -35,7 +35,7 @@ const NEWS_DATA = [
     description: 'Rangsit University on 15 May 2026 to strengthen collaboration in AI literacy and youth empowerment.',
     location: 'Asia, Africa',
     author: 'Maria Santos',
-    imageUrl: '/image-new3.png',
+    imageUrl: '/images/home/news/image-new3.png',
   },
   {
     id: 'news-5',
@@ -43,7 +43,7 @@ const NEWS_DATA = [
     description: 'ASEAN Youth Organization, through the AI Ready ASEAN program, officially signed a Memorandum of Understanding (MoU).',
     location: 'Asia, Africa',
     author: 'Maria Santos',
-    imageUrl: '/image-new4.png',
+    imageUrl: '/images/home/news/image-new4.png',
   },
 ];
 
