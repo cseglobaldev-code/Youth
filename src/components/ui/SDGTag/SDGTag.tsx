@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
-import { tokens } from '@/config/theme/tokens';
 import { Tag } from 'antd';
+import { getSdgColor } from './getSdgColor';
 
 export interface SDGTagProps {
   sdgId: number;
@@ -8,11 +8,6 @@ export interface SDGTagProps {
   size?: 'sm' | 'md';
   className?: string;
   style?: React.CSSProperties;
-}
-
-export function getSdgColor(sdgId: number): string {
-  const colors = tokens.colors.sdg;
-  return colors[sdgId as keyof typeof colors] ?? '#64748B';
 }
 
 export function SDGTag({ sdgId, variant = 'soft', size = 'sm', className, style: customStyle }: SDGTagProps) {

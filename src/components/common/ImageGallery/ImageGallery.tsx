@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Image } from 'antd';
 import { cn } from '@/lib/utils';
 import type { GalleryImage } from '@/types';
+import { computeGalleryLayout } from './computeGalleryLayout';
 
 export interface ImageGalleryProps {
   images: GalleryImage[];
@@ -9,12 +10,6 @@ export interface ImageGalleryProps {
   columns?: number;
   variant?: 'grid' | 'featured';
   className?: string;
-}
-
-export function computeGalleryLayout(images: GalleryImage[], maxVisible: number) {
-  const visibleCount = Math.min(images.length, maxVisible);
-  const overflow = images.length > maxVisible ? images.length - maxVisible : 0;
-  return { visibleCount, overflow };
 }
 
 export function ImageGallery({ images, maxVisible = 6, columns = 3, variant = 'grid', className }: ImageGalleryProps) {

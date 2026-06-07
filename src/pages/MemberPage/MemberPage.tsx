@@ -3,7 +3,6 @@ import { useState, useMemo } from 'react';
 import { Empty, Input, Popover } from 'antd';
 import { SearchOutlined, DownOutlined, CheckOutlined } from '@ant-design/icons';
 import { Container } from '@/components/ui/Container';
-import { SectionHeading } from '@/components/common/SectionHeading';
 import { MemberCardLarge } from '@/components/common/MemberCardLarge/MemberCardLarge';
 import { Pagination } from '@/components/common/Pagination';
 import { CTABanner } from '@/components/common/CTABanner';
@@ -125,12 +124,30 @@ export function MemberPage() {
   return (
     <div className="py-section-sm lg:py-section">
       <Container>
-        <SectionHeading
-          eyebrow=""
-          title="Member of Organizations"
-          description="Explore all organizations in the Y.O.U alliance. Each member profile highlights local leadership, mission focus, and SDG-aligned initiatives across regions."
-          align="center"
-        />
+        <div className="mx-auto mb-10 flex max-w-[1120px] flex-col items-center gap-[24px] text-center">
+          <h2
+            className="font-semibold text-black"
+            style={{
+              fontSize: 'clamp(2.5rem, 4.17vw, 80px)',
+              lineHeight: '110%',
+              fontFamily: 'Open Sans, sans-serif',
+            }}
+          >
+            Member of{' '}
+            <span
+              className="bg-clip-text text-transparent"
+              style={{
+                backgroundImage:
+                  'linear-gradient(90deg, #EE334E 0%, #FCB131 33%, #00A651 67%, #0081C8 100%)',
+              }}
+            >
+              Organizations
+            </span>
+          </h2>
+          <p className="text-center text-[26px] leading-[140%] text-black">
+            Explore all organizations in the Y.O.U alliance. Each member profile highlights local leadership, mission focus, and SDG-aligned initiatives across regions.
+          </p>
+        </div>
 
         <div className="mb-12 flex flex-col items-start gap-4 md:flex-row md:items-center">
           <Input

@@ -66,4 +66,3 @@ _bmad-output/
 .wrangler
 .dev.vars*
 !.dev.vars.example
-. wrangler.jsonc

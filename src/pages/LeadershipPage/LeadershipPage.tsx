@@ -72,7 +72,7 @@ export function LeadershipPage() {
                 <span
                   className="font-semibold text-black"
                   style={{
-                    fontSize: 'clamp(2.5rem, 4.17vw, 5rem)',
+                    fontSize: 'clamp(2.5rem, 4.17vw, 80px)',
                     lineHeight: '110%',
                     fontFamily: 'Open Sans, sans-serif',
                   }}
@@ -82,7 +82,7 @@ export function LeadershipPage() {
                 <span
                   className="font-semibold bg-clip-text text-transparent"
                   style={{
-                    fontSize: 'clamp(2.5rem, 4.17vw, 5rem)',
+                    fontSize: 'clamp(2.5rem, 4.17vw, 80px)',
                     lineHeight: '110%',
                     fontFamily: 'Open Sans, sans-serif',
                     backgroundImage: HERO_GRADIENT,
@@ -94,12 +94,12 @@ export function LeadershipPage() {
 
               {/* Description — fixed width 1120px in Figma → max-w here */}
               <p
-                className="font-normal text-black text-center"
+                className="text-center font-normal text-black"
                 style={{
-                  fontSize: 'clamp(1rem, 1.35vw, 1.625rem)',
+                  fontSize: '26px',
                   lineHeight: '140%',
                   fontFamily: 'Open Sans, sans-serif',
-                  maxWidth: '780px',
+                  maxWidth: '1120px',
                 }}
               >
                 Youth Organization Union brings together youth-led organizations across continents
