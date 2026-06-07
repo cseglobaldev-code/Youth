@@ -7,7 +7,7 @@ import { MemberCardLarge } from '@/components/common/MemberCardLarge/MemberCardL
 import { Pagination } from '@/components/common/Pagination';
 import { CTABanner } from '@/components/common/CTABanner';
 import { ROUTES } from '@/routes/paths';
-import { usePagination } from '@/hooks';
+import { usePagination, useJoinNavigation } from '@/hooks';
 
 
 const MOCK_MEMBER = {
@@ -41,6 +41,7 @@ const SORT_OPTIONS = [
 
 export function MemberPage() {
   const navigate = useNavigate();
+  const goToJoin = useJoinNavigation();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
@@ -215,6 +216,7 @@ export function MemberPage() {
         title="Ready to Make an Impact?"
         description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
         ctaLabel="Register Now"
+        onCtaClick={goToJoin}
       />
     </div>
   );

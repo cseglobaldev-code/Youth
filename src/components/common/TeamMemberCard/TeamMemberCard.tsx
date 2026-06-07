@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { Icon } from '@/components/ui/Icon';
-import { ICONS } from '@/config/icons';
+import { ICONS, SOCIAL_COLORS } from '@/config/icons';
 import type { TeamMember } from '@/types';
 
 export interface TeamMemberCardProps {
@@ -18,28 +18,27 @@ function getInitials(name: string) {
 }
 
 export function TeamMemberCard({ member, avatarSize = 'xl', className }: TeamMemberCardProps) {
-  const px = sizeMap[avatarSize] ?? 80;
+  const px = Math.min(sizeMap[avatarSize] ?? 80, 180);
   const hasSocial = member.socialLinks && member.socialLinks.length > 0;
-
-  // Icon row: 3 icons × 40px + 2 × 8px gap = 136px wide
-  // Centered: left = (px - 136) / 2 (may be negative for small avatars → use 50% + transform)
-  // Bottom: same proportion as exec card (33px in 240px) → scaled
-  const iconBottom = Math.round(33 * (px / 240));
 
   return (
     <div className={cn('flex flex-col items-center text-center p-4', className)}>
-      {/* ── Circular avatar with hover overlay + social icons ── */}
+      {/*
+        Circular avatar — hover darkens the photo (brightness-50) and fades in
+        brand-colored social icons from the bottom. Matches the homepage
+        TeamSection so hover is consistent across the app.
+      */}
       <div
         className="relative flex-shrink-0 group cursor-pointer mx-auto"
-        style={{ width: Math.min(px, 180), height: Math.min(px, 180), maxWidth: '100%' }}
+        style={{ width: px, height: px, maxWidth: '100%' }}
       >
         {/* Photo */}
-        <div className="w-full h-full rounded-full overflow-hidden bg-[#EEEEEE]">
+        <div className="w-full h-full rounded-full overflow-hidden border-4 border-neutral-200 bg-[#EEEEEE]">
           {member.avatarUrl ? (
             <img
               src={member.avatarUrl}
               alt={member.name}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center font-semibold text-neutral-600">
@@ -48,16 +47,10 @@ export function TeamMemberCard({ member, avatarSize = 'xl', className }: TeamMem
           )}
         </div>
 
-        {/* Dark overlay on hover */}
-        <div className="absolute inset-0 rounded-full bg-black opacity-0 group-hover:opacity-30 transition-opacity duration-300 pointer-events-none" />
-
-        {/* Social icons — appear at bottom on hover */}
+        {/* Social icons — appear at bottom on hover (only for larger avatars) */}
         {hasSocial && px >= 120 && (
-          <div
-            className="absolute"
-            style={{ bottom: iconBottom, left: '50%', transform: 'translateX(-50%)' }}
-          >
-            <div className="flex flex-row gap-[8px] opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+          <div className="absolute inset-0 flex items-end justify-center pb-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <div className="flex gap-2">
               {member.socialLinks!.map((link) => (
                 <a
                   key={link.platform}
@@ -66,9 +59,9 @@ export function TeamMemberCard({ member, avatarSize = 'xl', className }: TeamMem
                   rel="noopener noreferrer"
                   aria-label={link.platform}
                   onClick={(e) => e.stopPropagation()}
-                  className="w-[40px] h-[40px] bg-white rounded-[20px] flex items-center justify-center hover:bg-gray-50 transition-colors"
+                  className="w-7 h-7 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform"
                 >
-                  <Icon name={ICONS[link.platform]} size={24} className="text-black" />
+                  <Icon name={ICONS[link.platform]} size={14} color={SOCIAL_COLORS[link.platform]} />
                 </a>
               ))}
             </div>

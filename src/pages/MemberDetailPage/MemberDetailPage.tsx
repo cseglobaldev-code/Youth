@@ -8,9 +8,11 @@ import { SupportQRCode } from '@/components/common/SupportQRCode';
 import { CTABanner } from '@/components/common/CTABanner';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { MEMBERS_DATA, PROJECTS_DATA } from '@/data';
+import { useJoinNavigation } from '@/hooks';
 
 export function MemberDetailPage() {
   const { memberId } = useParams<{ memberId: string }>();
+  const goToJoin = useJoinNavigation();
   const member = MEMBERS_DATA.find((m) => m.id === memberId);
 
   if (!member) {
@@ -125,6 +127,7 @@ export function MemberDetailPage() {
         title="Ready to Make an Impact?"
         description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
         ctaLabel="Register Now"
+        onCtaClick={goToJoin}
       />
     </div>
   );

@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { Logo } from '@/components/layout/Logo';
 import { Icon } from '@/components/ui/Icon';
 import { ICONS } from '@/config/icons';
-import { useDisclosure } from '@/hooks';
+import { useDisclosure, useJoinNavigation } from '@/hooks';
 import { NAV_ITEMS } from '@/data';
 import type { NavItem } from '@/types';
 
@@ -17,6 +17,12 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
   const items = navItems ?? NAV_ITEMS;
   const { pathname } = useLocation();
   const { isOpen, open, close } = useDisclosure();
+  const goToJoin = useJoinNavigation();
+
+  const handleJoinClick = () => {
+    close();
+    goToJoin();
+  };
 
   return (
     <header
@@ -71,6 +77,7 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
         <div className="mt-6 pt-4 border-t border-neutral-100">
           <button
             type="button"
+            onClick={handleJoinClick}
             className="w-full px-5 py-3 bg-[#EE334E] text-white text-[16px] font-semibold rounded-full hover:opacity-90 transition-opacity"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >

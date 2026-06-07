@@ -1,17 +1,15 @@
 import { CTABanner } from '@/components/common/CTABanner';
+import { useJoinNavigation } from '@/hooks';
 
 export function CTASection() {
-  const handleClick = () => {
-    const el = document.getElementById('join-section');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
+  const goToJoin = useJoinNavigation();
 
   return (
     <CTABanner
       title="Ready to Make an Impact?"
       description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
       ctaLabel="Register Now"
-      onCtaClick={handleClick}
+      onCtaClick={goToJoin}
     />
   );
 }

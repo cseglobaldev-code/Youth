@@ -3,17 +3,9 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/layout/Logo';
 import { Icon } from '@/components/ui/Icon';
+import { useJoinNavigation } from '@/hooks';
 import { NAV_ITEMS } from '@/data';
 import type { NavItem } from '@/types';
-
-function scrollToJoinSection() {
-  const el = document.getElementById('join-section');
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth' });
-  } else {
-    window.location.href = '/#join-section';
-  }
-}
 
 interface HeaderDesktopProps {
   navItems?: NavItem[];
@@ -23,6 +15,7 @@ interface HeaderDesktopProps {
 export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
   const items = navItems ?? NAV_ITEMS;
   const { pathname } = useLocation();
+  const goToJoin = useJoinNavigation();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -69,7 +62,7 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
         <div className="flex items-center gap-6 flex-shrink-0">
           <button
             type="button"
-            onClick={scrollToJoinSection}
+            onClick={goToJoin}
             className="px-[28px] py-3 bg-[#EE334E] text-white text-[18px] font-semibold rounded-full hover:opacity-90 active:scale-[0.98] transition-all duration-200 whitespace-nowrap"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >

@@ -1,3 +1,5 @@
+import type { SocialPlatform } from '@/types/common';
+
 /**
  * Semantic icon mapping — single source of truth for all icons used in the app.
  * Uses @iconify/react format: 'collection:icon-name'
@@ -53,3 +55,16 @@ export const ICONS = {
 } as const;
 
 export type IconName = keyof typeof ICONS;
+
+/**
+ * Brand colors for social glyphs (e.g. avatar hover icons). Mirrors the
+ * homepage TeamSection so hover styling is consistent across the app.
+ */
+export const SOCIAL_COLORS: Record<SocialPlatform, string> = {
+  youtube: '#FF0000',
+  facebook: '#1877F2',
+  twitter: '#1DA1F2',
+  instagram: '#E4405F',
+  linkedin: '#0A66C2',
+  tiktok: '#111111',
+};

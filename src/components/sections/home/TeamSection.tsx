@@ -2,20 +2,11 @@ import { Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { ViewAllButton } from '@/components/common/ViewAllButton';
 import { ROUTES } from '@/routes/paths';
+import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data';
 
-const LEADERS = [
-  { id: 'leader-1', name: 'Minh Anh Nguyen', role: 'President & Chair', imageUrl: '/images/home/team/leadershi1p.png' },
-  { id: 'leader-2', name: 'Safeen H. Mohammed', role: 'Vice President', imageUrl: '/images/home/team/leadership2.png' },
-  { id: 'leader-3', name: 'Muhammad Younas', role: 'Secretary General', imageUrl: '/images/home/team/leadership3.png' },
-];
-
-const DIRECTORS = [
-  { id: 'dir-1', name: 'Sophie Martin', role: 'Continental Director', imageUrl: '/images/home/team/directors1.png' },
-  { id: 'dir-2', name: 'Yuki Tanaka', role: 'Continental Director', imageUrl: '/images/home/team/directors2.png' },
-  { id: 'dir-3', name: 'Sarah Johnson', role: 'Continental Director', imageUrl: '/images/home/team/directors3.png' },
-  { id: 'dir-4', name: 'Amara Okafor', role: 'Continental Director', imageUrl: '/images/home/team/directors4.png' },
-  { id: 'dir-5', name: 'Hans Mueller', role: 'Continental Director', imageUrl: '/images/home/team/directors1.png' },
-];
+// Single source of truth (see src/data/team.ts) — shared with the /leadership page.
+const LEADERS = EXECUTIVE_LEADERSHIP;
+const DIRECTORS = TEAM_DATA;
 
 export function TeamSection() {
   return (
@@ -35,7 +26,7 @@ export function TeamSection() {
         {LEADERS.map((leader) => (
           <div key={leader.id} className="flex flex-col items-center">
             <div className="w-[240px] h-[240px] rounded-full overflow-hidden border-4 border-neutral-200 mb-4 relative group cursor-pointer">
-              <Image src={leader.imageUrl} alt={leader.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
+              <Image src={leader.avatarUrl} alt={leader.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
               <div className="absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="flex gap-3">
                   <a href="#" className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform">
@@ -74,7 +65,7 @@ export function TeamSection() {
         {DIRECTORS.map((dir) => (
           <div key={dir.id} className="flex flex-col items-center">
             <div className="w-[180px] h-[180px] rounded-full overflow-hidden border-4 border-neutral-200 mb-3 relative group cursor-pointer">
-              <Image src={dir.imageUrl} alt={dir.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
+              <Image src={dir.avatarUrl} alt={dir.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
               <div className="absolute inset-0 flex items-end justify-center pb-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="flex gap-2">
                   <a href="#" className="w-7 h-7 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform">

@@ -42,7 +42,7 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
         <h3
           className="font-semibold text-[#0F172A] line-clamp-2"
           style={{
-            fontSize: 'clamp(1rem, 1.46vw, 1.75rem)',
+            fontSize: 'clamp(1rem, 1.1vw, 1.25rem)',
             fontFamily: 'Open Sans, sans-serif',
             lineHeight: '140%',
           }}
@@ -53,23 +53,25 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-col gap-[6px] flex-1">
             {/* Led by */}
-            <div className="flex items-start gap-2 flex-wrap">
+            <div className="flex items-baseline gap-1.5 min-w-0">
               <span
+                className="flex-shrink-0"
                 style={{
-                  fontSize: 'clamp(0.75rem, 0.94vw, 1.125rem)',
+                  fontSize: 'clamp(0.75rem, 0.83vw, 0.9375rem)',
                   fontFamily: 'Open Sans, sans-serif',
                   fontWeight: 400,
                   color: '#6B7280',
                   lineHeight: '140%',
-                  marginTop: '2px'
                 }}
               >
                 Led by
               </span>
               {ledBy && (
                 <span
+                  className="truncate"
+                  title={ledBy}
                   style={{
-                    fontSize: 'clamp(0.75rem, 0.94vw, 1.125rem)',
+                    fontSize: 'clamp(0.75rem, 0.83vw, 0.9375rem)',
                     fontFamily: 'Open Sans, sans-serif',
                     fontWeight: 500,
                     color: '#0F172A',
@@ -82,10 +84,11 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
             </div>
 
             {/* Local */}
-            <div className="flex items-start gap-2">
+            <div className="flex items-baseline gap-1.5 min-w-0">
               <span
+                className="flex-shrink-0"
                 style={{
-                  fontSize: 'clamp(0.75rem, 0.94vw, 1.125rem)',
+                  fontSize: 'clamp(0.75rem, 0.83vw, 0.9375rem)',
                   fontFamily: 'Open Sans, sans-serif',
                   fontWeight: 400,
                   color: '#6B7280',
@@ -95,8 +98,9 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
                 Local
               </span>
               <span
+                className="truncate"
                 style={{
-                  fontSize: 'clamp(0.75rem, 0.94vw, 1.125rem)',
+                  fontSize: 'clamp(0.75rem, 0.83vw, 0.9375rem)',
                   fontFamily: 'Open Sans, sans-serif',
                   fontWeight: 400,
                   color: '#000000',
@@ -112,12 +116,12 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
           <Button
             type="text"
             shape="circle"
-            className="!w-8 !h-8 !bg-white !text-[#0F172A] !flex-shrink-0 transition-all duration-200 hover:!bg-[#EE334E] hover:!text-white hover:!scale-110 hover:!shadow-md active:!scale-95 !min-w-0 mt-0.5"
+            className="!w-8 !h-8 !bg-white !text-[#EE334E] !flex-shrink-0 transition-all duration-200 hover:!bg-[#EE334E] hover:!text-white hover:!scale-110 hover:!shadow-md active:!scale-95 !min-w-0 mt-0.5"
             style={{ border: '1px solid #EE334E', padding: 0 }}
             onClick={(e) => { e.stopPropagation(); navigate(ROUTES.PROJECT_DETAIL(project.id)); }}
             aria-label={`View ${project.name}`}
           >
-            <Icon name="mdi:arrow-right" size={16} />
+            <Icon name="mdi:arrow-top-right" size={16} />
           </Button>
         </div>
       </div>

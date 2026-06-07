@@ -6,6 +6,7 @@ import { CTABanner } from '@/components/common/CTABanner';
 import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data';
 import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { useJoinNavigation } from '@/hooks';
 import type { Continent, RegionGroup } from '@/types';
 
 
@@ -32,6 +33,8 @@ const SEPARATOR_GRADIENT =
 export function LeadershipPage() {
   const [activeContinent, setActiveContinent] = useState<Continent>('Asia');
   const [activeRegion, setActiveRegion] = useState<RegionGroup>('East Asia');
+
+  const goToJoin = useJoinNavigation();
 
   const { ref: heroRef, visible: heroVisible } = useScrollReveal(0.05);
   const { ref: execRef, visible: execVisible } = useScrollReveal(0.05);
@@ -279,6 +282,7 @@ export function LeadershipPage() {
           title="Ready to Make an Impact?"
           description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
           ctaLabel="Register Now"
+          onCtaClick={goToJoin}
         />
     </div>
   );
