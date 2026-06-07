@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { useState, useMemo } from 'react';
 import { Empty, Input, Popover } from 'antd';
 import { SearchOutlined, DownOutlined, CheckOutlined } from '@ant-design/icons';
@@ -6,6 +7,7 @@ import { SectionHeading } from '@/components/common/SectionHeading';
 import { MemberCardLarge } from '@/components/common/MemberCardLarge/MemberCardLarge';
 import { Pagination } from '@/components/common/Pagination';
 import { CTABanner } from '@/components/common/CTABanner';
+import { ROUTES } from '@/routes/paths';
 import { usePagination } from '@/hooks';
 
 
@@ -39,6 +41,7 @@ const SORT_OPTIONS = [
 ];
 
 export function MemberPage() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
@@ -86,8 +89,8 @@ export function MemberPage() {
   };
 
   const sortMenu = (
-    <div className="w-[304px] rounded-[10px] bg-white p-[14px] shadow-[0_18px_36px_rgba(0,0,0,0.18)]">
-      <div className="space-y-[8px]">
+    <div className="w-[302px] max-w-[calc(100vw-32px)] bg-transparent p-0 shadow-none">
+      <div className="space-y-[13px]">
         {SORT_OPTIONS.map((option) => {
           const isActive = option.value === sortBy;
 
@@ -97,14 +100,14 @@ export function MemberPage() {
               type="button"
               onClick={() => handleSortChange(option.value)}
               className={[
-                'flex w-full items-center justify-between rounded-[8px] px-[10px] py-[8px] text-left text-[15px] font-normal leading-[1.3] transition',
-                isActive ? 'bg-[#FCEBED] text-[#111111]' : 'bg-transparent text-[#111111] hover:bg-[#F8F8F8]',
+                'flex h-[39px] w-full items-center justify-between rounded-[8px] px-2 text-left text-[15px] font-normal leading-none transition',
+                isActive ? 'bg-[#FCE7EA] text-[#111111]' : 'bg-white text-[#111111] hover:bg-[#F8F8F8]',
               ].join(' ')}
             >
               <span>{option.label}</span>
               <span
                 className={[
-                  'flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border text-[11px]',
+                  'flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border text-[10px]',
                   isActive
                     ? 'border-[#FF4B63] bg-[#FF4B63] text-white'
                     : 'border-[#D7DEEA] bg-white text-transparent',
@@ -143,12 +146,12 @@ export function MemberPage() {
             open={sortMenuOpen}
             onOpenChange={setSortMenuOpen}
             content={sortMenu}
-            placement="bottomLeft"
+            placement="bottom"
             overlayClassName="member-sort-popover"
           >
             <button
               type="button"
-              className="flex h-[48px] w-full max-w-[302px] items-center justify-between rounded-full border border-[#E7E7E7] bg-white px-5 text-[15px] text-[#111111] shadow-none transition hover:bg-white"
+              className="flex h-[48px] w-[302px] max-w-full items-center justify-between rounded-full border border-[#E7E7E7] bg-white px-5 text-[15px] text-[#111111] shadow-none transition hover:bg-white"
             >
               <span>{activeSortLabel}</span>
               <DownOutlined className="text-[14px] text-[#1F2A44]" />
@@ -173,6 +176,7 @@ export function MemberPage() {
                       coverUrl: member.coverUrl || '',
                       logoUrl: member.logoUrl,
                     }}
+                    onClick={() => navigate(ROUTES.MEMBER_DETAIL(member.id))}
                   />
                 </div>
               ))}
