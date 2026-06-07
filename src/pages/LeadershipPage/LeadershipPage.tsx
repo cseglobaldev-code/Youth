@@ -2,11 +2,12 @@ import { useState, useMemo } from 'react';
 import { Container } from '@/components/ui/Container';
 import { ExecutiveCard } from '@/components/common/ExecutiveCard';
 import { TeamMemberCard } from '@/components/common/TeamMemberCard';
+import { CTABanner } from '@/components/common/CTABanner';
 import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data';
 import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
-import { Icon } from '@/components/ui/Icon';
 import type { Continent, RegionGroup } from '@/types';
+
 
 /* ─── constants ─────────────────────────────────────────────────────────── */
 
@@ -271,80 +272,14 @@ export function LeadershipPage() {
                 </p>
               )}
             </div>
-
-            {/* ══════════════════════════════════════════════════
-                5. CTA — Frame 2071857439
-                   row, space-between, center, padding:40px 60px, width:1344
-                   white bg, borderRadius:24px
-                   Rainbow gradient overlay (Rectangle 18, opacity:0.5)
-            ══════════════════════════════════════════════════ */}
-            <div
-              className="relative w-full overflow-hidden bg-white"
-              style={{ borderRadius: '24px', maxWidth: '1344px' }}
-            >
-              {/*
-                Figma: Rectangle 18 with `line` fill (rainbow gradient) at opacity 0.5
-                positioned over white bg → pastel rainbow result.
-                gradient covers the entire card area.
-              */}
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{ background: HERO_GRADIENT, opacity: 0.5 }}
-              />
-
-              <div
-                className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-6"
-                style={{ padding: '40px 60px' }}
-              >
-                {/* Text — column, gap:6px, width:774 */}
-                <div className="flex flex-col gap-[6px]" style={{ maxWidth: '774px' }}>
-                  <h2
-                    className="font-semibold text-black"
-                    style={{
-                      fontSize: 'clamp(1.375rem, 2.08vw, 2.5rem)',
-                      lineHeight: '140%',
-                      fontFamily: 'Open Sans, sans-serif',
-                    }}
-                  >
-                    Ready to Make an Impact?
-                  </h2>
-                  <p
-                    className="text-black"
-                    style={{
-                      fontSize: '20px',
-                      lineHeight: '150%',
-                      fontFamily: 'Open Sans, sans-serif',
-                      maxWidth: '562px',
-                    }}
-                  >
-                    Join thousands of youth leaders across ASEAN who are making a difference in
-                    their communities.
-                  </p>
-                </div>
-
-                {/* Button — white bg, red text, 238×64, rounded-full, gap:10px, px:32px */}
-                <a
-                  href="#"
-                  className="flex-shrink-0 inline-flex items-center justify-center gap-[10px] bg-white rounded-full hover:shadow-md hover:scale-[1.02] transition-all duration-200"
-                  style={{
-                    width: '238px',
-                    height: '64px',
-                    color: '#EE334E',
-                    fontFamily: 'Open Sans, sans-serif',
-                    fontSize: '20px',
-                    fontWeight: 600,
-                    padding: '12px 32px',
-                    border: '1.5px solid rgba(238,51,78,0.2)',
-                  }}
-                >
-                  Register Now
-                  <Icon name="lucide:arrow-right" size={20} />
-                </a>
-              </div>
-            </div>
-
           </div>
         </Container>
+
+        <CTABanner
+          title="Ready to Make an Impact?"
+          description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
+          ctaLabel="Register Now"
+        />
     </div>
   );
 }
