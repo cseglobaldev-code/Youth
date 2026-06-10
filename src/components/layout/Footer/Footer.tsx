@@ -14,24 +14,24 @@ export function Footer({ className }: FooterProps) {
   return (
     <footer className={cn('bg-[#0B1A2B] text-white', className)}>
       <Container>
-        <div className="py-12 lg:py-16 grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 gap-8 py-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-10 lg:py-16">
           {/* Logo + Social */}
-          <div>
+          <div className="flex flex-col items-center text-center sm:items-start sm:text-left">
             <Link to={ROUTES.HOME} aria-label="Y.O.U Home">
               <img
                 src="/images/common/brand/footer-logo.svg"
                 alt="Youth Organization Union"
-                className="w-[225px] h-[100px] object-contain"
+                className="h-auto w-[168px] object-contain sm:w-[190px] lg:w-[225px]"
               />
             </Link>
-            <div className="flex items-center gap-4 mt-6">
+            <div className="mt-5 flex items-center gap-4 sm:mt-6">
               {SOCIAL_LINKS.map((link) => (
                 <a
                   key={link.platform}
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-neutral-400 hover:text-white transition-colors"
+                  className="text-neutral-400 transition-colors hover:text-white"
                   aria-label={link.platform}
                 >
                   <Icon name={ICONS[link.platform]} size={18} />
@@ -41,57 +41,57 @@ export function Footer({ className }: FooterProps) {
           </div>
 
           {/* Information */}
-          <div>
-            <h4 className="text-lg font-medium text-white mb-5">
+          <div className="min-w-0">
+            <h4 className="mb-4 text-base font-medium text-white sm:text-lg lg:mb-5">
               Infomation
             </h4>
-            <div className="flex flex-col gap-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-              <div className="flex items-center gap-3 text-[20px] font-normal text-neutral-300">
-                <Icon name="lucide:map-pin" size={18} className="text-blue-400 shrink-0" />
+            <div className="flex flex-col gap-3 lg:gap-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+              <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
+                <Icon name="lucide:map-pin" size={18} className="mt-0.5 shrink-0 text-blue-400" />
                 <span>Global - Operating across 6 continents</span>
               </div>
-              <div className="flex items-center gap-3 text-[20px] font-normal text-neutral-300">
-                <Icon name="lucide:phone" size={18} className="text-blue-400 shrink-0" />
+              <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
+                <Icon name="lucide:phone" size={18} className="mt-0.5 shrink-0 text-blue-400" />
                 <span>098.242.1109</span>
               </div>
-              <div className="flex items-center gap-3 text-[20px] font-normal text-neutral-300">
-                <Icon name="lucide:mail" size={18} className="text-blue-400 shrink-0" />
-                <span>info@youthorgunion.org</span>
+              <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
+                <Icon name="lucide:mail" size={18} className="mt-0.5 shrink-0 text-blue-400" />
+                <span className="break-all sm:break-normal">info@youthorgunion.org</span>
               </div>
-              <div className="flex items-center gap-3 text-[20px] font-normal text-neutral-300">
-                <Icon name="lucide:calendar" size={18} className="text-blue-400 shrink-0" />
+              <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
+                <Icon name="lucide:calendar" size={18} className="mt-0.5 shrink-0 text-blue-400" />
                 <span>Within 5-7 business days</span>
               </div>
             </div>
           </div>
 
           {/* Discover */}
-          <div>
-            <h4 className="text-lg font-medium text-white mb-5">
+          <div className="sm:col-span-2 lg:col-span-1">
+            <h4 className="mb-4 text-base font-medium text-white sm:text-lg lg:mb-5">
               Discover
             </h4>
-            <nav className="flex flex-col gap-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            <nav className="flex flex-col items-start gap-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               <Link
                 to={ROUTES.HOME}
-                className="text-[20px] font-normal text-white hover:text-[#005D9A] transition-colors"
+                className="text-sm font-normal text-white transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
               >
                 About us
               </Link>
               <Link
                 to={ROUTES.LEADERSHIP}
-                className="text-[20px] font-normal text-white hover:text-[#005D9A] transition-colors"
+                className="text-sm font-normal text-white transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
               >
                 Leadership
               </Link>
               <Link
                 to={ROUTES.MEMBERS}
-                className="text-[20px] font-normal text-white hover:text-[#005D9A] transition-colors"
+                className="text-sm font-normal text-white transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
               >
                 Members
               </Link>
               <Link
                 to={ROUTES.PROJECTS}
-                className="text-[20px] font-normal text-white hover:text-[#005D9A] transition-colors"
+                className="text-sm font-normal text-white transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
               >
                 Projects
               </Link>
@@ -100,15 +100,15 @@ export function Footer({ className }: FooterProps) {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-t border-neutral-700 py-5 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col items-center justify-between gap-3 border-t border-neutral-700 py-5 text-center sm:flex-row sm:text-left">
           <p className="text-xs text-neutral-400">
             © 2026 Youth Organization Union · All rights reserved
           </p>
-          <div className="flex items-center gap-6">
-            <a href="#" className="text-xs text-neutral-400 hover:text-[#005D9A] transition-colors">
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-end lg:gap-6">
+            <a href="#" className="text-xs text-neutral-400 transition-colors hover:text-[#005D9A]">
               Terms of Service
             </a>
-            <a href="#" className="text-xs text-neutral-400 hover:text-[#005D9A] transition-colors">
+            <a href="#" className="text-xs text-neutral-400 transition-colors hover:text-[#005D9A]">
               Privacy Policy
             </a>
           </div>

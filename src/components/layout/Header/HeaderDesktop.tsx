@@ -32,11 +32,11 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
         className
       )}
     >
-      <div className="flex items-center justify-between h-[84px] px-[90px]">
-        <div className="flex items-center gap-[60px]">
-          <Logo />
+      <div className="flex h-[72px] xl:h-[84px] items-center justify-between gap-4 px-6 xl:px-10 2xl:px-[90px]">
+        <div className="flex min-w-0 items-center gap-6 xl:gap-10 2xl:gap-[60px]">
+          <Logo className="flex-shrink-0" />
 
-          <nav className="flex items-center gap-[44px]">
+          <nav className="flex min-w-0 items-center gap-5 xl:gap-8 2xl:gap-[44px]">
             {items.map((item) => {
               const active = pathname === item.path;
               return (
@@ -45,13 +45,13 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
                   to={item.path}
                   style={{ fontFamily: 'Open Sans, sans-serif' }}
                   className={cn(
-                    'relative text-[20px] font-semibold leading-[135%] h-[84px] inline-flex items-center whitespace-nowrap transition-colors hover:text-[#005D9A]',
+                    'relative inline-flex h-[72px] xl:h-[84px] items-center whitespace-nowrap text-[15px] xl:text-[17px] 2xl:text-[20px] font-semibold leading-[135%] transition-colors hover:text-[#005D9A]',
                     active ? 'text-[#005D9A]' : 'text-black'
                   )}
                 >
                   {item.label}
                   {active && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[38px] h-[2px] bg-[#005D9A] rounded-full" />
+                    <span className="absolute bottom-0 left-1/2 h-[2px] w-8 -translate-x-1/2 rounded-full bg-[#005D9A] xl:w-[38px]" />
                   )}
                 </Link>
               );
@@ -59,22 +59,23 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
           </nav>
         </div>
 
-        <div className="flex items-center gap-6 flex-shrink-0">
+        <div className="flex flex-shrink-0 items-center gap-3 xl:gap-5 2xl:gap-6">
           <button
             type="button"
             onClick={goToJoin}
-            className="px-[28px] py-3 bg-[#EE334E] text-white text-[18px] font-semibold rounded-full hover:opacity-90 active:scale-[0.98] transition-all duration-200 whitespace-nowrap"
+            className="whitespace-nowrap rounded-full bg-[#EE334E] px-4 py-2.5 text-[14px] font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98] xl:px-5 xl:text-[16px] 2xl:px-[28px] 2xl:py-3 2xl:text-[18px]"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
-            Join 1500+ Youth Organizations
+            <span className="2xl:hidden">Join 1500+</span>
+            <span className="hidden 2xl:inline">Join 1500+ Youth Organizations</span>
           </button>
 
           <button
             type="button"
-            className="flex items-center gap-[8px] text-[20px] font-medium text-black hover:text-[#005D9A] transition-colors"
+            className="flex items-center gap-1.5 text-[15px] font-medium text-black transition-colors hover:text-[#005D9A] xl:gap-[8px] xl:text-[17px] 2xl:text-[20px]"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
-            <Icon name="lucide:globe" size={20} />
+            <Icon name="lucide:globe" size={18} />
             English
             <Icon name="lucide:chevron-down" size={16} />
           </button>
