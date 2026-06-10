@@ -56,20 +56,20 @@ export function NewsSection() {
     <section className="bg-white py-12 md:py-16 lg:py-[120px]">
       <Container size="wide">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 lg:mb-[40px]">
-          <h2 className="font-semibold text-3xl sm:text-4xl lg:text-[48px] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+        <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">
+          <h2 className="font-semibold text-2xl sm:text-4xl lg:text-[48px] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             Impact Aligned with{' '}
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Global Goals
             </span>
           </h2>
-          <ViewAllButton to={ROUTES.PROJECTS} />
+          <ViewAllButton to={ROUTES.PROJECTS} className="flex-shrink-0 !px-4 !py-1.5 !text-sm sm:!px-6 sm:!py-2.5 sm:!text-[16px]" />
         </div>
 
         {/* Content: featured left + list right */}
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col md:flex-row gap-6 lg:gap-8">
           {/* Left: featured article */}
-          <div className="w-full lg:w-1/2 flex flex-col group cursor-pointer">
+          <div className="w-full md:w-1/2 flex flex-col group cursor-pointer">
             <div className="rounded-2xl overflow-hidden aspect-[652/436] mb-4">
               <Image
                 src={featured.imageUrl}
@@ -109,17 +109,17 @@ export function NewsSection() {
           </div>
 
           {/* Right: news list */}
-          <div className="w-full lg:w-1/2 flex flex-col gap-4">
+          <div className="w-full md:w-1/2 flex flex-col gap-3 lg:gap-4">
             {sideNews.map((news) => (
-              <div key={news.id} className="flex flex-col sm:flex-row gap-4 cursor-pointer hover:bg-neutral-50 rounded-xl transition-colors p-2 group">
-                <div className="w-full sm:w-[200px] h-48 sm:h-[130px] flex-shrink-0 rounded-xl overflow-hidden">
+              <div key={news.id} className="flex flex-row gap-3 lg:gap-4 cursor-pointer hover:bg-neutral-50 rounded-xl transition-colors p-2 group">
+                <div className="w-[96px] sm:w-[140px] lg:w-[200px] h-[72px] sm:h-[96px] lg:h-[130px] flex-shrink-0 rounded-xl overflow-hidden">
                   <Image src={news.imageUrl} alt={news.title} preview={false} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
                 </div>
                 <div className="flex-1 flex flex-col justify-center min-w-0">
-                  <h4 className="font-semibold text-lg lg:text-[20px] text-[#111111] mb-1 line-clamp-1 transition-colors group-hover:text-[#EE334E]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                  <h4 className="font-semibold text-sm sm:text-base lg:text-[20px] text-[#111111] mb-1 line-clamp-1 transition-colors group-hover:text-[#EE334E]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                     {news.title}
                   </h4>
-                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] text-neutral-500" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                  <div className="hidden sm:flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] text-neutral-500" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                     <span className="flex items-center gap-1">
                       <Icon name="mynaui:map-pin" size={14} />
                       {news.location}
@@ -129,7 +129,7 @@ export function NewsSection() {
                       {news.author}
                     </span>
                   </div>
-                  <p className="text-neutral-500 text-[14px] font-normal line-clamp-2 mt-1" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                  <p className="hidden sm:block text-neutral-500 text-[14px] font-normal line-clamp-2 mt-1" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                     {news.description}
                   </p>
                 </div>

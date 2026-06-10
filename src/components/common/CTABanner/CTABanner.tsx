@@ -42,35 +42,35 @@ export function CTABanner({
   const buttonAs = ctaTo ? 'router-link' : ctaHref ? 'a' : 'button';
 
   return (
-    <section className={cn('mx-4 sm:mx-6 lg:mx-8 xl:mx-[288px] my-10 lg:my-[60px]', className)}>
+    <section className={cn('mx-4 sm:mx-6 lg:mx-8 xl:mx-[288px] my-8 sm:my-10 lg:my-[60px]', className)}>
       <div className="rounded-3xl lg:rounded-[40px] overflow-hidden relative" style={{ background: gradient }}>
         {/* White overlay to soften into pastel */}
         <div className="absolute inset-0 bg-white" style={{ opacity: overlayOpacity / 100 }} />
 
-        <div className="relative px-6 py-8 sm:px-8 lg:px-[60px] lg:py-[40px] flex flex-col md:flex-row md:items-center md:justify-between gap-6 lg:gap-8">
-          <div>
+        <div className="relative px-5 py-7 sm:px-8 sm:py-8 lg:px-[60px] lg:py-[40px] flex flex-col md:flex-row md:items-center md:justify-between gap-6 lg:gap-8 text-center md:text-left">
+          <div className="min-w-0">
             <h2
-              className="font-bold text-2xl sm:text-3xl lg:text-[36px] text-[#111111] mb-2"
+              className="font-bold text-2xl sm:text-3xl lg:text-[36px] text-[#111111] mb-2 leading-tight"
               style={{ fontFamily: 'Open Sans, sans-serif' }}
             >
               {title}
             </h2>
             {description && (
               <p
-                className="text-base lg:text-[18px] text-[#333333] font-normal max-w-[460px]"
+                className="text-sm sm:text-base lg:text-[18px] text-[#333333] font-normal max-w-[460px] mx-auto md:mx-0 leading-relaxed"
                 style={{ fontFamily: 'Open Sans, sans-serif' }}
               >
                 {description}
               </p>
             )}
           </div>
-          <div className="flex items-center gap-4 lg:gap-[22px] flex-shrink-0">
+          <div className="flex items-center justify-center md:justify-end gap-3 sm:gap-4 lg:gap-[22px] flex-shrink-0">
             {!hideStar && (
               <img
                 src="/images/common/decor/start.svg"
                 alt=""
                 aria-hidden="true"
-                className="hidden sm:block w-20 h-20 lg:w-[120px] lg:h-[120px] opacity-90 pointer-events-none"
+                className="hidden sm:block w-16 h-16 lg:w-[120px] lg:h-[120px] opacity-90 pointer-events-none"
               />
             )}
             <PillButton
@@ -80,6 +80,7 @@ export function CTABanner({
               to={ctaTo}
               href={ctaHref}
               onClick={onCtaClick}
+              className="!px-6 !py-2.5 !text-base lg:!px-8 lg:!py-3 lg:!text-[18px]"
             >
               {ctaLabel}
             </PillButton>

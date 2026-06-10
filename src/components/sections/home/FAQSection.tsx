@@ -18,11 +18,11 @@ export function FAQSection() {
     <section className="bg-white py-12 md:py-16 lg:py-[120px]">
       <Container size="narrow">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 lg:mb-[40px]">
-          <h2 className="font-semibold text-3xl sm:text-4xl lg:text-[48px] text-[#111111] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+        <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">
+          <h2 className="font-semibold text-2xl sm:text-4xl lg:text-[48px] text-[#111111] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             Frequently Asked Questions
           </h2>
-          <ViewAllButton to={ROUTES.POLICY_DOCUMENTS} className="flex-shrink-0" />
+          <ViewAllButton to={ROUTES.POLICY_DOCUMENTS} className="flex-shrink-0 !px-4 !py-1.5 !text-sm sm:!px-6 sm:!py-2.5 sm:!text-[16px]" />
         </div>
 
         {/* FAQ items */}
