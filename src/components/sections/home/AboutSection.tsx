@@ -27,51 +27,51 @@ export function AboutSection() {
   return (
     <>
       {/* Part 1: SDG Goals + CTA + Stats — white background */}
-      <section className="pt-0 pb-16 lg:pb-20 bg-white">
+      <section className="pt-0 pb-12 md:pb-16 lg:pb-20 bg-white">
         <Container>
           {/* SDG Goals logo + text + CTA — 2 columns */}
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 lg:gap-12">
             {/* Left: SDG logo */}
             <div className="flex-shrink-0">
               <Image
                 src="/images/home/about/sdg-goals-logo.png"
                 alt="UN Sustainable Development Goals"
                 preview={false}
-                className="h-[87px] w-auto object-contain"
-                style={{ height: '87px', width: 'auto', objectFit: 'contain' }}
+                className="h-16 sm:h-[87px] w-auto object-contain"
+                style={{ width: 'auto', objectFit: 'contain' }}
               />
             </div>
             {/* Right: text + CTA */}
-            <div className="flex flex-col items-start gap-6 max-w-[500px]">
-              <p className="text-neutral-700 text-[24px] font-normal leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
+            <div className="flex flex-col items-start gap-6 max-w-[560px]">
+              <p className="text-neutral-700 text-base sm:text-lg lg:text-[24px] font-normal leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
                 Y.O.U is a coalition of youth organizations united by a shared commitment to the UN
                 Sustainable Development Goals - building bridges across borders, cultures, and
                 generations.
               </p>
-              <Button as="router-link" to={ROUTES.MEMBERS} variant="primary" size="lg" className="bg-[#EE334E] hover:bg-[#d42a43] rounded-full px-8 mb-[120px]">
+              <Button as="router-link" to={ROUTES.MEMBERS} variant="primary" size="lg" className="bg-[#EE334E] hover:bg-[#d42a43] rounded-full px-6 sm:px-8 lg:mb-[120px]">
                 Join 1,500+ Youth Leaders
               </Button>
             </div>
           </div>
 
           {/* Stats row */}
-          <div className="bg-[#F2F7FF] rounded-[40px] px-10 py-10">
-            <div className="flex items-center justify-between">
+          <div className="bg-[#F2F7FF] rounded-3xl lg:rounded-[40px] px-4 sm:px-6 lg:px-10 py-6 lg:py-10 mt-10 lg:mt-0">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-0">
               {[
                 { label: 'Member Organizations', value: '+50' },
                 { label: 'Continents', value: '+6' },
                 { label: 'Countries', value: '+30' },
                 { label: 'Volunteers from Global', value: '+1 500' },
               ].map((stat, i, arr) => (
-                <div key={stat.label} className="flex items-center flex-1">
+                <div key={stat.label} className="flex items-center min-w-0">
                   <div className="flex flex-col items-center text-center w-full py-2">
-                    <span className="text-neutral-500 text-[24px] font-normal" style={{ fontFamily: 'Open Sans, sans-serif' }}>{stat.label}</span>
-                    <span className="font-semibold text-[48px] text-[#1E293B]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                    <span className="text-neutral-500 text-sm sm:text-base lg:text-[24px] font-normal" style={{ fontFamily: 'Open Sans, sans-serif' }}>{stat.label}</span>
+                    <span className="font-semibold text-3xl sm:text-4xl lg:text-[48px] text-[#1E293B]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                       {stat.value}
                     </span>
                   </div>
                   {i < arr.length - 1 && (
-                    <svg width="24" height="120" viewBox="0 0 24 120" className="flex-shrink-0" aria-hidden="true">
+                    <svg width="24" height="120" viewBox="0 0 24 120" className="hidden lg:block flex-shrink-0" aria-hidden="true">
                       <line x1="20" y1="0" x2="4" y2="120" stroke="#C0D8FF" strokeWidth="1.5" />
                     </svg>
                   )}
@@ -83,11 +83,11 @@ export function AboutSection() {
       </section>
 
       {/* Part 2: About Vision */}
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="py-12 md:py-16 lg:py-24 bg-white">
         <Container>
           {/* Heading */}
-          <div className="text-left mb-12">
-            <h2 className="font-heading font-semibold text-[48px] leading-tight">
+          <div className="text-left mb-8 lg:mb-12">
+            <h2 className="font-heading font-semibold text-3xl sm:text-4xl lg:text-[48px] leading-tight">
               <span className="text-neutral-900">A Global Alliance for </span>
               <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
                 Youth-Led Impact
@@ -96,9 +96,9 @@ export function AboutSection() {
           </div>
 
           {/* Content: accordion left + image right */}
-          <div className="flex flex-col lg:flex-row gap-12">
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
             {/* Left: list items */}
-            <div className="flex-1 max-w-[602px]">
+            <div className="flex-1 max-w-full lg:max-w-[602px]">
               <Collapse
                 accordion
                 ghost
@@ -108,22 +108,22 @@ export function AboutSection() {
                 items={ABOUT_ITEMS.map((item) => ({
                   key: item.id,
                   label: (
-                    <div className="flex items-start gap-5 py-3">
-                      <div className="w-[48px] h-[48px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: item.color }}>
-                        <img src="/images/common/decor/group.svg" alt="" className="w-[30px] h-[30px] object-contain" aria-hidden="true" />
+                    <div className="flex items-start gap-3 sm:gap-5 py-3">
+                      <div className="w-10 h-10 sm:w-[48px] sm:h-[48px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: item.color }}>
+                        <img src="/images/common/decor/group.svg" alt="" className="w-6 h-6 sm:w-[30px] sm:h-[30px] object-contain" aria-hidden="true" />
                       </div>
-                      <h4 className="font-semibold text-[#111111] text-[28px]">{item.title}</h4>
+                      <h4 className="font-semibold text-[#111111] text-xl sm:text-2xl lg:text-[28px]">{item.title}</h4>
                     </div>
                   ),
                   children: (
-                    <p className="text-neutral-600 text-[20px] font-normal leading-relaxed">{item.description}</p>
+                    <p className="text-neutral-600 text-base sm:text-lg lg:text-[20px] font-normal leading-relaxed">{item.description}</p>
                   ),
                 }))}
               />
             </div>
 
             {/* Right: image with logo overlay */}
-            <div className="flex-shrink-0 w-full lg:w-[702px]">
+            <div className="flex-shrink-0 w-full lg:w-[52%] xl:w-[702px]">
               <div className="rounded-2xl overflow-hidden aspect-[702/513] relative">
                 <Image
                   src="/images/home/about/about-image.png"

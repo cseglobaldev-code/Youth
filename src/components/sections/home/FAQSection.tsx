@@ -2,6 +2,7 @@ import { Collapse } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/utils';
 import { ViewAllButton } from '@/components/common/ViewAllButton';
+import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
 
 const FAQ_DATA = [
@@ -14,31 +15,33 @@ const FAQ_DATA = [
 
 export function FAQSection() {
   return (
-    <section className="bg-white py-[120px] px-[407px]">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-[40px]">
-        <h2 className="font-semibold text-[48px] text-[#111111] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-          Frequently Asked Questions
-        </h2>
-        <ViewAllButton to={ROUTES.POLICY_DOCUMENTS} className="flex-shrink-0" />
-      </div>
+    <section className="bg-white py-12 md:py-16 lg:py-[120px]">
+      <Container size="narrow">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 lg:mb-[40px]">
+          <h2 className="font-semibold text-3xl sm:text-4xl lg:text-[48px] text-[#111111] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            Frequently Asked Questions
+          </h2>
+          <ViewAllButton to={ROUTES.POLICY_DOCUMENTS} className="flex-shrink-0" />
+        </div>
 
-      {/* FAQ items */}
-      <Collapse
-        defaultActiveKey={['faq-1']}
-        ghost
-        expandIconPosition="end"
-        expandIcon={({ isActive }) => (
-          <Icon name="lucide:chevron-down" size={22} className={cn('text-[#EE334E] transition-transform duration-200', isActive && 'rotate-180')} />
-        )}
-        items={FAQ_DATA.map((faq) => ({
-          key: faq.id,
-          label: <span className="font-medium text-[22px] text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.question}</span>,
-          children: <p className="pb-5 text-[16px] text-neutral-600 font-normal leading-relaxed" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.answer}</p>,
-          style: { borderBottom: '1px solid #E5E7EB' },
-        }))}
-        className="!bg-transparent"
-      />
+        {/* FAQ items */}
+        <Collapse
+          defaultActiveKey={['faq-1']}
+          ghost
+          expandIconPosition="end"
+          expandIcon={({ isActive }) => (
+            <Icon name="lucide:chevron-down" size={22} className={cn('text-[#EE334E] transition-transform duration-200', isActive && 'rotate-180')} />
+          )}
+          items={FAQ_DATA.map((faq) => ({
+            key: faq.id,
+            label: <span className="font-medium text-lg sm:text-xl lg:text-[22px] text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.question}</span>,
+            children: <p className="pb-5 text-sm sm:text-[16px] text-neutral-600 font-normal leading-relaxed" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.answer}</p>,
+            style: { borderBottom: '1px solid #E5E7EB' },
+          }))}
+          className="!bg-transparent"
+        />
+      </Container>
     </section>
   );
 }
