@@ -31,13 +31,13 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
         className
       )}
     >
-      <div className="flex items-center justify-between h-14 px-4 sm:px-6">
-        <Logo />
+      <div className="flex h-14 items-center justify-between px-4 sm:h-16 sm:px-6">
+        <Logo className="max-w-[148px]" />
         <button
           type="button"
           onClick={open}
           aria-label="Open menu"
-          className="p-2 text-neutral-700 hover:text-[#005D9A] transition-colors rounded-lg hover:bg-neutral-50"
+          className="rounded-lg p-2 text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-[#005D9A]"
         >
           <Icon name={ICONS.menu} size={24} />
         </button>
@@ -47,8 +47,8 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
         open={isOpen}
         onClose={close}
         placement="right"
-        width={280}
-        title={<Logo />}
+        width="min(320px, 86vw)"
+        title={<Logo className="max-w-[148px]" />}
         closable
         styles={{ body: { padding: '16px' } }}
       >
@@ -62,7 +62,7 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
                 onClick={close}
                 style={{ fontFamily: 'Open Sans, sans-serif' }}
                 className={cn(
-                  'px-4 py-3 rounded-xl text-[16px] font-semibold transition-all duration-200',
+                  'rounded-xl px-4 py-3 text-[15px] font-semibold transition-all duration-200 sm:text-[16px]',
                   active
                     ? 'bg-[#EBF4FA] text-[#005D9A]'
                     : 'text-neutral-800 hover:bg-neutral-50 hover:text-[#005D9A]'
@@ -74,14 +74,14 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
           })}
         </nav>
 
-        <div className="mt-6 pt-4 border-t border-neutral-100">
+        <div className="mt-6 border-t border-neutral-100 pt-4">
           <button
             type="button"
             onClick={handleJoinClick}
-            className="w-full px-5 py-3 bg-[#EE334E] text-white text-[16px] font-semibold rounded-full hover:opacity-90 transition-opacity"
+            className="w-full rounded-full bg-[#EE334E] px-4 py-3 text-[15px] font-semibold text-white transition-opacity hover:opacity-90 sm:text-[16px]"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
-            Join 1500+ Youth Organizations
+            Join 1500+
           </button>
         </div>
       </Drawer>

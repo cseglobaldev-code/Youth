@@ -42,13 +42,13 @@ export function AboutSection() {
               />
             </div>
             {/* Right: text + CTA */}
-            <div className="flex flex-col items-start gap-6 max-w-[560px]">
+            <div className="flex flex-col items-center sm:items-start gap-6 max-w-[560px] w-full">
               <p className="text-neutral-700 text-base sm:text-lg lg:text-[24px] font-normal leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
                 Y.O.U is a coalition of youth organizations united by a shared commitment to the UN
                 Sustainable Development Goals - building bridges across borders, cultures, and
                 generations.
               </p>
-              <Button as="router-link" to={ROUTES.MEMBERS} variant="primary" size="lg" className="bg-[#EE334E] hover:bg-[#d42a43] rounded-full px-6 sm:px-8 lg:mb-[120px]">
+              <Button as="router-link" to={ROUTES.MEMBERS} variant="primary" size="lg" className="w-full justify-center bg-[#EE334E] hover:bg-[#d42a43] rounded-full px-6 sm:w-auto sm:px-8 lg:mb-[120px]">
                 Join 1,500+ Youth Leaders
               </Button>
             </div>

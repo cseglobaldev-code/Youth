@@ -10,15 +10,21 @@ export function HeroSection() {
     <section className="relative bg-white overflow-hidden">
       {/* Heading row */}
       <div className="px-4 sm:px-6 lg:px-8 xl:px-[90px]">
-        <div className="pt-10 md:pt-14 lg:pt-[80px] flex flex-col lg:flex-row lg:items-end gap-5 md:gap-[27px] h-fit max-w-[1740px] mx-auto">
-          <h1 className="font-semibold text-neutral-900 text-[clamp(2.5rem,8vw,5.375rem)] leading-[1.1] lg:w-3/5" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-            Uniting Youth
+        <div className="pt-10 md:pt-14 lg:pt-[80px] flex flex-col md:flex-row md:items-end gap-4 md:gap-6 lg:gap-[27px] h-fit max-w-[1740px] mx-auto text-center md:text-left">
+          <h1
+            className="font-semibold text-neutral-900 text-[clamp(2rem,8vw,2.75rem)] md:text-[clamp(2.5rem,6.1vw,4.5rem)] 2xl:text-[86px] leading-[1.08] md:w-3/5"
+            style={{ fontFamily: 'Open Sans, sans-serif' }}
+          >
+            <span className="whitespace-nowrap">Uniting Youth</span>
             <br />
-            <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
+            <span className="whitespace-nowrap bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Shaping Tomorrow
             </span>
           </h1>
-          <p className="text-neutral-600 text-base sm:text-lg lg:text-[24px] font-normal leading-[140%] lg:w-2/5 lg:p-[27px]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <p
+            className="mx-auto max-w-[620px] text-neutral-600 text-[clamp(0.875rem,3.7vw,1rem)] md:max-w-none md:text-[clamp(1rem,2.3vw,1.5rem)] lg:w-2/5 lg:p-[27px] font-normal leading-[150%]"
+            style={{ fontFamily: 'Open Sans, sans-serif' }}
+          >
             Youth Organization Union brings together youth-led organizations across continents to
             drive sustainable development, global diplomacy, and meaningful change.
           </p>
