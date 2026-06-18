@@ -21,4 +21,8 @@ export interface TeamMember {
   continent: Continent;
   regionGroup?: RegionGroup;
   socialLinks?: SocialLink[];
+  bio?: string[];
+  sdgTags?: string[];
+  year?: string;
+  activityImages?: string[];
 }

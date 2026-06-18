@@ -17,6 +17,7 @@ export const PROJECTS_DATA: Project[] = [
       { id: 'pg3', src: '/images/gallery/project1-3.jpg', alt: 'Graduation ceremony' },
     ],
     memberId: 'member-1',
+    year: 2022,
   },
   {
     id: 'project-2',
@@ -33,6 +34,7 @@ export const PROJECTS_DATA: Project[] = [
       { id: 'pg5', src: '/images/gallery/project2-2.jpg', alt: 'Community nursery' },
     ],
     memberId: 'member-2',
+    year: 2021,
   },
   {
     id: 'project-3',
@@ -46,6 +48,7 @@ export const PROJECTS_DATA: Project[] = [
     outstandingImageUrl: '/images/projects/project-3.jpg',
     gallery: [],
     memberId: 'member-1',
+    year: 2023,
   },
   {
     id: 'project-4',
@@ -61,6 +64,7 @@ export const PROJECTS_DATA: Project[] = [
       { id: 'pg6', src: '/images/gallery/project4-1.jpg', alt: 'Coding workshop' },
     ],
     memberId: 'member-3',
+    year: 2024,
   },
   {
     id: 'project-5',
@@ -74,6 +78,7 @@ export const PROJECTS_DATA: Project[] = [
     outstandingImageUrl: '/images/projects/project-5.jpg',
     gallery: [],
     memberId: 'member-4',
+    year: 2025,
   },
   {
     id: 'project-6',
@@ -90,5 +95,6 @@ export const PROJECTS_DATA: Project[] = [
       { id: 'pg8', src: '/images/gallery/project6-2.jpg', alt: 'Beach cleanup' },
     ],
     memberId: 'member-5',
+    year: 2023,
   },
 ];

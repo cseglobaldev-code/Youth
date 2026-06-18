@@ -94,6 +94,23 @@
   cursor: default;
 }
 
+/* ── Leader member modal: remove antd container padding so gradient is edge-to-edge ── */
+.leader-modal .ant-modal-container {
+  padding: 0 !important;
+  overflow: hidden !important;
+  border-radius: 20px !important;
+}
+
+/* ── Projects sort select: pill shape, no blue focus ring ── */
+.ant-select.you-sort-select .ant-select-selector,
+.ant-select.you-sort-select.ant-select-focused .ant-select-selector,
+.ant-select.you-sort-select.ant-select-open .ant-select-selector {
+  border-radius: 100px !important;
+  box-shadow: none !important;
+  border-color: #CDCED7 !important;
+  outline: none !important;
+}
+
 .ant-image-preview-img {
   width: 60vw;
   height: 60vh;

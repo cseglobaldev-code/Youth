@@ -15,4 +15,5 @@ export interface Project {
   gallery: GalleryImage[];
   memberId: string;
   donationQrUrl?: string;
+  year?: number;
 }
