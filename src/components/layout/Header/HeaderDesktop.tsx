@@ -43,9 +43,9 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
                 <Link
                   key={item.path}
                   to={item.path}
-                  style={{ fontFamily: 'Open Sans, sans-serif' }}
+                  style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(0.9375rem, 0.98vw + 0.31rem, 1.25rem)' }}
                   className={cn(
-                    'relative inline-flex h-[72px] xl:h-[84px] items-center whitespace-nowrap text-[15px] xl:text-[17px] 2xl:text-[20px] font-semibold leading-[135%] transition-colors hover:text-[#005D9A]',
+                    'relative inline-flex h-[72px] xl:h-[84px] items-center whitespace-nowrap font-semibold leading-[135%] transition-colors hover:text-[#005D9A]',
                     active ? 'text-[#005D9A]' : 'text-black'
                   )}
                 >
@@ -63,17 +63,16 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
           <button
             type="button"
             onClick={goToJoin}
-            className="whitespace-nowrap rounded-full bg-[#EE334E] px-4 py-2.5 text-[14px] font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98] xl:px-5 xl:text-[16px] 2xl:px-[28px] 2xl:py-3 2xl:text-[18px]"
-            style={{ fontFamily: 'Open Sans, sans-serif' }}
+            className="whitespace-nowrap rounded-full bg-[#EE334E] px-3 py-2 font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98] xl:px-5 xl:py-2.5 2xl:px-[28px] 2xl:py-3"
+            style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(0.8125rem, 0.98vw + 0.19rem, 1.125rem)' }}
           >
-            <span className="2xl:hidden">Join 1500+</span>
-            <span className="hidden 2xl:inline">Join 1500+ Youth Organizations</span>
+            Join 1500+ Youth Organizations
           </button>
 
           <button
             type="button"
-            className="flex items-center gap-1.5 text-[15px] font-medium text-black transition-colors hover:text-[#005D9A] xl:gap-[8px] xl:text-[17px] 2xl:text-[20px]"
-            style={{ fontFamily: 'Open Sans, sans-serif' }}
+            className="flex items-center gap-1.5 font-medium text-black transition-colors hover:text-[#005D9A] xl:gap-[8px]"
+            style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(0.9375rem, 0.98vw + 0.31rem, 1.25rem)' }}
           >
             <Icon name="lucide:globe" size={18} />
             English

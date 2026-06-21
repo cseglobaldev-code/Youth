@@ -66,7 +66,7 @@ export function MemberCardLarge({
       {/* Content */}
       <div className="flex-1 pt-8 sm:pt-9 lg:pt-10 px-3 sm:px-4 pb-3 sm:pb-4 flex flex-col">
         <h3
-          className="font-semibold text-base sm:text-xl lg:text-[24px] text-[#111111] line-clamp-1"
+          className="font-semibold text-[clamp(1rem,1.56vw,1.5rem)] text-[#111111] line-clamp-1"
           style={{ fontFamily: 'Open Sans, sans-serif' }}
         >
           {name}
@@ -74,7 +74,7 @@ export function MemberCardLarge({
 
         <div className="mt-2 sm:mt-3 space-y-1 sm:space-y-1.5">
           <div
-            className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 lg:gap-4 text-xs sm:text-base lg:text-[18px] font-medium text-neutral-600"
+            className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 lg:gap-4 text-[clamp(0.75rem,1.17vw,1.125rem)] font-medium text-neutral-600"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
             <span className="flex items-center gap-1 min-w-0">
@@ -87,7 +87,7 @@ export function MemberCardLarge({
             </span>
           </div>
           <div
-            className="flex items-center gap-1 text-xs sm:text-base lg:text-[18px] font-medium text-neutral-600 min-w-0"
+            className="flex items-center gap-1 text-[clamp(0.75rem,1.17vw,1.125rem)] font-medium text-neutral-600 min-w-0"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
             <Icon name="solar:user-linear" size={18} />

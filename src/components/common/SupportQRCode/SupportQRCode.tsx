@@ -17,86 +17,63 @@ export function SupportQRCode({
   className,
 }: SupportQRCodeProps) {
   return (
-    <div className={['flex-shrink-0 relative pb-0 xl:pb-[100px]', className].filter(Boolean).join(' ')} style={{ minWidth: 0 }}>
-      <div className="flex items-center gap-[18px]">
-        <div
-          style={{
-            width: 'clamp(160px, 16vw, 307px)',
-            textAlign: 'right',
-            flexShrink: 0,
-          }}
-        >
+    <div
+      className={['relative flex-shrink-0 pb-0 xl:pb-[100px]', className].filter(Boolean).join(' ')}
+    >
+      <div className="flex flex-col-reverse items-center gap-2 text-center xl:flex-row xl:items-center xl:gap-[18px] xl:text-right">
+        {/* Text block — compact under the QR below xl, fixed clamp width on desktop */}
+        <div className="max-w-[150px] sm:max-w-[200px] xl:w-[clamp(160px,16vw,307px)] xl:max-w-none xl:flex-shrink-0">
           <span
+            className="block font-semibold italic text-black"
             style={{
-              display: 'block',
               fontFamily: 'Open Sans, sans-serif',
-              fontWeight: 600,
-              fontStyle: 'italic',
-              fontSize: 'clamp(0.875rem, 1.04vw, 1.25rem)',
+              fontSize: 'clamp(0.75rem, 1.04vw, 1.25rem)',
               lineHeight: '150%',
-              color: '#000000',
             }}
           >
             {title}
           </span>
           <span
+            className="hidden sm:block italic text-black"
             style={{
-              display: 'block',
               fontFamily: 'Open Sans, sans-serif',
-              fontWeight: 400,
-              fontStyle: 'italic',
-              fontSize: 'clamp(0.75rem, 0.94vw, 1.125rem)',
+              fontSize: 'clamp(0.6875rem, 0.94vw, 1.125rem)',
               lineHeight: '150%',
-              color: '#000000',
             }}
           >
             {description}
           </span>
         </div>
 
-        <div
-          style={{
-            transform: 'rotate(15deg)',
-            transformOrigin: 'center',
-            flexShrink: 0,
-          }}
-        >
+        {/* QR box — square via aspect ratio, QR SVG scales with the box.
+            Rotation only on desktop so the tilted corners never overflow
+            narrow viewports. */}
+        <div className="flex-shrink-0 rotate-[15deg]" style={{ transformOrigin: 'center' }}>
           <div className="animate-float-y">
             <div
-              style={{
-                width: 'clamp(120px, 8.75vw, 168px)',
-                height: 'clamp(120px, 8.75vw, 168px)',
-                background: QR_CONIC,
-                borderRadius: '16px',
-                padding: '8px',
-                boxSizing: 'border-box',
-              }}
+              className="box-border rounded-xl p-1.5 lg:rounded-2xl lg:p-2 w-[clamp(80px,11vw,168px)] xl:w-[clamp(120px,8.75vw,168px)]"
+              style={{ background: QR_CONIC }}
             >
-              <div
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  background: '#ffffff',
-                  borderRadius: '11px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <QRCodeSVG value={value} size={100} bgColor="#ffffff" fgColor="#000000" />
+              <div className="flex aspect-square w-full items-center justify-center rounded-[8px] lg:rounded-[11px] bg-white p-1 lg:p-1.5">
+                <QRCodeSVG
+                  value={value}
+                  size={100}
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                  style={{ width: '100%', height: '100%' }}
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
 
+      {/* Decorative dashed rainbow arrow.
+          Below xl the layout is stacked (QR on top, text below) so the arrow
+          sits lower-left and points up at the QR. From xl it returns to the
+          desktop position (over the caption text, pointing right at the QR). */}
       <div
-        className="hidden xl:block absolute pointer-events-none"
-        style={{
-          top: 'clamp(80px, 6vw, 110px)',
-          left: 'clamp(35px, 2.8vw, 55px)',
-          width: 'clamp(180px, 15vw, 280px)',
-        }}
+        className="absolute pointer-events-none left-[0%] top-[38%] w-[clamp(80px,26vw,150px)] xl:left-[clamp(35px,2.8vw,55px)] xl:top-[clamp(80px,6vw,110px)] xl:w-[clamp(180px,15vw,280px)]"
       >
         <svg
           width="100%"

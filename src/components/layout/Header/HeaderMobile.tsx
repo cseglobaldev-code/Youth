@@ -81,7 +81,7 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
             className="w-full rounded-full bg-[#EE334E] px-4 py-3 text-[15px] font-semibold text-white transition-opacity hover:opacity-90 sm:text-[16px]"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
-            Join 1500+
+            Join 1500+ Youth Organizations
           </button>
         </div>
       </Drawer>

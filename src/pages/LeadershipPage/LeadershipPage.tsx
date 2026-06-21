@@ -99,7 +99,7 @@ export function LeadershipPage() {
               <p
                 className="text-center font-normal text-black"
                 style={{
-                  fontSize: '26px',
+                  fontSize: 'clamp(0.9375rem, 1.35vw, 26px)',
                   lineHeight: '140%',
                   fontFamily: 'Open Sans, sans-serif',
                   maxWidth: '1120px',
@@ -128,7 +128,7 @@ export function LeadershipPage() {
                 <span
                   className="text-black font-normal"
                   style={{
-                    fontSize: '32px',
+                    fontSize: 'clamp(1.25rem, 1.67vw, 32px)',
                     lineHeight: '140%',
                     fontFamily: 'Open Sans, sans-serif',
                   }}
@@ -209,10 +209,10 @@ export function LeadershipPage() {
                             : 'bg-[#E3F2FD] text-[#151515]'
                         )}
                         style={{
-                          fontSize: '22px',
+                          fontSize: 'clamp(0.875rem, 1.15vw, 22px)',
                           lineHeight: '140%',
                           fontFamily: 'Open Sans, sans-serif',
-                          padding: '16px 32px',
+                          padding: 'clamp(10px, 0.83vw, 16px) clamp(18px, 1.67vw, 32px)',
                         }}
                       >
                         {continent}
@@ -234,10 +234,10 @@ export function LeadershipPage() {
                               : 'text-black border-b border-transparent'
                           )}
                           style={{
-                            fontSize: '22px',
+                            fontSize: 'clamp(0.875rem, 1.15vw, 22px)',
                             lineHeight: '140%',
                             fontFamily: 'Open Sans, sans-serif',
-                            padding: '16px 0',
+                            padding: 'clamp(8px, 0.83vw, 16px) 0',
                           }}
                         >
                           {region}

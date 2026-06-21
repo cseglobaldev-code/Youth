@@ -37,7 +37,7 @@ export function TeamSection() {
       <Container size="wide">
         {/* Header */}
         <div className="text-center mb-8 md:mb-12 lg:mb-[60px]">
-          <h2 className="font-semibold text-2xl sm:text-4xl lg:text-[48px] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             The People Behind{' '}
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Y.O.U
@@ -65,10 +65,10 @@ export function TeamSection() {
                   </div>
                 </div>
               </div>
-              <h4 className="font-semibold text-lg lg:text-[20px] text-[#111111] text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+              <h4 className="font-semibold text-[clamp(1rem,1.30vw,1.25rem)] text-[#111111] text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                 {leader.name}
               </h4>
-              <p className="text-sm lg:text-[16px] text-neutral-500 text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+              <p className="text-[clamp(0.875rem,1.04vw,1rem)] text-neutral-500 text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                 {leader.role}
               </p>
             </div>
@@ -80,7 +80,7 @@ export function TeamSection() {
 
         {/* Continental Directors */}
         <div className="text-center mb-8 lg:mb-[40px]">
-          <h3 className="font-semibold text-2xl lg:text-[28px] text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <h3 className="font-semibold text-[clamp(1.5rem,1.82vw,1.75rem)] text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             Continental Directors
           </h3>
         </div>
@@ -151,10 +151,10 @@ export function TeamSection() {
                   </div>
                 </div>
               </div>
-              <h4 className="font-semibold text-[16px] text-[#111111] text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+              <h4 className="font-semibold text-[clamp(0.875rem,1.04vw,1rem)] text-[#111111] text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                 {dir.name}
               </h4>
-              <p className="text-[14px] text-neutral-500 text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+              <p className="text-[clamp(0.8125rem,0.91vw,0.875rem)] text-neutral-500 text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                 {dir.role}
               </p>
             </div>

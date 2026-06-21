@@ -18,7 +18,7 @@ export function ExecutiveCard({ member, className }: ExecutiveCardProps) {
         brand-colored social icons from the bottom. Matches the homepage
         TeamSection so hover is consistent across the app.
       */}
-      <div className="relative w-[240px] h-[240px] flex-shrink-0 group cursor-pointer">
+      <div className="relative w-[150px] h-[150px] sm:w-[190px] sm:h-[190px] lg:w-[240px] lg:h-[240px] flex-shrink-0 group cursor-pointer mx-auto">
         {/* Photo */}
         <div className="w-full h-full rounded-full overflow-hidden border-4 border-neutral-200 bg-[#EEEEEE]">
           {member.avatarUrl && (
@@ -55,14 +55,14 @@ export function ExecutiveCard({ member, className }: ExecutiveCardProps) {
       {/* Name + Role — column, center, gap:4px */}
       <div className="flex flex-col gap-[4px] text-center">
         <span
-          className="font-semibold text-black"
-          style={{ fontSize: '20px', lineHeight: '140%', fontFamily: 'Open Sans, sans-serif' }}
+          className="font-semibold text-black text-base sm:text-lg lg:text-[20px]"
+          style={{ lineHeight: '140%', fontFamily: 'Open Sans, sans-serif' }}
         >
           {member.name}
         </span>
         <span
-          className="text-black"
-          style={{ fontSize: '18px', lineHeight: '140%', fontFamily: 'Inter, sans-serif', opacity: 0.7 }}
+          className="text-black text-sm sm:text-base lg:text-[18px]"
+          style={{ lineHeight: '140%', fontFamily: 'Inter, sans-serif', opacity: 0.7 }}
         >
           {member.role}
         </span>

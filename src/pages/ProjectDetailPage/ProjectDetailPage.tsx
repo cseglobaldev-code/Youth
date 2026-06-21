@@ -107,9 +107,9 @@ export function ProjectDetailPage() {
   return (
     <div>
       {/* ── Hero: title (left) + QR section (right) ── */}
-      <div className="pt-10 lg:pt-[120px] px-4 sm:px-8 lg:px-[90px] flex flex-col xl:flex-row items-start xl:justify-between gap-8 xl:gap-10">
+      <div className="pt-10 lg:pt-[120px] px-4 sm:px-8 lg:px-[90px] flex flex-row items-start justify-between gap-4 lg:gap-8 xl:gap-10">
         {/* Left — title + meta + SDG tags */}
-        <div className="flex flex-col gap-4 lg:gap-6 w-full xl:max-w-[1024px] animate-fade-in-up">
+        <div className="flex flex-col gap-4 lg:gap-6 min-w-0 flex-1 xl:max-w-[1024px] animate-fade-in-up">
           <h1
             className="font-semibold text-black"
             style={{
