@@ -6,13 +6,14 @@ import type { TeamMember } from '@/types';
 export interface ExecutiveCardProps {
   member: TeamMember;
   className?: string;
+  onClick?: () => void;
 }
 
-export function ExecutiveCard({ member, className }: ExecutiveCardProps) {
+export function ExecutiveCard({ member, className, onClick }: ExecutiveCardProps) {
   const hasSocial = member.socialLinks && member.socialLinks.length > 0;
 
   return (
-    <div className={cn('flex flex-col gap-5', className)}>
+    <div className={cn('flex flex-col gap-5', className)} onClick={onClick}>
       {/*
         Avatar 240×240 — hover darkens the photo (brightness-50) and fades in
         brand-colored social icons from the bottom. Matches the homepage
@@ -20,7 +21,7 @@ export function ExecutiveCard({ member, className }: ExecutiveCardProps) {
       */}
       <div className="relative w-[150px] h-[150px] sm:w-[190px] sm:h-[190px] lg:w-[240px] lg:h-[240px] flex-shrink-0 group cursor-pointer mx-auto">
         {/* Photo */}
-        <div className="w-full h-full rounded-full overflow-hidden border-4 border-neutral-200 bg-[#EEEEEE]">
+        <div className="w-full h-full rounded-full overflow-hidden bg-[#EEEEEE]">
           {member.avatarUrl && (
             <img
               src={member.avatarUrl}

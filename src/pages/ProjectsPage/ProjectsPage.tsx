@@ -1,16 +1,23 @@
 import { useState, useMemo } from 'react';
-import { Button, Empty } from 'antd';
+import { Button, Empty, Input, Select } from 'antd';
 import { Container } from '@/components/ui/Container';
+import { Icon } from '@/components/ui/Icon';
 import { ProjectCard } from '@/components/common/ProjectCard';
 import { filterBySdg } from '@/lib/utils';
 import { PROJECTS_DATA, SDGS_DATA, MEMBERS_DATA } from '@/data';
+import { ICONS } from '@/config/icons';
 import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const MEMBER_MAP = Object.fromEntries(MEMBERS_DATA.map((m) => [m.id, m.name]));
 
+const MAX_VISIBLE = 8; // "All Project" + 7 SDGs
+
 export function ProjectsPage() {
   const [activeFilter, setActiveFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
+  const [showAllFilters, setShowAllFilters] = useState(false);
   const { ref: heroRef, visible: heroVisible } = useScrollReveal(0.05);
   const { ref: cardsRef, visible: cardsVisible } = useScrollReveal(0.05);
 
@@ -24,10 +31,21 @@ export function ProjectsPage() {
     []
   );
 
-  const filteredProjects = useMemo(
-    () => filterBySdg(PROJECTS_DATA, activeFilter),
-    [activeFilter]
-  );
+  const visibleFilters = showAllFilters ? filterItems : filterItems.slice(0, MAX_VISIBLE);
+  const hasMore = filterItems.length > MAX_VISIBLE;
+
+  const filteredProjects = useMemo(() => {
+    let result = filterBySdg(PROJECTS_DATA, activeFilter);
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter((p) => p.name.toLowerCase().includes(q));
+    }
+    return [...result].sort((a, b) => {
+      const ya = a.year ?? 0;
+      const yb = b.year ?? 0;
+      return sortOrder === 'newest' ? yb - ya : ya - yb;
+    });
+  }, [activeFilter, searchQuery, sortOrder]);
 
   return (
     <div>
@@ -82,7 +100,7 @@ export function ProjectsPage() {
 
               {/* Filter pills */}
               <div className="flex flex-wrap justify-center gap-[11px]">
-                {filterItems.map((item) => (
+                {visibleFilters.map((item) => (
                   <Button
                     key={item.key}
                     shape="round"
@@ -103,6 +121,58 @@ export function ProjectsPage() {
                     {item.label}
                   </Button>
                 ))}
+
+                {hasMore && (
+                  <Button
+                    shape="round"
+                    onClick={() => setShowAllFilters((prev) => !prev)}
+                    className="!font-medium !transition-all !duration-200 !whitespace-nowrap hover:!scale-[1.03] active:!scale-[0.97] !h-auto !text-[#151515]"
+                    style={{
+                      fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
+                      backgroundColor: '#E3F2FD',
+                      borderColor: '#E3F2FD',
+                      fontFamily: 'Open Sans, sans-serif',
+                      lineHeight: '140%',
+                      padding: '10px 24px',
+                    }}
+                  >
+                    {showAllFilters ? 'Less' : 'More'}
+                  </Button>
+                )}
+              </div>
+
+              {/* Search + Sort row */}
+              <div className="flex flex-wrap justify-center items-center gap-5">
+                {/* Search input */}
+                <Input
+                  placeholder="Từ khóa"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  suffix={<Icon name={ICONS.search} size={20} color="#CDCED7" />}
+                  style={{
+                    width: 302,
+                    height: 50,
+                    borderRadius: 100,
+                    borderColor: '#CDCED7',
+                    fontFamily: 'Inter, sans-serif',
+                    fontSize: 14,
+                    color: '#151515',
+                  }}
+                  className="[&_.ant-input]:text-[#151515] [&_.ant-input::placeholder]:text-[#CDCED7]"
+                />
+
+                {/* Sort dropdown */}
+                <Select
+                  value={sortOrder}
+                  onChange={(v) => setSortOrder(v)}
+                  options={[
+                    { value: 'newest', label: 'Mới nhất - cũ nhất' },
+                    { value: 'oldest', label: 'Cũ nhất - mới nhất' },
+                  ]}
+                  suffixIcon={<Icon name={ICONS.chevronDown} size={16} color="#000" />}
+                  style={{ width: 302, height: 50, fontFamily: 'Inter, sans-serif', fontSize: 14, borderRadius: 100, overflow: 'hidden' }}
+                  className="you-sort-select [&_.ant-select-selector]:!rounded-[100px] [&_.ant-select-selector]:!h-[50px] [&_.ant-select-selector]:!border-[#CDCED7] [&_.ant-select-selection-item]:!flex [&_.ant-select-selection-item]:!items-center [&_.ant-select-selection-item]:!h-full"
+                />
               </div>
 
               {/* Cards grid — stagger fade on mount & filter change */}

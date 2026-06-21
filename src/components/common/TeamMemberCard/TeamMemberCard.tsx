@@ -7,6 +7,7 @@ export interface TeamMemberCardProps {
   member: TeamMember;
   avatarSize?: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | '3xl' | '4xl';
   className?: string;
+  onClick?: () => void;
 }
 
 const sizeMap: Record<string, number> = {
@@ -17,12 +18,12 @@ function getInitials(name: string) {
   return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
 }
 
-export function TeamMemberCard({ member, avatarSize = 'xl', className }: TeamMemberCardProps) {
+export function TeamMemberCard({ member, avatarSize = 'xl', className, onClick }: TeamMemberCardProps) {
   const px = Math.min(sizeMap[avatarSize] ?? 80, 180);
   const hasSocial = member.socialLinks && member.socialLinks.length > 0;
 
   return (
-    <div className={cn('flex flex-col items-center text-center p-4', className)}>
+    <div className={cn('flex flex-col items-center text-center p-4', onClick && 'cursor-pointer', className)} onClick={onClick}>
       {/*
         Circular avatar — hover darkens the photo (brightness-50) and fades in
         brand-colored social icons from the bottom. Matches the homepage
@@ -33,7 +34,7 @@ export function TeamMemberCard({ member, avatarSize = 'xl', className }: TeamMem
         style={{ width: `min(${px}px, 38vw)` }}
       >
         {/* Photo */}
-        <div className="w-full h-full rounded-full overflow-hidden border-4 border-neutral-200 bg-[#EEEEEE]">
+        <div className="w-full h-full rounded-full overflow-hidden bg-[#EEEEEE]">
           {member.avatarUrl ? (
             <img
               src={member.avatarUrl}
