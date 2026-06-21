@@ -47,9 +47,9 @@ export function TeamSection() {
         </div>
 
         {/* Leaders — 3 large circles */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 justify-items-center gap-6 sm:gap-8 lg:gap-[40px] mb-8 lg:mb-[40px]">
+        <div className="mx-auto grid grid-cols-2 lg:grid-cols-3 justify-items-center gap-x-4 gap-y-8 sm:gap-x-8 lg:max-w-[860px] lg:gap-[24px] mb-8 lg:mb-[40px]">
           {LEADERS.map((leader, index) => (
-            <div key={leader.id} className={`flex flex-col items-center max-w-[280px] ${index === 2 ? 'col-span-2 lg:col-span-1' : ''}`}>
+            <div key={leader.id} className={`flex flex-col items-center max-w-[280px] ${index === 0 ? 'col-span-2 lg:col-span-1' : ''}`}>
               <div className="w-40 h-40 sm:w-52 sm:h-52 lg:w-[240px] lg:h-[240px] rounded-full overflow-hidden border-4 border-neutral-200 mb-4 relative group cursor-pointer">
                 <Image src={leader.avatarUrl} alt={leader.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
                 <div className="absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
