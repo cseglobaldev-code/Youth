@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { Button, Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { ViewAllButton } from '@/components/common/ViewAllButton';
@@ -6,7 +7,7 @@ import { ROUTES } from '@/routes/paths';
 
 const NEWS_DATA = [
   {
-    id: 'news-1',
+    id: 'project-1',
     title: 'Global Diplomacy Leadership Certification',
     description: 'A world where every young person has the platform and tools to lead positive change in their community and beyond.',
     location: 'Asia, Africa',
@@ -15,7 +16,7 @@ const NEWS_DATA = [
     imageUrl: '/images/home/news/image-new.png',
   },
   {
-    id: 'news-2',
+    id: 'project-2',
     title: 'ASEAN China Media Cooperation',
     description: 'The agenda included welcoming remarks, institutional presentations, discussions on future collaboration opportunities.',
     location: 'Asia, Africa',
@@ -23,7 +24,7 @@ const NEWS_DATA = [
     imageUrl: '/images/home/news/image-new1.png',
   },
   {
-    id: 'news-3',
+    id: 'project-3',
     title: 'The Moon-Like Volcanic Landscape...',
     description: 'On Friday, 15 May 2026, ASEAN Youth Organization (AYO), through the implementation of the AI Ready ASEAN Program.',
     location: 'Asia, Africa',
@@ -31,7 +32,7 @@ const NEWS_DATA = [
     imageUrl: '/images/home/news/image-new2.png',
   },
   {
-    id: 'news-4',
+    id: 'project-4',
     title: 'What Motivates Students to Join Or...',
     description: 'Rangsit University on 15 May 2026 to strengthen collaboration in AI literacy and youth empowerment.',
     location: 'Asia, Africa',
@@ -39,7 +40,7 @@ const NEWS_DATA = [
     imageUrl: '/images/home/news/image-new3.png',
   },
   {
-    id: 'news-5',
+    id: 'project-5',
     title: 'ASEAN Youth Organization Establis...',
     description: 'ASEAN Youth Organization, through the AI Ready ASEAN program, officially signed a Memorandum of Understanding (MoU).',
     location: 'Asia, Africa',
@@ -49,6 +50,7 @@ const NEWS_DATA = [
 ];
 
 export function NewsSection() {
+  const navigate = useNavigate();
   const featured = NEWS_DATA[0];
   const sideNews = NEWS_DATA.slice(1);
 
@@ -57,7 +59,7 @@ export function NewsSection() {
       <Container size="wide">
         {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">
-          <h2 className="font-semibold text-2xl sm:text-4xl lg:text-[48px] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             Impact Aligned with{' '}
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Global Goals
@@ -69,7 +71,10 @@ export function NewsSection() {
         {/* Content: featured left + list right */}
         <div className="flex flex-col md:flex-row gap-6 lg:gap-8">
           {/* Left: featured article */}
-          <div className="w-full md:w-1/2 flex flex-col group cursor-pointer">
+          <div
+            className="w-full md:w-1/2 flex flex-col group cursor-pointer"
+            onClick={() => navigate(ROUTES.PROJECT_DETAIL(featured.id))}
+          >
             <div className="rounded-2xl overflow-hidden aspect-[652/436] mb-4">
               <Image
                 src={featured.imageUrl}
@@ -81,7 +86,7 @@ export function NewsSection() {
               />
             </div>
             {/* Meta */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm sm:text-[16px] text-neutral-500 mb-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[clamp(0.875rem,1.04vw,1rem)] text-neutral-500 mb-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               <span className="flex items-center gap-1">
                 <Icon name="mynaui:map-pin" size={18} />
                 {featured.location}
@@ -98,11 +103,20 @@ export function NewsSection() {
               )}
             </div>
             {/* Description */}
-            <p className="text-neutral-600 text-base lg:text-[18px] font-normal leading-relaxed line-clamp-2 mb-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            <p className="text-neutral-600 text-[clamp(1rem,1.17vw,1.125rem)] font-normal leading-relaxed line-clamp-2 mb-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               {featured.description}
             </p>
             {/* See more */}
-            <Button type="link" danger className="!flex !items-center !gap-1 !text-base lg:!text-[18px] !font-semibold !p-0 !h-auto" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            <Button
+              type="link"
+              danger
+              className="!flex !items-center !gap-1 !text-[clamp(1rem,1.17vw,1.125rem)] !font-semibold !p-0 !h-auto"
+              style={{ fontFamily: 'Open Sans, sans-serif' }}
+              onClick={(event) => {
+                event.stopPropagation();
+                navigate(ROUTES.PROJECT_DETAIL(featured.id));
+              }}
+            >
               See more
               <Icon name="lucide:arrow-up-right" size={18} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
             </Button>
@@ -111,15 +125,19 @@ export function NewsSection() {
           {/* Right: news list */}
           <div className="w-full md:w-1/2 flex flex-col gap-3 lg:gap-4">
             {sideNews.map((news) => (
-              <div key={news.id} className="flex flex-row gap-3 lg:gap-4 cursor-pointer hover:bg-neutral-50 rounded-xl transition-colors p-2 group">
+              <div
+                key={news.id}
+                className="flex flex-row gap-3 lg:gap-4 cursor-pointer hover:bg-neutral-50 rounded-xl transition-colors p-2 group"
+                onClick={() => navigate(ROUTES.PROJECT_DETAIL(news.id))}
+              >
                 <div className="w-[96px] sm:w-[140px] lg:w-[200px] h-[72px] sm:h-[96px] lg:h-[130px] flex-shrink-0 rounded-xl overflow-hidden">
                   <Image src={news.imageUrl} alt={news.title} preview={false} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
                 </div>
                 <div className="flex-1 flex flex-col justify-center min-w-0">
-                  <h4 className="font-semibold text-sm sm:text-base lg:text-[20px] text-[#111111] mb-1 line-clamp-1 transition-colors group-hover:text-[#EE334E]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                  <h4 className="font-semibold text-[clamp(0.875rem,1.30vw,1.25rem)] text-[#111111] mb-1 line-clamp-1 transition-colors group-hover:text-[#EE334E]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                     {news.title}
                   </h4>
-                  <div className="hidden sm:flex flex-wrap items-center gap-x-4 gap-y-1 text-[14px] text-neutral-500" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                  <div className="hidden sm:flex flex-wrap items-center gap-x-4 gap-y-1 text-[clamp(0.8125rem,0.91vw,0.875rem)] text-neutral-500" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                     <span className="flex items-center gap-1">
                       <Icon name="mynaui:map-pin" size={14} />
                       {news.location}
@@ -129,7 +147,7 @@ export function NewsSection() {
                       {news.author}
                     </span>
                   </div>
-                  <p className="hidden sm:block text-neutral-500 text-[14px] font-normal line-clamp-2 mt-1" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                  <p className="hidden sm:block text-neutral-500 text-[clamp(0.8125rem,0.91vw,0.875rem)] font-normal line-clamp-2 mt-1" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                     {news.description}
                   </p>
                 </div>
