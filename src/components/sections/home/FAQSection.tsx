@@ -19,7 +19,7 @@ export function FAQSection() {
       <Container size="narrow">
         {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">
-          <h2 className="font-semibold text-2xl sm:text-4xl lg:text-[48px] text-[#111111] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] text-[#111111] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             Frequently Asked Questions
           </h2>
           <ViewAllButton to={ROUTES.POLICY_DOCUMENTS} className="flex-shrink-0 !px-4 !py-1.5 !text-sm sm:!px-6 sm:!py-2.5 sm:!text-[16px]" />
@@ -35,8 +35,8 @@ export function FAQSection() {
           )}
           items={FAQ_DATA.map((faq) => ({
             key: faq.id,
-            label: <span className="font-medium text-lg sm:text-xl lg:text-[22px] text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.question}</span>,
-            children: <p className="pb-5 text-sm sm:text-[16px] text-neutral-600 font-normal leading-relaxed" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.answer}</p>,
+            label: <span className="font-medium text-[clamp(1.125rem,1.43vw,1.375rem)] text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.question}</span>,
+            children: <p className="pb-5 text-[clamp(0.875rem,1.04vw,1rem)] text-neutral-600 font-normal leading-relaxed" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.answer}</p>,
             style: { borderBottom: '1px solid #E5E7EB' },
           }))}
           className="!bg-transparent"

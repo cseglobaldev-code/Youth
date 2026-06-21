@@ -43,7 +43,7 @@ export function AboutSection() {
             </div>
             {/* Right: text + CTA */}
             <div className="flex flex-col items-center sm:items-start gap-6 max-w-[560px] w-full">
-              <p className="text-neutral-700 text-base sm:text-lg lg:text-[24px] font-normal leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
+              <p className="text-neutral-700 text-[clamp(1rem,1.56vw,1.5rem)] font-normal leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
                 Y.O.U is a coalition of youth organizations united by a shared commitment to the UN
                 Sustainable Development Goals - building bridges across borders, cultures, and
                 generations.
@@ -65,8 +65,8 @@ export function AboutSection() {
               ].map((stat, i, arr) => (
                 <div key={stat.label} className="flex items-center min-w-0">
                   <div className="flex flex-col items-center text-center w-full py-2">
-                    <span className="text-neutral-500 text-sm sm:text-base lg:text-[24px] font-normal" style={{ fontFamily: 'Open Sans, sans-serif' }}>{stat.label}</span>
-                    <span className="font-semibold text-3xl sm:text-4xl lg:text-[48px] text-[#1E293B]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                    <span className="text-neutral-500 text-[clamp(0.875rem,1.56vw,1.5rem)] font-normal" style={{ fontFamily: 'Open Sans, sans-serif' }}>{stat.label}</span>
+                    <span className="font-semibold text-[clamp(1.75rem,3.13vw,3rem)] text-[#1E293B]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                       {stat.value}
                     </span>
                   </div>
@@ -87,7 +87,7 @@ export function AboutSection() {
         <Container>
           {/* Heading */}
           <div className="text-left mb-8 lg:mb-12">
-            <h2 className="font-heading font-semibold text-3xl sm:text-4xl lg:text-[48px] leading-tight">
+            <h2 className="font-heading font-semibold text-[clamp(1.75rem,3.13vw,3rem)] leading-tight">
               <span className="text-neutral-900">A Global Alliance for </span>
               <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
                 Youth-Led Impact
@@ -112,11 +112,11 @@ export function AboutSection() {
                       <div className="w-10 h-10 sm:w-[48px] sm:h-[48px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: item.color }}>
                         <img src="/images/common/decor/group.svg" alt="" className="w-6 h-6 sm:w-[30px] sm:h-[30px] object-contain" aria-hidden="true" />
                       </div>
-                      <h4 className="font-semibold text-[#111111] text-xl sm:text-2xl lg:text-[28px]">{item.title}</h4>
+                      <h4 className="font-semibold text-[#111111] text-[clamp(1.25rem,1.82vw,1.75rem)]">{item.title}</h4>
                     </div>
                   ),
                   children: (
-                    <p className="text-neutral-600 text-base sm:text-lg lg:text-[20px] font-normal leading-relaxed">{item.description}</p>
+                    <p className="text-neutral-600 text-[clamp(1rem,1.30vw,1.25rem)] font-normal leading-relaxed">{item.description}</p>
                   ),
                 }))}
               />

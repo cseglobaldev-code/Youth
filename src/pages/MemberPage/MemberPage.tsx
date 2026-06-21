@@ -125,7 +125,7 @@ export function MemberPage() {
   return (
     <div className="py-section-sm lg:py-section">
       <Container>
-        <div className="mx-auto mb-10 flex max-w-[1120px] flex-col items-center gap-[24px] text-center">
+        <div className="mx-auto mb-10 flex max-w-[1120px] flex-col items-center gap-4 lg:gap-[24px] text-center">
           <h2
             className="font-semibold text-black"
             style={{
@@ -145,7 +145,7 @@ export function MemberPage() {
               Organizations
             </span>
           </h2>
-          <p className="text-center text-[26px] leading-[140%] text-black">
+          <p className="text-center text-[clamp(0.9375rem,1.35vw,1.625rem)] leading-[140%] text-black">
             Explore all organizations in the Y.O.U alliance. Each member profile highlights local leadership, mission focus, and SDG-aligned initiatives across regions.
           </p>
         </div>

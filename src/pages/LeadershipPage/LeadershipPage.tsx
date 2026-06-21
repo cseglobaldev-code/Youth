@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import { Button } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { ExecutiveCard } from '@/components/common/ExecutiveCard';
 import { TeamMemberCard } from '@/components/common/TeamMemberCard';
@@ -10,7 +9,6 @@ import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { useJoinNavigation } from '@/hooks';
 import type { Continent, RegionGroup, TeamMember } from '@/types';
-
 
 /* ─── constants ─────────────────────────────────────────────────────────── */
 
@@ -36,6 +34,7 @@ export function LeadershipPage() {
   const [activeContinent, setActiveContinent] = useState<Continent>('Asia');
   const [activeRegion, setActiveRegion] = useState<RegionGroup>('East Asia');
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const [showAllDirectors, setShowAllDirectors] = useState(false);
 
   const goToJoin = useJoinNavigation();
 
@@ -55,9 +54,18 @@ export function LeadershipPage() {
     return TEAM_DATA.filter((m) => m.continent === activeContinent);
   }, [activeContinent, activeRegion]);
 
+  const visibleDirectors = showAllDirectors ? filteredMembers : filteredMembers.slice(0, 5);
+  const hasMoreDirectors = filteredMembers.length > visibleDirectors.length;
+
   const handleContinentChange = (continent: Continent) => {
     setActiveContinent(continent);
     if (continent === 'Asia') setActiveRegion('East Asia');
+    setShowAllDirectors(false);
+  };
+
+  const handleRegionChange = (region: RegionGroup) => {
+    setActiveRegion(region);
+    setShowAllDirectors(false);
   };
 
   return (
@@ -67,7 +75,6 @@ export function LeadershipPage() {
       ══════════════════════════════════════════════════ */}
       <Container>
         <div className="flex flex-col items-center gap-[60px] lg:gap-[80px] pt-10 lg:pt-[80px] pb-10 lg:pb-[80px]">
-
           {/* ══════════════════════════════════════════════════
               1. HERO  (Frame 114 → Frame 117 → Frame 121)
                  row, justifyContent:center, gap:24px
@@ -108,7 +115,7 @@ export function LeadershipPage() {
             <p
               className="text-center font-normal text-black"
               style={{
-                fontSize: '26px',
+                fontSize: 'clamp(0.9375rem, 1.35vw, 26px)',
                 lineHeight: '140%',
                 fontFamily: 'Open Sans, sans-serif',
                 maxWidth: '1120px',
@@ -137,7 +144,7 @@ export function LeadershipPage() {
               <span
                 className="text-black font-normal"
                 style={{
-                  fontSize: '32px',
+                  fontSize: 'clamp(1.25rem, 1.67vw, 32px)',
                   lineHeight: '140%',
                   fontFamily: 'Open Sans, sans-serif',
                 }}
@@ -174,7 +181,6 @@ export function LeadershipPage() {
               3. SEPARATOR — gradient stroke line
           ══════════════════════════════════════════════════ */}
           <div className="w-full" style={{ height: '1px', background: SEPARATOR_GRADIENT }} />
-
         </div>
       </Container>
 
@@ -207,29 +213,27 @@ export function LeadershipPage() {
 
           {/* Filter tabs — column, gap:24px */}
           <div className="flex flex-col items-stretch gap-[24px] w-full">
-
             {/* Continent pills — row, center, gap:24px, padding:16px 32px each */}
             <div className="flex flex-wrap justify-center gap-3 lg:gap-[24px]">
               {CONTINENTS.map((continent) => (
-                <Button
+                <button
                   key={continent}
-                  shape="round"
                   onClick={() => handleContinentChange(continent)}
                   className={cn(
-                    '!font-semibold !h-auto !transition-all !duration-200 hover:!scale-[1.03] active:!scale-[0.97] !whitespace-nowrap',
+                    'font-semibold rounded-full transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] whitespace-nowrap',
                     activeContinent === continent
-                      ? '!bg-[#1771B9] !border-[#1771B9] !text-white'
-                      : '!bg-[#E3F2FD] !border-[#E3F2FD] !text-[#151515]'
+                      ? 'bg-[#1771B9] text-white'
+                      : 'bg-[#E3F2FD] text-[#151515]'
                   )}
                   style={{
-                    fontSize: '22px',
+                    fontSize: 'clamp(0.875rem, 1.15vw, 22px)',
                     lineHeight: '140%',
                     fontFamily: 'Open Sans, sans-serif',
-                    padding: '16px 32px',
+                    padding: 'clamp(10px, 0.83vw, 16px) clamp(18px, 1.67vw, 32px)',
                   }}
                 >
                   {continent}
-                </Button>
+                </button>
               ))}
             </div>
 
@@ -237,43 +241,66 @@ export function LeadershipPage() {
             {activeContinent === 'Asia' && (
               <div className="flex flex-wrap justify-center gap-4 lg:gap-[40px]">
                 {ASIA_REGIONS.map((region) => (
-                  <Button
+                  <button
                     key={region}
-                    type="text"
-                    onClick={() => setActiveRegion(region)}
+                    onClick={() => handleRegionChange(region)}
                     className={cn(
-                      '!font-semibold !h-auto !rounded-none !transition-colors !duration-200 !border-0 !outline-none !shadow-none hover:!bg-transparent active:!bg-transparent',
-                      activeRegion === region ? '!text-[#1771B9]' : '!text-black'
+                      'font-semibold transition-colors duration-200',
+                      activeRegion === region
+                        ? 'text-[#1771B9] border-b border-[#1771B9]'
+                        : 'text-black border-b border-transparent'
                     )}
                     style={{
-                      fontSize: '22px',
+                      fontSize: 'clamp(0.875rem, 1.15vw, 22px)',
                       lineHeight: '140%',
                       fontFamily: 'Open Sans, sans-serif',
-                      padding: '16px 0',
-                      borderBottom: activeRegion === region ? '2px solid #1771B9' : '2px solid transparent',
+                      padding: 'clamp(8px, 0.83vw, 16px) 0',
                     }}
                   >
                     {region}
-                  </Button>
+                  </button>
                 ))}
               </div>
             )}
           </div>
         </div>
 
-        {/* Cards row — centered with gap, section itself is full-width */}
-        {filteredMembers.length > 0 ? (
-          <div className="flex flex-wrap justify-center gap-8 w-full px-4">
-            {filteredMembers.map((member, index) => (
-              <div
-                key={member.id}
-                className={cn(directorsVisible ? 'animate-fade-in-up' : 'opacity-0')}
-                style={{ animationDelay: `${index * 80}ms` }}
+        {/* Cards row — grid-cols-5 when full, flex centered when sparse */}
+        {visibleDirectors.length > 0 ? (
+          <>
+            <div className={cn(
+              'w-full gap-[24px] lg:gap-[32px] px-4',
+              visibleDirectors.length >= 5
+                ? 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5'
+                : 'flex flex-wrap justify-center'
+            )}>
+              {visibleDirectors.map((member, index) => (
+                <div
+                  key={member.id}
+                  className={cn(directorsVisible ? 'animate-fade-in-up' : 'opacity-0')}
+                  style={{ animationDelay: `${index * 80}ms` }}
+                >
+                  <TeamMemberCard
+                    member={member}
+                    avatarSize="4xl"
+                    className="w-full"
+                    onClick={() => openModal(member)}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {hasMoreDirectors && (
+              <button
+                type="button"
+                className="rounded-full bg-[#1771B9] px-8 py-3 font-semibold text-white transition hover:bg-[#125f9d] active:scale-[0.98]"
+                style={{ fontFamily: 'Open Sans, sans-serif' }}
+                onClick={() => setShowAllDirectors(true)}
               >
-                <TeamMemberCard member={member} avatarSize="4xl" onClick={() => openModal(member)} />
-              </div>
-            ))}
-          </div>
+                View All
+              </button>
+            )}
+          </>
         ) : (
           <p
             className="text-black py-16 text-center"

@@ -30,8 +30,8 @@ export function TeamMemberCard({ member, avatarSize = 'xl', className, onClick }
         TeamSection so hover is consistent across the app.
       */}
       <div
-        className="relative flex-shrink-0 group cursor-pointer mx-auto"
-        style={{ width: px, height: px, maxWidth: '100%' }}
+        className="relative flex-shrink-0 group cursor-pointer mx-auto aspect-square"
+        style={{ width: `min(${px}px, 38vw)` }}
       >
         {/* Photo */}
         <div className="w-full h-full rounded-full overflow-hidden bg-[#EEEEEE]">
@@ -72,16 +72,16 @@ export function TeamMemberCard({ member, avatarSize = 'xl', className, onClick }
 
       {/* Name */}
       <h3
-        className="mt-3 font-semibold text-black"
-        style={{ fontSize: '20px', lineHeight: '140%', fontFamily: 'Open Sans, sans-serif' }}
+        className="mt-3 font-semibold text-black text-base sm:text-lg lg:text-[20px]"
+        style={{ lineHeight: '140%', fontFamily: 'Open Sans, sans-serif' }}
       >
         {member.name}
       </h3>
 
       {/* Role */}
       <p
-        className="text-black mt-0.5"
-        style={{ fontSize: '18px', lineHeight: '140%', fontFamily: 'Inter, sans-serif', opacity: 0.7 }}
+        className="text-black mt-0.5 text-sm sm:text-base lg:text-[18px]"
+        style={{ lineHeight: '140%', fontFamily: 'Inter, sans-serif', opacity: 0.7 }}
       >
         {member.role}
       </p>
