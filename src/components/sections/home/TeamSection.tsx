@@ -9,6 +9,7 @@ import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data';
 // Single source of truth (see src/data/team.ts) — shared with the /leadership page.
 const LEADERS = EXECUTIVE_LEADERSHIP;
 const DIRECTORS = TEAM_DATA;
+const PREVIEW_DIRECTORS = DIRECTORS.slice(0, 5);
 
 export function TeamSection() {
   const [directorIndex, setDirectorIndex] = useState(0);
@@ -133,7 +134,7 @@ export function TeamSection() {
 
         {/* Desktop grid */}
         <div className="hidden lg:grid grid-cols-5 justify-items-center gap-[32px] mb-[60px]">
-          {DIRECTORS.map((dir) => (
+          {PREVIEW_DIRECTORS.map((dir) => (
             <div key={dir.id} className="flex flex-col items-center max-w-[200px]">
               <div className="w-[180px] h-[180px] rounded-full overflow-hidden border-4 border-neutral-200 mb-3 relative group cursor-pointer">
                 <Image src={dir.avatarUrl} alt={dir.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
