@@ -34,6 +34,7 @@ export function LeadershipPage() {
   const [activeContinent, setActiveContinent] = useState<Continent>('Asia');
   const [activeRegion, setActiveRegion] = useState<RegionGroup>('East Asia');
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const [showAllDirectors, setShowAllDirectors] = useState(false);
 
   const goToJoin = useJoinNavigation();
 
@@ -53,9 +54,18 @@ export function LeadershipPage() {
     return TEAM_DATA.filter((m) => m.continent === activeContinent);
   }, [activeContinent, activeRegion]);
 
+  const visibleDirectors = showAllDirectors ? filteredMembers : filteredMembers.slice(0, 5);
+  const hasMoreDirectors = filteredMembers.length > visibleDirectors.length;
+
   const handleContinentChange = (continent: Continent) => {
     setActiveContinent(continent);
     if (continent === 'Asia') setActiveRegion('East Asia');
+    setShowAllDirectors(false);
+  };
+
+  const handleRegionChange = (region: RegionGroup) => {
+    setActiveRegion(region);
+    setShowAllDirectors(false);
   };
 
   return (
@@ -233,7 +243,7 @@ export function LeadershipPage() {
                 {ASIA_REGIONS.map((region) => (
                   <button
                     key={region}
-                    onClick={() => setActiveRegion(region)}
+                    onClick={() => handleRegionChange(region)}
                     className={cn(
                       'font-semibold transition-colors duration-200',
                       activeRegion === region
@@ -256,28 +266,41 @@ export function LeadershipPage() {
         </div>
 
         {/* Cards row — grid-cols-5 when full, flex centered when sparse */}
-        {filteredMembers.length > 0 ? (
-          <div className={cn(
-            'w-full gap-[24px] lg:gap-[32px] px-4',
-            filteredMembers.length >= 5
-              ? 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5'
-              : 'flex flex-wrap justify-center'
-          )}>
-            {filteredMembers.map((member, index) => (
-              <div
-                key={member.id}
-                className={cn(directorsVisible ? 'animate-fade-in-up' : 'opacity-0')}
-                style={{ animationDelay: `${index * 80}ms` }}
+        {visibleDirectors.length > 0 ? (
+          <>
+            <div className={cn(
+              'w-full gap-[24px] lg:gap-[32px] px-4',
+              visibleDirectors.length >= 5
+                ? 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5'
+                : 'flex flex-wrap justify-center'
+            )}>
+              {visibleDirectors.map((member, index) => (
+                <div
+                  key={member.id}
+                  className={cn(directorsVisible ? 'animate-fade-in-up' : 'opacity-0')}
+                  style={{ animationDelay: `${index * 80}ms` }}
+                >
+                  <TeamMemberCard
+                    member={member}
+                    avatarSize="4xl"
+                    className="w-full"
+                    onClick={() => openModal(member)}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {hasMoreDirectors && (
+              <button
+                type="button"
+                className="rounded-full bg-[#1771B9] px-8 py-3 font-semibold text-white transition hover:bg-[#125f9d] active:scale-[0.98]"
+                style={{ fontFamily: 'Open Sans, sans-serif' }}
+                onClick={() => setShowAllDirectors(true)}
               >
-                <TeamMemberCard
-                  member={member}
-                  avatarSize="4xl"
-                  className="w-full"
-                  onClick={() => openModal(member)}
-                />
-              </div>
-            ))}
-          </div>
+                View All
+              </button>
+            )}
+          </>
         ) : (
           <p
             className="text-black py-16 text-center"
