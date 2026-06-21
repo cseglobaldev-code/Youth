@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { ViewAllButton } from '@/components/common/ViewAllButton';
@@ -26,6 +27,7 @@ const MEMBERS = Array.from({ length: 30 }, (_, i) => ({
 }));
 
 export function MembersSection() {
+  const navigate = useNavigate();
   const [page, setPage] = useState(0);
   const [columns, setColumns] = useState(1);
   const pageSize = columns * 3;
@@ -61,7 +63,7 @@ export function MembersSection() {
       <Container size="wide">
         {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">
-          <h2 className="font-semibold text-2xl sm:text-4xl lg:text-[48px] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             Member of <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">Y.O.U</span>
           </h2>
           <ViewAllButton to={ROUTES.MEMBERS} className="flex-shrink-0 !px-4 !py-1.5 !text-sm sm:!px-6 sm:!py-2.5 sm:!text-[16px]" />
@@ -81,6 +83,7 @@ export function MembersSection() {
                 coverUrl: member.coverUrl || '',
                 logoUrl: member.logoUrl,
               }}
+              onClick={() => navigate(ROUTES.MEMBER_DETAIL(member.id))}
             />
           ))}
         </div>
