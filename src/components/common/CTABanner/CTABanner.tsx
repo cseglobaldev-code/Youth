@@ -42,8 +42,8 @@ export function CTABanner({
   const buttonAs = ctaTo ? 'router-link' : ctaHref ? 'a' : 'button';
 
   return (
-    <section className={cn('mx-4 sm:mx-6 lg:mx-8 xl:mx-[288px] my-8 sm:my-10 lg:my-[60px]', className)}>
-      <div className="rounded-3xl lg:rounded-[40px] overflow-hidden relative" style={{ background: gradient }}>
+    <section className={cn('mx-4 my-8 sm:mx-6 sm:my-10 lg:mx-8 lg:my-[60px]', className)}>
+      <div className="mx-auto max-w-[1344px] rounded-3xl lg:rounded-[40px] overflow-hidden relative" style={{ background: gradient }}>
         {/* White overlay to soften into pastel */}
         <div className="absolute inset-0 bg-white" style={{ opacity: overlayOpacity / 100 }} />
 

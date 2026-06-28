@@ -100,7 +100,7 @@ export function AboutSection() {
           {/* Content: tab list left + image right */}
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
             {/* Left: tab list */}
-            <div className="flex-1 max-w-full lg:max-w-[602px]">
+            <div className="min-w-0 flex-1 max-w-full lg:max-w-[602px]">
               {ABOUT_ITEMS.map((item, index) => {
                 const isActive = item.id === activeId;
                 // Không hiển thị line ngăn cách dưới tab cuối cùng ("Why join us").
@@ -162,7 +162,7 @@ export function AboutSection() {
             </div>
 
             {/* Right: image thay đổi theo tab đang chọn (tạm dùng chung ảnh) */}
-            <div className="flex-shrink-0 w-full lg:w-[52%] xl:w-[702px]">
+            <div className="w-full min-w-0 flex-1 lg:basis-[52%] xl:max-w-[702px]">
               <div className="rounded-2xl overflow-hidden aspect-[702/513] relative">
                 <Image
                   key={activeItem.image}

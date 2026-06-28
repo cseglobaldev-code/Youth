@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import { Icon } from '@/components/ui/Icon';
@@ -29,34 +29,9 @@ const MEMBERS = Array.from({ length: 30 }, (_, i) => ({
 export function MembersSection() {
   const navigate = useNavigate();
   const [page, setPage] = useState(0);
-  const [columns, setColumns] = useState(1);
-  const pageSize = columns * 3;
+  const pageSize = 9;
   const totalPages = Math.ceil(MEMBERS.length / pageSize);
   const visibleMembers = MEMBERS.slice(page * pageSize, (page + 1) * pageSize);
-
-  useEffect(() => {
-    const updateColumns = () => {
-      if (window.innerWidth >= 1024) {
-        setColumns(3);
-        return;
-      }
-
-      if (window.innerWidth >= 640) {
-        setColumns(2);
-        return;
-      }
-
-      setColumns(1);
-    };
-
-    updateColumns();
-    window.addEventListener('resize', updateColumns);
-    return () => window.removeEventListener('resize', updateColumns);
-  }, []);
-
-  useEffect(() => {
-    setPage(0);
-  }, [pageSize]);
 
   return (
     <section className="bg-[#F2F7FF] py-12 md:py-16 lg:py-[120px]">
