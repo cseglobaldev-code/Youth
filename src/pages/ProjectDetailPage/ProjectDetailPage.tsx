@@ -4,6 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { ProjectCard } from "@/components/common/ProjectCard";
 import { SupportQRCode } from "@/components/common/SupportQRCode";
 import { SDGTag } from "@/components/ui/SDGTag";
+import { Container } from "@/components/ui/Container";
 import { PROJECTS_DATA, MEMBERS_DATA } from "@/data";
 import { cn } from "@/lib/utils";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
@@ -107,7 +108,8 @@ export function ProjectDetailPage() {
   return (
     <div>
       {/* ── Hero: title (left) + QR section (right) ── */}
-      <div className="pt-10 lg:pt-[120px] px-4 sm:px-8 lg:px-[90px] flex flex-row items-start justify-between gap-4 lg:gap-8 xl:gap-10">
+      <Container>
+        <div className="pt-10 lg:pt-[120px] flex flex-col md:flex-row md:items-start md:justify-between gap-4 lg:gap-8 xl:gap-10">
         {/* Left — title + meta + SDG tags */}
         <div className="flex flex-col gap-4 lg:gap-6 min-w-0 flex-1 xl:max-w-[1024px] animate-fade-in-up">
           <h1
@@ -154,10 +156,11 @@ export function ProjectDetailPage() {
 
         {/* Right — QR section (only shown at xl+; below xl stacks below title naturally) */}
         <SupportQRCode value={qrValue} />
-      </div>
+        </div>
+      </Container>
 
       {/* ── Hero image ── */}
-      <div className="mt-6 lg:mt-[74px] px-4 sm:px-8 lg:px-[90px] mb-8 lg:mb-[120px]">
+      <Container className="mt-6 lg:mt-[74px] mb-8 lg:mb-[120px]">
         <div
           className="rounded-[20px] lg:rounded-[40px] overflow-hidden"
           style={{
@@ -174,13 +177,10 @@ export function ProjectDetailPage() {
             wrapperStyle={{ width: "100%", height: "100%" }}
           />
         </div>
-      </div>
+      </Container>
 
       {/* ── Main content ── */}
-      <div
-        className="mx-auto w-full px-4 md:px-8 pb-10 lg:pb-[175px]"
-        style={{ maxWidth: "1344px" }}
-      >
+      <Container className="pb-10 lg:pb-[175px]">
         <div className="flex flex-col gap-10 lg:gap-[80px]">
           {/* Organization */}
           <div
@@ -329,7 +329,7 @@ export function ProjectDetailPage() {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </div>
   );
 }

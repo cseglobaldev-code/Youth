@@ -197,8 +197,8 @@ export function LeadershipPage() {
           directorsVisible ? 'animate-fade-in-up' : 'opacity-0'
         )}
       >
-        {/* Header + tabs — max-width 1114px, column, center, gap:40px */}
-        <div className="flex flex-col items-center gap-[40px] w-full max-w-[1114px] mx-auto px-4 lg:px-6">
+        {/* Header + tabs — column, center, gap:40px */}
+        <Container className="flex flex-col items-center gap-[40px]">
           {/* Heading */}
           <h2
             className="font-semibold text-black text-center"
@@ -263,13 +263,13 @@ export function LeadershipPage() {
               </div>
             )}
           </div>
-        </div>
+        </Container>
 
         {/* Cards row — grid-cols-5 when full, flex centered when sparse */}
         {visibleDirectors.length > 0 ? (
           <>
-            <div className={cn(
-              'w-full gap-[24px] lg:gap-[32px] px-4',
+            <Container className={cn(
+              'w-full gap-[24px] lg:gap-[32px]',
               visibleDirectors.length >= 5
                 ? 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5'
                 : 'flex flex-wrap justify-center'
@@ -288,7 +288,7 @@ export function LeadershipPage() {
                   />
                 </div>
               ))}
-            </div>
+            </Container>
 
             {hasMoreDirectors && (
               <button
