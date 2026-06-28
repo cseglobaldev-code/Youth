@@ -72,7 +72,7 @@ export function Footer({ className }: FooterProps) {
             </h4>
             <nav className="flex flex-col items-start gap-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               <Link
-                to={ROUTES.HOME}
+                to={ROUTES.ABOUT}
                 className="text-sm font-normal text-white transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
               >
                 About us

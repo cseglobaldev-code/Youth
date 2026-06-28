@@ -2,7 +2,7 @@ import type { NavItem, SocialLink } from '@/types';
 import { ROUTES } from '@/routes/paths';
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: 'About us', path: ROUTES.HOME },
+  { label: 'About us', path: ROUTES.ABOUT },
   { label: 'Leadership', path: ROUTES.LEADERSHIP },
   { label: 'Members', path: ROUTES.MEMBERS },
   { label: 'Projects', path: ROUTES.PROJECTS },

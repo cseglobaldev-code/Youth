@@ -150,15 +150,13 @@ export function ProjectsPage() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   suffix={<Icon name={ICONS.search} size={20} color="#CDCED7" />}
                   style={{
-                    width: 302,
-                    height: 50,
                     borderRadius: 100,
                     borderColor: '#CDCED7',
                     fontFamily: 'Inter, sans-serif',
                     fontSize: 14,
                     color: '#151515',
                   }}
-                  className="[&_.ant-input]:text-[#151515] [&_.ant-input::placeholder]:text-[#CDCED7]"
+                  className="h-[50px] w-full max-w-[302px] [&_.ant-input]:text-[#151515] [&_.ant-input::placeholder]:text-[#CDCED7]"
                 />
 
                 {/* Sort dropdown */}
@@ -170,8 +168,8 @@ export function ProjectsPage() {
                     { value: 'oldest', label: 'Cũ nhất - mới nhất' },
                   ]}
                   suffixIcon={<Icon name={ICONS.chevronDown} size={16} color="#000" />}
-                  style={{ width: 302, height: 50, fontFamily: 'Inter, sans-serif', fontSize: 14, borderRadius: 100, overflow: 'hidden' }}
-                  className="you-sort-select [&_.ant-select-selector]:!rounded-[100px] [&_.ant-select-selector]:!h-[50px] [&_.ant-select-selector]:!border-[#CDCED7] [&_.ant-select-selection-item]:!flex [&_.ant-select-selection-item]:!items-center [&_.ant-select-selection-item]:!h-full"
+                  style={{ fontFamily: 'Inter, sans-serif', fontSize: 14, borderRadius: 100, overflow: 'hidden' }}
+                  className="you-sort-select h-[50px] w-full max-w-[302px] [&_.ant-select-selector]:!rounded-[100px] [&_.ant-select-selector]:!h-[50px] [&_.ant-select-selector]:!border-[#CDCED7] [&_.ant-select-selection-item]:!flex [&_.ant-select-selection-item]:!items-center [&_.ant-select-selection-item]:!h-full"
                 />
               </div>
 

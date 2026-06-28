@@ -150,13 +150,13 @@ export function MemberPage() {
           </p>
         </div>
 
-        <div className="mb-12 flex flex-col items-start gap-4 md:flex-row md:items-center">
+        <div className="mb-12 flex flex-col items-stretch gap-4 md:flex-row md:items-center">
           <Input
             value={searchQuery}
             onChange={handleSearch}
             placeholder="Từ khóa"
             suffix={<SearchOutlined className="text-[18px] text-[#1F2A44]" />}
-            className="h-[48px] w-full max-w-[302px] rounded-full border border-[#E7E7E7] bg-white px-4 shadow-none [&_.ant-input]:text-[15px] [&_.ant-input]:text-[#111111] [&_.ant-input::placeholder]:text-[#B7B7B7] [&_.ant-input-suffix]:ml-3"
+            className="h-[48px] w-full rounded-full border border-[#E7E7E7] bg-white px-4 shadow-none md:w-[302px] md:max-w-full [&_.ant-input]:text-[15px] [&_.ant-input]:text-[#111111] [&_.ant-input::placeholder]:text-[#B7B7B7] [&_.ant-input-suffix]:ml-3"
           />
 
           <Popover
@@ -169,7 +169,7 @@ export function MemberPage() {
           >
             <button
               type="button"
-              className="flex h-[48px] w-[302px] max-w-full items-center justify-between rounded-full border border-[#E7E7E7] bg-white px-5 text-[15px] text-[#111111] shadow-none transition hover:bg-white"
+              className="flex h-[48px] w-full items-center justify-between rounded-full border border-[#E7E7E7] bg-white px-5 text-[15px] text-[#111111] shadow-none transition hover:bg-white md:w-[302px] md:max-w-full"
             >
               <span>{activeSortLabel}</span>
               <DownOutlined className="text-[14px] text-[#1F2A44]" />

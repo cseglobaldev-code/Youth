@@ -1,28 +1,30 @@
 import { useState } from 'react';
-import type { CollapseProps } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
-import { Collapse, Image } from 'antd';
+import { Image } from 'antd';
 import { ROUTES } from '@/routes/paths';
 
-const ABOUT_ITEMS = [
-  { id: 'vision', title: 'Our Vision', color: '#FFECEF', description: 'A world where every young person has the platform and tools to lead positive change in their community and beyond.' },
-  { id: 'mission', title: 'Our Mission', color: '#D2FFD9', description: 'To connect, support, and amplify youth-led organizations globally through collaboration, capacity building, and shared resources for sustainable development.' },
-  { id: 'approach', title: 'Our Approach', color: '#E3F4FF', description: 'We build bridges across borders, cultures, and generations by facilitating partnerships, joint programs, and knowledge exchange between youth organizations worldwide.' },
-  { id: 'why', title: 'Why join us', color: '#FFF7EA', description: 'Join a global network of 50+ organizations across 30 countries, access funding opportunities, leadership training, and collaborative projects aligned with the UN SDGs.' },
+type AboutItem = {
+  id: 'vision' | 'mission' | 'approach' | 'why';
+  title: string;
+  color: string;
+  description: string;
+  // Tạm thời dùng chung ảnh hiện tại cho các tab khác (chưa có ảnh riêng).
+  // Khi có ảnh thật, chỉ cần thay đổi field `image` này.
+  image: string;
+};
+
+const ABOUT_ITEMS: AboutItem[] = [
+  { id: 'vision', title: 'Our Vision', color: '#FFECEF', description: 'A world where every young person has the platform and tools to lead positive change in their community and beyond.', image: '/images/home/about/about-image.png' },
+  { id: 'mission', title: 'Our Mission', color: '#D2FFD9', description: 'To connect, support, and amplify youth-led organizations globally through collaboration, capacity building, and shared resources for sustainable development.', image: '/images/home/about/about-image.png' },
+  { id: 'approach', title: 'Our Approach', color: '#E3F4FF', description: 'We build bridges across borders, cultures, and generations by facilitating partnerships, joint programs, and knowledge exchange between youth organizations worldwide.', image: '/images/home/about/about-image.png' },
+  { id: 'why', title: 'Why join us', color: '#FFF7EA', description: 'Join a global network of 50+ organizations across 30 countries, access funding opportunities, leadership training, and collaborative projects aligned with the UN SDGs.', image: '/images/home/about/about-image.png' },
 ];
 
 export function AboutSection() {
-  const [activeId, setActiveId] = useState('vision');
+  const [activeId, setActiveId] = useState<AboutItem['id']>('vision');
 
-  const handleCollapseChange: NonNullable<CollapseProps['onChange']> = (key) => {
-    if (Array.isArray(key)) {
-      setActiveId(key[0] ?? '');
-      return;
-    }
-
-    setActiveId(key ?? '');
-  };
+  const activeItem = ABOUT_ITEMS.find((item) => item.id === activeId) ?? ABOUT_ITEMS[0];
 
   return (
     <>
@@ -95,39 +97,77 @@ export function AboutSection() {
             </h2>
           </div>
 
-          {/* Content: accordion left + image right */}
+          {/* Content: tab list left + image right */}
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-            {/* Left: list items */}
-            <div className="flex-1 max-w-full lg:max-w-[602px]">
-              <Collapse
-                accordion
-                ghost
-                activeKey={activeId ?? undefined}
-                onChange={handleCollapseChange}
-                expandIcon={() => null}
-                items={ABOUT_ITEMS.map((item) => ({
-                  key: item.id,
-                  label: (
-                    <div className="flex items-start gap-3 sm:gap-5 py-3">
-                      <div className="w-10 h-10 sm:w-[48px] sm:h-[48px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: item.color }}>
-                        <img src="/images/common/decor/group.svg" alt="" className="w-6 h-6 sm:w-[30px] sm:h-[30px] object-contain" aria-hidden="true" />
+            {/* Left: tab list */}
+            <div className="min-w-0 flex-1 max-w-full lg:max-w-[602px]">
+              {ABOUT_ITEMS.map((item, index) => {
+                const isActive = item.id === activeId;
+                // Không hiển thị line ngăn cách dưới tab cuối cùng ("Why join us").
+                const isLast = index === ABOUT_ITEMS.length - 1;
+                return (
+                  <div key={item.id}>
+                    {/* Tab */}
+                    <button
+                      type="button"
+                      onClick={() => setActiveId(item.id)}
+                      className="group w-full text-left bg-transparent border-0 p-0 cursor-pointer"
+                      aria-expanded={isActive}
+                    >
+                      <div className="flex items-center gap-3 sm:gap-5 py-3">
+                        <div className="w-10 h-10 sm:w-[48px] sm:h-[48px] rounded-full flex items-center justify-center flex-shrink-0" style={{ backgroundColor: item.color }}>
+                          <img src="/images/common/decor/group.svg" alt="" className="w-6 h-6 sm:w-[30px] sm:h-[30px] object-contain" aria-hidden="true" />
+                        </div>
+                        <h4 className="font-semibold text-[#111111] text-[clamp(1.25rem,1.82vw,1.75rem)]">
+                          {item.title}
+                        </h4>
                       </div>
-                      <h4 className="font-semibold text-[#111111] text-[clamp(1.25rem,1.82vw,1.75rem)]">{item.title}</h4>
-                    </div>
-                  ),
-                  children: (
-                    <p className="text-neutral-600 text-[clamp(1rem,1.30vw,1.25rem)] font-normal leading-relaxed">{item.description}</p>
-                  ),
-                }))}
-              />
+                      {/* Mô tả hiển thị ngay dưới tab đang chọn */}
+                      {isActive && (
+                        <p className="text-neutral-600 text-[clamp(1rem,1.30vw,1.25rem)] font-normal leading-relaxed pl-[52px] sm:pl-[68px] pr-2 pb-3">
+                          {item.description}
+                        </p>
+                      )}
+                    </button>
+
+                    {/* Đường ngăn cách dưới mỗi tab (trừ tab cuối "Why join us"):
+                        - Tab đang chọn (isActive): line gradient đỏ → cam → xanh
+                        - Tab chưa chọn: đường chấm (dotted) xám nhạt như ảnh thiết kế */}
+                    {!isLast && (
+                      isActive ? (
+                        <div
+                          className="h-[2px] w-full rounded-full"
+                          style={{
+                            background:
+                              'linear-gradient(to right, #E42C27 0%, #FBAB1A 50%, #10984F 100%)',
+                          }}
+                          aria-hidden="true"
+                        />
+                      ) : (
+                        <div
+                          className="h-[2px] w-full"
+                          style={{
+                            backgroundImage:
+                              'radial-gradient(circle, #D1D5DB 1.5px, transparent 1.5px)',
+                            backgroundSize: '8px 2px',
+                            backgroundRepeat: 'repeat-x',
+                          }}
+                          aria-hidden="true"
+                        />
+                      )
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
-            {/* Right: image with logo overlay */}
-            <div className="flex-shrink-0 w-full lg:w-[52%] xl:w-[702px]">
+            {/* Right: image thay đổi theo tab đang chọn (tạm dùng chung ảnh) */}
+            <div className="w-full min-w-0 flex-1 lg:basis-[52%] xl:max-w-[702px]">
               <div className="rounded-2xl overflow-hidden aspect-[702/513] relative">
                 <Image
-                  src="/images/home/about/about-image.png"
-                  alt="Youth leaders"
+                  key={activeItem.image}
+                  src={activeItem.image}
+                  alt={activeItem.title}
                   preview={false}
                   className="w-full h-full object-cover"
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}

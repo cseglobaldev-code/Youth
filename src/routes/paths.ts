@@ -1,5 +1,6 @@
 export const ROUTES = {
   HOME: '/',
+  ABOUT: '/about-us',
   LEADERSHIP: '/leadership',
   MEMBERS: '/members',
   MEMBER_DETAIL: (id: string = ':memberId') => `/members/${id}`,

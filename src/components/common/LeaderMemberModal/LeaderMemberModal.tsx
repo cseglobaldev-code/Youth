@@ -21,7 +21,7 @@ export function LeaderMemberModal({ member, open, onClose }: LeaderMemberModalPr
       onCancel={onClose}
       footer={null}
       centered
-      width={858}
+      width="min(858px, calc(100vw - 32px))"
       destroyOnHidden
       closable={false}
       rootClassName="leader-modal"
@@ -30,11 +30,8 @@ export function LeaderMemberModal({ member, open, onClose }: LeaderMemberModalPr
         mask: { backgroundColor: 'rgba(0,0,0,0.6)' },
       }}
     >
-      {/* ── HEADER 320px: rainbow gradient 50% + wave 10% + close btn + photo + text ── */}
-      <div
-        className="relative w-full overflow-hidden"
-        style={{ height: 320, borderRadius: '20px 20px 0 0', backgroundColor: '#fff' }}
-      >
+      {/* ── HEADER: responsive gradient + wave + photo + text ── */}
+      <div className="relative overflow-hidden rounded-t-[20px] bg-white px-5 py-8 sm:px-7 sm:py-9">
         {/* Layer 1: rainbow gradient at 50% opacity (Figma: Rectangle 3829) */}
         <div className="absolute inset-0" style={{ background: RAINBOW, opacity: 0.5 }} />
 
@@ -43,96 +40,98 @@ export function LeaderMemberModal({ member, open, onClose }: LeaderMemberModalPr
           src="/images/leadership/modal-bg-wave.svg"
           alt=""
           aria-hidden="true"
-          className="absolute pointer-events-none select-none"
-          style={{ left: 0, top: 12, width: 1525.65, height: 383, opacity: 0.10 }}
+          className="absolute inset-0 h-full w-full object-cover opacity-10 pointer-events-none select-none"
         />
 
         {/* Close button — white X, no border */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute flex items-center justify-center rounded-full transition-colors hover:bg-white/20 active:bg-white/30"
-          style={{ right: 16, top: 16, width: 32, height: 32, zIndex: 20 }}
+          className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-full transition-colors hover:bg-white/20 active:bg-white/30"
           aria-label="Close"
         >
           <Icon name={ICONS.close} size={16} color="#FFFFFF" />
         </button>
 
-        {/* Profile photo — 268×268 circle at Figma exact position */}
-        <div
-          className="absolute overflow-hidden rounded-full"
-          style={{
-            left: 504,
-            top: 31.87,
-            width: 268,
-            height: 268,
-            zIndex: 10,
-          }}
-        >
-          {member.avatarUrl && (
-            <img src={member.avatarUrl} alt={member.name} className="w-full h-full object-cover" />
-          )}
-        </div>
-
-        {/* Text info block — column at Figma x:28, y:179 */}
-        <div
-          className="absolute flex flex-col"
-          style={{ left: 28, top: 179, gap: 4, maxWidth: 450, zIndex: 10 }}
-        >
-          {/* Name + all social icons (dynamic — same set as card hover) */}
-          <div className="flex items-center flex-wrap" style={{ gap: 4 }}>
-            <span style={{
-              fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: 24,
-              lineHeight: '120%', letterSpacing: '-0.0104em', color: '#1A1919',
-            }}>
-              {member.name}
-            </span>
-            {member.socialLinks?.map(link => (
-              <a
-                key={link.platform}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={link.platform}
-                className="flex items-center justify-center bg-white rounded-[20px] hover:scale-110 transition-transform flex-shrink-0"
-                style={{ width: 24, height: 24, padding: 4 }}
-                onClick={(e) => e.stopPropagation()}
+        <div className="relative z-10 grid items-end gap-6 sm:grid-cols-[minmax(0,1fr)_minmax(180px,268px)]">
+          {/* Text info block */}
+          <div className="order-2 flex min-w-0 flex-col gap-1 sm:order-1">
+            {/* Name + all social icons (dynamic — same set as card hover) */}
+            <div className="flex flex-wrap items-center gap-1">
+              <span
+                style={{
+                  fontFamily: 'Inter, sans-serif',
+                  fontWeight: 600,
+                  fontSize: 'clamp(1.25rem, 4vw, 1.5rem)',
+                  lineHeight: '120%',
+                  color: '#1A1919',
+                }}
               >
-                <Icon
-                  name={ICONS[link.platform as keyof typeof ICONS]}
-                  size={12}
-                  color={SOCIAL_COLORS[link.platform as keyof typeof SOCIAL_COLORS]}
-                />
-              </a>
-            ))}
-          </div>
-
-          {/* Role — white */}
-          <span style={{
-            fontFamily: 'Be Vietnam Pro, Be Vietnam, sans-serif', fontWeight: 400,
-            fontSize: 16, lineHeight: '150%', color: '#FFFFFF',
-          }}>
-            {member.role}
-          </span>
-
-          {/* SDG tags — colored pill badges */}
-          {member.sdgTags && member.sdgTags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {member.sdgTags.map(tag => (
-                <SDGTag key={tag} sdgId={Number(tag.replace('SDG', ''))} variant="solid" size="md" />
+                {member.name}
+              </span>
+              {member.socialLinks?.map(link => (
+                <a
+                  key={link.platform}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.platform}
+                  className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-[20px] bg-white p-1 transition-transform hover:scale-110"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Icon
+                    name={ICONS[link.platform as keyof typeof ICONS]}
+                    size={12}
+                    color={SOCIAL_COLORS[link.platform as keyof typeof SOCIAL_COLORS]}
+                  />
+                </a>
               ))}
             </div>
-          )}
 
-          {/* Year — black */}
-          {member.year && (
-            <span style={{
-              fontFamily: 'Be Vietnam Pro, Be Vietnam, sans-serif', fontWeight: 400,
-              fontSize: 16, lineHeight: '150%', color: '#000000',
-            }}>
-              {member.year}
+            {/* Role — white */}
+            <span
+              style={{
+                fontFamily: 'Be Vietnam Pro, Be Vietnam, sans-serif',
+                fontWeight: 400,
+                fontSize: 16,
+                lineHeight: '150%',
+                color: '#FFFFFF',
+              }}
+            >
+              {member.role}
             </span>
-          )}
+
+            {/* SDG tags — colored pill badges */}
+            {member.sdgTags && member.sdgTags.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {member.sdgTags.map(tag => (
+                  <SDGTag key={tag} sdgId={Number(tag.replace('SDG', ''))} variant="solid" size="md" />
+                ))}
+              </div>
+            )}
+
+            {/* Year — black */}
+            {member.year && (
+              <span
+                style={{
+                  fontFamily: 'Be Vietnam Pro, Be Vietnam, sans-serif',
+                  fontWeight: 400,
+                  fontSize: 16,
+                  lineHeight: '150%',
+                  color: '#000000',
+                }}
+              >
+                {member.year}
+              </span>
+            )}
+          </div>
+
+          {/* Profile photo */}
+          <div className="order-1 mx-auto aspect-square w-[min(58vw,268px)] overflow-hidden rounded-full sm:order-2 sm:w-full">
+            {member.avatarUrl && (
+              <img src={member.avatarUrl} alt={member.name} className="h-full w-full object-cover" />
+            )}
+          </div>
         </div>
       </div>
 
