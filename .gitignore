@@ -62,6 +62,10 @@ _bmad-output/
 .agents/
 .claude/
 
+# ===== Vendored / experimental (không push) =====
+.vendor/
+.playwright-mcp/
+
 # wrangler files
 .wrangler
 .dev.vars*
