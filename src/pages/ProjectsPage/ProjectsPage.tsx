@@ -115,7 +115,7 @@ export function ProjectsPage() {
                       borderColor: activeFilter === item.key ? '#005D9A' : '#E3F2FD',
                       fontFamily: 'Open Sans, sans-serif',
                       lineHeight: '140%',
-                      padding: '10px 24px',
+                      padding: 'clamp(8px,0.8vw,10px) clamp(14px,1.25vw,24px)',
                     }}
                   >
                     {item.label}
@@ -133,7 +133,7 @@ export function ProjectsPage() {
                       borderColor: '#E3F2FD',
                       fontFamily: 'Open Sans, sans-serif',
                       lineHeight: '140%',
-                      padding: '10px 24px',
+                      padding: 'clamp(8px,0.8vw,10px) clamp(14px,1.25vw,24px)',
                     }}
                   >
                     {showAllFilters ? 'Less' : 'More'}

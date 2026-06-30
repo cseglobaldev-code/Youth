@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import { Icon } from '@/components/ui/Icon';
@@ -6,6 +6,7 @@ import { ViewAllButton } from '@/components/common/ViewAllButton';
 import { MemberCardLarge } from '@/components/common/MemberCardLarge/MemberCardLarge';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
+import { useMediaQuery } from '@/hooks';
 
 const MOCK_MEMBER = {
   name: 'YouthBridge PH',
@@ -28,10 +29,15 @@ const MEMBERS = Array.from({ length: 30 }, (_, i) => ({
 
 export function MembersSection() {
   const navigate = useNavigate();
+  const isMobile = useMediaQuery('(max-width: 767px)');
   const [page, setPage] = useState(0);
-  const pageSize = 9;
+  const pageSize = isMobile ? 3 : 9;
   const totalPages = Math.ceil(MEMBERS.length / pageSize);
   const visibleMembers = MEMBERS.slice(page * pageSize, (page + 1) * pageSize);
+
+  useEffect(() => {
+    setPage(0);
+  }, [pageSize]);
 
   return (
     <section className="bg-[#F2F7FF] py-12 md:py-16 lg:py-[120px]">

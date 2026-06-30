@@ -28,7 +28,7 @@ interface DetailRowProps {
 function DetailRow({ label, uploadLink, children }: DetailRowProps) {
   return (
     <div className="flex items-start w-full gap-2">
-      <div className="flex-shrink-0 w-[140px] lg:w-[300px]">
+      <div className="flex-shrink-0 w-[120px] sm:w-[140px] lg:w-[220px] xl:w-[300px]">
         <span
           style={{
             fontFamily: "Open Sans, sans-serif",

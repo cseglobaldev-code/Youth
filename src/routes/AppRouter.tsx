@@ -8,6 +8,7 @@ import { MemberDetailPage } from '@/pages/MemberDetailPage';
 import { ProjectsPage } from '@/pages/ProjectsPage';
 import { ProjectDetailPage } from '@/pages/ProjectDetailPage';
 import { PolicyDocumentsPage } from '@/pages/PolicyDocumentsPage';
+import { ContactPage } from '@/pages/ContactPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 
 export function AppRouter() {
@@ -22,6 +23,7 @@ export function AppRouter() {
         <Route path="projects" element={<ProjectsPage />} />
         <Route path="projects/:projectId" element={<ProjectDetailPage />} />
         <Route path="policy-documents" element={<PolicyDocumentsPage />} />
+        <Route path="contact" element={<ContactPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

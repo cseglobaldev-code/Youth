@@ -7,4 +7,5 @@ export const ROUTES = {
   PROJECTS: '/projects',
   PROJECT_DETAIL: (id: string = ':projectId') => `/projects/${id}`,
   POLICY_DOCUMENTS: '/policy-documents',
+  CONTACT: '/contact',
 } as const;

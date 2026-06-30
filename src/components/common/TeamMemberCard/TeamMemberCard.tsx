@@ -72,7 +72,7 @@ export function TeamMemberCard({ member, avatarSize = 'xl', className, onClick }
 
       {/* Name */}
       <h3
-        className="mt-3 font-semibold text-black text-base sm:text-lg lg:text-[20px]"
+        className="mt-3 font-semibold text-black text-[clamp(1rem,1.2vw,1.25rem)]"
         style={{ lineHeight: '140%', fontFamily: 'Open Sans, sans-serif' }}
       >
         {member.name}

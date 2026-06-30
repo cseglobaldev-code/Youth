@@ -7,7 +7,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Members', path: ROUTES.MEMBERS },
   { label: 'Projects', path: ROUTES.PROJECTS },
   { label: 'Policy', path: ROUTES.POLICY_DOCUMENTS },
-  { label: 'Contact', path: '/contact' },
+  { label: 'Contact', path: ROUTES.CONTACT },
 ];
 
 export const SOCIAL_LINKS: SocialLink[] = [
