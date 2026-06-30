@@ -271,7 +271,7 @@ export function LeadershipPage() {
             <Container className={cn(
               'w-full gap-[24px] lg:gap-[32px]',
               visibleDirectors.length >= 5
-                ? 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5'
+                ? 'grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-5'
                 : 'flex flex-wrap justify-center'
             )}>
               {visibleDirectors.map((member, index) => (
