@@ -31,7 +31,7 @@ export function MembersSection() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 767px)');
   const [page, setPage] = useState(0);
-  const pageSize = isMobile ? 3 : 9;
+  const pageSize = isMobile ? 3 : 6;
   const totalPages = Math.ceil(MEMBERS.length / pageSize);
   const visibleMembers = MEMBERS.slice(page * pageSize, (page + 1) * pageSize);
 
