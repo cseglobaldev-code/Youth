@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Container } from '@/components/ui/Container';
 
 const YOUTUBE_ID = '2cgswCXiaYE';
 
@@ -9,7 +8,7 @@ export function HeroSection() {
   return (
     <section className="relative overflow-hidden bg-white">
       {/* Heading row */}
-      <Container size="wide">
+      <div className="mx-auto w-full px-4 sm:px-6 lg:px-6 xl:px-10 2xl:px-[90px]">
         <div className="flex h-fit flex-col gap-4 pt-10 text-left md:flex-row md:items-end md:gap-6 md:pt-14 lg:gap-[27px] lg:pt-[80px]">
           <h1
             className="font-semibold text-neutral-900 text-[clamp(2rem,8vw,2.75rem)] leading-[1.08] md:w-3/5 md:text-[clamp(2.5rem,6.1vw,4.5rem)] 2xl:text-[86px]"
@@ -29,10 +28,10 @@ export function HeroSection() {
             drive sustainable development, global diplomacy, and meaningful change.
           </p>
         </div>
-      </Container>
+      </div>
 
       {/* Video thumbnail */}
-      <Container size="wide" className="mt-8 mb-10 md:mt-12 md:mb-14 lg:mt-[80px] lg:mb-[80px]">
+      <div className="mx-auto w-full px-4 sm:px-6 lg:px-6 xl:px-10 2xl:px-[90px] mt-8 mb-10 md:mt-12 md:mb-14 lg:mt-[80px] lg:mb-[80px]">
         <div className="relative aspect-[344/148] w-full overflow-hidden rounded-[16px] md:aspect-[1740/693] md:rounded-[30px]">
         {playing ? (
           <iframe
@@ -65,7 +64,7 @@ export function HeroSection() {
           </button>
         )}
         </div>
-      </Container>
+      </div>
     </section>
   );
 }
