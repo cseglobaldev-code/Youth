@@ -31,15 +31,37 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
         className
       )}
     >
-      <div className="flex h-14 items-center justify-between px-4 sm:h-16 sm:px-6">
-        <Logo className="max-w-[148px]" />
+      <div className="px-4 pb-3 pt-2 sm:px-6">
+        <div className="flex h-12 items-center justify-between gap-3">
+          <Logo className="max-w-[132px] flex-shrink-0 sm:max-w-[148px]" />
+          <div className="flex flex-shrink-0 items-center gap-3 sm:gap-4">
+            <button
+              type="button"
+              className="flex items-center gap-1.5 font-medium text-black transition-colors hover:text-[#005D9A]"
+              style={{ fontFamily: 'Open Sans, sans-serif' }}
+            >
+              <Icon name="lucide:globe" size={18} />
+              English
+              <Icon name="lucide:chevron-down" size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={open}
+              aria-label="Open menu"
+              className="rounded-lg p-1 text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-[#005D9A]"
+            >
+              <Icon name={ICONS.menu} size={24} />
+            </button>
+          </div>
+        </div>
+
         <button
           type="button"
-          onClick={open}
-          aria-label="Open menu"
-          className="rounded-lg p-2 text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-[#005D9A]"
+          onClick={goToJoin}
+          className="mt-2 w-full whitespace-nowrap rounded-full bg-[#EE334E] px-4 py-3 text-[15px] font-semibold text-white transition-opacity hover:opacity-90 active:scale-[0.99] sm:text-base"
+          style={{ fontFamily: 'Open Sans, sans-serif' }}
         >
-          <Icon name={ICONS.menu} size={24} />
+          Join 1500+ Youth Organizations
         </button>
       </div>
 
