@@ -9,10 +9,12 @@ import { CTABanner } from '@/components/common/CTABanner';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { MEMBERS_DATA, PROJECTS_DATA } from '@/data';
 import { useJoinNavigation } from '@/hooks';
+import { useSupportModal } from '@/components/common/SupportModal';
 
 export function MemberDetailPage() {
   const { memberId } = useParams<{ memberId: string }>();
   const goToJoin = useJoinNavigation();
+  const { openSupport } = useSupportModal();
   const member = MEMBERS_DATA.find((m) => m.id === memberId);
 
   if (!member) {
@@ -29,7 +31,6 @@ export function MemberDetailPage() {
     ...memberProjects,
     ...PROJECTS_DATA.filter((p) => !member.projectIds.includes(p.id)),
   ].slice(0, 3);
-  const supportHref = member.socialLinks[0]?.url ?? `/members/${member.id}`;
 
   return (
     <div className="py-section-sm lg:py-section">
@@ -71,7 +72,7 @@ export function MemberDetailPage() {
               </div>
             </div>
 
-            <SupportCTA href={supportHref} />
+            <SupportCTA onClick={openSupport} />
           </div>
 
           {member.coverUrl && (

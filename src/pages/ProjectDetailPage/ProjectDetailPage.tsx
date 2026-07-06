@@ -3,6 +3,7 @@ import { Divider, Image } from "antd";
 import { Icon } from "@/components/ui/Icon";
 import { ProjectCard } from "@/components/common/ProjectCard";
 import { SupportCTA } from "@/components/common/SupportCTA";
+import { useSupportModal } from "@/components/common/SupportModal";
 import { SDGTag } from "@/components/ui/SDGTag";
 import { Container } from "@/components/ui/Container";
 import { PROJECTS_DATA, MEMBERS_DATA } from "@/data";
@@ -77,6 +78,7 @@ const GRADIENT_DIVIDER =
 export function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
   const project = PROJECTS_DATA.find((p) => p.id === projectId);
+  const { openSupport } = useSupportModal();
 
   const { ref: orgRef, visible: orgVisible } = useScrollReveal();
   const { ref: detailRef, visible: detailVisible } = useScrollReveal();
@@ -100,10 +102,6 @@ export function ProjectDetailPage() {
     0,
     3,
   );
-
-  const supportHref =
-    member?.socialLinks?.[0]?.url ??
-    `https://youthorgunion.org/projects/${project.id}`;
 
   return (
     <div>
@@ -155,7 +153,7 @@ export function ProjectDetailPage() {
         </div>
 
         {/* Right — Support CTA (below xl stacks below title naturally) */}
-        <SupportCTA href={supportHref} />
+        <SupportCTA onClick={openSupport} />
         </div>
       </Container>
 
