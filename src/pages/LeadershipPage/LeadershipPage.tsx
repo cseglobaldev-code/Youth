@@ -1,16 +1,16 @@
-import { useState, useMemo } from 'react';
+// src/pages/LeadershipPage/LeadershipPage.tsx
+import { useState, useMemo, useEffect } from 'react';
+import { Spin } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { ExecutiveCard } from '@/components/common/ExecutiveCard';
 import { TeamMemberCard } from '@/components/common/TeamMemberCard';
 import { LeaderMemberModal } from '@/components/common/LeaderMemberModal';
 import { CTABanner } from '@/components/common/CTABanner';
-import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data';
 import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { useJoinNavigation } from '@/hooks';
+import { StrapiService } from '@/lib/strapi';
 import type { Continent, RegionGroup, TeamMember } from '@/types';
-
-/* ─── constants ─────────────────────────────────────────────────────────── */
 
 const CONTINENTS: Continent[] = ['Asia', 'Africa', 'America', 'Australia', 'Europe'];
 
@@ -23,14 +23,15 @@ const ASIA_REGIONS: RegionGroup[] = [
   'North Asia',
 ];
 
-const HERO_GRADIENT =
-  'linear-gradient(90deg, #EE334E 0%, #FCB131 33%, #00A651 67%, #0081C8 100%)';
+const HERO_GRADIENT = 'linear-gradient(90deg, #EE334E 0%, #FCB131 33%, #00A651 67%, #0081C8 100%)';
 const SEPARATOR_GRADIENT =
   'linear-gradient(90deg, rgba(194,211,239,0) 0%, rgba(194,211,239,1) 20%, rgba(194,211,239,1) 80%, rgba(194,211,239,0) 100%)';
 
-/* ─── component ─────────────────────────────────────────────────────────── */
-
 export function LeadershipPage() {
+  const [allTeamMembers, setAllTeamMembers] = useState<TeamMember[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [activeContinent, setActiveContinent] = useState<Continent>('Asia');
   const [activeRegion, setActiveRegion] = useState<RegionGroup>('East Asia');
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
@@ -45,17 +46,35 @@ export function LeadershipPage() {
   const { ref: execRef, visible: execVisible } = useScrollReveal(0.05);
   const { ref: directorsRef, visible: directorsVisible } = useScrollReveal(0.05);
 
-  const filteredMembers = useMemo(() => {
+  useEffect(() => {
+    StrapiService.getTeamMembers()
+      .then((data) => {
+        setAllTeamMembers(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError('Không thể tải thông tin đội ngũ lãnh đạo.');
+        setLoading(false);
+      });
+  }, []);
+
+  const executives = useMemo(() => {
+    return allTeamMembers.filter((m) => m.role !== 'Continental Director');
+  }, [allTeamMembers]);
+
+  const filteredDirectors = useMemo(() => {
+    const directors = allTeamMembers.filter((m) => m.role === 'Continental Director');
     if (activeContinent === 'Asia') {
-      return TEAM_DATA.filter(
+      return directors.filter(
         (m) => m.continent === 'Asia' && m.regionGroup === activeRegion
       );
     }
-    return TEAM_DATA.filter((m) => m.continent === activeContinent);
-  }, [activeContinent, activeRegion]);
+    return directors.filter((m) => m.continent === activeContinent);
+  }, [allTeamMembers, activeContinent, activeRegion]);
 
-  const visibleDirectors = showAllDirectors ? filteredMembers : filteredMembers.slice(0, 5);
-  const hasMoreDirectors = filteredMembers.length > visibleDirectors.length;
+  const visibleDirectors = showAllDirectors ? filteredDirectors : filteredDirectors.slice(0, 5);
+  const hasMoreDirectors = filteredDirectors.length > visibleDirectors.length;
 
   const handleContinentChange = (continent: Continent) => {
     setActiveContinent(continent);
@@ -68,17 +87,26 @@ export function LeadershipPage() {
     setShowAllDirectors(false);
   };
 
+  if (loading) {
+    return (
+      <div className="py-20 text-center">
+        <Spin size="large" tip="Đang tải danh sách đội ngũ..." />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container className="py-20 text-center text-red-500">
+        <p>{error}</p>
+      </Container>
+    );
+  }
+
   return (
     <div>
-      {/* ══════════════════════════════════════════════════
-          HERO + EXECUTIVE LEADERSHIP + SEPARATOR inside Container
-      ══════════════════════════════════════════════════ */}
       <Container>
         <div className="flex flex-col items-center gap-[60px] lg:gap-[80px] pt-10 lg:pt-[80px] pb-10 lg:pb-[80px]">
-          {/* ══════════════════════════════════════════════════
-              1. HERO  (Frame 114 → Frame 117 → Frame 121)
-                 row, justifyContent:center, gap:24px
-          ══════════════════════════════════════════════════ */}
           <div
             ref={heroRef as React.RefObject<HTMLDivElement>}
             className={cn(
@@ -86,7 +114,6 @@ export function LeadershipPage() {
               heroVisible ? 'animate-fade-in-up' : 'opacity-0'
             )}
           >
-            {/* Title row — center, gap:24px */}
             <div className="flex flex-wrap justify-center items-center gap-[16px] lg:gap-[24px]">
               <span
                 className="font-semibold text-black"
@@ -111,7 +138,6 @@ export function LeadershipPage() {
               </span>
             </div>
 
-            {/* Description — fixed width 1120px in Figma → max-w here */}
             <p
               className="text-center font-normal text-black"
               style={{
@@ -121,17 +147,10 @@ export function LeadershipPage() {
                 maxWidth: '1120px',
               }}
             >
-              Youth Organization Union brings together youth-led organizations across continents
-              to drive sustainable development, global diplomacy, and meaningful change.
+              Youth Organization Union brings together youth-led organizations across continents to drive sustainable development.
             </p>
           </div>
 
-          {/* ══════════════════════════════════════════════════
-              2. EXECUTIVE LEADERSHIP
-                 Frame 112: column, alignItems:center, gap:40px, width:1344
-                 Frame 2071857672 (badge): column, center, gap:4px
-                 Frame 41 (cards): row, space-between, center, width:828
-          ══════════════════════════════════════════════════ */}
           <div
             ref={execRef as React.RefObject<HTMLDivElement>}
             className={cn(
@@ -139,7 +158,6 @@ export function LeadershipPage() {
               execVisible ? 'animate-fade-in-up' : 'opacity-0'
             )}
           >
-            {/* Badge + heading — column, center, gap:4px */}
             <div className="flex flex-col items-center gap-[4px]">
               <span
                 className="text-black font-normal"
@@ -163,9 +181,8 @@ export function LeadershipPage() {
               </h2>
             </div>
 
-            {/* Cards — row, space-between, center, width:828px, centered via mx-auto */}
             <div className="flex flex-wrap lg:flex-nowrap justify-center lg:justify-between items-center gap-10 lg:gap-0 w-full lg:max-w-[828px] mx-auto">
-              {EXECUTIVE_LEADERSHIP.map((member, index) => (
+              {executives.map((member, index) => (
                 <div
                   key={member.id}
                   className={cn(execVisible ? 'animate-fade-in-up' : 'opacity-0')}
@@ -177,19 +194,10 @@ export function LeadershipPage() {
             </div>
           </div>
 
-          {/* ══════════════════════════════════════════════════
-              3. SEPARATOR — gradient stroke line
-          ══════════════════════════════════════════════════ */}
           <div className="w-full" style={{ height: '1px', background: SEPARATOR_GRADIENT }} />
         </div>
       </Container>
 
-      {/* ══════════════════════════════════════════════════
-          4. CONTINENTAL DIRECTORS — full viewport width
-             Outer: column, center, gap:60px, alignSelf:stretch
-             Header area (Frame 2071857647): column, center, gap:40px, width:1114
-             Cards row (Frame 2071857648): row, center, gap:32px, alignSelf:stretch
-      ══════════════════════════════════════════════════ */}
       <div
         ref={directorsRef as React.RefObject<HTMLDivElement>}
         className={cn(
@@ -197,9 +205,7 @@ export function LeadershipPage() {
           directorsVisible ? 'animate-fade-in-up' : 'opacity-0'
         )}
       >
-        {/* Header + tabs — column, center, gap:40px */}
         <Container className="flex flex-col items-center gap-[40px]">
-          {/* Heading */}
           <h2
             className="font-semibold text-black text-center"
             style={{
@@ -211,9 +217,7 @@ export function LeadershipPage() {
             Continental Directors
           </h2>
 
-          {/* Filter tabs — column, gap:24px */}
           <div className="flex flex-col items-stretch gap-[24px] w-full">
-            {/* Continent pills — row, center, gap:24px, padding:16px 32px each */}
             <div className="flex flex-wrap justify-center gap-3 lg:gap-[24px]">
               {CONTINENTS.map((continent) => (
                 <button
@@ -237,7 +241,6 @@ export function LeadershipPage() {
               ))}
             </div>
 
-            {/* Sub-region tabs — row, center, gap:40px (only for Asia) */}
             {activeContinent === 'Asia' && (
               <div className="flex flex-wrap justify-center gap-4 lg:gap-[40px]">
                 {ASIA_REGIONS.map((region) => (
@@ -265,7 +268,6 @@ export function LeadershipPage() {
           </div>
         </Container>
 
-        {/* Cards row — grid-cols-5 when full, flex centered when sparse */}
         {visibleDirectors.length > 0 ? (
           <>
             <Container className={cn(

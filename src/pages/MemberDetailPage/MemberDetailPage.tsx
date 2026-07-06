@@ -1,4 +1,7 @@
+// src/pages/MemberDetailPage/MemberDetailPage.tsx
 import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Spin } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { SDGTag } from '@/components/ui/SDGTag';
 import { SocialLinks } from '@/components/common/SocialLinks';
@@ -7,28 +10,56 @@ import { ImageGallery } from '@/components/common/ImageGallery';
 import { SupportQRCode } from '@/components/common/SupportQRCode';
 import { CTABanner } from '@/components/common/CTABanner';
 import { SectionHeading } from '@/components/common/SectionHeading';
-import { MEMBERS_DATA, PROJECTS_DATA } from '@/data';
+import { StrapiService } from '@/lib/strapi';
 import { useJoinNavigation } from '@/hooks';
+import type { Member, Project } from '@/types';
 
 export function MemberDetailPage() {
   const { memberId } = useParams<{ memberId: string }>();
   const goToJoin = useJoinNavigation();
-  const member = MEMBERS_DATA.find((m) => m.id === memberId);
+  
+  const [member, setMember] = useState<Member | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!member) {
+  useEffect(() => {
+    if (!memberId) return;
+
+    Promise.all([
+      StrapiService.getMemberById(memberId),
+      StrapiService.getProjects()
+    ])
+      .then(([memberData, allProjects]) => {
+        setMember(memberData);
+        const memberProjects = allProjects.filter((p) => p.memberId === memberId);
+        setProjects(memberProjects);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError('Không tìm thấy thông tin tổ chức.');
+        setLoading(false);
+      });
+  }, [memberId]);
+
+  if (loading) {
+    return (
+      <div className="py-20 text-center">
+        <Spin size="large" tip="Đang tải thông tin chi tiết..." />
+      </div>
+    );
+  }
+
+  if (error || !member) {
     return (
       <Container className="py-section text-center">
-        <h2 className="text-h2 font-bold text-neutral-900">Member Not Found</h2>
-        <p className="mt-2 text-neutral-600">The organization you're looking for doesn't exist.</p>
+        <h2 className="text-h2 font-bold text-neutral-900">Không tìm thấy tổ chức</h2>
+        <p className="mt-2 text-neutral-600">{error || 'Tổ chức thành viên không tồn tại hoặc đã bị gỡ bỏ.'}</p>
       </Container>
     );
   }
 
-  const memberProjects = PROJECTS_DATA.filter((p) => member.projectIds.includes(p.id));
-  const relatedProjects = [
-    ...memberProjects,
-    ...PROJECTS_DATA.filter((p) => !member.projectIds.includes(p.id)),
-  ].slice(0, 3);
   const supportValue = member.donationQrUrl ?? member.socialLinks[0]?.url ?? `https://youthorgunion.org/members/${member.id}`;
 
   return (
@@ -55,7 +86,7 @@ export function MemberDetailPage() {
                   lineHeight: '140%',
                 }}
               >
-                {member.country} &nbsp;·&nbsp; {member.shortDescription.split(' ').slice(0, 3).join(' ')} &nbsp;·&nbsp; Member since:{' '}
+                {member.country} &nbsp;·&nbsp; {member.shortDescription} &nbsp;·&nbsp; Thành viên từ:{' '}
                 {member.period?.split(' ')[0] ?? '2021'}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
@@ -87,7 +118,7 @@ export function MemberDetailPage() {
               className="mb-6 font-semibold text-black"
               style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(1.5rem, 2.29vw, 2.75rem)', lineHeight: '140%' }}
             >
-              About Organization
+              Về tổ chức
             </h2>
             <p className="leading-relaxed text-neutral-700">{member.description}</p>
             {member.socialLinks.length > 0 && <SocialLinks links={member.socialLinks} className="mt-4" />}
@@ -98,17 +129,17 @@ export function MemberDetailPage() {
               className="mb-6 font-semibold text-black"
               style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(1.5rem, 2.29vw, 2.75rem)', lineHeight: '140%' }}
             >
-              Representative
+              Đại diện tổ chức
             </h2>
             <p className="leading-relaxed text-neutral-700">{member.leader ?? 'TBD'}</p>
           </div>
         </div>
 
-        {relatedProjects.length > 0 && (
+        {projects.length > 0 && (
           <div className="mb-10">
-            <SectionHeading title="Our Projects" align="left" />
+            <SectionHeading title="Dự án của chúng tôi" align="left" />
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {relatedProjects.map((project) => (
+              {projects.map((project) => (
                 <ProjectCard key={project.id} project={project} />
               ))}
             </div>
@@ -117,7 +148,7 @@ export function MemberDetailPage() {
 
         {member.gallery.length > 0 && (
           <div className="mb-10">
-            <SectionHeading title="Activities" align="left" />
+            <SectionHeading title="Hoạt động nổi bật" align="left" />
             <ImageGallery images={member.gallery} maxVisible={7} variant="featured" />
           </div>
         )}

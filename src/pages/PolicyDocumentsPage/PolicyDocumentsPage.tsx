@@ -1,11 +1,12 @@
-import { useState, useMemo } from 'react';
-import { Empty } from 'antd';
+// src/pages/PolicyDocumentsPage/PolicyDocumentsPage.tsx
+import { useState, useMemo, useEffect } from 'react';
+import { Empty, Spin } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { DocumentRow } from '@/components/common/DocumentRow';
 import { cn } from '@/lib/utils';
-import { DOCUMENTS_DATA } from '@/data';
-import type { DocCategory } from '@/types';
+import { StrapiService } from '@/lib/strapi';
+import type { DocumentItem, DocCategory } from '@/types';
 
 const CATEGORIES: { key: DocCategory | 'all'; label: string }[] = [
   { key: 'all', label: 'All Documents' },
@@ -15,14 +16,31 @@ const CATEGORIES: { key: DocCategory | 'all'; label: string }[] = [
 ];
 
 export function PolicyDocumentsPage() {
+  const [documents, setDocuments] = useState<DocumentItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<DocCategory | 'all'>('all');
+
+  // Fetch documents dynamically from Strapi
+  useEffect(() => {
+    StrapiService.getDocuments()
+      .then((data) => {
+        setDocuments(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError('Unable to load documents at this time.');
+        setLoading(false);
+      });
+  }, []);
 
   const filteredDocs = useMemo(
     () =>
       activeCategory === 'all'
-        ? DOCUMENTS_DATA
-        : DOCUMENTS_DATA.filter((d) => d.category === activeCategory),
-    [activeCategory]
+        ? documents
+        : documents.filter((d) => d.category === activeCategory),
+    [documents, activeCategory]
   );
 
   return (
@@ -62,13 +80,22 @@ export function PolicyDocumentsPage() {
             })}
           </aside>
 
-          {/* Document list */}
+          {/* Document list with loaders and error states */}
           <div className="divide-y divide-neutral-200">
-            {filteredDocs.map((doc) => (
-              <DocumentRow key={doc.id} document={doc} />
-            ))}
-            {filteredDocs.length === 0 && (
+            {loading ? (
+              <div className="py-12 text-center">
+                <Spin size="large" tip="Loading documents..." />
+              </div>
+            ) : error ? (
+              <div className="py-12 text-center text-red-500">
+                <p>{error}</p>
+              </div>
+            ) : filteredDocs.length === 0 ? (
               <Empty description="No documents in this category." className="py-8" />
+            ) : (
+              filteredDocs.map((doc) => (
+                <DocumentRow key={doc.id} document={doc} />
+              ))
             )}
           </div>
         </div>

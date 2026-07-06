@@ -1,14 +1,11 @@
+// src/pages/AboutPage/AboutPage.tsx
+import { useState, useEffect } from 'react';
 import { Container } from '@/components/ui/Container';
 import { CTABanner } from '@/components/common/CTABanner';
 import { Icon } from '@/components/ui/Icon';
 import { useJoinNavigation } from '@/hooks';
-
-const STATS = [
-  { label: 'Member Organizations', value: '+50' },
-  { label: 'Continents', value: '+6' },
-  { label: 'Countries', value: '+30' },
-  { label: 'Volunteers from Global', value: '+1 500' },
-];
+import { StrapiService } from '@/lib/strapi';
+import type { StatItem } from '@/types';
 
 const MISSIONS = [
   {
@@ -67,6 +64,22 @@ const ABOUT_SECTION_TITLE_CLASS = 'font-heading text-[clamp(1.75rem,3vw,3rem)] f
 
 export function AboutPage() {
   const goToJoin = useJoinNavigation();
+  const [stats, setStats] = useState<StatItem[]>([]);
+
+  useEffect(() => {
+    StrapiService.getStatItems()
+      .then((data) => {
+        if (data.length > 0) setStats(data);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  const displayStats = stats.length > 0 ? stats : [
+    { id: 'members', label: 'Member Organizations', value: 50, prefix: '+' },
+    { id: 'continents', label: 'Continents', value: 6, prefix: '+' },
+    { id: 'countries', label: 'Countries', value: 30, prefix: '+' },
+    { id: 'volunteers', label: 'Volunteers from Global', value: 1500, prefix: '+' },
+  ];
 
   return (
     <div className="relative z-10 bg-white">
@@ -81,13 +94,7 @@ export function AboutPage() {
               </span>
             </h1>
             <p className="max-w-[930px] text-[clamp(1rem,1.2vw,1.375rem)] leading-relaxed text-neutral-900">
-              Y.O.U (Your Opportunity – Your Future) is a non-profit organization working in the fields of education,
-              community development, and international cooperation.
-              <br />
-              We aim to create equal opportunities for everyone to learn, develop, and contribute to society.
-              <br />
-              With a passionate team and a wide network of partners, Y.O.U is constantly innovating and acting for a
-              sustainable future, where no one is left behind.
+              Y.O.U is a non-profit organization working in the fields of education, community development, and international cooperation.
             </p>
           </div>
 
@@ -110,16 +117,7 @@ export function AboutPage() {
               </h2>
               <div className="space-y-4 text-sm leading-relaxed text-black md:text-base">
                 <p>
-                  Together We Create Sustainable Value
-                  <br />
-                  Y.O.U was founded on the belief that when we connect, share, and collaborate, we can create positive
-                  and lasting changes for the community.
-                </p>
-                <p>
-                  We are committed to continuously striving to build a solid foundation, where every individual and
-                  organization can find opportunities for growth and together create sustainable value.
-                  <br />
-                  Thank you for accompanying Y.O.U on this meaningful journey.
+                  Together We Create Sustainable Value. Y.O.U was founded on the belief that when we connect, share, and collaborate, we can create positive and lasting changes for the community.
                 </p>
                 <p className="pt-3 font-semibold">
                   Nguyễn Thùy Linh
@@ -134,14 +132,6 @@ export function AboutPage() {
                 alt="A global alliance for youth-led impact"
                 className="h-full w-full object-cover"
               />
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <img
-                  src="/images/common/decor/group.svg"
-                  alt=""
-                  aria-hidden="true"
-                  className="h-auto w-[28%] max-w-[128px] object-contain opacity-20"
-                />
-              </div>
             </div>
           </div>
         </Container>
@@ -151,13 +141,15 @@ export function AboutPage() {
         <Container size="narrow" className="lg:max-w-[1080px]">
           <div className="rounded-2xl bg-[#F2F7FF] px-4 py-6 md:px-8 lg:px-10">
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-0">
-              {STATS.map((stat, index) => (
+              {displayStats.slice(0, 4).map((stat, index) => (
                 <div key={stat.label} className="flex items-center">
                   <div className="flex w-full flex-col items-center text-center">
                     <span className="text-[clamp(0.875rem,1.2vw,1.125rem)] text-neutral-700">{stat.label}</span>
-                    <span className="mt-2 text-[clamp(1.875rem,2.5vw,2.25rem)] font-semibold text-black">{stat.value}</span>
+                    <span className="mt-2 text-[clamp(1.875rem,2.5vw,2.25rem)] font-semibold text-black">
+                      {stat.prefix || ''}{stat.value}{stat.suffix || ''}
+                    </span>
                   </div>
-                  {index < STATS.length - 1 && (
+                  {index < displayStats.length - 1 && (
                     <svg width="24" height="88" viewBox="0 0 24 88" className="hidden lg:block shrink-0" aria-hidden="true">
                       <line x1="20" y1="0" x2="4" y2="88" stroke="#C0D8FF" strokeWidth="1.5" />
                     </svg>

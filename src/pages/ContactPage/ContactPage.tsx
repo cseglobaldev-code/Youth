@@ -1,48 +1,14 @@
-import { useRef, type FormEvent } from 'react';
+// src/pages/ContactPage/ContactPage.tsx
+import { useRef, type FormEvent, useEffect, useState } from 'react';
+import { Spin } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { PillButton } from '@/components/ui/PillButton';
 import { Icon } from '@/components/ui/Icon';
 import { ICONS, SOCIAL_COLORS } from '@/config/icons';
-import { SOCIAL_LINKS } from '@/data/navigation';
+import { StrapiService } from '@/lib/strapi';
+import type { SocialLink } from '@/types';
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
-
-const contactDetails = [
-  {
-    title: 'Address',
-    content: ['No.53, Lane 215, Dinh Cong Thuong, Dinh Cong,', 'Hoang Mai, Hanoi, Vietnam'],
-  },
-  {
-    title: 'Hotline/WhatsApp/Zalo',
-    content: ['(+84) 98.242.1109'],
-  },
-  {
-    title: 'Email',
-    content: ['info@youthorgunion.org'],
-  },
-] as const;
-
-const contactSocialLinks: Array<{
-  platform: 'instagram' | 'facebook' | 'tiktok' | 'youtube';
-  url?: string;
-}> = [
-  {
-    platform: 'instagram',
-    url: SOCIAL_LINKS.find((link) => link.platform === 'instagram')?.url,
-  },
-  {
-    platform: 'facebook',
-    url: SOCIAL_LINKS.find((link) => link.platform === 'facebook')?.url,
-  },
-  {
-    platform: 'tiktok',
-  },
-  {
-    platform: 'youtube',
-    url: SOCIAL_LINKS.find((link) => link.platform === 'youtube')?.url,
-  },
-];
-
 const inputClasses =
   'h-14 w-full rounded-[16px] border border-[#D9D9D9] bg-white px-4 text-base text-[#151515] outline-none transition focus:border-[#EE334E] focus:ring-2 focus:ring-[#EE334E]/10';
 
@@ -52,10 +18,42 @@ const socialItemClasses =
 
 export function ContactPage() {
   const formRef = useRef<HTMLFormElement>(null);
+  const [globalSetting, setGlobalSetting] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    StrapiService.getGlobalSetting()
+      .then((data) => {
+        setGlobalSetting(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setLoading(false);
+      });
+  }, []);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
   };
+
+  if (loading) {
+    return (
+      <div className="py-20 text-center">
+        <Spin size="large" tip="Loading contact panel..." />
+      </div>
+    );
+  }
+
+  // Fallbacks in case the Single Type has not been completely published on backend yet
+  const email = globalSetting?.email || 'info@youthorgunion.org';
+  const phone = globalSetting?.phone || '(+84) 98.242.1109';
+  const address = globalSetting?.address || 'Hoang Mai, Hanoi, Vietnam';
+  const socialLinks: SocialLink[] = globalSetting?.socialLinks || [
+    { platform: 'instagram', url: '#' },
+    { platform: 'facebook', url: '#' },
+    { platform: 'youtube', url: '#' },
+  ];
 
   return (
     <div className="relative z-10 pb-16 pt-10 md:pb-24 md:pt-16 lg:pb-[120px] lg:pt-[96px]" style={FONT}>
@@ -88,28 +86,14 @@ export function ContactPage() {
                 <label htmlFor="contact-email" className={labelClasses}>
                   Email Address <span className="text-[#EE334E]">*</span>
                 </label>
-                <input
-                  id="contact-email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  className={inputClasses}
-                />
+                <input id="contact-email" name="email" type="email" autoComplete="email" required className={inputClasses} />
               </div>
 
               <div>
                 <label htmlFor="contact-phone" className={labelClasses}>
                   Phone number <span className="text-[#EE334E]">*</span>
                 </label>
-                <input
-                  id="contact-phone"
-                  name="phone"
-                  type="tel"
-                  autoComplete="tel"
-                  required
-                  className={inputClasses}
-                />
+                <input id="contact-phone" name="phone" type="tel" autoComplete="tel" required className={inputClasses} />
               </div>
 
               <div>
@@ -134,7 +118,6 @@ export function ContactPage() {
               />
             </div>
 
-            <button type="submit" className="hidden" aria-hidden="true" tabIndex={-1} />
             <PillButton
               variant="solid"
               size="lg"
@@ -154,46 +137,41 @@ export function ContactPage() {
               </h2>
 
               <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-                {contactDetails.map((item) => (
-                  <div key={item.title} className="min-w-0">
-                    <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515]">{item.title}</h3>
-                    <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515]">
-                      {item.content.map((line) =>
-                        item.title === 'Email' ? (
-                          <p key={line}>
-                            <a href={`mailto:${line}`} className="break-all hover:text-[#EE334E]">
-                              {line}
-                            </a>
-                          </p>
-                        ) : item.title === 'Hotline/WhatsApp/Zalo' ? (
-                          <p key={line}>
-                            <a href="tel:+84982421109" className="hover:text-[#EE334E]">
-                              {line}
-                            </a>
-                          </p>
-                        ) : (
-                          <p key={line}>{line}</p>
-                        )
-                      )}
-                    </div>
+                <div>
+                  <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515]">Address</h3>
+                  <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515]">
+                    <p>{address}</p>
                   </div>
-                ))}
+                </div>
+
+                <div>
+                  <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515]">Hotline/WhatsApp/Zalo</h3>
+                  <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515]">
+                    <p>
+                      <a href={`tel:${phone}`} className="hover:text-[#EE334E]">
+                        {phone}
+                      </a>
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515]">Email</h3>
+                  <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515]">
+                    <p>
+                      <a href={`mailto:${email}`} className="break-all hover:text-[#EE334E]">
+                        {email}
+                      </a>
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
             <div className="border-t border-[#F6CDD5] bg-[#FFF1F4] px-6 py-4 md:px-10 lg:px-[30px]">
               <div className="flex flex-wrap items-center gap-5">
-                {contactSocialLinks.map((link) => {
+                {socialLinks.map((link) => {
                   const icon = <Icon name={ICONS[link.platform]} size={16} color={SOCIAL_COLORS[link.platform]} />;
-
-                  if (!link.url) {
-                    return (
-                      <span key={link.platform} aria-label={link.platform} className={socialItemClasses}>
-                        {icon}
-                      </span>
-                    );
-                  }
-
                   return (
                     <a
                       key={link.platform}

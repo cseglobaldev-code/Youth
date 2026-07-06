@@ -1,16 +1,17 @@
-import { useState } from 'react';
+// src/components/sections/home/AboutSection.tsx
+import { useState, useEffect } from 'react';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { Image } from 'antd';
 import { ROUTES } from '@/routes/paths';
+import { StrapiService } from '@/lib/strapi';
+import type { StatItem } from '@/types';
 
 type AboutItem = {
   id: 'vision' | 'mission' | 'approach' | 'why';
   title: string;
   color: string;
   description: string;
-  // Tạm thời dùng chung ảnh hiện tại cho các tab khác (chưa có ảnh riêng).
-  // Khi có ảnh thật, chỉ cần thay đổi field `image` này.
   image: string;
 };
 
@@ -23,17 +24,31 @@ const ABOUT_ITEMS: AboutItem[] = [
 
 export function AboutSection() {
   const [activeId, setActiveId] = useState<AboutItem['id']>('vision');
+  const [stats, setStats] = useState<StatItem[]>([]);
+
+  useEffect(() => {
+    StrapiService.getStatItems()
+      .then((data) => {
+        if (data.length > 0) setStats(data);
+      })
+      .catch((err) => console.error('Error fetching stats:', err));
+  }, []);
 
   const activeItem = ABOUT_ITEMS.find((item) => item.id === activeId) ?? ABOUT_ITEMS[0];
 
+  // Fallbacks in case CMS is not populated yet
+  const displayStats = stats.length > 0 ? stats : [
+    { id: 'members', label: 'Member Organizations', value: 50, prefix: '+' },
+    { id: 'continents', label: 'Continents', value: 6, prefix: '+' },
+    { id: 'countries', label: 'Countries', value: 30, prefix: '+' },
+    { id: 'volunteers', label: 'Volunteers from Global', value: 1500, prefix: '+' },
+  ];
+
   return (
     <>
-      {/* Part 1: SDG Goals + CTA + Stats — white background */}
       <section className="pt-0 pb-12 md:pb-16 lg:pb-20 bg-white">
         <Container>
-          {/* SDG Goals logo + text + CTA — 2 columns */}
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 lg:gap-12">
-            {/* Left: SDG logo */}
             <div className="flex-shrink-0">
               <Image
                 src="/images/home/about/sdg-goals-logo.png"
@@ -43,12 +58,9 @@ export function AboutSection() {
                 style={{ width: 'auto', objectFit: 'contain' }}
               />
             </div>
-            {/* Right: text + CTA */}
             <div className="flex flex-col items-center sm:items-start gap-6 max-w-[560px] w-full">
               <p className="text-neutral-700 text-[clamp(1rem,1.56vw,1.5rem)] font-normal leading-relaxed" style={{ fontFamily: 'Inter, sans-serif' }}>
-                Y.O.U is a coalition of youth organizations united by a shared commitment to the UN
-                Sustainable Development Goals - building bridges across borders, cultures, and
-                generations.
+                Y.O.U is a coalition of youth organizations united by a shared commitment to the UN Sustainable Development Goals.
               </p>
               <Button as="router-link" to={ROUTES.MEMBERS} variant="primary" size="lg" className="w-full justify-center bg-[#EE334E] hover:bg-[#d42a43] rounded-full px-6 sm:w-auto sm:px-8 lg:mb-[120px]">
                 Join 1,500+ Youth Leaders
@@ -56,20 +68,14 @@ export function AboutSection() {
             </div>
           </div>
 
-          {/* Stats row */}
           <div className="bg-[#F2F7FF] rounded-3xl lg:rounded-[40px] px-4 sm:px-6 lg:px-10 py-6 lg:py-10 mt-10 lg:mt-0">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-0">
-              {[
-                { label: 'Member Organizations', value: '+50' },
-                { label: 'Continents', value: '+6' },
-                { label: 'Countries', value: '+30' },
-                { label: 'Volunteers from Global', value: '+1 500' },
-              ].map((stat, i, arr) => (
+              {displayStats.slice(0, 4).map((stat, i, arr) => (
                 <div key={stat.label} className="flex items-center min-w-0">
                   <div className="flex flex-col items-center text-center w-full py-2">
                     <span className="text-neutral-500 text-[clamp(0.875rem,1.56vw,1.5rem)] font-normal" style={{ fontFamily: 'Open Sans, sans-serif' }}>{stat.label}</span>
                     <span className="font-semibold text-[clamp(1.75rem,3.13vw,3rem)] text-[#1E293B]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                      {stat.value}
+                      {stat.prefix || ''}{stat.value}{stat.suffix || ''}
                     </span>
                   </div>
                   {i < arr.length - 1 && (
@@ -87,7 +93,6 @@ export function AboutSection() {
       {/* Part 2: About Vision */}
       <section className="py-12 md:py-16 lg:py-24 bg-white">
         <Container>
-          {/* Heading */}
           <div className="text-left mb-8 lg:mb-12">
             <h2 className="font-heading font-semibold text-[clamp(1.75rem,3.13vw,3rem)] leading-tight">
               <span className="text-neutral-900">A Global Alliance for </span>
@@ -97,17 +102,13 @@ export function AboutSection() {
             </h2>
           </div>
 
-          {/* Content: tab list left + image right */}
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-            {/* Left: tab list */}
             <div className="min-w-0 flex-1 max-w-full lg:max-w-[602px]">
               {ABOUT_ITEMS.map((item, index) => {
                 const isActive = item.id === activeId;
-                // Không hiển thị line ngăn cách dưới tab cuối cùng ("Why join us").
                 const isLast = index === ABOUT_ITEMS.length - 1;
                 return (
                   <div key={item.id}>
-                    {/* Tab */}
                     <button
                       type="button"
                       onClick={() => setActiveId(item.id)}
@@ -122,7 +123,6 @@ export function AboutSection() {
                           {item.title}
                         </h4>
                       </div>
-                      {/* Mô tả hiển thị ngay dưới tab đang chọn */}
                       {isActive && (
                         <p className="text-neutral-600 text-[clamp(1rem,1.30vw,1.25rem)] font-normal leading-relaxed pl-[52px] sm:pl-[68px] pr-2 pb-3">
                           {item.description}
@@ -130,9 +130,6 @@ export function AboutSection() {
                       )}
                     </button>
 
-                    {/* Đường ngăn cách dưới mỗi tab (trừ tab cuối "Why join us"):
-                        - Tab đang chọn (isActive): line gradient đỏ → cam → xanh
-                        - Tab chưa chọn: đường chấm (dotted) xám nhạt như ảnh thiết kế */}
                     {!isLast && (
                       isActive ? (
                         <div
@@ -161,7 +158,6 @@ export function AboutSection() {
               })}
             </div>
 
-            {/* Right: image thay đổi theo tab đang chọn (tạm dùng chung ảnh) */}
             <div className="w-full min-w-0 flex-1 lg:basis-[52%] xl:max-w-[702px]">
               <div className="rounded-2xl overflow-hidden aspect-[702/513] relative">
                 <Image
@@ -173,16 +169,6 @@ export function AboutSection() {
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   wrapperStyle={{ width: '100%', height: '100%' }}
                 />
-                {/* Logo overlay */}
-                <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                  <img
-                    src="/images/common/decor/group.svg"
-                    alt=""
-                    aria-hidden="true"
-                    className="w-[18%] h-auto object-contain opacity-20"
-                    style={{ marginTop: '15%', marginLeft: '5%' }}
-                  />
-                </div>
               </div>
             </div>
           </div>

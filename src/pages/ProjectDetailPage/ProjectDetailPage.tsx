@@ -1,22 +1,24 @@
+// src/pages/ProjectDetailPage/ProjectDetailPage.tsx
 import { useParams } from 'react-router-dom';
-import { Divider, Image } from "antd";
-import { Icon } from "@/components/ui/Icon";
-import { ProjectCard } from "@/components/common/ProjectCard";
-import { SupportQRCode } from "@/components/common/SupportQRCode";
-import { SDGTag } from "@/components/ui/SDGTag";
-import { Container } from "@/components/ui/Container";
-import { PROJECTS_DATA, MEMBERS_DATA } from "@/data";
-import { cn } from "@/lib/utils";
-import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useEffect, useState, useMemo } from 'react';
+import { Divider, Image, Spin } from 'antd';
+import { Icon } from '@/components/ui/Icon';
+import { ProjectCard } from '@/components/common/ProjectCard';
+import { SupportQRCode } from '@/components/common/SupportQRCode';
+import { SDGTag } from '@/components/ui/SDGTag';
+import { Container } from '@/components/ui/Container';
+import { StrapiService } from '@/lib/strapi';
+import { cn } from '@/lib/utils';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
+import type { Project, Member } from '@/types';
 
-// ─── Social icons via @iconify/react ─────────────────────────────────────────
 const SOCIAL_ICON_MAP: Record<string, string> = {
-  youtube: "mdi:youtube",
-  facebook: "mdi:facebook",
-  twitter: "fa6-brands:x-twitter",
-  instagram: "mdi:instagram",
-  linkedin: "mdi:linkedin",
-  tiktok: "ic:baseline-tiktok",
+  youtube: 'mdi:youtube',
+  facebook: 'mdi:facebook',
+  twitter: 'fa6-brands:x-twitter',
+  instagram: 'mdi:instagram',
+  linkedin: 'mdi:linkedin',
+  tiktok: 'ic:baseline-tiktok',
 };
 
 interface DetailRowProps {
@@ -31,11 +33,11 @@ function DetailRow({ label, uploadLink, children }: DetailRowProps) {
       <div className="flex-shrink-0 w-[120px] sm:w-[140px] lg:w-[220px] xl:w-[300px]">
         <span
           style={{
-            fontFamily: "Open Sans, sans-serif",
+            fontFamily: 'Open Sans, sans-serif',
             fontWeight: 400,
-            fontSize: "clamp(0.8rem, 1.04vw, 1.25rem)",
-            lineHeight: "140%",
-            color: "#151515",
+            fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
+            lineHeight: '140%',
+            color: '#151515',
           }}
         >
           {label}
@@ -47,11 +49,11 @@ function DetailRow({ label, uploadLink, children }: DetailRowProps) {
           href="#"
           className="flex-shrink-0 flex items-center gap-1 ml-2 lg:ml-6 hover:opacity-75 transition-opacity"
           style={{
-            fontFamily: "Open Sans, sans-serif",
+            fontFamily: 'Open Sans, sans-serif',
             fontWeight: 600,
-            fontSize: "clamp(0.8rem, 1.04vw, 1.25rem)",
-            color: "#EE334E",
-            textDecoration: "none",
+            fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
+            color: '#EE334E',
+            textDecoration: 'none',
           }}
         >
           <span className="hidden sm:inline">Link to upload</span>
@@ -63,140 +65,156 @@ function DetailRow({ label, uploadLink, children }: DetailRowProps) {
 }
 
 const VALUE_STYLE: React.CSSProperties = {
-  fontFamily: "Open Sans, sans-serif",
+  fontFamily: 'Open Sans, sans-serif',
   fontWeight: 500,
-  fontSize: "clamp(0.8rem, 1.04vw, 1.25rem)",
-  lineHeight: "140%",
-  color: "#000000",
+  fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
+  lineHeight: '140%',
+  color: '#000000',
 };
 
 const GRADIENT_DIVIDER =
-  "linear-gradient(90deg, rgba(194,211,239,0) 0%, rgba(194,211,239,1) 20%, rgba(194,211,239,1) 80%, rgba(194,211,239,0) 100%)";
+  'linear-gradient(90deg, rgba(194,211,239,0) 0%, rgba(194,211,239,1) 20%, rgba(194,211,239,1) 80%, rgba(194,211,239,0) 100%)';
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
 export function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  const project = PROJECTS_DATA.find((p) => p.id === projectId);
+
+  const [project, setProject] = useState<Project | null>(null);
+  const [member, setMember] = useState<Member | null>(null);
+  const [allProjects, setAllProjects] = useState<Project[]>([]);
+  const [membersList, setMembersList] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const { ref: orgRef, visible: orgVisible } = useScrollReveal();
   const { ref: detailRef, visible: detailVisible } = useScrollReveal();
   const { ref: otherRef, visible: otherVisible } = useScrollReveal();
 
-  if (!project) {
+  useEffect(() => {
+    if (!projectId) return;
+
+    Promise.all([
+      StrapiService.getProjectById(projectId),
+      StrapiService.getProjects(),
+      StrapiService.getMembers()
+    ])
+      .then(([projData, projectList, memberList]) => {
+        setProject(projData);
+        setAllProjects(projectList);
+        setMembersList(memberList);
+        
+        if (projData.memberId) {
+          const associatedMember = memberList.find((m: Member) => m.id === projData.memberId);
+          if (associatedMember) setMember(associatedMember);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError('Không tìm thấy thông tin dự án.');
+        setLoading(false);
+      });
+  }, [projectId]);
+
+  const memberMap = useMemo(() => {
+    return Object.fromEntries(membersList.map((m) => [m.id, m.name]));
+  }, [membersList]);
+
+  const otherProjects = useMemo(() => {
+    if (!project) return [];
+    return allProjects.filter((p) => p.id !== project.id).slice(0, 3);
+  }, [allProjects, project]);
+
+  if (loading) {
     return (
       <div className="py-20 text-center">
-        <h2 className="text-2xl font-bold text-neutral-900">
-          Project Not Found
-        </h2>
+        <Spin size="large" tip="Đang tải chi tiết dự án..." />
       </div>
     );
   }
 
-  const member = MEMBERS_DATA.find((m) => m.id === project.memberId);
-  const MEMBER_MAP = Object.fromEntries(
-    MEMBERS_DATA.map((m) => [m.id, m.name]),
-  );
-  const otherProjects = PROJECTS_DATA.filter((p) => p.id !== project.id).slice(
-    0,
-    3,
-  );
+  if (error || !project) {
+    return (
+      <Container className="py-section text-center">
+        <h2 className="text-h2 font-bold text-neutral-900">Không tìm thấy dự án</h2>
+        <p className="mt-2 text-neutral-600">{error || 'Dự án này không tồn tại hoặc đã bị gỡ bỏ.'}</p>
+      </Container>
+    );
+  }
 
-  const qrValue =
-    member?.socialLinks?.[0]?.url ??
-    `https://youthorgunion.org/projects/${project.id}`;
+  const qrValue = member?.socialLinks?.[0]?.url ?? `https://youthorgunion.org/projects/${project.id}`;
 
   return (
     <div>
-      {/* ── Hero: title (left) + QR section (right) ── */}
       <Container>
         <div className="pt-10 lg:pt-[120px] flex flex-col md:flex-row md:items-start md:justify-between gap-4 lg:gap-8 xl:gap-10">
-        {/* Left — title + meta + SDG tags */}
-        <div className="flex flex-col gap-4 lg:gap-6 min-w-0 flex-1 xl:max-w-[1024px] animate-fade-in-up">
-          <h1
-            className="font-semibold text-black"
-            style={{
-              fontFamily: "Open Sans, sans-serif",
-              fontSize: "clamp(2rem, 4.17vw, 5rem)",
-              lineHeight: "110%",
-            }}
-          >
-            {project.name}
-          </h1>
-
-          <div className="flex flex-col gap-3 lg:gap-4">
-            <p
+          <div className="flex flex-col gap-4 lg:gap-6 min-w-0 flex-1 xl:max-w-[1024px] animate-fade-in-up">
+            <h1
+              className="font-semibold text-black"
               style={{
-                fontFamily: "Open Sans, sans-serif",
-                fontWeight: 400,
-                fontSize: "clamp(0.9375rem, 1.25vw, 1.5rem)",
-                lineHeight: "140%",
-                color: "#151515",
+                fontFamily: 'Open Sans, sans-serif',
+                fontSize: 'clamp(2rem, 4.17vw, 5rem)',
+                lineHeight: '110%',
               }}
             >
-              {project.countriesCovered.join(", ")} &nbsp;·&nbsp; Led by{" "}
-              {member?.name}
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {project.focusSdgs.map((sdgId) => (
-                <SDGTag
-                  key={sdgId}
-                  sdgId={sdgId}
-                  variant="solid"
-                  size="md"
-                  className="!rounded-[6px] transition-transform duration-200 hover:scale-105"
-                  style={{
-                    padding: "clamp(6px,0.5vw,10px) clamp(12px,1.25vw,24px)",
-                    fontSize: "clamp(0.75rem, 1.04vw, 1.25rem)",
-                  }}
-                />
-              ))}
+              {project.name}
+            </h1>
+
+            <div className="flex flex-col gap-3 lg:gap-4">
+              <p
+                style={{
+                  fontFamily: 'Open Sans, sans-serif',
+                  fontWeight: 400,
+                  fontSize: 'clamp(0.9375rem, 1.25vw, 1.5rem)',
+                  lineHeight: '140%',
+                  color: '#151515',
+                }}
+              >
+                {project.countriesCovered.join(', ')} &nbsp;·&nbsp; Led by {member?.name || 'TBD'}
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {project.focusSdgs.map((sdgId) => (
+                  <SDGTag
+                    key={sdgId}
+                    sdgId={sdgId}
+                    variant="solid"
+                    size="md"
+                    className="!rounded-[6px] transition-transform duration-200 hover:scale-105"
+                  />
+                ))}
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Right — QR section (only shown at xl+; below xl stacks below title naturally) */}
-        <SupportQRCode value={qrValue} />
+          <SupportQRCode value={qrValue} />
         </div>
       </Container>
 
-      {/* ── Hero image ── */}
       <Container className="mt-6 lg:mt-[74px] mb-8 lg:mb-[120px]">
-        <div
-          className="rounded-[20px] lg:rounded-[40px] overflow-hidden"
-          style={{
-            background: "#0068A5",
-            height: "clamp(240px, 32.7vw, 628px)",
-          }}
-        >
+        <div className="rounded-[20px] lg:rounded-[40px] overflow-hidden" style={{ height: 'clamp(240px, 32.7vw, 628px)' }}>
           <Image
             src={project.outstandingImageUrl}
             alt={project.name}
             preview={false}
             className="w-full h-full object-cover"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            wrapperStyle={{ width: "100%", height: "100%" }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            wrapperStyle={{ width: '100%', height: '100%' }}
           />
         </div>
       </Container>
 
-      {/* ── Main content ── */}
       <Container className="pb-10 lg:pb-[175px]">
         <div className="flex flex-col gap-10 lg:gap-[80px]">
-          {/* Organization */}
           <div
             ref={orgRef as React.RefObject<HTMLDivElement>}
-            className={cn(
-              "max-w-[746px] transition-all duration-700",
-              orgVisible ? "animate-fade-in-up" : "opacity-0",
-            )}
+            className={cn('max-w-[746px] transition-all duration-700', orgVisible ? 'animate-fade-in-up' : 'opacity-0')}
           >
             <div className="flex flex-col gap-4 lg:gap-6">
               <h2
                 className="font-semibold text-black"
                 style={{
-                  fontFamily: "Open Sans, sans-serif",
-                  fontSize: "clamp(1.5rem, 2.29vw, 2.75rem)",
-                  lineHeight: "140%",
+                  fontFamily: 'Open Sans, sans-serif',
+                  fontSize: 'clamp(1.5rem, 2.29vw, 2.75rem)',
+                  lineHeight: '140%',
                 }}
               >
                 Organization
@@ -204,11 +222,11 @@ export function ProjectDetailPage() {
               {member?.description && (
                 <p
                   style={{
-                    fontFamily: "Open Sans, sans-serif",
+                    fontFamily: 'Open Sans, sans-serif',
                     fontWeight: 400,
-                    fontSize: "clamp(0.875rem, 1.04vw, 1.25rem)",
-                    lineHeight: "150%",
-                    color: "#000000",
+                    fontSize: 'clamp(0.875rem, 1.04vw, 1.25rem)',
+                    lineHeight: '150%',
+                    color: '#000000',
                   }}
                 >
                   {member.description}
@@ -217,8 +235,7 @@ export function ProjectDetailPage() {
               {member?.socialLinks && member.socialLinks.length > 0 && (
                 <div className="flex gap-4 flex-wrap">
                   {member.socialLinks.map((link) => {
-                    const iconName =
-                      SOCIAL_ICON_MAP[link.platform.toLowerCase()];
+                    const iconName = SOCIAL_ICON_MAP[link.platform.toLowerCase()];
                     if (!iconName) return null;
                     return (
                       <a
@@ -237,16 +254,11 @@ export function ProjectDetailPage() {
             </div>
           </div>
 
-          {/* Gradient divider */}
           <Divider style={{ background: GRADIENT_DIVIDER, margin: 0 }} />
 
-          {/* Project detail rows */}
           <div
             ref={detailRef as React.RefObject<HTMLDivElement>}
-            className={cn(
-              "flex flex-col gap-4 lg:gap-6 transition-all duration-700",
-              detailVisible ? "animate-fade-in-up" : "opacity-0",
-            )}
+            className={cn('flex flex-col gap-4 lg:gap-6 transition-all duration-700', detailVisible ? 'animate-fade-in-up' : 'opacity-0')}
           >
             <DetailRow label="Project name">
               <span style={VALUE_STYLE}>{project.name}</span>
@@ -265,9 +277,7 @@ export function ProjectDetailPage() {
             </DetailRow>
 
             <DetailRow label="Countries covered">
-              <span style={VALUE_STYLE}>
-                {project.countriesCovered.join(", ")}
-              </span>
+              <span style={VALUE_STYLE}>{project.countriesCovered.join(', ')}</span>
             </DetailRow>
 
             <DetailRow label="Focus SDGs">
@@ -289,27 +299,22 @@ export function ProjectDetailPage() {
             </DetailRow>
 
             <DetailRow label="Outstanding Project Image" uploadLink>
-              <span style={{ ...VALUE_STYLE, color: "#EE334E" }}>
-                Create new folder with format &ldquo;Project name_Project
-                Image&rdquo;
+              <span style={{ ...VALUE_STYLE, color: '#EE334E' }}>
+                Create new folder with format &ldquo;Project name_Project Image&rdquo;
               </span>
             </DetailRow>
           </div>
 
-          {/* Other Projects */}
           <div
             ref={otherRef as React.RefObject<HTMLDivElement>}
-            className={cn(
-              "flex flex-col gap-4 lg:gap-6 transition-all duration-700",
-              otherVisible ? "animate-fade-in-up" : "opacity-0",
-            )}
+            className={cn('flex flex-col gap-4 lg:gap-6 transition-all duration-700', otherVisible ? 'animate-fade-in-up' : 'opacity-0')}
           >
             <h2
               className="font-semibold text-black"
               style={{
-                fontFamily: "Open Sans, sans-serif",
-                fontSize: "clamp(1.5rem, 2.29vw, 2.75rem)",
-                lineHeight: "140%",
+                fontFamily: 'Open Sans, sans-serif',
+                fontSize: 'clamp(1.5rem, 2.29vw, 2.75rem)',
+                lineHeight: '140%',
               }}
             >
               Other Projects
@@ -318,12 +323,10 @@ export function ProjectDetailPage() {
               {otherProjects.map((p, index) => (
                 <div
                   key={p.id}
-                  className={cn(
-                    otherVisible ? "animate-fade-in-up" : "opacity-0",
-                  )}
+                  className={cn(otherVisible ? 'animate-fade-in-up' : 'opacity-0')}
                   style={{ animationDelay: `${index * 80}ms` }}
                 >
-                  <ProjectCard project={p} ledBy={MEMBER_MAP[p.memberId]} />
+                  <ProjectCard project={p} ledBy={memberMap[p.memberId] || 'TBD'} />
                 </div>
               ))}
             </div>
