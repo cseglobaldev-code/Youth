@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Modal, Form, Input, Select, Checkbox, Radio, Upload, ConfigProvider } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { PillButton } from '@/components/ui/PillButton';
+import { urlRule, phoneRule, maxWordsRule } from '@/lib/utils';
 
 export interface RegisterOrganizationFormValues {
   // Step 1 — Organization
@@ -32,8 +33,6 @@ export interface RegisterOrganizationFormValues {
   projectStatus: string;
   projectImages?: unknown[];
   projectSocialProfile: string;
-  // Step 3 — Leadership Roles
-  continent: string;
 }
 
 export interface RegisterOrganizationModalProps {
@@ -70,11 +69,9 @@ const SDG_GOALS = [
   'Goal 17. Partnerships for the goals',
 ];
 
-const CONTINENTS = ['Africa', 'Asia', 'Europe', 'Americas', 'Middle East', 'Oceania'];
-
 const PROJECT_STATUSES = ['In Planning', 'Active', 'Ended', 'Inactive'];
 
-const STEP_FIELDS: Record<1 | 2 | 3, (keyof RegisterOrganizationFormValues)[]> = {
+const STEP_FIELDS: Record<1 | 2, (keyof RegisterOrganizationFormValues)[]> = {
   1: [
     'organizationName',
     'organizationDescription',
@@ -104,7 +101,6 @@ const STEP_FIELDS: Record<1 | 2 | 3, (keyof RegisterOrganizationFormValues)[]> =
     'projectImages',
     'projectSocialProfile',
   ],
-  3: ['continent'],
 };
 
 const labelText = (text: string) => <span style={FONT}>{text}</span>;
@@ -120,10 +116,18 @@ export function RegisterOrganizationModal({
   onSubmit,
 }: RegisterOrganizationModalProps) {
   const [form] = Form.useForm<RegisterOrganizationFormValues>();
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [step, setStep] = useState<1 | 2>(1);
   const [submitted, setSubmitted] = useState(false);
 
-  const closeAndReset = () => {
+  // Closing while filling in (X / click outside) keeps entered data and the
+  // current step so the user can resume where they left off when reopening.
+  const close = () => {
+    onClose();
+  };
+
+  // Used by the "Done" button after a successful submit: wipe everything so the
+  // next open starts fresh.
+  const finishAndClose = () => {
     form.resetFields();
     setStep(1);
     setSubmitted(false);
@@ -133,7 +137,7 @@ export function RegisterOrganizationModal({
   const handleNext = async () => {
     try {
       await form.validateFields(STEP_FIELDS[step]);
-      setStep((s) => (s < 3 ? ((s + 1) as 1 | 2 | 3) : s));
+      setStep((s) => (s < 2 ? ((s + 1) as 1 | 2) : s));
     } catch {
       /* validation errors are shown inline by antd */
     }
@@ -147,11 +151,10 @@ export function RegisterOrganizationModal({
   return (
     <Modal
       open={open}
-      onCancel={closeAndReset}
+      onCancel={close}
       footer={null}
       centered
       width="min(760px, calc(100vw - 32px))"
-      destroyOnHidden
       classNames={{ container: '!rounded-[16px] sm:!rounded-[24px] !p-5 sm:!p-[40px]' }}
       styles={{
         body: { maxHeight: 'calc(100vh - 120px)', overflowY: 'auto' },
@@ -168,17 +171,17 @@ export function RegisterOrganizationModal({
             successfully received. Keep an eye on your inbox, as we will update you on the next
             steps soon!
           </p>
-          <PillButton variant="solid" size="lg" fullWidth onClick={closeAndReset}>
-            Register Now
+          <PillButton variant="solid" size="lg" fullWidth onClick={finishAndClose}>
+            Done
           </PillButton>
         </div>
       ) : (
       <>
       <h2 className="font-bold text-[26px] sm:text-[34px] text-[#111111] mb-1" style={FONT}>
-        {step === 3 ? 'Leadership Roles' : 'Membership Registration'}
+        Membership Registration
       </h2>
       <p className="font-semibold text-[16px] sm:text-[18px] text-[#111111] mb-5" style={FONT}>
-        {step === 1 ? 'For Organizations' : step === 2 ? 'Project Information' : 'Continents'}
+        {step === 1 ? 'For Organizations' : 'Project Information'}
       </p>
 
       <ConfigProvider theme={{ token: { controlHeight: 46, borderRadius: 8 } }}>
@@ -212,7 +215,10 @@ export function RegisterOrganizationModal({
             <Form.Item
               label={labelText("Representative's Phone Number")}
               name="representativePhone"
-              rules={[{ required: true, message: 'Please enter phone number' }]}
+              rules={[
+                { required: true, message: 'Please enter phone number' },
+                phoneRule(),
+              ]}
               extra={
                 <span className="italic text-[13px]" style={FONT}>
                   Include country code (e.g., +84 for Vietnam)
@@ -281,7 +287,10 @@ export function RegisterOrganizationModal({
             <Form.Item
               label={labelText('Website')}
               name="website"
-              rules={[{ required: true, message: 'Please enter website' }]}
+              rules={[
+                { required: true, message: 'Please enter website' },
+                urlRule(),
+              ]}
             >
               <Input placeholder="Enter website URL" style={FONT} />
             </Form.Item>
@@ -303,7 +312,7 @@ export function RegisterOrganizationModal({
                 {
                   validator: (_, value: string[]) =>
                     value && value.length > 3
-                      ? Promise.reject(new Error('Phải chọn nhiều nhất 3 tùy chọn'))
+                      ? Promise.reject(new Error('Please select at most 3 options'))
                       : Promise.resolve(),
                 },
               ]}
@@ -323,7 +332,10 @@ export function RegisterOrganizationModal({
             <Form.Item
               label={labelText('Website or Social Media Profile')}
               name="socialProfile"
-              rules={[{ required: true, message: 'Please enter a website or social media profile' }]}
+              rules={[
+                { required: true, message: 'Please enter a website or social media profile' },
+                urlRule(),
+              ]}
             >
               <Input placeholder="Enter link" style={FONT} />
             </Form.Item>
@@ -336,7 +348,7 @@ export function RegisterOrganizationModal({
               rules={[{ required: true, message: 'Please upload an image' }]}
               extra={
                 <span className="italic text-[13px]" style={FONT}>
-                  Tải tối đa 10 tệp được hỗ trợ lên. Mỗi tệp có kích thước tối đa 100 MB.
+                  Upload up to 10 supported files. Each file can be up to 100 MB.
                 </span>
               }
             >
@@ -359,7 +371,7 @@ export function RegisterOrganizationModal({
               rules={[{ required: true, message: 'Please upload a logo' }]}
               extra={
                 <span className="italic text-[13px]" style={FONT}>
-                  Tải tối đa 10 tệp được hỗ trợ lên. Mỗi tệp có kích thước tối đa 100 MB.
+                  Upload up to 10 supported files. Each file can be up to 100 MB.
                 </span>
               }
             >
@@ -402,7 +414,10 @@ export function RegisterOrganizationModal({
               <Form.Item
                 label={labelText('Project Description')}
                 name="projectDescription"
-                rules={[{ required: true, message: 'Please enter project description' }]}
+                rules={[
+                  { required: true, message: 'Please enter project description' },
+                  maxWordsRule(40, 'Please keep the description within 40 words'),
+                ]}
                 extra={<span className="italic text-[13px]" style={FONT}>No more than 40 words</span>}
               >
                 <Input.TextArea rows={2} placeholder="Describe your project" style={FONT} />
@@ -465,7 +480,7 @@ export function RegisterOrganizationModal({
                 {
                   validator: (_, value: string[]) =>
                     value && value.length > 3
-                      ? Promise.reject(new Error('Phải chọn nhiều nhất 3 tùy chọn'))
+                      ? Promise.reject(new Error('Please select at most 3 options'))
                       : Promise.resolve(),
                 },
               ]}
@@ -506,7 +521,7 @@ export function RegisterOrganizationModal({
               rules={[{ required: true, message: 'Please upload at least one image' }]}
               extra={
                 <span className="italic text-[13px]" style={FONT}>
-                  Tải tối đa 10 tệp được hỗ trợ lên. Mỗi tệp có kích thước tối đa 100 MB.
+                  Upload up to 10 supported files. Each file can be up to 100 MB.
                 </span>
               }
             >
@@ -524,7 +539,10 @@ export function RegisterOrganizationModal({
             <Form.Item
               label={labelText('Website or Social Media Profile')}
               name="projectSocialProfile"
-              rules={[{ required: true, message: 'Please enter a website or social media profile' }]}
+              rules={[
+                { required: true, message: 'Please enter a website or social media profile' },
+                urlRule(),
+              ]}
             >
               <Input placeholder="Enter link" style={FONT} />
             </Form.Item>
@@ -533,39 +551,8 @@ export function RegisterOrganizationModal({
               <PillButton variant="outline" size="lg" fullWidth onClick={() => setStep(1)}>
                 Back
               </PillButton>
-              <PillButton variant="solid" size="lg" fullWidth onClick={handleNext}>
-                Next
-              </PillButton>
-            </div>
-          </div>
-
-          {/* STEP 3 — Leadership Roles / Continents */}
-          <div style={{ display: step === 3 ? 'block' : 'none' }}>
-            <h3 className="font-bold text-[20px] sm:text-[22px] text-[#111111] mb-4" style={FONT}>
-              Continents
-            </h3>
-            <Form.Item
-              label={labelText('Continent')}
-              name="continent"
-              rules={[{ required: true, message: 'Please select a continent' }]}
-            >
-              <Radio.Group>
-                <div className="flex flex-col gap-2">
-                  {CONTINENTS.map((c) => (
-                    <Radio key={c} value={c} style={FONT}>
-                      {c}
-                    </Radio>
-                  ))}
-                </div>
-              </Radio.Group>
-            </Form.Item>
-
-            <div className="flex gap-3 mt-2">
-              <PillButton variant="outline" size="lg" fullWidth onClick={() => setStep(2)}>
-                Back
-              </PillButton>
               <PillButton variant="solid" size="lg" fullWidth onClick={() => form.submit()}>
-                Register Now
+                Submit
               </PillButton>
             </div>
           </div>

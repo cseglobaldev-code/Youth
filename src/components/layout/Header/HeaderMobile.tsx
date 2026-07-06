@@ -4,7 +4,8 @@ import { cn } from '@/lib/utils';
 import { Logo } from '@/components/layout/Logo';
 import { Icon } from '@/components/ui/Icon';
 import { ICONS } from '@/config/icons';
-import { useDisclosure, useJoinNavigation } from '@/hooks';
+import { useDisclosure } from '@/hooks';
+import { useJoinModal } from '@/components/common/JoinModal';
 import { NAV_ITEMS } from '@/data';
 import type { NavItem } from '@/types';
 
@@ -17,11 +18,11 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
   const items = navItems ?? NAV_ITEMS;
   const { pathname } = useLocation();
   const { isOpen, open, close } = useDisclosure();
-  const goToJoin = useJoinNavigation();
+  const { openJoin } = useJoinModal();
 
-  const handleJoinClick = () => {
+  const handleDrawerJoinClick = () => {
     close();
-    goToJoin();
+    openJoin();
   };
 
   return (
@@ -57,7 +58,7 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
 
         <button
           type="button"
-          onClick={goToJoin}
+          onClick={openJoin}
           className="mt-2 w-full whitespace-nowrap rounded-full bg-[#EE334E] px-4 py-3 text-[15px] font-semibold text-white transition-opacity hover:opacity-90 active:scale-[0.99] sm:text-base"
           style={{ fontFamily: 'Open Sans, sans-serif' }}
         >
@@ -99,7 +100,7 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
         <div className="mt-6 border-t border-neutral-100 pt-4">
           <button
             type="button"
-            onClick={handleJoinClick}
+            onClick={handleDrawerJoinClick}
             className="w-full rounded-full bg-[#EE334E] px-4 py-3 text-[15px] font-semibold text-white transition-opacity hover:opacity-90 sm:text-[16px]"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
