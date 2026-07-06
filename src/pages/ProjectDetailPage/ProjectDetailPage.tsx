@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { Divider, Image } from "antd";
 import { Icon } from "@/components/ui/Icon";
 import { ProjectCard } from "@/components/common/ProjectCard";
-import { SupportQRCode } from "@/components/common/SupportQRCode";
+import { SupportCTA } from "@/components/common/SupportCTA";
 import { SDGTag } from "@/components/ui/SDGTag";
 import { Container } from "@/components/ui/Container";
 import { PROJECTS_DATA, MEMBERS_DATA } from "@/data";
@@ -101,7 +101,7 @@ export function ProjectDetailPage() {
     3,
   );
 
-  const qrValue =
+  const supportHref =
     member?.socialLinks?.[0]?.url ??
     `https://youthorgunion.org/projects/${project.id}`;
 
@@ -154,8 +154,8 @@ export function ProjectDetailPage() {
           </div>
         </div>
 
-        {/* Right — QR section (only shown at xl+; below xl stacks below title naturally) */}
-        <SupportQRCode value={qrValue} />
+        {/* Right — Support CTA (below xl stacks below title naturally) */}
+        <SupportCTA href={supportHref} />
         </div>
       </Container>
 

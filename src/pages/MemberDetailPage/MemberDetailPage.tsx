@@ -4,7 +4,7 @@ import { SDGTag } from '@/components/ui/SDGTag';
 import { SocialLinks } from '@/components/common/SocialLinks';
 import { ProjectCard } from '@/components/common/ProjectCard';
 import { ImageGallery } from '@/components/common/ImageGallery';
-import { SupportQRCode } from '@/components/common/SupportQRCode';
+import { SupportCTA } from '@/components/common/SupportCTA';
 import { CTABanner } from '@/components/common/CTABanner';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { MEMBERS_DATA, PROJECTS_DATA } from '@/data';
@@ -29,7 +29,7 @@ export function MemberDetailPage() {
     ...memberProjects,
     ...PROJECTS_DATA.filter((p) => !member.projectIds.includes(p.id)),
   ].slice(0, 3);
-  const supportValue = member.donationQrUrl ?? member.socialLinks[0]?.url ?? `https://youthorgunion.org/members/${member.id}`;
+  const supportHref = member.socialLinks[0]?.url ?? `/members/${member.id}`;
 
   return (
     <div className="py-section-sm lg:py-section">
@@ -71,7 +71,7 @@ export function MemberDetailPage() {
               </div>
             </div>
 
-            <SupportQRCode value={supportValue} />
+            <SupportCTA href={supportHref} />
           </div>
 
           {member.coverUrl && (
