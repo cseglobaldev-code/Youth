@@ -1,92 +1,86 @@
-import { Button } from '@/components/ui/Button';
+import supportCtaArrowUrl from './support-cta-arrow.svg';
 
-export interface SupportCTAProps {
-  /** Where the button links (donation page, org profile, external link). */
-  href: string;
-  /** Button label. */
+type SupportCTAButtonProps = {
+  /** Click handler — use this for modal-trigger CTA usage. */
+  onClick: () => void;
+  href?: never;
   title?: string;
-  /** Italic caption shown beside the button. */
+  /** Optional accessibility text for the CTA. */
   description?: string;
   className?: string;
-}
+};
+
+type SupportCTALinkProps = {
+  /** Where the button links when used as an external CTA. */
+  href: string;
+  onClick?: never;
+  title?: string;
+  /** Optional accessibility text for the CTA. */
+  description?: string;
+  className?: string;
+};
+
+export type SupportCTAProps = SupportCTAButtonProps | SupportCTALinkProps;
 
 export function SupportCTA({
   href,
+  onClick,
   title = 'Support our Mission',
   description = 'Send your spiritual or financial support to this organization',
   className,
 }: SupportCTAProps) {
+  const buttonClasses =
+    'inline-flex h-[50px] min-w-[220px] items-center justify-center rounded-full border border-[#EE334E] bg-transparent px-8 text-[16px] font-normal leading-none text-[#EE334E] transition-colors duration-200 hover:bg-[#EE334E] hover:text-white active:scale-[0.99] whitespace-nowrap sm:h-[58px] sm:min-w-[270px] sm:px-10 sm:text-[18px] lg:h-[64px] lg:min-w-[300px] lg:text-[20px]';
+
+  const buttonContent = <span style={{ fontFamily: 'Open Sans, sans-serif' }}>{title}</span>;
+
   return (
     <div
-      className={['relative flex-shrink-0 pb-0 xl:pb-[80px]', className].filter(Boolean).join(' ')}
+      className={['relative flex-shrink-0 pb-[54px]', className].filter(Boolean).join(' ')}
     >
-      <div className="flex flex-col-reverse items-center gap-4 text-center xl:flex-row xl:items-center xl:gap-[28px] xl:text-right">
-        {/* Caption — stacks under the button below xl, sits left of it on desktop */}
-        <div className="max-w-[200px] xl:w-[clamp(200px,18vw,320px)] xl:max-w-none xl:flex-shrink-0">
-          <span
-            className="block italic text-black"
-            style={{
-              fontFamily: 'Open Sans, sans-serif',
-              fontSize: 'clamp(0.8125rem, 1.04vw, 1.25rem)',
-              lineHeight: '150%',
-            }}
-          >
-            {description}
-          </span>
-        </div>
-
-        {/* Support button — brand-outlined pill matching the reference design */}
-        <Button
-          as="a"
-          href={href}
-          variant="outline"
-          className="!rounded-full !px-[clamp(20px,2.5vw,44px)] !py-[clamp(10px,1vw,18px)] !text-[clamp(0.9375rem,1.15vw,1.375rem)] !font-semibold whitespace-nowrap"
+      <div className="flex items-center justify-end gap-[18px]">
+        <span
+          className="block max-w-[280px] text-right text-black"
+          style={{
+            fontFamily: 'Open Sans, sans-serif',
+            fontSize: '18px',
+            fontStyle: 'italic',
+            fontWeight: 400,
+            lineHeight: '150%',
+            letterSpacing: '0px',
+          }}
         >
-          {title}
-        </Button>
+          {description}
+        </span>
+
+        {onClick ? (
+          <button
+            type="button"
+            onClick={onClick}
+            className={buttonClasses}
+          >
+            {buttonContent}
+          </button>
+        ) : (
+          <a
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={buttonClasses}
+          >
+            {buttonContent}
+          </a>
+        )}
       </div>
 
-      {/* Decorative dashed rainbow arrow pointing from the caption up at the button. */}
-      <div
-        className="absolute pointer-events-none left-[0%] top-[42%] w-[clamp(90px,26vw,160px)] xl:left-[clamp(30px,2.5vw,50px)] xl:top-[clamp(64px,5vw,96px)] xl:w-[clamp(180px,15vw,280px)]"
-      >
-        <svg
-          width="100%"
-          height="auto"
-          viewBox="0 0 320 130"
-          preserveAspectRatio="xMinYMin meet"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <defs>
-            <linearGradient id="supportCtaArrowRainbow" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#EE334E" />
-              <stop offset="33%" stopColor="#FCB131" />
-              <stop offset="67%" stopColor="#00A651" />
-              <stop offset="100%" stopColor="#0081C8" />
-            </linearGradient>
-          </defs>
-
-          <path
-            d="M 10,110 C 60,95 90,85 120,80 C 135,78 155,62 148,40 C 138,15 122,30 138,55 C 150,80 185,82 215,70 C 235,62 255,52 275,42"
-            stroke="url(#supportCtaArrowRainbow)"
-            strokeWidth="2.5"
-            strokeDasharray="6,5"
-            strokeLinecap="round"
-            fill="none"
-            vectorEffect="non-scaling-stroke"
-          />
-
-          <path
-            d="M 260,37 L 275,42 L 265,55"
-            stroke="#0081C8"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            fill="none"
-            vectorEffect="non-scaling-stroke"
-          />
-        </svg>
+      {/* Decorative arrow under the caption, pointing up to the CTA button. */}
+      <div className="absolute pointer-events-none left-[116px] top-[70px] h-[51px] w-[270.188px] opacity-100">
+        <img
+          src={supportCtaArrowUrl}
+          alt=""
+          aria-hidden="true"
+          className="block h-full w-full"
+        />
       </div>
     </div>
   );
