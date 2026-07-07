@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/layout/Logo';
 import { Icon } from '@/components/ui/Icon';
-import { useJoinNavigation } from '@/hooks';
+import { useJoinModal } from '@/components/common/JoinModal';
 import { NAV_ITEMS } from '@/data';
 import type { NavItem } from '@/types';
 
@@ -15,7 +15,7 @@ interface HeaderDesktopProps {
 export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
   const items = navItems ?? NAV_ITEMS;
   const { pathname } = useLocation();
-  const goToJoin = useJoinNavigation();
+  const { openJoin } = useJoinModal();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
         <div className="flex flex-shrink-0 items-center gap-3 xl:gap-5 2xl:gap-6">
           <button
             type="button"
-            onClick={goToJoin}
+            onClick={openJoin}
             className="whitespace-nowrap rounded-full bg-[#EE334E] px-3 py-2 font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98] xl:px-5 xl:py-2.5 2xl:px-[28px] 2xl:py-3"
             style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(0.8125rem, 0.98vw + 0.19rem, 1.125rem)' }}
           >

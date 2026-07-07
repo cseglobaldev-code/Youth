@@ -7,16 +7,18 @@ import { SDGTag } from '@/components/ui/SDGTag';
 import { SocialLinks } from '@/components/common/SocialLinks';
 import { ProjectCard } from '@/components/common/ProjectCard';
 import { ImageGallery } from '@/components/common/ImageGallery';
-import { SupportQRCode } from '@/components/common/SupportQRCode';
+import { SupportCTA } from '@/components/common/SupportCTA';
 import { CTABanner } from '@/components/common/CTABanner';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { StrapiService } from '@/lib/strapi';
 import { useJoinNavigation } from '@/hooks';
+import { useSupportModal } from '@/components/common/SupportModal';
 import type { Member, Project } from '@/types';
 
 export function MemberDetailPage() {
   const { memberId } = useParams<{ memberId: string }>();
   const goToJoin = useJoinNavigation();
+  const { openSupport } = useSupportModal();
   
   const [member, setMember] = useState<Member | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -60,8 +62,6 @@ export function MemberDetailPage() {
     );
   }
 
-  const supportValue = member.donationQrUrl ?? member.socialLinks[0]?.url ?? `https://youthorgunion.org/members/${member.id}`;
-
   return (
     <div className="py-section-sm lg:py-section">
       <Container>
@@ -102,7 +102,7 @@ export function MemberDetailPage() {
               </div>
             </div>
 
-            <SupportQRCode value={supportValue} />
+            <SupportCTA onClick={openSupport} />
           </div>
 
           {member.coverUrl && (

@@ -4,12 +4,11 @@ import { useEffect, useState, useMemo } from 'react';
 import { Divider, Image, Spin } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { ProjectCard } from '@/components/common/ProjectCard';
-import { SupportQRCode } from '@/components/common/SupportQRCode';
+import { SupportCTA } from '@/components/common/SupportCTA';
+import { useSupportModal } from '@/components/common/SupportModal';
 import { SDGTag } from '@/components/ui/SDGTag';
 import { Container } from '@/components/ui/Container';
 import { StrapiService } from '@/lib/strapi';
-import { cn } from '@/lib/utils';
-import { useScrollReveal } from '@/hooks/useScrollReveal';
 import type { Project, Member } from '@/types';
 
 const SOCIAL_ICON_MAP: Record<string, string> = {
@@ -77,6 +76,7 @@ const GRADIENT_DIVIDER =
 
 export function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
+  const { openSupport } = useSupportModal();
 
   const [project, setProject] = useState<Project | null>(null);
   const [member, setMember] = useState<Member | null>(null);
@@ -84,10 +84,6 @@ export function ProjectDetailPage() {
   const [membersList, setMembersList] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const { ref: orgRef, visible: orgVisible } = useScrollReveal();
-  const { ref: detailRef, visible: detailVisible } = useScrollReveal();
-  const { ref: otherRef, visible: otherVisible } = useScrollReveal();
 
   useEffect(() => {
     if (!projectId) return;
@@ -141,8 +137,6 @@ export function ProjectDetailPage() {
     );
   }
 
-  const qrValue = member?.socialLinks?.[0]?.url ?? `https://youthorgunion.org/projects/${project.id}`;
-
   return (
     <div>
       <Container>
@@ -185,7 +179,7 @@ export function ProjectDetailPage() {
             </div>
           </div>
 
-          <SupportQRCode value={qrValue} />
+          <SupportCTA onClick={openSupport} />
         </div>
       </Container>
 
@@ -204,10 +198,7 @@ export function ProjectDetailPage() {
 
       <Container className="pb-10 lg:pb-[175px]">
         <div className="flex flex-col gap-10 lg:gap-[80px]">
-          <div
-            ref={orgRef as React.RefObject<HTMLDivElement>}
-            className={cn('max-w-[746px] transition-all duration-700', orgVisible ? 'animate-fade-in-up' : 'opacity-0')}
-          >
+          <div className="max-w-[746px] animate-fade-in-up">
             <div className="flex flex-col gap-4 lg:gap-6">
               <h2
                 className="font-semibold text-black"
@@ -256,10 +247,7 @@ export function ProjectDetailPage() {
 
           <Divider style={{ background: GRADIENT_DIVIDER, margin: 0 }} />
 
-          <div
-            ref={detailRef as React.RefObject<HTMLDivElement>}
-            className={cn('flex flex-col gap-4 lg:gap-6 transition-all duration-700', detailVisible ? 'animate-fade-in-up' : 'opacity-0')}
-          >
+          <div className="flex flex-col gap-4 lg:gap-6 animate-fade-in-up">
             <DetailRow label="Project name">
               <span style={VALUE_STYLE}>{project.name}</span>
             </DetailRow>
@@ -305,10 +293,7 @@ export function ProjectDetailPage() {
             </DetailRow>
           </div>
 
-          <div
-            ref={otherRef as React.RefObject<HTMLDivElement>}
-            className={cn('flex flex-col gap-4 lg:gap-6 transition-all duration-700', otherVisible ? 'animate-fade-in-up' : 'opacity-0')}
-          >
+          <div className="flex flex-col gap-4 lg:gap-6 animate-fade-in-up">
             <h2
               className="font-semibold text-black"
               style={{
@@ -323,7 +308,7 @@ export function ProjectDetailPage() {
               {otherProjects.map((p, index) => (
                 <div
                   key={p.id}
-                  className={cn(otherVisible ? 'animate-fade-in-up' : 'opacity-0')}
+                  className="animate-fade-in-up"
                   style={{ animationDelay: `${index * 80}ms` }}
                 >
                   <ProjectCard project={p} ledBy={memberMap[p.memberId] || 'TBD'} />

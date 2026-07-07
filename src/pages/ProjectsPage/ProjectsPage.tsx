@@ -4,13 +4,11 @@ import { Button, Empty, Input, Select, Spin } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
 import { ProjectCard } from '@/components/common/ProjectCard';
-import { filterBySdg } from '@/lib/utils';
+import { cn, filterBySdg } from '@/lib/utils'; 
 import { SDGS_DATA } from '@/data';
 import { StrapiService } from '@/lib/strapi';
 import { ICONS } from '@/config/icons';
-import { cn } from '@/lib/utils';
-import { useScrollReveal } from '@/hooks/useScrollReveal';
-import type { Project, Member } from '@/types';
+import type { Project, Member } from '@/types'; 
 
 const MAX_VISIBLE = 8;
 
@@ -24,9 +22,6 @@ export function ProjectsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
   const [showAllFilters, setShowAllFilters] = useState(false);
-
-  const { ref: heroRef, visible: heroVisible } = useScrollReveal(0.05);
-  const { ref: cardsRef, visible: cardsVisible } = useScrollReveal(0.05);
 
   useEffect(() => {
     Promise.all([
@@ -78,13 +73,8 @@ export function ProjectsPage() {
     <div>
       <Container>
         <div className="flex flex-col items-center gap-6 lg:gap-[40px] pt-10 lg:pt-[80px]">
-          <div
-            ref={heroRef as React.RefObject<HTMLDivElement>}
-            className={cn(
-              'flex flex-col items-center gap-4 lg:gap-6 w-full transition-all duration-700',
-              heroVisible ? 'animate-fade-in-up' : 'opacity-0'
-            )}
-          >
+          {/* Hero */}
+          <div className="flex flex-col items-center gap-4 lg:gap-6 w-full animate-fade-in-up">
             <div className="flex justify-center items-center w-full gap-4 lg:gap-6 flex-wrap">
               <span
                 className="font-semibold bg-clip-text text-transparent"
@@ -119,6 +109,7 @@ export function ProjectsPage() {
           </div>
 
           <div className="flex flex-col w-full gap-8 lg:gap-[60px] pb-10 lg:pb-[80px]">
+            {/* Filter pills */}
             <div className="flex flex-wrap justify-center gap-[11px]">
               {visibleFilters.map((item) => (
                 <Button
@@ -200,14 +191,11 @@ export function ProjectsPage() {
             ) : filteredProjects.length === 0 ? (
               <Empty description="No projects found for this SDG." className="py-12" />
             ) : (
-              <div
-                ref={cardsRef as React.RefObject<HTMLDivElement>}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10"
-              >
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
                 {filteredProjects.map((project, index) => (
                   <div
                     key={`${activeFilter}-${project.id}`}
-                    className={cn(cardsVisible ? 'animate-fade-in-up' : 'opacity-0')}
+                    className="animate-fade-in-up"
                     style={{ animationDelay: `${index * 80}ms` }}
                   >
                     <ProjectCard
