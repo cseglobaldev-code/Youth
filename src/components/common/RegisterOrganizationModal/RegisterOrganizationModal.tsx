@@ -1,6 +1,7 @@
 import { Modal, Form, Input, ConfigProvider } from 'antd';
 import { PillButton } from '@/components/ui/PillButton';
-
+import { message } from 'antd';
+import { StrapiService } from '@/lib/strapi';
 export interface RegisterOrganizationFormValues {
   organizationName: string;
   address: string;
@@ -18,17 +19,20 @@ export interface RegisterOrganizationModalProps {
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
 
-export function RegisterOrganizationModal({
-  open,
-  onClose,
-  onSubmit,
-}: RegisterOrganizationModalProps) {
+export function RegisterOrganizationModal({ open, onClose, onSubmit }: RegisterOrganizationModalProps) {
   const [form] = Form.useForm<RegisterOrganizationFormValues>();
 
-  const handleFinish = (values: RegisterOrganizationFormValues) => {
-    onSubmit?.(values);
-    form.resetFields();
-    onClose();
+  const handleFinish = async (values: RegisterOrganizationFormValues) => {
+    try {
+      await StrapiService.submitOrgRegistration(values);
+      message.success('Đăng ký tổ chức thành công! Chúng tôi sẽ liên hệ lại với bạn sớm nhất.');
+      onSubmit?.(values);
+      form.resetFields();
+      onClose();
+    } catch (err) {
+      console.error(err);
+      message.error('Lỗi khi gửi thông tin đăng ký. Vui lòng thử lại.');
+    }
   };
 
   return (

@@ -1,6 +1,6 @@
 // src/pages/ContactPage/ContactPage.tsx
 import { useRef, type FormEvent, useEffect, useState } from 'react';
-import { Spin } from 'antd';
+import { message } from 'antd'; 
 import { Container } from '@/components/ui/Container';
 import { PillButton } from '@/components/ui/PillButton';
 import { Icon } from '@/components/ui/Icon';
@@ -19,35 +19,41 @@ const socialItemClasses =
 export function ContactPage() {
   const formRef = useRef<HTMLFormElement>(null);
   const [globalSetting, setGlobalSetting] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     StrapiService.getGlobalSetting()
       .then((data) => {
-        setGlobalSetting(data);
-        setLoading(false);
+        if (data) setGlobalSetting(data);
       })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
+      .catch((err) => console.error(err));
   }, []);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!formRef.current) return;
+
+    const formData = new FormData(formRef.current);
+    const values = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      reason: formData.get('reason'),
+      message: formData.get('message'),
+    };
+
+    try {
+      await StrapiService.submitInquiry(values);
+      message.success('Cảm ơn bạn! Thông tin liên hệ đã được gửi thành công.');
+      formRef.current.reset();
+    } catch (err) {
+      console.error(err);
+      message.error('Không thể gửi thông tin. Vui lòng kiểm tra lại kết nối mạng.');
+    }
   };
 
-  if (loading) {
-    return (
-      <div className="py-20 text-center">
-        <Spin size="large" tip="Loading contact panel..." />
-      </div>
-    );
-  }
-
-  // Fallbacks in case the Single Type has not been completely published on backend yet
+  // Safe fallback values
   const email = globalSetting?.email || 'info@youthorgunion.org';
-  const phone = globalSetting?.phone || '(+84) 98.242.1109';
+  const phone = globalSetting?.phone || '098.242.1109';
   const address = globalSetting?.address || 'Hoang Mai, Hanoi, Vietnam';
   const socialLinks: SocialLink[] = globalSetting?.socialLinks || [
     { platform: 'instagram', url: '#' },

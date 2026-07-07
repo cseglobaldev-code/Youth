@@ -17,20 +17,42 @@ const API_URL = import.meta.env.VITE_STRAPI_API_URL || 'http://localhost:1337';
 const API_TOKEN = import.meta.env.VITE_STRAPI_API_TOKEN;
 
 function getMediaUrl(mediaObj: any): string {
-  if (!mediaObj || !mediaObj.data) return '';
-  const attributes = mediaObj.data.attributes || mediaObj.data;
-  const url = attributes?.url;
-  if (!url) return '';
-  return url.startsWith('/') ? `${API_URL}${url}` : url;
+  if (!mediaObj) return '';
+  
+  // If it's the v4 nested format: { data: { attributes: { url: ... } } }
+  if (mediaObj.data) {
+    const attributes = mediaObj.data.attributes || mediaObj.data;
+    const url = attributes?.url;
+    if (url) {
+      return url.startsWith('/') ? `${API_URL}${url}` : url;
+    }
+  }
+  
+  // If it's the v5 flat format: { url: ... }
+  const url = mediaObj.url;
+  if (url) {
+    return url.startsWith('/') ? `${API_URL}${url}` : url;
+  }
+  
+  return '';
 }
 
 function mapGallery(galleryData: any): any[] {
-  if (!galleryData || !galleryData.data) return [];
-  return galleryData.data.map((item: any) => {
+  if (!galleryData) return [];
+  
+  // check for both v4 nested data array and v5 flat array
+  const list = Array.isArray(galleryData.data) 
+    ? galleryData.data 
+    : Array.isArray(galleryData) 
+      ? galleryData 
+      : [];
+
+  return list.map((item: any) => {
     const attrs = item.attributes || item;
+    const url = attrs.url || '';
     return {
       id: String(item.id),
-      src: attrs.url ? (attrs.url.startsWith('/') ? `${API_URL}${attrs.url}` : attrs.url) : '',
+      src: url ? (url.startsWith('/') ? `${API_URL}${url}` : url) : '',
       alt: attrs.alternativeText || 'Gallery Image',
     };
   });
@@ -50,6 +72,23 @@ async function fetchAPI<T>(path: string): Promise<T> {
   return response.json() as Promise<T>;
 }
 
+async function fetchAPIPost<T>(path: string, body: any): Promise<T> {
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+  };
+  
+  const response = await fetch(`${API_URL}/api/${path}`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ data: body }),
+  });
+  
+  if (!response.ok) {
+    throw new Error(`Strapi POST API Error [${response.status}]: ${path}`);
+  }
+  return response.json() as Promise<T>;
+}
+
 /* ════════════════ MAPPERS ════════════════ */
 
 export function mapStrapiMember(data: any): Member {
@@ -63,7 +102,12 @@ export function mapStrapiMember(data: any): Member {
     description: attrs.description || '',
     country: attrs.country || '',
     continent: (attrs.continent as Continent) || 'Asia',
-    focusSdgs: Array.isArray(attrs.focusSdgs) ? attrs.focusSdgs.map(Number) : [],
+    
+    // Parse comma-separated string to number array:
+    focusSdgs: attrs.focusSdgs 
+      ? attrs.focusSdgs.split(',').map((s: string) => Number(s.trim())).filter((n: number) => !isNaN(n)) 
+      : [],
+      
     socialLinks: attrs.socialLinks || [],
     projectIds: attrs.projects?.data ? attrs.projects.data.map((p: any) => String(p.id)) : [],
     gallery: mapGallery(attrs.gallery),
@@ -81,8 +125,17 @@ export function mapStrapiProject(data: any): Project {
     description: attrs.description || '',
     impactIndication: attrs.impactIndication || '',
     region: attrs.region || '',
-    countriesCovered: attrs.countriesCovered || [],
-    focusSdgs: Array.isArray(attrs.focusSdgs) ? attrs.focusSdgs.map(Number) : [],
+    
+    // Parse comma-separated string to string array:
+    countriesCovered: attrs.countriesCovered 
+      ? attrs.countriesCovered.split(',').map((s: string) => s.trim()).filter(Boolean) 
+      : [],
+      
+    // Parse comma-separated string to number array:
+    focusSdgs: attrs.focusSdgs 
+      ? attrs.focusSdgs.split(',').map((s: string) => Number(s.trim())).filter((n: number) => !isNaN(n)) 
+      : [],
+      
     status: attrs.projectStatus || 'ongoing', 
     outstandingImageUrl: getMediaUrl(attrs.outstandingImage) || '/images/placeholder-cover.png',
     gallery: mapGallery(attrs.gallery),
@@ -101,8 +154,17 @@ export function mapStrapiTeamMember(data: any): TeamMember {
     continent: (attrs.continent as Continent) || 'Asia',
     regionGroup: attrs.regionGroup as RegionGroup | undefined,
     socialLinks: attrs.socialLinks || [],
-    bio: Array.isArray(attrs.bio) ? attrs.bio : attrs.bio ? [attrs.bio] : [],
-    sdgTags: attrs.sdgTags || [],
+    
+    // Parse newlines to paragraph array:
+    bio: attrs.bio 
+      ? attrs.bio.split('\n').map((s: string) => s.trim()).filter(Boolean) 
+      : [],
+      
+    // Parse comma-separated string to string array:
+    sdgTags: attrs.sdgTags 
+      ? attrs.sdgTags.split(',').map((s: string) => s.trim()).filter(Boolean) 
+      : [],
+      
     year: attrs.year || '',
   };
 }
@@ -114,7 +176,9 @@ export function mapStrapiDocument(data: any): DocumentItem {
     title: attrs.title || '',
     category: (attrs.category as DocCategory) || 'governance',
     fileType: (attrs.fileType as FileType) || 'pdf',
-    fileUrl: attrs.file?.data ? getMediaUrl(attrs.file) : '',
+    
+    fileUrl: getMediaUrl(attrs.file), 
+    
     fileSize: attrs.fileSize || undefined,
     updatedAt: attrs.updatedAt ? attrs.updatedAt.split('T')[0] : undefined,
   };
@@ -189,5 +253,14 @@ export const StrapiService = {
   async getGlobalSetting(): Promise<any> {
     const res = await fetchAPI<any>('global-setting?populate=*');
     return res.data?.attributes || res.data || null;
+  },
+  async submitInquiry(data: any): Promise<any> {
+    return fetchAPIPost('inquiries', data);
+  },
+  async submitOrgRegistration(data: any): Promise<any> {
+    return fetchAPIPost('organization-registrations', data);
+  },
+  async submitLeadershipApplication(data: any): Promise<any> {
+    return fetchAPIPost('leadership-applications', data);
   }
 };

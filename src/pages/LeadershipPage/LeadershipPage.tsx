@@ -6,10 +6,9 @@ import { ExecutiveCard } from '@/components/common/ExecutiveCard';
 import { TeamMemberCard } from '@/components/common/TeamMemberCard';
 import { LeaderMemberModal } from '@/components/common/LeaderMemberModal';
 import { CTABanner } from '@/components/common/CTABanner';
-import { cn } from '@/lib/utils';
-import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { useJoinNavigation } from '@/hooks';
 import { StrapiService } from '@/lib/strapi';
+import { cn } from '@/lib/utils'; 
 import type { Continent, RegionGroup, TeamMember } from '@/types';
 
 const CONTINENTS: Continent[] = ['Asia', 'Africa', 'America', 'Australia', 'Europe'];
@@ -41,10 +40,6 @@ export function LeadershipPage() {
 
   const openModal = (member: TeamMember) => setSelectedMember(member);
   const closeModal = () => setSelectedMember(null);
-
-  const { ref: heroRef, visible: heroVisible } = useScrollReveal(0.05);
-  const { ref: execRef, visible: execVisible } = useScrollReveal(0.05);
-  const { ref: directorsRef, visible: directorsVisible } = useScrollReveal(0.05);
 
   useEffect(() => {
     StrapiService.getTeamMembers()
@@ -107,13 +102,8 @@ export function LeadershipPage() {
     <div>
       <Container>
         <div className="flex flex-col items-center gap-[60px] lg:gap-[80px] pt-10 lg:pt-[80px] pb-10 lg:pb-[80px]">
-          <div
-            ref={heroRef as React.RefObject<HTMLDivElement>}
-            className={cn(
-              'flex flex-col items-center gap-[24px] w-full transition-all duration-700',
-              heroVisible ? 'animate-fade-in-up' : 'opacity-0'
-            )}
-          >
+          {/* 1. HERO*/}
+          <div className="flex flex-col items-center gap-[24px] w-full animate-fade-in-up">
             <div className="flex flex-wrap justify-center items-center gap-[16px] lg:gap-[24px]">
               <span
                 className="font-semibold text-black"
@@ -151,13 +141,8 @@ export function LeadershipPage() {
             </p>
           </div>
 
-          <div
-            ref={execRef as React.RefObject<HTMLDivElement>}
-            className={cn(
-              'flex flex-col items-center gap-[40px] w-full transition-all duration-700',
-              execVisible ? 'animate-fade-in-up' : 'opacity-0'
-            )}
-          >
+          {/* 2. EXECUTIVE LEADERSHIP*/}
+          <div className="flex flex-col items-center gap-[40px] w-full animate-fade-in-up">
             <div className="flex flex-col items-center gap-[4px]">
               <span
                 className="text-black font-normal"
@@ -185,7 +170,7 @@ export function LeadershipPage() {
               {executives.map((member, index) => (
                 <div
                   key={member.id}
-                  className={cn(execVisible ? 'animate-fade-in-up' : 'opacity-0')}
+                  className="animate-fade-in-up"
                   style={{ animationDelay: `${index * 100}ms` }}
                 >
                   <ExecutiveCard member={member} onClick={() => openModal(member)} />
@@ -198,13 +183,8 @@ export function LeadershipPage() {
         </div>
       </Container>
 
-      <div
-        ref={directorsRef as React.RefObject<HTMLDivElement>}
-        className={cn(
-          'flex flex-col items-center gap-[40px] lg:gap-[60px] w-full py-10 lg:py-[80px] transition-all duration-700',
-          directorsVisible ? 'animate-fade-in-up' : 'opacity-0'
-        )}
-      >
+      {/* 3. CONTINENTAL DIRECTORS*/}
+      <div className="flex flex-col items-center gap-[40px] lg:gap-[60px] w-full py-10 lg:py-[80px] animate-fade-in-up">
         <Container className="flex flex-col items-center gap-[40px]">
           <h2
             className="font-semibold text-black text-center"
@@ -279,7 +259,7 @@ export function LeadershipPage() {
               {visibleDirectors.map((member, index) => (
                 <div
                   key={member.id}
-                  className={cn(directorsVisible ? 'animate-fade-in-up' : 'opacity-0')}
+                  className="animate-fade-in-up"
                   style={{ animationDelay: `${index * 80}ms` }}
                 >
                   <TeamMemberCard

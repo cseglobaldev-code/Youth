@@ -1,5 +1,6 @@
 import { Modal, Form, Input, ConfigProvider } from 'antd';
-
+import { message } from 'antd';
+import { StrapiService } from '@/lib/strapi';
 export interface ApplyRoleFormValues {
   fullName: string;
   email: string;
@@ -20,10 +21,17 @@ const FONT = { fontFamily: 'Open Sans, sans-serif' };
 export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps) {
   const [form] = Form.useForm<ApplyRoleFormValues>();
 
-  const handleFinish = (values: ApplyRoleFormValues) => {
-    onSubmit?.(values);
-    form.resetFields();
-    onClose();
+  const handleFinish = async (values: ApplyRoleFormValues) => {
+    try {
+      await StrapiService.submitLeadershipApplication(values);
+      message.success('Nộp đơn ứng tuyển thành công! Cảm ơn sự quan tâm của bạn.');
+      onSubmit?.(values);
+      form.resetFields();
+      onClose();
+    } catch (err) {
+      console.error(err);
+      message.error('Lỗi khi gửi thông tin ứng tuyển. Vui lòng thử lại.');
+    }
   };
 
   return (
