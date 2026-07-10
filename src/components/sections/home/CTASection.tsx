@@ -10,6 +10,7 @@ export function CTASection() {
       description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
       ctaLabel="Register Now"
       onCtaClick={goToJoin}
+      className="lg:my-[120px]"
     />
   );
 }
