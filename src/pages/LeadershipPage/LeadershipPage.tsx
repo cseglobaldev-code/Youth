@@ -7,7 +7,6 @@ import { CTABanner } from '@/components/common/CTABanner';
 import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data';
 import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
-import { useJoinNavigation } from '@/hooks';
 import type { Continent, RegionGroup, TeamMember } from '@/types';
 
 /* ─── constants ─────────────────────────────────────────────────────────── */
@@ -36,7 +35,6 @@ export function LeadershipPage() {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [showAllDirectors, setShowAllDirectors] = useState(false);
 
-  const goToJoin = useJoinNavigation();
 
   const openModal = (member: TeamMember) => setSelectedMember(member);
   const closeModal = () => setSelectedMember(null);
@@ -315,7 +313,6 @@ export function LeadershipPage() {
         title="Ready to Make an Impact?"
         description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
         ctaLabel="Register Now"
-        onCtaClick={goToJoin}
       />
 
       <LeaderMemberModal

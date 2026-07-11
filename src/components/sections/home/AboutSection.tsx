@@ -109,7 +109,7 @@ export function AboutSection() {
                 Sustainable Development Goals - building bridges across borders, cultures, and
                 generations.
               </p>
-              <Button as="router-link" to={ROUTES.MEMBERS} variant="primary" size="lg" className="w-full justify-center bg-[#EE334E] hover:bg-[#d42a43] rounded-full px-6 sm:w-auto sm:px-8 lg:mb-[120px]">
+              <Button as="router-link" to={ROUTES.MEMBERS} variant="primary" size="lg" className="w-full justify-center rounded-full bg-[#EE334E] px-6 transition-all duration-200 hover:bg-[#EE334E] hover:opacity-90 active:scale-[0.98] sm:w-auto sm:px-8 lg:mb-[120px]">
                 Join 1,500+ Youth Leaders
               </Button>
             </div>

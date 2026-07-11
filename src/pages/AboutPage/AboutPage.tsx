@@ -1,7 +1,6 @@
 import { Container } from '@/components/ui/Container';
 import { CTABanner } from '@/components/common/CTABanner';
 import { Icon } from '@/components/ui/Icon';
-import { useJoinNavigation } from '@/hooks';
 
 const STATS = [
   { label: 'Member Organizations', value: '+50' },
@@ -66,7 +65,6 @@ const ABOUT_CONTAINER_CLASS = 'max-w-none lg:px-[90px]';
 const ABOUT_SECTION_TITLE_CLASS = 'font-heading text-[clamp(1.75rem,3vw,3rem)] font-semibold leading-tight text-black';
 
 export function AboutPage() {
-  const goToJoin = useJoinNavigation();
 
   return (
     <div className="relative z-10 bg-white">
@@ -229,7 +227,6 @@ export function AboutPage() {
         title="Ready to Make an Impact?"
         description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
         ctaLabel="Register Now"
-        onCtaClick={goToJoin}
       />
     </div>
   );

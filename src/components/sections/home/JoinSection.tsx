@@ -58,7 +58,7 @@ export function JoinSection() {
               ))}
             </ul>
 
-            <Button danger type="primary" shape="round" block className="!h-auto !font-semibold !text-[clamp(1rem,1.30vw,1.25rem)]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={openOrganization}>
+            <Button danger type="primary" shape="round" block className="!h-auto !font-semibold !text-[clamp(1rem,1.30vw,1.25rem)] !transition-all hover:!opacity-90 active:!scale-[0.98]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={openOrganization}>
               Register Your Organization
             </Button>
           </div>
@@ -84,7 +84,7 @@ export function JoinSection() {
               ))}
             </ul>
 
-            <Button type="primary" shape="round" block className="!h-auto !font-semibold !text-[clamp(1rem,1.30vw,1.25rem)] !bg-[#005D9A] !border-[#005D9A] hover:opacity-90 transition-opacity" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={openIndividual}>
+            <Button type="primary" shape="round" block className="!h-auto !font-semibold !text-[clamp(1rem,1.30vw,1.25rem)] !bg-[#005D9A] !border-[#005D9A] !transition-all hover:!opacity-90 active:!scale-[0.98]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={openIndividual}>
               Apply for a Role
             </Button>
           </div>

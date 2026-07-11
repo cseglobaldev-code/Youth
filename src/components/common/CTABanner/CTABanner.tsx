@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { useJoinModal } from '@/components/common/JoinModal';
 import { PillButton } from '@/components/ui/PillButton';
 
 const DEFAULT_GRADIENT =
@@ -39,7 +40,9 @@ export function CTABanner({
   hideStar = false,
   className,
 }: CTABannerProps) {
+  const { openJoin } = useJoinModal();
   const buttonAs = ctaTo ? 'router-link' : ctaHref ? 'a' : 'button';
+  const handleCtaClick = onCtaClick ?? openJoin;
 
   return (
     <section className={cn('mx-4 my-8 sm:mx-6 sm:my-10 lg:mx-8 lg:my-[60px]', className)}>
@@ -79,8 +82,8 @@ export function CTABanner({
               as={buttonAs}
               to={ctaTo}
               href={ctaHref}
-              onClick={onCtaClick}
-              className="!px-6 !py-2.5 !text-base lg:!px-8 lg:!py-3 lg:!text-[18px]"
+              onClick={handleCtaClick}
+              className="!bg-white !px-6 !py-2.5 !text-base transition-all duration-200 hover:!bg-white hover:opacity-90 active:scale-[0.98] lg:!px-8 lg:!py-3 lg:!text-[18px]"
             >
               {ctaLabel}
             </PillButton>
