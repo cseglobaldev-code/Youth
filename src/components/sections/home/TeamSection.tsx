@@ -34,7 +34,7 @@ export function TeamSection() {
     return () => window.clearInterval(intervalId);
   }, [manualNavigationCount]);
   return (
-    <section className="bg-white py-12 md:py-16 lg:py-[120px]">
+    <section className="bg-white py-0">
       <Container size="wide">
         {/* Header */}
         <div className="text-center mb-8 md:mb-12 lg:mb-[60px]">

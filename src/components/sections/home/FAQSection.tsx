@@ -15,7 +15,7 @@ const FAQ_DATA = [
 
 export function FAQSection() {
   return (
-    <section className="bg-white py-12 md:py-16 lg:py-[120px]">
+    <section className="bg-white pb-12 pt-0 md:pb-16 lg:pb-[7.5rem]">
       <Container size="narrow">
         {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">

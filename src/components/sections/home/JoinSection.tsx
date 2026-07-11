@@ -20,7 +20,7 @@ export function JoinSection() {
   const { openOrganization, openIndividual } = useJoinModal();
 
   return (
-    <section id="join-section" className="bg-[#F2F7FF] py-12 md:py-16 lg:py-[120px]">
+    <section id="join-section" className="bg-[#F2F7FF] py-12 md:py-16 lg:py-[7.5rem]">
       <Container size="wide">
         {/* Header */}
         <div className="text-center mb-8 md:mb-12 lg:mb-[60px]">

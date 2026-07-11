@@ -88,7 +88,7 @@ export function AboutSection() {
   return (
     <>
       {/* Part 1: SDG Goals + CTA + Stats — white background */}
-      <section className="pt-0 pb-12 md:pb-16 lg:pb-20 bg-white">
+      <section className="bg-white pb-0 pt-0">
         <Container>
           {/* SDG Goals logo + text + CTA — 2 columns */}
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 lg:gap-12">
@@ -143,7 +143,7 @@ export function AboutSection() {
       </section>
 
       {/* Part 2: About Vision */}
-      <section className="py-12 md:py-16 lg:pt-24 lg:pb-[120px] bg-white">
+      <section className="bg-white pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container>
           {/* Heading */}
           <div className="text-left mb-8 lg:mb-12">

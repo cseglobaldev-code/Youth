@@ -45,7 +45,7 @@ export function CTABanner({
   const handleCtaClick = onCtaClick ?? openJoin;
 
   return (
-    <section className={cn('mx-4 my-8 sm:mx-6 sm:my-10 lg:mx-8 lg:my-[60px]', className)}>
+    <section className={cn('mx-4 my-12 sm:mx-6 md:my-16 lg:mx-8 lg:my-[7.5rem]', className)}>
       <div className="mx-auto max-w-[1344px] rounded-3xl lg:rounded-[40px] overflow-hidden relative" style={{ background: gradient }}>
         {/* White overlay to soften into pastel */}
         <div className="absolute inset-0 bg-white" style={{ opacity: overlayOpacity / 100 }} />

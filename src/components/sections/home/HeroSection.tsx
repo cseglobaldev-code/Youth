@@ -51,7 +51,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative overflow-hidden bg-white lg:pb-[120px]">
+    <section className="relative overflow-hidden bg-white pb-12 md:pb-16 lg:pb-[7.5rem]">
       {/* Heading row */}
       <div className="mx-auto w-full px-4 sm:px-6 lg:px-6 xl:px-10 2xl:px-[90px]">
         <div className="flex h-fit flex-col gap-4 pt-10 text-left md:flex-row md:items-end md:gap-6 md:pt-14 lg:gap-6 lg:pt-[120px]">

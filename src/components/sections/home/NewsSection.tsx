@@ -79,7 +79,7 @@ export function NewsSection() {
   };
 
   return (
-    <section className="bg-white py-12 md:py-16 lg:py-[120px]">
+    <section className="bg-white py-0">
       <Container size="wide">
         {/* Header */}
         <div className="mb-8 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between lg:mb-[40px]">

@@ -191,7 +191,7 @@ export function LeadershipPage() {
       <div
         ref={directorsRef as React.RefObject<HTMLDivElement>}
         className={cn(
-          'flex flex-col items-center gap-[40px] lg:gap-[60px] w-full py-10 lg:py-[80px] transition-all duration-700',
+          'flex flex-col items-center gap-[40px] lg:gap-[60px] w-full py-0 transition-all duration-700',
           directorsVisible ? 'animate-fade-in-up' : 'opacity-0'
         )}
       >
