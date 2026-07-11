@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import { Button } from 'antd';
-import { RegisterOrganizationModal } from '@/components/common/RegisterOrganizationModal';
-import { ApplyRoleModal } from '@/components/common/ApplyRoleModal';
+import { useJoinModal } from '@/components/common/JoinModal';
 import { Container } from '@/components/ui/Container';
 
 const ORG_BENEFITS = [
@@ -19,8 +17,7 @@ const INDIVIDUAL_BENEFITS = [
 ];
 
 export function JoinSection() {
-  const [orgModalOpen, setOrgModalOpen] = useState(false);
-  const [roleModalOpen, setRoleModalOpen] = useState(false);
+  const { openOrganization, openIndividual } = useJoinModal();
 
   return (
     <section id="join-section" className="bg-[#F2F7FF] py-12 md:py-16 lg:py-[120px]">
@@ -61,14 +58,14 @@ export function JoinSection() {
               ))}
             </ul>
 
-            <Button danger type="primary" shape="round" block className="!h-auto !font-semibold !text-[clamp(1rem,1.30vw,1.25rem)]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={() => setOrgModalOpen(true)}>
+            <Button danger type="primary" shape="round" block className="!h-auto !font-semibold !text-[clamp(1rem,1.30vw,1.25rem)]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={openOrganization}>
               Register Your Organization
             </Button>
           </div>
 
           {/* For Individuals */}
           <div className="w-full min-h-0 lg:min-h-[560px] bg-white rounded-3xl lg:rounded-[40px] p-6 sm:p-8 lg:p-[40px] flex flex-col">
-            <span className="inline-block bg-[#FEF2F2] text-[#2980B9] text-[clamp(0.875rem,1.04vw,1rem)] font-semibold rounded-[12px] mb-5 w-fit" style={{ fontFamily: 'Open Sans, sans-serif', padding: '8px 16px' }}>
+            <span className="inline-block bg-[#D4EDFF] text-[#2980B9] text-[clamp(0.875rem,1.04vw,1rem)] font-semibold rounded-[12px] mb-5 w-fit" style={{ fontFamily: 'Open Sans, sans-serif', padding: '8px 16px' }}>
               For Individuals
             </span>
             <h3 className="font-semibold text-[clamp(1.5rem,1.82vw,1.75rem)] text-[#111111] my-[16px]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
@@ -87,15 +84,12 @@ export function JoinSection() {
               ))}
             </ul>
 
-            <Button type="primary" shape="round" block className="!h-auto !font-semibold !text-[clamp(1rem,1.30vw,1.25rem)] !bg-[#005D9A] !border-[#005D9A] hover:opacity-90 transition-opacity" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={() => setRoleModalOpen(true)}>
+            <Button type="primary" shape="round" block className="!h-auto !font-semibold !text-[clamp(1rem,1.30vw,1.25rem)] !bg-[#005D9A] !border-[#005D9A] hover:opacity-90 transition-opacity" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={openIndividual}>
               Apply for a Role
             </Button>
           </div>
         </div>
       </Container>
-
-      <RegisterOrganizationModal open={orgModalOpen} onClose={() => setOrgModalOpen(false)} />
-      <ApplyRoleModal open={roleModalOpen} onClose={() => setRoleModalOpen(false)} />
     </section>
   );
 }

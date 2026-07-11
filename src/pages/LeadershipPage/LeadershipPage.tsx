@@ -149,7 +149,7 @@ export function LeadershipPage() {
                   fontFamily: 'Open Sans, sans-serif',
                 }}
               >
-                2020 - 2026
+                2026 - 2027
               </span>
               <h2
                 className="font-semibold text-black"
@@ -277,7 +277,7 @@ export function LeadershipPage() {
               {visibleDirectors.map((member, index) => (
                 <div
                   key={member.id}
-                  className={cn(directorsVisible ? 'animate-fade-in-up' : 'opacity-0')}
+                  className={cn('min-w-0', directorsVisible ? 'animate-fade-in-up' : 'opacity-0')}
                   style={{ animationDelay: `${index * 80}ms` }}
                 >
                   <TeamMemberCard

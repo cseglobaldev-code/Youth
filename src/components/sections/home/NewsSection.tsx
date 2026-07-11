@@ -13,7 +13,7 @@ const NEWS_DATA = [
     description: 'A world where every young person has the platform and tools to lead positive change in their community and beyond.',
     location: 'Asia, Africa',
     author: 'Maria Santos',
-    period: '2021 → nay',
+    period: '2021 → now',
     imageUrl: '/images/home/news/image-new.png',
   },
   {
@@ -187,6 +187,9 @@ export function NewsSection() {
                 </span>
               )}
             </div>
+            <h4 className="mb-3 font-semibold text-[clamp(1.5rem,2.08vw,2rem)] leading-tight text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+              {featured.title}
+            </h4>
             {/* Description */}
             <p className="mb-3 text-neutral-600 text-[clamp(1rem,1.17vw,1.125rem)] font-normal leading-relaxed line-clamp-2" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               {featured.description}
@@ -195,7 +198,7 @@ export function NewsSection() {
             <Button
               type="link"
               danger
-              className="!flex !items-center !gap-1 !p-0 !h-auto !text-[clamp(1rem,1.17vw,1.125rem)] !font-semibold"
+              className="!flex self-start !justify-start !items-center !gap-1 !h-auto !p-0 !text-[20px] !leading-none !tracking-[0px] !font-semibold"
               style={{ fontFamily: 'Open Sans, sans-serif' }}
               onClick={(event) => {
                 event.stopPropagation();

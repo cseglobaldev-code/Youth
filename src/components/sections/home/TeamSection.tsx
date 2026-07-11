@@ -47,6 +47,9 @@ export function TeamSection() {
         </div>
 
         {/* Leaders — 3 large circles */}
+        <h3 className="mb-8 text-center font-semibold text-[clamp(1.25rem,1.82vw,1.75rem)] text-[#111111] lg:mb-[40px]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          Executive Leadership 2020 - 2026
+        </h3>
         <div className="mx-auto grid grid-cols-2 lg:grid-cols-3 justify-items-center gap-x-4 gap-y-8 sm:gap-x-8 lg:max-w-[860px] lg:gap-[24px] mb-8 lg:mb-[40px]">
           {LEADERS.map((leader, index) => (
             <div key={leader.id} className={`flex flex-col items-center max-w-[280px] ${index === 0 ? 'col-span-2 lg:col-span-1' : ''}`}>
