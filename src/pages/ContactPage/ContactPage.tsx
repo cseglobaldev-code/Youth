@@ -1,9 +1,6 @@
 import { useRef, type FormEvent } from 'react';
 import { Container } from '@/components/ui/Container';
 import { PillButton } from '@/components/ui/PillButton';
-import { Icon } from '@/components/ui/Icon';
-import { ICONS, SOCIAL_COLORS } from '@/config/icons';
-import { SOCIAL_LINKS } from '@/data/navigation';
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
 
@@ -22,33 +19,10 @@ const contactDetails = [
   },
 ] as const;
 
-const contactSocialLinks: Array<{
-  platform: 'instagram' | 'facebook' | 'tiktok' | 'youtube';
-  url?: string;
-}> = [
-  {
-    platform: 'instagram',
-    url: SOCIAL_LINKS.find((link) => link.platform === 'instagram')?.url,
-  },
-  {
-    platform: 'facebook',
-    url: SOCIAL_LINKS.find((link) => link.platform === 'facebook')?.url,
-  },
-  {
-    platform: 'tiktok',
-  },
-  {
-    platform: 'youtube',
-    url: SOCIAL_LINKS.find((link) => link.platform === 'youtube')?.url,
-  },
-];
-
 const inputClasses =
   'h-14 w-full rounded-[16px] border border-[#D9D9D9] bg-white px-4 text-base text-[#151515] outline-none transition focus:border-[#EE334E] focus:ring-2 focus:ring-[#EE334E]/10';
 
 const labelClasses = 'mb-3 block text-[16px] font-normal leading-[140%] text-[#151515]';
-const socialItemClasses =
-  'inline-flex h-6 w-6 items-center justify-center rounded-full bg-white transition-transform duration-200 hover:scale-105';
 
 export function ContactPage() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -178,35 +152,6 @@ export function ContactPage() {
                     </div>
                   </div>
                 ))}
-              </div>
-            </div>
-
-            <div className="border-t border-[#F6CDD5] bg-[#FFF1F4] px-6 py-4 md:px-10 lg:px-[30px]">
-              <div className="flex flex-wrap items-center gap-5">
-                {contactSocialLinks.map((link) => {
-                  const icon = <Icon name={ICONS[link.platform]} size={16} color={SOCIAL_COLORS[link.platform]} />;
-
-                  if (!link.url) {
-                    return (
-                      <span key={link.platform} aria-label={link.platform} className={socialItemClasses}>
-                        {icon}
-                      </span>
-                    );
-                  }
-
-                  return (
-                    <a
-                      key={link.platform}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={link.platform}
-                      className={socialItemClasses}
-                    >
-                      {icon}
-                    </a>
-                  );
-                })}
               </div>
             </div>
           </div>

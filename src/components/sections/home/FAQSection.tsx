@@ -8,14 +8,14 @@ import { ROUTES } from '@/routes/paths';
 const FAQ_DATA = [
   { id: 'faq-1', question: 'What is Y.O.U and who can join?', answer: 'Y.O.U – Youth Organization Union is a global alliance of youth-led organizations and individual leaders committed to the UN\'s SDGs. Any registered youth organization or young leader can apply.' },
   { id: 'faq-2', question: 'What are the benefits of joining as an organization?', answer: 'Members gain access to a global network, collaborative project opportunities, capacity building resources, funding connections, and visibility through our platform.' },
-  { id: 'faq-3', question: 'What are the benefits of joining as an organization?', answer: 'Organizations can participate in joint programs, attend the Annual Summit, and connect with partners across 30+ countries.' },
+  { id: 'faq-3', question: 'What opportunities are available to members?', answer: 'Organizations can participate in joint programs, attend the Annual Summit, and connect with partners across 30+ countries.' },
   { id: 'faq-4', question: 'What is the difference between Continental and Country Directors?', answer: 'Continental Directors oversee operations across an entire continent, while Country Directors manage activities within a specific country.' },
   { id: 'faq-5', question: 'Are there membership fees?', answer: 'No, Y.O.U membership is free for qualifying youth organizations and individual leaders.' },
 ];
 
 export function FAQSection() {
   return (
-    <section className="bg-white py-12 md:py-16 lg:py-[120px]">
+    <section className="bg-white pb-12 pt-0 md:pb-16 lg:pb-[7.5rem]">
       <Container size="narrow">
         {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">
@@ -27,7 +27,8 @@ export function FAQSection() {
 
         {/* FAQ items */}
         <Collapse
-          defaultActiveKey={['faq-1']}
+          accordion
+          defaultActiveKey="faq-1"
           ghost
           expandIconPosition="end"
           expandIcon={({ isActive }) => (

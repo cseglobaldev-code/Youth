@@ -59,7 +59,7 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
         <button
           type="button"
           onClick={openJoin}
-          className="mt-2 w-full whitespace-nowrap rounded-full bg-[#EE334E] px-4 py-3 text-[15px] font-semibold text-white transition-opacity hover:opacity-90 active:scale-[0.99] sm:text-base"
+          className="mt-2 w-full whitespace-nowrap rounded-full bg-[#EE334E] px-4 py-3 text-[15px] font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98] sm:text-base"
           style={{ fontFamily: 'Open Sans, sans-serif' }}
         >
           Join 1500+ Youth Organizations
@@ -101,7 +101,7 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
           <button
             type="button"
             onClick={handleDrawerJoinClick}
-            className="w-full rounded-full bg-[#EE334E] px-4 py-3 text-[15px] font-semibold text-white transition-opacity hover:opacity-90 sm:text-[16px]"
+            className="w-full rounded-full bg-[#EE334E] px-4 py-3 text-[15px] font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98] sm:text-[16px]"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
             Join 1500+ Youth Organizations

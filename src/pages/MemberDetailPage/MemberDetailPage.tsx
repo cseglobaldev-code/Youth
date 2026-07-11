@@ -8,12 +8,10 @@ import { SupportCTA } from '@/components/common/SupportCTA';
 import { CTABanner } from '@/components/common/CTABanner';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { MEMBERS_DATA, PROJECTS_DATA } from '@/data';
-import { useJoinNavigation } from '@/hooks';
 import { useSupportModal } from '@/components/common/SupportModal';
 
 export function MemberDetailPage() {
   const { memberId } = useParams<{ memberId: string }>();
-  const goToJoin = useJoinNavigation();
   const { openSupport } = useSupportModal();
   const member = MEMBERS_DATA.find((m) => m.id === memberId);
 
@@ -128,7 +126,6 @@ export function MemberDetailPage() {
         title="Ready to Make an Impact?"
         description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
         ctaLabel="Register Now"
-        onCtaClick={goToJoin}
       />
     </div>
   );
