@@ -48,17 +48,17 @@ export function Footer({ className }: FooterProps) {
                 className="h-auto w-[168px] object-contain sm:w-[190px] lg:w-[225px]"
               />
             </Link>
-            <div className="mt-5 flex items-center gap-4 sm:mt-6">
+            <div className="mt-5 flex w-[168px] items-center justify-center gap-4 sm:mt-6 sm:w-[190px] lg:w-[225px]">
               {socialLinks.map((link) => (
                 <a
                   key={link.platform}
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-neutral-400 transition-colors hover:text-white"
-                  aria-label={link.platform}
+                  className="text-white transition-opacity hover:opacity-75"
+                  aria-label={link.platform === 'twitter' ? 'X' : link.platform}
                 >
-                  <Icon name={ICONS[link.platform]} size={18} />
+                  <Icon name={link.platform === 'twitter' ? 'fa6-brands:x-twitter' : ICONS[link.platform]} size={18} />
                 </a>
               ))}
             </div>
@@ -74,14 +74,20 @@ export function Footer({ className }: FooterProps) {
                 <Icon name="lucide:map-pin" size={18} className="mt-0.5 shrink-0 text-blue-400" />
                 <span>{address}</span>
               </div>
-              <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
+              <a
+                href={`tel:${phone}`}
+                className="flex items-start gap-3 text-sm font-normal text-neutral-300 transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
+              >
                 <Icon name="lucide:phone" size={18} className="mt-0.5 shrink-0 text-blue-400" />
                 <span>{phone}</span>
-              </div>
-              <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
+              </a>
+              <a
+                href={`mailto:${email}`}
+                className="flex items-start gap-3 text-sm font-normal text-neutral-300 transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
+              >
                 <Icon name="lucide:mail" size={18} className="mt-0.5 shrink-0 text-blue-400" />
                 <span className="break-all sm:break-normal">{email}</span>
-              </div>
+              </a>
               <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
                 <Icon name="lucide:calendar" size={18} className="mt-0.5 shrink-0 text-blue-400" />
                 <span>Within 5-7 business days</span>
@@ -128,6 +134,14 @@ export function Footer({ className }: FooterProps) {
           <p className="text-xs text-neutral-400">
             © 2026 Youth Organization Union · All rights reserved
           </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-end lg:gap-6">
+            <a href="#" className="text-xs text-white transition-colors hover:text-[#005D9A]">
+              Terms of Service
+            </a>
+            <a href="#" className="text-xs text-white transition-colors hover:text-[#005D9A]">
+              Privacy Policy
+            </a>
+          </div>
         </div>
       </Container>
     </footer>

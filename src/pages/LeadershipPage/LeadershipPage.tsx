@@ -8,7 +8,7 @@ import { LeaderMemberModal } from '@/components/common/LeaderMemberModal';
 import { CTABanner } from '@/components/common/CTABanner';
 import { useJoinNavigation } from '@/hooks';
 import { StrapiService } from '@/lib/strapi';
-import { cn } from '@/lib/utils'; 
+import { cn } from '@/lib/utils';
 import type { Continent, RegionGroup, TeamMember } from '@/types';
 
 const CONTINENTS: Continent[] = ['Asia', 'Africa', 'America', 'Australia', 'Europe'];
@@ -102,7 +102,7 @@ export function LeadershipPage() {
     <div>
       <Container>
         <div className="flex flex-col items-center gap-[60px] lg:gap-[80px] pt-10 lg:pt-[80px] pb-10 lg:pb-[80px]">
-          {/* 1. HERO*/}
+          {/* 1. HERO */}
           <div className="flex flex-col items-center gap-[24px] w-full animate-fade-in-up">
             <div className="flex flex-wrap justify-center items-center gap-[16px] lg:gap-[24px]">
               <span
@@ -141,7 +141,7 @@ export function LeadershipPage() {
             </p>
           </div>
 
-          {/* 2. EXECUTIVE LEADERSHIP*/}
+          {/* 2. EXECUTIVE LEADERSHIP */}
           <div className="flex flex-col items-center gap-[40px] w-full animate-fade-in-up">
             <div className="flex flex-col items-center gap-[4px]">
               <span
@@ -152,7 +152,7 @@ export function LeadershipPage() {
                   fontFamily: 'Open Sans, sans-serif',
                 }}
               >
-                2020 - 2026
+                2026 - 2027
               </span>
               <h2
                 className="font-semibold text-black"
@@ -183,7 +183,7 @@ export function LeadershipPage() {
         </div>
       </Container>
 
-      {/* 3. CONTINENTAL DIRECTORS*/}
+      {/* 3. CONTINENTAL DIRECTORS */}
       <div className="flex flex-col items-center gap-[40px] lg:gap-[60px] w-full py-10 lg:py-[80px] animate-fade-in-up">
         <Container className="flex flex-col items-center gap-[40px]">
           <h2

@@ -50,7 +50,7 @@ export function MembersSection() {
   if (members.length === 0) return null;
 
   return (
-    <section className="bg-[#F2F7FF] py-12 md:py-16 lg:py-[120px]">
+    <section className="bg-[#F2F7FF] py-12 md:py-16 lg:py-[7.5rem]">
       <Container size="wide">
         <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">
           <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>

@@ -36,7 +36,7 @@ export function FAQSection() {
   if (faqs.length === 0) return null;
 
   return (
-    <section className="bg-white py-12 md:py-16 lg:py-[120px]">
+    <section className="bg-white pb-12 pt-0 md:pb-16 lg:pb-[7.5rem]">
       <Container size="narrow">
         <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">
           <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] text-[#111111] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
@@ -46,7 +46,8 @@ export function FAQSection() {
         </div>
 
         <Collapse
-          defaultActiveKey={[faqs[0]?.id]}
+          accordion
+          defaultActiveKey={faqs[0]?.id ? [faqs[0].id] : undefined}
           ghost
           expandIconPosition="end"
           expandIcon={({ isActive }) => (

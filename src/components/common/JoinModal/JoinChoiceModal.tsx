@@ -49,7 +49,7 @@ export function JoinChoiceModal({ open, onClose, onNext }: JoinChoiceModalProps)
         {OPTIONS.map((opt) => (
           <label
             key={opt.value}
-            className="flex items-center gap-3 cursor-pointer select-none"
+            className="flex items-center gap-3 cursor-pointer select-none rounded-lg px-2 py-1 transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
             style={FONT}
           >
             <input
@@ -68,7 +68,7 @@ export function JoinChoiceModal({ open, onClose, onNext }: JoinChoiceModalProps)
       <button
         type="button"
         onClick={() => onNext(choice)}
-        className="w-full rounded-full bg-[#EE334E] px-8 py-4 text-white text-[18px] sm:text-[20px] font-semibold transition-opacity hover:opacity-90 active:scale-[0.99]"
+        className="w-full rounded-full bg-[#EE334E] px-8 py-4 text-white text-[18px] sm:text-[20px] font-semibold transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
         style={FONT}
       >
         Next

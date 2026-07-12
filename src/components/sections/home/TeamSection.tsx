@@ -53,7 +53,7 @@ export function TeamSection() {
   }
 
   return (
-    <section className="bg-white py-12 md:py-16 lg:py-[120px]">
+    <section className="bg-white py-0">
       <Container size="wide">
         <div className="text-center mb-8 md:mb-12 lg:mb-[60px]">
           <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
@@ -65,13 +65,18 @@ export function TeamSection() {
         </div>
 
         {executives.length > 0 && (
-          <div className="mx-auto grid grid-cols-2 lg:grid-cols-3 justify-items-center gap-x-4 gap-y-8 sm:gap-x-8 lg:max-w-[860px] lg:gap-[24px] mb-8 lg:mb-[40px]">
-            {executives.map((leader) => (
-              <div key={leader.id} className="flex flex-col items-center max-w-[280px]">
-                <ExecutiveCard member={leader} onClick={() => setSelectedMember(leader)} />
-              </div>
-            ))}
-          </div>
+          <>
+            <h3 className="mb-8 text-center font-semibold text-[clamp(1.25rem,1.82vw,1.75rem)] text-[#111111] lg:mb-[40px]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+              Executive Leadership 2026 - 2027
+            </h3>
+            <div className="mx-auto grid grid-cols-2 lg:grid-cols-3 justify-items-center gap-x-4 gap-y-8 sm:gap-x-8 lg:max-w-[860px] lg:gap-[24px] mb-8 lg:mb-[40px]">
+              {executives.map((leader) => (
+                <div key={leader.id} className="flex flex-col items-center max-w-[280px]">
+                  <ExecutiveCard member={leader} onClick={() => setSelectedMember(leader)} />
+                </div>
+              ))}
+            </div>
+          </>
         )}
 
         {directors.length > 0 && (

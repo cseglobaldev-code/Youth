@@ -31,7 +31,7 @@ export function TeamMemberCard({ member, avatarSize = 'xl', className, onClick }
       */}
       <div
         className="relative flex-shrink-0 group cursor-pointer mx-auto aspect-square"
-        style={{ width: `min(${px}px, 38vw)` }}
+        style={{ width: `min(${px}px, 38vw)`, height: `min(${px}px, 38vw)` }}
       >
         {/* Photo */}
         <div className="w-full h-full rounded-full overflow-hidden bg-[#EEEEEE]">

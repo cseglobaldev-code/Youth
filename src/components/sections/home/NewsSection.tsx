@@ -61,7 +61,7 @@ export function NewsSection() {
   const mobileFeatured = projects[mobileIndex];
 
   return (
-    <section className="bg-white py-12 md:py-16 lg:py-[120px]">
+    <section className="bg-white py-0">
       <Container size="wide">
         <div className="mb-8 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between lg:mb-[40px]">
           <h2 className="font-semibold text-[32px] leading-none md:text-[clamp(1.5rem,3.13vw,3rem)] md:leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
@@ -132,7 +132,7 @@ export function NewsSection() {
         {featured && (
           <div className="hidden md:flex flex-col gap-6 md:flex-row lg:gap-8">
             <div
-              className="group flex w-full cursor-pointer flex-col md:w-1/2"
+              className="group flex w-full cursor-pointer flex-col md:w-1/2 animate-fade-in-up"
               onClick={() => navigate(ROUTES.PROJECT_DETAIL(featured.id))}
             >
               <div className="mb-4 overflow-hidden rounded-2xl aspect-[652/436]">
@@ -161,7 +161,7 @@ export function NewsSection() {
               <Button
                 type="link"
                 danger
-                className="!flex !items-center !gap-1 !p-0 !h-auto !text-[clamp(1rem,1.17vw,1.125rem)] !font-semibold"
+                className="!flex self-start !justify-start !items-center !gap-1 !h-auto !p-0 !text-[20px] !leading-none !tracking-[0px] !font-semibold"
                 style={{ fontFamily: 'Open Sans, sans-serif' }}
                 onClick={(event) => {
                   event.stopPropagation();

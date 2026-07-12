@@ -83,7 +83,7 @@ export function AboutPage() {
 
   return (
     <div className="relative z-10 bg-white">
-      <section className="pt-16 pb-10 md:pt-24 md:pb-14 lg:pt-28 lg:pb-16">
+      <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container className={ABOUT_CONTAINER_CLASS}>
           <div className="grid gap-6 md:gap-8 lg:grid-cols-[260px_1fr] lg:gap-20 xl:gap-28">
             <h1 className="font-heading text-[clamp(2.75rem,5vw,5rem)] font-semibold leading-[1.05] text-black">
@@ -108,7 +108,7 @@ export function AboutPage() {
         </Container>
       </section>
 
-      <section className="py-10 md:py-14 lg:py-16">
+      <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container size="narrow" className="lg:max-w-[1080px]">
           <div className="grid items-center gap-8 lg:grid-cols-[1fr_400px] lg:gap-20">
             <div>
@@ -137,7 +137,7 @@ export function AboutPage() {
         </Container>
       </section>
 
-      <section className="py-10 md:py-14">
+      <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container size="narrow" className="lg:max-w-[1080px]">
           <div className="rounded-2xl bg-[#F2F7FF] px-4 py-6 md:px-8 lg:px-10">
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-0">
@@ -161,7 +161,7 @@ export function AboutPage() {
         </Container>
       </section>
 
-      <section className="py-12 text-center md:py-16 lg:py-20">
+      <section className="pb-0 pt-12 text-center md:pt-16 lg:pt-[7.5rem]">
         <Container size="narrow" className="lg:max-w-[1080px]">
           <h2 className={ABOUT_SECTION_TITLE_CLASS}>
             Sứ mệnh{' '}
@@ -192,7 +192,7 @@ export function AboutPage() {
         </Container>
       </section>
 
-      <section className="py-12 text-center md:py-16 lg:py-20">
+      <section className="pb-0 pt-12 text-center md:pt-16 lg:pt-[7.5rem]">
         <Container>
           <h2 className={ABOUT_SECTION_TITLE_CLASS}>
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
