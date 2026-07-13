@@ -8,8 +8,9 @@ import { MemberCardLarge } from '@/components/common/MemberCardLarge/MemberCardL
 import { Pagination } from '@/components/common/Pagination';
 import { CTABanner } from '@/components/common/CTABanner';
 import { ROUTES } from '@/routes/paths';
-import { usePagination } from '@/hooks';
+import { usePagination, useJoinNavigation } from '@/hooks';
 import { StrapiService } from '@/lib/strapi';
+import { MEMBERS_DATA } from '@/data'; 
 import type { Member } from '@/types';
 
 const SORT_OPTIONS = [
@@ -20,10 +21,11 @@ const SORT_OPTIONS = [
 
 export function MemberPage() {
   const navigate = useNavigate();
+  const goToJoin = useJoinNavigation();
   
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
@@ -32,12 +34,16 @@ export function MemberPage() {
   useEffect(() => {
     StrapiService.getMembers()
       .then((data) => {
-        setMembers(data);
+        if (data && data.length > 0) {
+          setMembers(data);
+        } else {
+          setMembers(MEMBERS_DATA); // Fallback if database is empty
+        }
         setLoading(false);
       })
       .catch((err) => {
         console.error(err);
-        setError('Không thể tải danh sách thành viên. Vui lòng thử lại sau.');
+        setMembers(MEMBERS_DATA); // Fallback if API fails
         setLoading(false);
       });
   }, []);
@@ -217,6 +223,7 @@ export function MemberPage() {
         description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
         ctaLabel="Register Now"
         className="my-0 md:my-0 lg:my-0"
+        onCtaClick={goToJoin}
       />
     </div>
   );

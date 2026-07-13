@@ -7,6 +7,7 @@ import { ViewAllButton } from '@/components/common/ViewAllButton';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
 import { StrapiService } from '@/lib/strapi';
+import { FAQS_DATA } from '@/data'; 
 import type { FAQ } from '@/types';
 
 export function FAQSection() {
@@ -16,11 +17,18 @@ export function FAQSection() {
   useEffect(() => {
     StrapiService.getFAQs()
       .then((data) => {
-        setFaqs(data);
+        if (data && data.length > 0) {
+          setFaqs(data);
+        } else {
+          // Typed lambda arguments explicitly:
+          setFaqs(FAQS_DATA.map((f: any, i: number) => ({ id: f.id || `faq-${i}`, question: f.question, answer: f.answer })));
+        }
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        console.error('API failed, falling back to static FAQs:', err);
+        // Typed lambda arguments explicitly:
+        setFaqs(FAQS_DATA.map((f: any, i: number) => ({ id: f.id || `faq-${i}`, question: f.question, answer: f.answer })));
         setLoading(false);
       });
   }, []);

@@ -7,6 +7,7 @@ import { ViewAllButton } from '@/components/common/ViewAllButton';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
 import { StrapiService } from '@/lib/strapi';
+import { PROJECTS_DATA, MEMBERS_DATA } from '@/data'; 
 import type { Project, Member } from '@/types';
 
 export function NewsSection() {
@@ -23,12 +24,22 @@ export function NewsSection() {
       StrapiService.getMembers()
     ])
       .then(([projectData, memberData]) => {
-        setProjects(projectData);
-        setMembers(memberData);
+        if (projectData && projectData.length > 0) {
+          setProjects(projectData);
+        } else {
+          setProjects(PROJECTS_DATA);
+        }
+        if (memberData && memberData.length > 0) {
+          setMembers(memberData);
+        } else {
+          setMembers(MEMBERS_DATA);
+        }
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        console.error('API failed, falling back to static project_data for showcase:', err);
+        setProjects(PROJECTS_DATA);
+        setMembers(MEMBERS_DATA);
         setLoading(false);
       });
   }, []);

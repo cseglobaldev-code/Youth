@@ -5,10 +5,10 @@ import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
 import { ProjectCard } from '@/components/common/ProjectCard';
 import { cn, filterBySdg } from '@/lib/utils'; 
-import { SDGS_DATA } from '@/data';
+import { SDGS_DATA, PROJECTS_DATA, MEMBERS_DATA } from '@/data'; 
 import { StrapiService } from '@/lib/strapi';
 import { ICONS } from '@/config/icons';
-import type { Project, Member } from '@/types'; 
+import type { Project, Member } from '@/types';
 
 const MAX_VISIBLE = 8;
 
@@ -16,7 +16,7 @@ export function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
 
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -29,13 +29,22 @@ export function ProjectsPage() {
       StrapiService.getMembers()
     ])
       .then(([projectData, memberData]) => {
-        setProjects(projectData);
-        setMembers(memberData);
+        if (projectData && projectData.length > 0) {
+          setProjects(projectData);
+        } else {
+          setProjects(PROJECTS_DATA);
+        }
+        if (memberData && memberData.length > 0) {
+          setMembers(memberData);
+        } else {
+          setMembers(MEMBERS_DATA);
+        }
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
-        setError('Không thể tải các dự án. Vui lòng thử lại sau.');
+        console.error('API failed, falling back to static project_data:', err);
+        setProjects(PROJECTS_DATA);
+        setMembers(MEMBERS_DATA);
         setLoading(false);
       });
   }, []);

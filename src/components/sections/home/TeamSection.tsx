@@ -6,6 +6,7 @@ import { ExecutiveCard } from '@/components/common/ExecutiveCard';
 import { TeamMemberCard } from '@/components/common/TeamMemberCard';
 import { LeaderMemberModal } from '@/components/common/LeaderMemberModal';
 import { StrapiService } from '@/lib/strapi';
+import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data'; 
 import type { TeamMember } from '@/types';
 
 export function TeamSection() {
@@ -16,11 +17,16 @@ export function TeamSection() {
   useEffect(() => {
     StrapiService.getTeamMembers()
       .then((data) => {
-        setTeamMembers(data);
+        if (data && data.length > 0) {
+          setTeamMembers(data);
+        } else {
+          setTeamMembers([...EXECUTIVE_LEADERSHIP, ...TEAM_DATA]);
+        }
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
+        console.error('API failed, falling back to static team data:', err);
+        setTeamMembers([...EXECUTIVE_LEADERSHIP, ...TEAM_DATA]);
         setLoading(false);
       });
   }, []);

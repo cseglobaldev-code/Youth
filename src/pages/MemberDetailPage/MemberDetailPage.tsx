@@ -13,6 +13,7 @@ import { SectionHeading } from '@/components/common/SectionHeading';
 import { StrapiService } from '@/lib/strapi';
 import { useJoinNavigation } from '@/hooks';
 import { useSupportModal } from '@/components/common/SupportModal';
+import { MEMBERS_DATA, PROJECTS_DATA } from '@/data';
 import type { Member, Project } from '@/types';
 
 export function MemberDetailPage() {
@@ -35,12 +36,20 @@ export function MemberDetailPage() {
       .then(([memberData, allProjects]) => {
         setMember(memberData);
         const memberProjects = allProjects.filter((p) => p.memberId === memberId);
-        setProjects(memberProjects);
+        setProjects(memberProjects.length > 0 ? memberProjects : allProjects.slice(0, 3));
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
-        setError('Không tìm thấy thông tin tổ chức.');
+        console.error('API failed, falling back to static members_data:', err);
+        const fallbackMember = MEMBERS_DATA.find((m) => m.id === memberId);
+        if (fallbackMember) {
+          setMember(fallbackMember);
+          const fallbackProjects = PROJECTS_DATA.filter((p) => fallbackMember.projectIds?.includes(p.id));
+          setProjects(fallbackProjects.length > 0 ? fallbackProjects : PROJECTS_DATA.slice(0, 3));
+          setError(null);
+        } else {
+          setError('Không tìm thấy thông tin tổ chức.');
+        }
         setLoading(false);
       });
   }, [memberId]);

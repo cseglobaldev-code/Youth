@@ -8,7 +8,8 @@ import { LeaderMemberModal } from '@/components/common/LeaderMemberModal';
 import { CTABanner } from '@/components/common/CTABanner';
 import { useJoinNavigation } from '@/hooks';
 import { StrapiService } from '@/lib/strapi';
-import { cn } from '@/lib/utils';
+import { cn } from '@/lib/utils'; 
+import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data';
 import type { Continent, RegionGroup, TeamMember } from '@/types';
 
 const CONTINENTS: Continent[] = ['Asia', 'Africa', 'America', 'Australia', 'Europe'];
@@ -29,7 +30,7 @@ const SEPARATOR_GRADIENT =
 export function LeadershipPage() {
   const [allTeamMembers, setAllTeamMembers] = useState<TeamMember[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
 
   const [activeContinent, setActiveContinent] = useState<Continent>('Asia');
   const [activeRegion, setActiveRegion] = useState<RegionGroup>('East Asia');
@@ -37,19 +38,22 @@ export function LeadershipPage() {
   const [showAllDirectors, setShowAllDirectors] = useState(false);
 
   const goToJoin = useJoinNavigation();
-
   const openModal = (member: TeamMember) => setSelectedMember(member);
   const closeModal = () => setSelectedMember(null);
 
   useEffect(() => {
     StrapiService.getTeamMembers()
       .then((data) => {
-        setAllTeamMembers(data);
+        if (data && data.length > 0) {
+          setAllTeamMembers(data);
+        } else {
+          setAllTeamMembers([...EXECUTIVE_LEADERSHIP, ...TEAM_DATA]);
+        }
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
-        setError('Không thể tải thông tin đội ngũ lãnh đạo.');
+        console.error('API failed, falling back to static team database:', err);
+        setAllTeamMembers([...EXECUTIVE_LEADERSHIP, ...TEAM_DATA]);
         setLoading(false);
       });
   }, []);
@@ -102,7 +106,7 @@ export function LeadershipPage() {
     <div>
       <Container>
         <div className="flex flex-col items-center gap-[60px] lg:gap-[80px] pt-10 lg:pt-[80px] pb-10 lg:pb-[80px]">
-          {/* 1. HERO */}
+          {/* 1. HERO*/}
           <div className="flex flex-col items-center gap-[24px] w-full animate-fade-in-up">
             <div className="flex flex-wrap justify-center items-center gap-[16px] lg:gap-[24px]">
               <span
@@ -141,7 +145,7 @@ export function LeadershipPage() {
             </p>
           </div>
 
-          {/* 2. EXECUTIVE LEADERSHIP */}
+          {/* 2. EXECUTIVE LEADERSHIP*/}
           <div className="flex flex-col items-center gap-[40px] w-full animate-fade-in-up">
             <div className="flex flex-col items-center gap-[4px]">
               <span
@@ -183,7 +187,7 @@ export function LeadershipPage() {
         </div>
       </Container>
 
-      {/* 3. CONTINENTAL DIRECTORS */}
+      {/* 3. CONTINENTAL DIRECTORS*/}
       <div className="flex flex-col items-center gap-[40px] lg:gap-[60px] w-full py-10 lg:py-[80px] animate-fade-in-up">
         <Container className="flex flex-col items-center gap-[40px]">
           <h2
@@ -297,6 +301,7 @@ export function LeadershipPage() {
         title="Ready to Make an Impact?"
         description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
         ctaLabel="Register Now"
+        className="my-0 md:my-0 lg:my-0"
         onCtaClick={goToJoin}
       />
 

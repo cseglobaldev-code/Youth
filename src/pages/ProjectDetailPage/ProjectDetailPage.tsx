@@ -9,6 +9,9 @@ import { useSupportModal } from '@/components/common/SupportModal';
 import { SDGTag } from '@/components/ui/SDGTag';
 import { Container } from '@/components/ui/Container';
 import { StrapiService } from '@/lib/strapi';
+import { PROJECTS_DATA, MEMBERS_DATA } from '@/data'; 
+import { cn } from '@/lib/utils';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 import type { Project, Member } from '@/types';
 
 const SOCIAL_ICON_MAP: Record<string, string> = {
@@ -85,6 +88,10 @@ export function ProjectDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const { ref: orgRef, visible: orgVisible } = useScrollReveal();
+  const { ref: detailRef, visible: detailVisible } = useScrollReveal();
+  const { ref: otherRef, visible: otherVisible } = useScrollReveal();
+
   useEffect(() => {
     if (!projectId) return;
 
@@ -95,8 +102,8 @@ export function ProjectDetailPage() {
     ])
       .then(([projData, projectList, memberList]) => {
         setProject(projData);
-        setAllProjects(projectList);
-        setMembersList(memberList);
+        setAllProjects(projectList.length > 0 ? projectList : PROJECTS_DATA);
+        setMembersList(memberList.length > 0 ? memberList : MEMBERS_DATA);
         
         if (projData.memberId) {
           const associatedMember = memberList.find((m: Member) => m.id === projData.memberId);
@@ -105,8 +112,18 @@ export function ProjectDetailPage() {
         setLoading(false);
       })
       .catch((err) => {
-        console.error(err);
-        setError('Không tìm thấy thông tin dự án.');
+        console.error('API failed, falling back to static project details:', err);
+        const fallbackProj = PROJECTS_DATA.find((p) => p.id === projectId);
+        if (fallbackProj) {
+          setProject(fallbackProj);
+          setAllProjects(PROJECTS_DATA);
+          setMembersList(MEMBERS_DATA);
+          const associatedMember = MEMBERS_DATA.find((m) => m.id === fallbackProj.memberId);
+          if (associatedMember) setMember(associatedMember);
+          setError(null);
+        } else {
+          setError('Không tìm thấy thông tin dự án.');
+        }
         setLoading(false);
       });
   }, [projectId]);
@@ -198,7 +215,10 @@ export function ProjectDetailPage() {
 
       <Container className="pb-10 lg:pb-[175px]">
         <div className="flex flex-col gap-10 lg:gap-[80px]">
-          <div className="max-w-[746px] animate-fade-in-up">
+          <div
+            ref={orgRef as React.RefObject<HTMLDivElement>}
+            className={cn('max-w-[746px] transition-all duration-700', orgVisible ? 'animate-fade-in-up' : 'opacity-0')}
+          >
             <div className="flex flex-col gap-4 lg:gap-6">
               <h2
                 className="font-semibold text-black"
@@ -247,7 +267,10 @@ export function ProjectDetailPage() {
 
           <Divider style={{ background: GRADIENT_DIVIDER, margin: 0 }} />
 
-          <div className="flex flex-col gap-4 lg:gap-6 animate-fade-in-up">
+          <div
+            ref={detailRef as React.RefObject<HTMLDivElement>}
+            className={cn('flex flex-col gap-4 lg:gap-6 transition-all duration-700', detailVisible ? 'animate-fade-in-up' : 'opacity-0')}
+          >
             <DetailRow label="Project name">
               <span style={VALUE_STYLE}>{project.name}</span>
             </DetailRow>
@@ -293,7 +316,10 @@ export function ProjectDetailPage() {
             </DetailRow>
           </div>
 
-          <div className="flex flex-col gap-4 lg:gap-6 animate-fade-in-up">
+          <div
+            ref={otherRef as React.RefObject<HTMLDivElement>}
+            className={cn('flex flex-col gap-4 lg:gap-6 transition-all duration-700', otherVisible ? 'animate-fade-in-up' : 'opacity-0')}
+          >
             <h2
               className="font-semibold text-black"
               style={{
@@ -308,7 +334,7 @@ export function ProjectDetailPage() {
               {otherProjects.map((p, index) => (
                 <div
                   key={p.id}
-                  className="animate-fade-in-up"
+                  className={cn(otherVisible ? 'animate-fade-in-up' : 'opacity-0')}
                   style={{ animationDelay: `${index * 80}ms` }}
                 >
                   <ProjectCard project={p} ledBy={memberMap[p.memberId] || 'TBD'} />
