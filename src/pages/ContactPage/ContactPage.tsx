@@ -155,21 +155,19 @@ export function ContactPage() {
 
               <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
                 {contactDetails.map((item) => (
-                  <div key={item.title} className="min-w-0">
+                  <div key={item.title} className="group min-w-0">
                     <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515]">{item.title}</h3>
-                    <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515]">
+                    <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515] transition-colors duration-200 group-hover:text-[#005D9A]">
                       {item.content.map((line) =>
                         item.title === 'Email' ? (
                           <p key={line}>
-                            <a href={`mailto:${line}`} className="break-all hover:text-[#EE334E]">
+                            <a href={`mailto:${line}`} className="break-all">
                               {line}
                             </a>
                           </p>
                         ) : item.title === 'Hotline/WhatsApp/Zalo' ? (
                           <p key={line}>
-                            <a href="tel:+84982421109" className="hover:text-[#EE334E]">
-                              {line}
-                            </a>
+                            <a href="tel:+84982421109">{line}</a>
                           </p>
                         ) : (
                           <p key={line}>{line}</p>
