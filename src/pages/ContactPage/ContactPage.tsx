@@ -141,10 +141,10 @@ export function ContactPage() {
                     rel={item.title === 'Address' ? 'noopener noreferrer' : undefined}
                     className="group block min-w-0"
                   >
-                    <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515] transition-colors group-hover:text-[#EE334E]">
+                    <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515]">
                       {item.title}
                     </h3>
-                    <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515] transition-colors group-hover:text-[#EE334E]">
+                    <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515] transition-colors duration-200 group-hover:text-[#005D9A]">
                       {item.content.map((line) => (
                         <p key={line} className="break-words">
                           {line}
