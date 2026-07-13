@@ -4,18 +4,23 @@ import { PillButton } from '@/components/ui/PillButton';
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
 
+const ADDRESS_TEXT = 'No.53, Lane 215, Dinh Cong Thuong, Dinh Cong, Hoang Mai, Hanoi, Vietnam';
+
 const contactDetails = [
   {
     title: 'Address',
     content: ['No.53, Lane 215, Dinh Cong Thuong, Dinh Cong,', 'Hoang Mai, Hanoi, Vietnam'],
+    href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ADDRESS_TEXT)}`,
   },
   {
     title: 'Hotline/WhatsApp/Zalo',
     content: ['(+84) 98.242.1109'],
+    href: 'tel:+84982421109',
   },
   {
     title: 'Email',
     content: ['info@youthorgunion.org'],
+    href: 'mailto:info@youthorgunion.org',
   },
 ] as const;
 
@@ -129,28 +134,24 @@ export function ContactPage() {
 
               <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
                 {contactDetails.map((item) => (
-                  <div key={item.title} className="min-w-0">
-                    <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515]">{item.title}</h3>
-                    <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515]">
-                      {item.content.map((line) =>
-                        item.title === 'Email' ? (
-                          <p key={line}>
-                            <a href={`mailto:${line}`} className="break-all hover:text-[#EE334E]">
-                              {line}
-                            </a>
-                          </p>
-                        ) : item.title === 'Hotline/WhatsApp/Zalo' ? (
-                          <p key={line}>
-                            <a href="tel:+84982421109" className="hover:text-[#EE334E]">
-                              {line}
-                            </a>
-                          </p>
-                        ) : (
-                          <p key={line}>{line}</p>
-                        )
-                      )}
+                  <a
+                    key={item.title}
+                    href={item.href}
+                    target={item.title === 'Address' ? '_blank' : undefined}
+                    rel={item.title === 'Address' ? 'noopener noreferrer' : undefined}
+                    className="group block min-w-0"
+                  >
+                    <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515] transition-colors group-hover:text-[#EE334E]">
+                      {item.title}
+                    </h3>
+                    <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515] transition-colors group-hover:text-[#EE334E]">
+                      {item.content.map((line) => (
+                        <p key={line} className="break-words">
+                          {line}
+                        </p>
+                      ))}
                     </div>
-                  </div>
+                  </a>
                 ))}
               </div>
             </div>

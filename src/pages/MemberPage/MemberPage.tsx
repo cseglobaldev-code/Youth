@@ -215,7 +215,6 @@ export function MemberPage() {
         title="Ready to Make an Impact?"
         description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
         ctaLabel="Register Now"
-        className="my-0 md:my-0 lg:my-0"
       />
     </div>
   );

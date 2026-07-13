@@ -7,7 +7,7 @@ export interface ViewAllButtonProps {
   href?: string;
   /** Handler khi không dùng to/href */
   onClick?: () => void;
-  /** Nhãn nút, mặc định "View all" */
+  /** Nhãn nút, mặc định "View All" */
   label?: string;
   /** Kích thước nút, mặc định "sm" */
   size?: PillButtonSize;
@@ -15,14 +15,14 @@ export interface ViewAllButtonProps {
 }
 
 /**
- * Nút "View all" dùng chung — viền đỏ thương hiệu, hover đổ nền đỏ chữ trắng.
+ * Nút "View All" dùng chung — viền đỏ thương hiệu, hover đổ nền đỏ chữ trắng.
  * Dùng ở các section danh sách (Members, News/Projects, ...).
  */
 export function ViewAllButton({
   to,
   href,
   onClick,
-  label = 'View all',
+  label = 'View All',
   size = 'sm',
   className,
 }: ViewAllButtonProps) {
