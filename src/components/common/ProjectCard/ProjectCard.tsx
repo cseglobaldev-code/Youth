@@ -40,7 +40,7 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
       {/* Content */}
       <div className="flex flex-col gap-3 px-4 pb-4">
         <h3
-          className="font-semibold text-[#0F172A] line-clamp-2"
+          className="line-clamp-2 font-semibold text-[#0F172A] transition-colors duration-300 group-hover:text-[#005D9A]"
           style={{
             fontSize: 'clamp(1rem, 1.1vw, 1.25rem)',
             fontFamily: 'Open Sans, sans-serif',
@@ -116,12 +116,15 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
           <Button
             type="text"
             shape="circle"
-            className="!w-8 !h-8 !bg-white !text-[#EE334E] !flex-shrink-0 transition-all duration-200 hover:!bg-[#EE334E] hover:!text-white hover:!scale-110 hover:!shadow-md active:!scale-95 !min-w-0 mt-0.5"
+            className="!mt-0.5 !h-8 !w-8 !min-w-0 !flex-shrink-0 !bg-white !text-[#EE334E] transition-all duration-200 group-hover:!bg-[#EE334E] group-hover:!text-white group-hover:!shadow-md hover:!scale-110 active:!scale-95"
             style={{ border: '1px solid #EE334E', padding: 0 }}
             onClick={(e) => { e.stopPropagation(); navigate(ROUTES.PROJECT_DETAIL(project.id)); }}
             aria-label={`View ${project.name}`}
           >
-            <Icon name="mdi:arrow-top-right" size={16} />
+            <span className="relative flex h-4 w-4 items-center justify-center">
+              <Icon name="lucide:arrow-up-right" size={16} className="absolute transition-opacity duration-200 group-hover:opacity-0" />
+              <Icon name="lucide:arrow-right" size={16} className="absolute opacity-0 transition-opacity duration-200 group-hover:opacity-100" />
+            </span>
           </Button>
         </div>
       </div>

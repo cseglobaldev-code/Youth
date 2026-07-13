@@ -4,7 +4,8 @@ import { cn } from '@/lib/utils';
 import { Logo } from '@/components/layout/Logo';
 import { Icon } from '@/components/ui/Icon';
 import { ICONS } from '@/config/icons';
-import { useDisclosure, useJoinNavigation } from '@/hooks';
+import { useDisclosure } from '@/hooks';
+import { useJoinModal } from '@/components/common/JoinModal';
 import { NAV_ITEMS } from '@/data';
 import type { NavItem } from '@/types';
 
@@ -17,11 +18,11 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
   const items = navItems ?? NAV_ITEMS;
   const { pathname } = useLocation();
   const { isOpen, open, close } = useDisclosure();
-  const goToJoin = useJoinNavigation();
+  const { openJoin } = useJoinModal();
 
-  const handleJoinClick = () => {
+  const handleDrawerJoinClick = () => {
     close();
-    goToJoin();
+    openJoin();
   };
 
   return (
@@ -31,15 +32,37 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
         className
       )}
     >
-      <div className="flex h-14 items-center justify-between px-4 sm:h-16 sm:px-6">
-        <Logo className="max-w-[148px]" />
+      <div className="px-4 pb-3 pt-2 sm:px-6">
+        <div className="flex h-12 items-center justify-between gap-3">
+          <Logo className="max-w-[132px] flex-shrink-0 sm:max-w-[148px]" />
+          <div className="flex flex-shrink-0 items-center gap-3 sm:gap-4">
+            <button
+              type="button"
+              className="flex items-center gap-1.5 font-medium text-black transition-colors hover:text-[#005D9A]"
+              style={{ fontFamily: 'Open Sans, sans-serif' }}
+            >
+              <Icon name="lucide:globe" size={18} />
+              English
+              <Icon name="lucide:chevron-down" size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={open}
+              aria-label="Open menu"
+              className="rounded-lg p-1 text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-[#005D9A]"
+            >
+              <Icon name={ICONS.menu} size={24} />
+            </button>
+          </div>
+        </div>
+
         <button
           type="button"
-          onClick={open}
-          aria-label="Open menu"
-          className="rounded-lg p-2 text-neutral-700 transition-colors hover:bg-neutral-50 hover:text-[#005D9A]"
+          onClick={openJoin}
+          className="mt-2 w-full whitespace-nowrap rounded-full bg-[#EE334E] px-4 py-3 text-[15px] font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98] sm:text-base"
+          style={{ fontFamily: 'Open Sans, sans-serif' }}
         >
-          <Icon name={ICONS.menu} size={24} />
+          Join 1500+ Youth Organizations
         </button>
       </div>
 
@@ -77,8 +100,8 @@ export function HeaderMobile({ navItems, className }: HeaderMobileProps) {
         <div className="mt-6 border-t border-neutral-100 pt-4">
           <button
             type="button"
-            onClick={handleJoinClick}
-            className="w-full rounded-full bg-[#EE334E] px-4 py-3 text-[15px] font-semibold text-white transition-opacity hover:opacity-90 sm:text-[16px]"
+            onClick={handleDrawerJoinClick}
+            className="w-full rounded-full bg-[#EE334E] px-4 py-3 text-[15px] font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98] sm:text-[16px]"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
             Join 1500+ Youth Organizations

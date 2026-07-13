@@ -24,17 +24,17 @@ export function Footer({ className }: FooterProps) {
                 className="h-auto w-[168px] object-contain sm:w-[190px] lg:w-[225px]"
               />
             </Link>
-            <div className="mt-5 flex items-center gap-4 sm:mt-6">
+            <div className="mt-5 flex w-[168px] items-center justify-center gap-4 sm:mt-6 sm:w-[190px] lg:w-[225px]">
               {SOCIAL_LINKS.map((link) => (
                 <a
                   key={link.platform}
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-neutral-400 transition-colors hover:text-white"
-                  aria-label={link.platform}
+                  className="text-white transition-opacity hover:opacity-75"
+                  aria-label={link.platform === 'twitter' ? 'X' : link.platform}
                 >
-                  <Icon name={ICONS[link.platform]} size={18} />
+                  <Icon name={link.platform === 'twitter' ? 'fa6-brands:x-twitter' : ICONS[link.platform]} size={18} />
                 </a>
               ))}
             </div>
@@ -42,7 +42,16 @@ export function Footer({ className }: FooterProps) {
 
           {/* Information */}
           <div className="min-w-0">
-            <h4 className="mb-4 text-base font-medium text-white sm:text-lg lg:mb-5">
+            <h4
+              className="mb-4 text-white lg:mb-5"
+              style={{
+                fontFamily: 'Open Sans, sans-serif',
+                fontWeight: 600,
+                fontSize: '24px',
+                lineHeight: '140%',
+                letterSpacing: '0%',
+              }}
+            >
               Infomation
             </h4>
             <div className="flex flex-col gap-3 lg:gap-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
@@ -50,14 +59,20 @@ export function Footer({ className }: FooterProps) {
                 <Icon name="lucide:map-pin" size={18} className="mt-0.5 shrink-0 text-blue-400" />
                 <span>Global - Operating across 6 continents</span>
               </div>
-              <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
+              <a
+                href="tel:+84982421109"
+                className="flex items-start gap-3 text-sm font-normal text-neutral-300 transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
+              >
                 <Icon name="lucide:phone" size={18} className="mt-0.5 shrink-0 text-blue-400" />
-                <span>098.242.1109</span>
-              </div>
-              <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
+                <span>+84 982.421.109</span>
+              </a>
+              <a
+                href="mailto:info@youthorgunion.org"
+                className="flex items-start gap-3 text-sm font-normal text-neutral-300 transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
+              >
                 <Icon name="lucide:mail" size={18} className="mt-0.5 shrink-0 text-blue-400" />
                 <span className="break-all sm:break-normal">info@youthorgunion.org</span>
-              </div>
+              </a>
               <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
                 <Icon name="lucide:calendar" size={18} className="mt-0.5 shrink-0 text-blue-400" />
                 <span>Within 5-7 business days</span>
@@ -67,31 +82,72 @@ export function Footer({ className }: FooterProps) {
 
           {/* Discover */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <h4 className="mb-4 text-base font-medium text-white sm:text-lg lg:mb-5">
+            <h4
+              className="mb-4 text-white lg:mb-5"
+              style={{
+                fontFamily: 'Open Sans, sans-serif',
+                fontWeight: 600,
+                fontSize: '24px',
+                lineHeight: '140%',
+                letterSpacing: '0%',
+              }}
+            >
               Discover
             </h4>
-            <nav className="flex flex-col items-start gap-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            <nav className="flex flex-col items-start gap-3">
               <Link
                 to={ROUTES.ABOUT}
-                className="text-sm font-normal text-white transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
+                className="text-white transition-colors hover:text-[#005D9A]"
+                style={{
+                  fontFamily: 'Open Sans, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '20px',
+                  lineHeight: '100%',
+                  letterSpacing: '0%',
+                  verticalAlign: 'middle',
+                }}
               >
                 About us
               </Link>
               <Link
                 to={ROUTES.LEADERSHIP}
-                className="text-sm font-normal text-white transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
+                className="text-white transition-colors hover:text-[#005D9A]"
+                style={{
+                  fontFamily: 'Open Sans, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '20px',
+                  lineHeight: '100%',
+                  letterSpacing: '0%',
+                  verticalAlign: 'middle',
+                }}
               >
                 Leadership
               </Link>
               <Link
                 to={ROUTES.MEMBERS}
-                className="text-sm font-normal text-white transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
+                className="text-white transition-colors hover:text-[#005D9A]"
+                style={{
+                  fontFamily: 'Open Sans, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '20px',
+                  lineHeight: '100%',
+                  letterSpacing: '0%',
+                  verticalAlign: 'middle',
+                }}
               >
                 Members
               </Link>
               <Link
                 to={ROUTES.PROJECTS}
-                className="text-sm font-normal text-white transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
+                className="text-white transition-colors hover:text-[#005D9A]"
+                style={{
+                  fontFamily: 'Open Sans, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '20px',
+                  lineHeight: '100%',
+                  letterSpacing: '0%',
+                  verticalAlign: 'middle',
+                }}
               >
                 Projects
               </Link>
@@ -105,10 +161,10 @@ export function Footer({ className }: FooterProps) {
             © 2026 Youth Organization Union · All rights reserved
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-end lg:gap-6">
-            <a href="#" className="text-xs text-neutral-400 transition-colors hover:text-[#005D9A]">
+            <a href="#" className="text-xs text-white transition-colors hover:text-[#005D9A]">
               Terms of Service
             </a>
-            <a href="#" className="text-xs text-neutral-400 transition-colors hover:text-[#005D9A]">
+            <a href="#" className="text-xs text-white transition-colors hover:text-[#005D9A]">
               Privacy Policy
             </a>
           </div>

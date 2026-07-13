@@ -7,7 +7,6 @@ import { CTABanner } from '@/components/common/CTABanner';
 import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data';
 import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
-import { useJoinNavigation } from '@/hooks';
 import type { Continent, RegionGroup, TeamMember } from '@/types';
 
 /* ─── constants ─────────────────────────────────────────────────────────── */
@@ -36,7 +35,6 @@ export function LeadershipPage() {
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [showAllDirectors, setShowAllDirectors] = useState(false);
 
-  const goToJoin = useJoinNavigation();
 
   const openModal = (member: TeamMember) => setSelectedMember(member);
   const closeModal = () => setSelectedMember(null);
@@ -149,7 +147,7 @@ export function LeadershipPage() {
                   fontFamily: 'Open Sans, sans-serif',
                 }}
               >
-                2020 - 2026
+                2026 - 2027
               </span>
               <h2
                 className="font-semibold text-black"
@@ -193,7 +191,7 @@ export function LeadershipPage() {
       <div
         ref={directorsRef as React.RefObject<HTMLDivElement>}
         className={cn(
-          'flex flex-col items-center gap-[40px] lg:gap-[60px] w-full py-10 lg:py-[80px] transition-all duration-700',
+          'flex flex-col items-center gap-[40px] lg:gap-[60px] w-full py-0 transition-all duration-700',
           directorsVisible ? 'animate-fade-in-up' : 'opacity-0'
         )}
       >
@@ -277,7 +275,7 @@ export function LeadershipPage() {
               {visibleDirectors.map((member, index) => (
                 <div
                   key={member.id}
-                  className={cn(directorsVisible ? 'animate-fade-in-up' : 'opacity-0')}
+                  className={cn('min-w-0', directorsVisible ? 'animate-fade-in-up' : 'opacity-0')}
                   style={{ animationDelay: `${index * 80}ms` }}
                 >
                   <TeamMemberCard
@@ -315,7 +313,6 @@ export function LeadershipPage() {
         title="Ready to Make an Impact?"
         description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
         ctaLabel="Register Now"
-        onCtaClick={goToJoin}
       />
 
       <LeaderMemberModal

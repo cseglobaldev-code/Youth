@@ -34,7 +34,7 @@ function formatDate(iso?: string): string {
 }
 
 export function DocumentRow({ document, onDownload, className }: DocumentRowProps) {
-  const meta = [document.fileType.toUpperCase(), document.fileSize, formatDate(document.updatedAt)]
+  const meta = [document.fileSize, formatDate(document.updatedAt)]
     .filter(Boolean)
     .join('  ·  ');
 

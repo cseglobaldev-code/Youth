@@ -4,15 +4,15 @@ import { SDGTag } from '@/components/ui/SDGTag';
 import { SocialLinks } from '@/components/common/SocialLinks';
 import { ProjectCard } from '@/components/common/ProjectCard';
 import { ImageGallery } from '@/components/common/ImageGallery';
-import { SupportQRCode } from '@/components/common/SupportQRCode';
+import { SupportCTA } from '@/components/common/SupportCTA';
 import { CTABanner } from '@/components/common/CTABanner';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { MEMBERS_DATA, PROJECTS_DATA } from '@/data';
-import { useJoinNavigation } from '@/hooks';
+import { useSupportModal } from '@/components/common/SupportModal';
 
 export function MemberDetailPage() {
   const { memberId } = useParams<{ memberId: string }>();
-  const goToJoin = useJoinNavigation();
+  const { openSupport } = useSupportModal();
   const member = MEMBERS_DATA.find((m) => m.id === memberId);
 
   if (!member) {
@@ -29,7 +29,6 @@ export function MemberDetailPage() {
     ...memberProjects,
     ...PROJECTS_DATA.filter((p) => !member.projectIds.includes(p.id)),
   ].slice(0, 3);
-  const supportValue = member.donationQrUrl ?? member.socialLinks[0]?.url ?? `https://youthorgunion.org/members/${member.id}`;
 
   return (
     <div className="py-section-sm lg:py-section">
@@ -71,7 +70,7 @@ export function MemberDetailPage() {
               </div>
             </div>
 
-            <SupportQRCode value={supportValue} />
+            <SupportCTA onClick={openSupport} />
           </div>
 
           {member.coverUrl && (
@@ -127,7 +126,6 @@ export function MemberDetailPage() {
         title="Ready to Make an Impact?"
         description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
         ctaLabel="Register Now"
-        onCtaClick={goToJoin}
       />
     </div>
   );

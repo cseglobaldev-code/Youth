@@ -31,7 +31,7 @@ export function MembersSection() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 767px)');
   const [page, setPage] = useState(0);
-  const pageSize = isMobile ? 3 : 9;
+  const pageSize = isMobile ? 3 : 6;
   const totalPages = Math.ceil(MEMBERS.length / pageSize);
   const visibleMembers = MEMBERS.slice(page * pageSize, (page + 1) * pageSize);
 
@@ -40,7 +40,7 @@ export function MembersSection() {
   }, [pageSize]);
 
   return (
-    <section className="bg-[#F2F7FF] py-12 md:py-16 lg:py-[120px]">
+    <section className="bg-[#F2F7FF] py-12 md:py-16 lg:py-[7.5rem]">
       <Container size="wide">
         {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">

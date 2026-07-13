@@ -1,54 +1,33 @@
 import { useRef, type FormEvent } from 'react';
 import { Container } from '@/components/ui/Container';
 import { PillButton } from '@/components/ui/PillButton';
-import { Icon } from '@/components/ui/Icon';
-import { ICONS, SOCIAL_COLORS } from '@/config/icons';
-import { SOCIAL_LINKS } from '@/data/navigation';
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
+
+const ADDRESS_TEXT = 'No.53, Lane 215, Dinh Cong Thuong, Dinh Cong, Hoang Mai, Hanoi, Vietnam';
 
 const contactDetails = [
   {
     title: 'Address',
     content: ['No.53, Lane 215, Dinh Cong Thuong, Dinh Cong,', 'Hoang Mai, Hanoi, Vietnam'],
+    href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ADDRESS_TEXT)}`,
   },
   {
     title: 'Hotline/WhatsApp/Zalo',
     content: ['(+84) 98.242.1109'],
+    href: 'tel:+84982421109',
   },
   {
     title: 'Email',
     content: ['info@youthorgunion.org'],
+    href: 'mailto:info@youthorgunion.org',
   },
 ] as const;
-
-const contactSocialLinks: Array<{
-  platform: 'instagram' | 'facebook' | 'tiktok' | 'youtube';
-  url?: string;
-}> = [
-  {
-    platform: 'instagram',
-    url: SOCIAL_LINKS.find((link) => link.platform === 'instagram')?.url,
-  },
-  {
-    platform: 'facebook',
-    url: SOCIAL_LINKS.find((link) => link.platform === 'facebook')?.url,
-  },
-  {
-    platform: 'tiktok',
-  },
-  {
-    platform: 'youtube',
-    url: SOCIAL_LINKS.find((link) => link.platform === 'youtube')?.url,
-  },
-];
 
 const inputClasses =
   'h-14 w-full rounded-[16px] border border-[#D9D9D9] bg-white px-4 text-base text-[#151515] outline-none transition focus:border-[#EE334E] focus:ring-2 focus:ring-[#EE334E]/10';
 
 const labelClasses = 'mb-3 block text-[16px] font-normal leading-[140%] text-[#151515]';
-const socialItemClasses =
-  'inline-flex h-6 w-6 items-center justify-center rounded-full bg-white transition-transform duration-200 hover:scale-105';
 
 export function ContactPage() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -155,56 +134,25 @@ export function ContactPage() {
 
               <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
                 {contactDetails.map((item) => (
-                  <div key={item.title} className="group min-w-0">
-                    <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515]">{item.title}</h3>
-                    <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515] transition-colors duration-200 group-hover:text-[#005D9A]">
-                      {item.content.map((line) =>
-                        item.title === 'Email' ? (
-                          <p key={line}>
-                            <a href={`mailto:${line}`} className="break-all">
-                              {line}
-                            </a>
-                          </p>
-                        ) : item.title === 'Hotline/WhatsApp/Zalo' ? (
-                          <p key={line}>
-                            <a href="tel:+84982421109">{line}</a>
-                          </p>
-                        ) : (
-                          <p key={line}>{line}</p>
-                        )
-                      )}
+                  <a
+                    key={item.title}
+                    href={item.href}
+                    target={item.title === 'Address' ? '_blank' : undefined}
+                    rel={item.title === 'Address' ? 'noopener noreferrer' : undefined}
+                    className="group block min-w-0"
+                  >
+                    <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515] transition-colors group-hover:text-[#EE334E]">
+                      {item.title}
+                    </h3>
+                    <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515] transition-colors group-hover:text-[#EE334E]">
+                      {item.content.map((line) => (
+                        <p key={line} className="break-words">
+                          {line}
+                        </p>
+                      ))}
                     </div>
-                  </div>
+                  </a>
                 ))}
-              </div>
-            </div>
-
-            <div className="border-t border-[#F6CDD5] bg-[#FFF1F4] px-6 py-4 md:px-10 lg:px-[30px]">
-              <div className="flex flex-wrap items-center gap-5">
-                {contactSocialLinks.map((link) => {
-                  const icon = <Icon name={ICONS[link.platform]} size={16} color={SOCIAL_COLORS[link.platform]} />;
-
-                  if (!link.url) {
-                    return (
-                      <span key={link.platform} aria-label={link.platform} className={socialItemClasses}>
-                        {icon}
-                      </span>
-                    );
-                  }
-
-                  return (
-                    <a
-                      key={link.platform}
-                      href={link.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={link.platform}
-                      className={socialItemClasses}
-                    >
-                      {icon}
-                    </a>
-                  );
-                })}
               </div>
             </div>
           </div>

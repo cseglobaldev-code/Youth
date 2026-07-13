@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
@@ -12,7 +13,7 @@ const NEWS_DATA = [
     description: 'A world where every young person has the platform and tools to lead positive change in their community and beyond.',
     location: 'Asia, Africa',
     author: 'Maria Santos',
-    period: '2021 → nay',
+    period: '2021 → now',
     imageUrl: '/images/home/news/image-new.png',
   },
   {
@@ -49,18 +50,42 @@ const NEWS_DATA = [
   },
 ];
 
+const MOBILE_NEWS_DATA = [
+  NEWS_DATA[1],
+  NEWS_DATA[2],
+  NEWS_DATA[3],
+  NEWS_DATA[0],
+  NEWS_DATA[4],
+  NEWS_DATA[1],
+  NEWS_DATA[2],
+  NEWS_DATA[3],
+  NEWS_DATA[0],
+  NEWS_DATA[4],
+];
+
 export function NewsSection() {
   const navigate = useNavigate();
+  const [mobileIndex, setMobileIndex] = useState(3);
   const featured = NEWS_DATA[0];
   const sideNews = NEWS_DATA.slice(1);
+  const mobileFeatured = MOBILE_NEWS_DATA[mobileIndex];
+
+  const showPreviousNews = () => {
+    setMobileIndex((current) => (current - 1 + MOBILE_NEWS_DATA.length) % MOBILE_NEWS_DATA.length);
+  };
+
+  const showNextNews = () => {
+    setMobileIndex((current) => (current + 1) % MOBILE_NEWS_DATA.length);
+  };
 
   return (
-    <section className="bg-white py-12 md:py-16 lg:py-[120px]">
+    <section className="bg-white py-0">
       <Container size="wide">
         {/* Header */}
-        <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">
-          <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-            Impact Aligned with{' '}
+        <div className="mb-8 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between lg:mb-[40px]">
+          <h2 className="font-semibold text-[32px] leading-none md:text-[clamp(1.5rem,3.13vw,3rem)] md:leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            <span className="block md:inline">Impact Aligned with</span>
+            <br className="md:hidden" />
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Global Goals
             </span>
@@ -68,25 +93,85 @@ export function NewsSection() {
           <ViewAllButton to={ROUTES.PROJECTS} className="flex-shrink-0 !px-4 !py-1.5 !text-sm sm:!px-6 sm:!py-2.5 sm:!text-[16px]" />
         </div>
 
-        {/* Content: featured left + list right */}
-        <div className="flex flex-col md:flex-row gap-6 lg:gap-8">
+        {/* Mobile: single card + pager */}
+        <div className="md:hidden">
+          <div className="flex cursor-pointer flex-col group" onClick={() => navigate(ROUTES.PROJECT_DETAIL(mobileFeatured.id))}>
+            <div className="mb-4 overflow-hidden rounded-2xl aspect-[343/230]">
+              <Image
+                src={mobileFeatured.imageUrl}
+                alt={mobileFeatured.title}
+                preview={false}
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                wrapperStyle={{ width: '100%', height: '100%' }}
+              />
+            </div>
+            <h4 className="mb-3 font-semibold text-[clamp(1.5rem,6.2vw,1.75rem)] leading-tight text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+              {mobileFeatured.title}
+            </h4>
+            <div className="mb-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[clamp(0.875rem,3.6vw,1rem)] text-neutral-500" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+              <span className="flex items-center gap-1">
+                <Icon name="mynaui:map-pin" size={18} />
+                {mobileFeatured.location}
+              </span>
+              <span className="flex items-center gap-1">
+                <Icon name="solar:user-linear" size={18} />
+                {mobileFeatured.author}
+              </span>
+              {mobileFeatured.period && (
+                <span className="flex items-center gap-1">
+                  <Icon name="iconoir:clock" size={18} />
+                  {mobileFeatured.period}
+                </span>
+              )}
+            </div>
+            <p className="text-neutral-600 text-[clamp(0.9375rem,3.8vw,1rem)] font-normal leading-relaxed line-clamp-2" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+              {mobileFeatured.description}
+            </p>
+          </div>
+
+          <div className="mt-8 flex items-center justify-center gap-4">
+            <Button
+              type="text"
+              className="!flex !h-8 !w-8 !items-center !justify-center !p-0 text-neutral-500 hover:text-neutral-900 disabled:cursor-not-allowed disabled:opacity-30"
+              onClick={showPreviousNews}
+              aria-label="Previous news"
+            >
+              <Icon name="lucide:arrow-left" size={20} />
+            </Button>
+            <span className="text-sm font-medium text-neutral-600">
+              {mobileIndex + 1}/{MOBILE_NEWS_DATA.length}
+            </span>
+            <Button
+              type="text"
+              className="!flex !h-8 !w-8 !items-center !justify-center !p-0 text-[#EE334E] hover:text-[#d42a43] disabled:cursor-not-allowed disabled:opacity-30"
+              onClick={showNextNews}
+              aria-label="Next news"
+            >
+              <Icon name="lucide:arrow-right" size={20} />
+            </Button>
+          </div>
+        </div>
+
+        {/* Desktop/tablet: featured left + list right */}
+        <div className="hidden md:flex flex-col gap-6 md:flex-row lg:gap-8">
           {/* Left: featured article */}
           <div
-            className="w-full md:w-1/2 flex flex-col group cursor-pointer"
+            className="group flex w-full cursor-pointer flex-col md:w-1/2"
             onClick={() => navigate(ROUTES.PROJECT_DETAIL(featured.id))}
           >
-            <div className="rounded-2xl overflow-hidden aspect-[652/436] mb-4">
+            <div className="mb-4 overflow-hidden rounded-2xl aspect-[652/436]">
               <Image
                 src={featured.imageUrl}
                 alt={featured.title}
                 preview={false}
-                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 wrapperStyle={{ width: '100%', height: '100%' }}
               />
             </div>
             {/* Meta */}
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-[clamp(0.875rem,1.04vw,1rem)] text-neutral-500 mb-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            <div className="mb-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-[clamp(0.875rem,1.04vw,1rem)] text-neutral-500" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               <span className="flex items-center gap-1">
                 <Icon name="mynaui:map-pin" size={18} />
                 {featured.location}
@@ -102,15 +187,18 @@ export function NewsSection() {
                 </span>
               )}
             </div>
+            <h4 className="mb-3 font-semibold text-[clamp(1.5rem,2.08vw,2rem)] leading-tight text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+              {featured.title}
+            </h4>
             {/* Description */}
-            <p className="text-neutral-600 text-[clamp(1rem,1.17vw,1.125rem)] font-normal leading-relaxed line-clamp-2 mb-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            <p className="mb-3 text-neutral-600 text-[clamp(1rem,1.17vw,1.125rem)] font-normal leading-relaxed line-clamp-2" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               {featured.description}
             </p>
             {/* See more */}
             <Button
               type="link"
               danger
-              className="!flex !items-center !gap-1 !text-[clamp(1rem,1.17vw,1.125rem)] !font-semibold !p-0 !h-auto"
+              className="!flex self-start !justify-start !items-center !gap-1 !h-auto !p-0 !text-[20px] !leading-none !tracking-[0px] !font-semibold"
               style={{ fontFamily: 'Open Sans, sans-serif' }}
               onClick={(event) => {
                 event.stopPropagation();
@@ -118,26 +206,26 @@ export function NewsSection() {
               }}
             >
               See more
-              <Icon name="lucide:arrow-up-right" size={18} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+              <Icon name="lucide:arrow-up-right" size={18} className="transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
             </Button>
           </div>
 
           {/* Right: news list */}
-          <div className="w-full md:w-1/2 flex flex-col gap-3 lg:gap-4">
+          <div className="hidden w-full md:flex md:w-1/2 md:flex-col gap-3 lg:gap-4">
             {sideNews.map((news) => (
               <div
                 key={news.id}
-                className="flex flex-row gap-3 lg:gap-4 cursor-pointer hover:bg-neutral-50 rounded-xl transition-colors p-2 group"
+                className="group flex cursor-pointer flex-row gap-3 rounded-xl p-2 transition-colors hover:bg-neutral-50 lg:gap-4"
                 onClick={() => navigate(ROUTES.PROJECT_DETAIL(news.id))}
               >
-                <div className="w-[96px] sm:w-[140px] lg:w-[200px] h-[72px] sm:h-[96px] lg:h-[130px] flex-shrink-0 rounded-xl overflow-hidden">
-                  <Image src={news.imageUrl} alt={news.title} preview={false} className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
+                <div className="h-[72px] w-[96px] flex-shrink-0 overflow-hidden rounded-xl sm:h-[96px] sm:w-[140px] lg:h-[130px] lg:w-[200px]">
+                  <Image src={news.imageUrl} alt={news.title} preview={false} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
                 </div>
-                <div className="flex-1 flex flex-col justify-center min-w-0">
-                  <h4 className="font-semibold text-[clamp(0.875rem,1.30vw,1.25rem)] text-[#111111] mb-1 line-clamp-1 transition-colors group-hover:text-[#EE334E]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                <div className="flex min-w-0 flex-1 flex-col justify-center">
+                  <h4 className="mb-1 line-clamp-1 font-semibold text-[clamp(0.875rem,1.30vw,1.25rem)] text-[#111111] transition-colors group-hover:text-[#EE334E]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                     {news.title}
                   </h4>
-                  <div className="hidden sm:flex flex-wrap items-center gap-x-4 gap-y-1 text-[clamp(0.8125rem,0.91vw,0.875rem)] text-neutral-500" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                  <div className="hidden flex-wrap items-center gap-x-4 gap-y-1 text-[clamp(0.8125rem,0.91vw,0.875rem)] text-neutral-500 sm:flex" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                     <span className="flex items-center gap-1">
                       <Icon name="mynaui:map-pin" size={14} />
                       {news.location}
@@ -147,7 +235,7 @@ export function NewsSection() {
                       {news.author}
                     </span>
                   </div>
-                  <p className="hidden sm:block text-neutral-500 text-[clamp(0.8125rem,0.91vw,0.875rem)] font-normal line-clamp-2 mt-1" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                  <p className="mt-1 hidden text-neutral-500 text-[clamp(0.8125rem,0.91vw,0.875rem)] font-normal line-clamp-2 sm:block" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                     {news.description}
                   </p>
                 </div>
