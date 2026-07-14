@@ -145,7 +145,7 @@ export function ProjectsPage() {
               <div className="flex flex-wrap justify-center items-center gap-5">
                 {/* Search input */}
                 <Input
-                  placeholder="Từ khóa"
+                  placeholder="Keyword"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   suffix={<Icon name={ICONS.search} size={20} color="#CDCED7" />}
@@ -164,8 +164,8 @@ export function ProjectsPage() {
                   value={sortOrder}
                   onChange={(v) => setSortOrder(v)}
                   options={[
-                    { value: 'newest', label: 'Mới nhất - cũ nhất' },
-                    { value: 'oldest', label: 'Cũ nhất - mới nhất' },
+                    { value: 'newest', label: 'Newest - Oldest' },
+                    { value: 'oldest', label: 'Oldest - Newest' },
                   ]}
                   suffixIcon={<Icon name={ICONS.chevronDown} size={16} color="#000" />}
                   style={{ fontFamily: 'Inter, sans-serif', fontSize: 14, borderRadius: 100, overflow: 'hidden' }}

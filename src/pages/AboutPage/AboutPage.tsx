@@ -1,12 +1,13 @@
 import { Container } from '@/components/ui/Container';
 import { CTABanner } from '@/components/common/CTABanner';
+import { StatsGrid } from '@/components/common/StatsGrid';
 import { Icon } from '@/components/ui/Icon';
 
 const STATS = [
-  { label: 'Member Organizations', value: '+50' },
-  { label: 'Continents', value: '+6' },
-  { label: 'Countries', value: '+30' },
-  { label: 'Volunteers from Global', value: '+1 500' },
+  { label: 'Member Organizations', value: 50 },
+  { label: 'Continents', value: 6 },
+  { label: 'Countries', value: 30 },
+  { label: 'Volunteers from Global', value: 1500 },
 ];
 
 const MISSIONS = [
@@ -70,15 +71,20 @@ export function AboutPage() {
     <div className="relative z-10 bg-white">
       <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container className={ABOUT_CONTAINER_CLASS}>
-          <div className="grid gap-6 md:gap-8 lg:grid-cols-[260px_1fr] lg:gap-20 xl:gap-28">
-            <h1 className="font-heading text-[clamp(2.75rem,5vw,5rem)] font-semibold leading-[1.05] text-black">
+          <div className="grid gap-6 md:gap-8 lg:grid-cols-[260px_1fr] lg:gap-[191px]">
+            <h1 className="font-heading text-[clamp(2.75rem,5vw,5rem)] font-semibold leading-[110%] tracking-[0px] text-black">
               About
               <br />
-              <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
+              <span
+                className="bg-clip-text text-transparent"
+                style={{
+                  backgroundImage: 'linear-gradient(90deg, #EE334E 0%, #FCB131 33%, #00A651 67%, #0081C8 100%)',
+                }}
+              >
                 Y.O.U
               </span>
             </h1>
-            <p className="max-w-[930px] text-[clamp(1rem,1.2vw,1.375rem)] leading-relaxed text-neutral-900">
+            <p className="max-w-[1314px] font-normal text-[clamp(1rem,1.2vw,1.375rem)] leading-[140%] tracking-[0px] text-neutral-900 2xl:text-[24px]">
               Y.O.U (Your Opportunity – Your Future) is a non-profit organization working in the fields of education,
               community development, and international cooperation.
               <br />
@@ -147,30 +153,14 @@ export function AboutPage() {
 
       <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container size="narrow" className="lg:max-w-[1080px]">
-          <div className="rounded-2xl bg-[#F2F7FF] px-4 py-6 md:px-8 lg:px-10">
-            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-0">
-              {STATS.map((stat, index) => (
-                <div key={stat.label} className="flex items-center">
-                  <div className="flex w-full flex-col items-center text-center">
-                    <span className="text-[clamp(0.875rem,1.2vw,1.125rem)] text-neutral-700">{stat.label}</span>
-                    <span className="mt-2 text-[clamp(1.875rem,2.5vw,2.25rem)] font-semibold text-black">{stat.value}</span>
-                  </div>
-                  {index < STATS.length - 1 && (
-                    <svg width="24" height="88" viewBox="0 0 24 88" className="hidden lg:block shrink-0" aria-hidden="true">
-                      <line x1="20" y1="0" x2="4" y2="88" stroke="#C0D8FF" strokeWidth="1.5" />
-                    </svg>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+          <StatsGrid stats={STATS} variant="about" animated />
         </Container>
       </section>
 
       <section className="pb-0 pt-12 text-center md:pt-16 lg:pt-[7.5rem]">
         <Container size="narrow" className="lg:max-w-[1080px]">
           <h2 className={ABOUT_SECTION_TITLE_CLASS}>
-            Sứ mệnh{' '}
+            Mission{' '}
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Y.O.U
             </span>

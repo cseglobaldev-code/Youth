@@ -63,7 +63,7 @@ export function PolicyDocumentsPage() {
           </aside>
 
           {/* Document list */}
-          <div className="divide-y divide-neutral-200">
+          <div className="min-w-0 divide-y divide-neutral-200">
             {filteredDocs.map((doc) => (
               <DocumentRow key={doc.id} document={doc} />
             ))}
