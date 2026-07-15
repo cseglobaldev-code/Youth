@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { Button, Empty, Input, Select } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
+import { Button, Empty, Input, Select, Spin } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
 import { ProjectCard } from '@/components/common/ProjectCard';
@@ -8,12 +8,15 @@ import { PROJECTS_DATA, SDGS_DATA, MEMBERS_DATA } from '@/data';
 import { ICONS } from '@/config/icons';
 import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
-
-const MEMBER_MAP = Object.fromEntries(MEMBERS_DATA.map((m) => [m.id, m.name]));
+import { StrapiService } from '@/lib/strapi';
+import type { Member, Project } from '@/types';
 
 const MAX_VISIBLE = 8; // "All Project" + 7 SDGs
 
 export function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>(PROJECTS_DATA);
+  const [members, setMembers] = useState<Member[]>(MEMBERS_DATA);
+  const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
@@ -21,21 +24,43 @@ export function ProjectsPage() {
   const { ref: heroRef, visible: heroVisible } = useScrollReveal(0.05);
   const { ref: cardsRef, visible: cardsVisible } = useScrollReveal(0.05);
 
+  useEffect(() => {
+    Promise.all([
+      StrapiService.getProjects(),
+      StrapiService.getMembers(),
+    ])
+      .then(([projectData, memberData]) => {
+        setProjects(projectData && projectData.length > 0 ? projectData : PROJECTS_DATA);
+        setMembers(memberData && memberData.length > 0 ? memberData : MEMBERS_DATA);
+      })
+      .catch((err) => {
+        console.error('API failed, falling back to static project_data:', err);
+        setProjects(PROJECTS_DATA);
+        setMembers(MEMBERS_DATA);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const memberMap = useMemo(
+    () => Object.fromEntries(members.map((m) => [m.id, m.name])),
+    [members],
+  );
+
   const filterItems = useMemo(
     () => [
       { key: 'all', label: 'All Project' },
-      ...SDGS_DATA.filter((sdg) => PROJECTS_DATA.some((p) => p.focusSdgs.includes(sdg.id))).map(
+      ...SDGS_DATA.filter((sdg) => projects.some((p) => p.focusSdgs.includes(sdg.id))).map(
         (sdg) => ({ key: `sdg-${sdg.id}`, label: `SDG ${sdg.id} – ${sdg.title}` })
       ),
     ],
-    []
+    [projects]
   );
 
   const visibleFilters = showAllFilters ? filterItems : filterItems.slice(0, MAX_VISIBLE);
   const hasMore = filterItems.length > MAX_VISIBLE;
 
   const filteredProjects = useMemo(() => {
-    let result = filterBySdg(PROJECTS_DATA, activeFilter);
+    let result = filterBySdg(projects, activeFilter);
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       result = result.filter((p) => p.name.toLowerCase().includes(q));
@@ -45,7 +70,7 @@ export function ProjectsPage() {
       const yb = b.year ?? 0;
       return sortOrder === 'newest' ? yb - ya : ya - yb;
     });
-  }, [activeFilter, searchQuery, sortOrder]);
+  }, [projects, activeFilter, searchQuery, sortOrder]);
 
   return (
     <div>
@@ -173,29 +198,32 @@ export function ProjectsPage() {
                 />
               </div>
 
-              {/* Cards grid — stagger fade on mount & filter change */}
-              <div
-                ref={cardsRef as React.RefObject<HTMLDivElement>}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10"
-              >
-                {filteredProjects.map((project, index) => (
-                  <div
-                    key={`${activeFilter}-${project.id}`}
-                    className={cn(
-                      cardsVisible ? 'animate-fade-in-up' : 'opacity-0'
-                    )}
-                    style={{ animationDelay: `${index * 80}ms` }}
-                  >
-                    <ProjectCard
-                      project={project}
-                      ledBy={MEMBER_MAP[project.memberId]}
-                    />
-                  </div>
-                ))}
-              </div>
-
-              {filteredProjects.length === 0 && (
+              {loading ? (
+                <div className="py-20 text-center">
+                  <Spin size="large" tip="Đang tải các dự án..." />
+                </div>
+              ) : filteredProjects.length === 0 ? (
                 <Empty description="No projects found for this SDG." className="py-12" />
+              ) : (
+                <div
+                  ref={cardsRef as React.RefObject<HTMLDivElement>}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10"
+                >
+                  {filteredProjects.map((project, index) => (
+                    <div
+                      key={`${activeFilter}-${project.id}`}
+                      className={cn(
+                        cardsVisible ? 'animate-fade-in-up' : 'opacity-0'
+                      )}
+                      style={{ animationDelay: `${index * 80}ms` }}
+                    >
+                      <ProjectCard
+                        project={project}
+                        ledBy={memberMap[project.memberId] || 'TBD'}
+                      />
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           </div>

@@ -1,16 +1,40 @@
+// src/components/layout/Footer/Footer.tsx
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
 import { ICONS } from '@/config/icons';
-import { SOCIAL_LINKS } from '@/data';
 import { ROUTES } from '@/routes/paths';
+import { StrapiService } from '@/lib/strapi';
+import type { SocialLink } from '@/types';
 
 export interface FooterProps {
   className?: string;
 }
 
 export function Footer({ className }: FooterProps) {
+  const [globalSetting, setGlobalSetting] = useState<any>(null);
+
+  useEffect(() => {
+    StrapiService.getGlobalSetting()
+      .then((data) => {
+        if (data) setGlobalSetting(data);
+      })
+      .catch((err) => console.error('Error fetching global settings for footer:', err));
+  }, []);
+
+  const email = globalSetting?.email || 'info@youthorgunion.org';
+  const phone = globalSetting?.phone || '098.242.1109';
+  const address = globalSetting?.address || 'Global - Operating across 6 continents';
+  const socialLinks: SocialLink[] = globalSetting?.socialLinks || [
+    { platform: 'youtube', url: '#' },
+    { platform: 'facebook', url: '#' },
+    { platform: 'twitter', url: '#' },
+    { platform: 'instagram', url: '#' },
+    { platform: 'linkedin', url: '#' },
+  ];
+
   return (
     <footer className={cn('bg-[#0B1A2B] text-white', className)}>
       <Container>
@@ -25,7 +49,7 @@ export function Footer({ className }: FooterProps) {
               />
             </Link>
             <div className="mt-5 flex w-[168px] items-center justify-center gap-4 sm:mt-6 sm:w-[190px] lg:w-[225px]">
-              {SOCIAL_LINKS.map((link) => (
+              {socialLinks.map((link) => (
                 <a
                   key={link.platform}
                   href={link.url}
@@ -57,21 +81,21 @@ export function Footer({ className }: FooterProps) {
             <div className="flex flex-col gap-3 lg:gap-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
                 <Icon name="lucide:map-pin" size={18} className="mt-0.5 shrink-0 text-blue-400" />
-                <span>Global - Operating across 6 continents</span>
+                <span>{address}</span>
               </div>
               <a
-                href="tel:+84982421109"
+                href={`tel:${phone}`}
                 className="flex items-start gap-3 text-sm font-normal text-neutral-300 transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
               >
                 <Icon name="lucide:phone" size={18} className="mt-0.5 shrink-0 text-blue-400" />
-                <span>+84 982.421.109</span>
+                <span>{phone}</span>
               </a>
               <a
-                href="mailto:info@youthorgunion.org"
+                href={`mailto:${email}`}
                 className="flex items-start gap-3 text-sm font-normal text-neutral-300 transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
               >
                 <Icon name="lucide:mail" size={18} className="mt-0.5 shrink-0 text-blue-400" />
-                <span className="break-all sm:break-normal">info@youthorgunion.org</span>
+                <span className="break-all sm:break-normal">{email}</span>
               </a>
               <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
                 <Icon name="lucide:calendar" size={18} className="mt-0.5 shrink-0 text-blue-400" />

@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { ROUTES } from '@/routes/paths';
 import { StatsGrid } from '@/components/common/StatsGrid';
+import type { StatsGridItem } from '@/components/common/StatsGrid';
+import { StrapiService } from '@/lib/strapi';
 
 type AboutItem = {
   id: 'vision' | 'mission' | 'approach' | 'why';
@@ -23,7 +25,7 @@ const ABOUT_ITEMS: AboutItem[] = [
   { id: 'why', title: 'Why join us', color: '#F4F4F4', description: 'Join a global network of 50+ organizations across 30 countries, access funding opportunities, leadership training, and collaborative projects aligned with the UN SDGs.', image: '/images/home/about/about-image4.jpeg' },
 ];
 
-const STATS = [
+const DEFAULT_STATS: StatsGridItem[] = [
   { label: 'Member Organizations', value: 50 },
   { label: 'Continents', value: 6 },
   { label: 'Countries', value: 30 },
@@ -32,8 +34,21 @@ const STATS = [
 
 export function AboutSection() {
   const [activeId, setActiveId] = useState<AboutItem['id']>('vision');
+  const [stats, setStats] = useState<StatsGridItem[]>(DEFAULT_STATS);
 
   const activeItem = ABOUT_ITEMS.find((item) => item.id === activeId) ?? ABOUT_ITEMS[0];
+
+  useEffect(() => {
+    StrapiService.getStatItems()
+      .then((data) => {
+        if (data.length > 0) {
+          setStats(data.map((stat) => ({ label: stat.label, value: stat.value })));
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching stats:', err);
+      });
+  }, []);
 
   return (
     <>
@@ -66,7 +81,7 @@ export function AboutSection() {
           </div>
 
           {/* Stats row */}
-          <StatsGrid stats={STATS} variant="home" animated />
+          <StatsGrid stats={stats} variant="home" animated />
         </Container>
       </section>
 

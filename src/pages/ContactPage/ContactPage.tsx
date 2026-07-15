@@ -1,40 +1,97 @@
-import { useRef, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { message } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { PillButton } from '@/components/ui/PillButton';
+import { Icon } from '@/components/ui/Icon';
+import { ICONS, SOCIAL_COLORS } from '@/config/icons';
+import { StrapiService } from '@/lib/strapi';
+import type { SocialLink } from '@/types';
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
 
-const ADDRESS_TEXT = 'No.53, Lane 215, Dinh Cong Thuong, Dinh Cong, Hoang Mai, Hanoi, Vietnam';
-
-const contactDetails = [
-  {
-    title: 'Address',
-    content: ['No.53, Lane 215, Dinh Cong Thuong, Dinh Cong,', 'Hoang Mai, Hanoi, Vietnam'],
-    href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(ADDRESS_TEXT)}`,
-  },
-  {
-    title: 'Hotline/WhatsApp/Zalo',
-    content: ['(+84) 98.242.1109'],
-    href: 'tel:+84982421109',
-  },
-  {
-    title: 'Email',
-    content: ['info@youthorgunion.org'],
-    href: 'mailto:info@youthorgunion.org',
-  },
-] as const;
+const DEFAULT_ADDRESS = 'No.53, Lane 215, Dinh Cong Thuong, Dinh Cong, Hoang Mai, Hanoi, Vietnam';
+const DEFAULT_PHONE = '(+84) 98.242.1109';
+const DEFAULT_EMAIL = 'info@youthorgunion.org';
+const DEFAULT_SOCIAL_LINKS: SocialLink[] = [
+  { platform: 'instagram', url: '#' },
+  { platform: 'facebook', url: '#' },
+  { platform: 'youtube', url: '#' },
+];
 
 const inputClasses =
   'h-14 w-full rounded-[16px] border border-[#D9D9D9] bg-white px-4 text-base text-[#151515] outline-none transition focus:border-[#EE334E] focus:ring-2 focus:ring-[#EE334E]/10';
 
 const labelClasses = 'mb-3 block text-[16px] font-normal leading-[140%] text-[#151515]';
+const socialItemClasses =
+  'inline-flex h-6 w-6 items-center justify-center rounded-full bg-white transition-transform duration-200 hover:scale-105';
+
+function toTelHref(phone: string) {
+  const digits = phone.replace(/[^\d+]/g, '');
+  return digits.startsWith('+') ? `tel:${digits}` : `tel:+${digits.replace(/^0/, '84')}`;
+}
 
 export function ContactPage() {
   const formRef = useRef<HTMLFormElement>(null);
+  const [globalSetting, setGlobalSetting] = useState<any>(null);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    StrapiService.getGlobalSetting()
+      .then((data) => {
+        if (data) setGlobalSetting(data);
+      })
+      .catch((err) => console.error(err));
+  }, []);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (!formRef.current) return;
+
+    const formData = new FormData(formRef.current);
+    const values = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      phone: formData.get('phone'),
+      reason: formData.get('reason'),
+      message: formData.get('message'),
+    };
+
+    try {
+      await StrapiService.submitInquiry(values);
+      message.success('Cảm ơn bạn! Thông tin liên hệ đã được gửi thành công.');
+      formRef.current.reset();
+    } catch (err) {
+      console.error(err);
+      message.error('Không thể gửi thông tin. Vui lòng kiểm tra lại kết nối mạng.');
+    }
   };
+
+  const email = globalSetting?.email || DEFAULT_EMAIL;
+  const phone = globalSetting?.phone || DEFAULT_PHONE;
+  const address = globalSetting?.address || DEFAULT_ADDRESS;
+  const socialLinks: SocialLink[] = (globalSetting?.socialLinks || DEFAULT_SOCIAL_LINKS).filter(
+    (link: SocialLink) => Boolean(ICONS[link.platform] && SOCIAL_COLORS[link.platform]),
+  );
+
+  const contactDetails = [
+    {
+      title: 'Address',
+      content: [address],
+      href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`,
+      openInNewTab: true,
+    },
+    {
+      title: 'Hotline/WhatsApp/Zalo',
+      content: [phone],
+      href: toTelHref(phone),
+      openInNewTab: false,
+    },
+    {
+      title: 'Email',
+      content: [email],
+      href: `mailto:${email}`,
+      openInNewTab: false,
+    },
+  ] as const;
 
   return (
     <div className="relative z-10 pb-16 pt-10 md:pb-24 md:pt-16 lg:pb-[120px] lg:pt-[96px]" style={FONT}>
@@ -140,8 +197,8 @@ export function ContactPage() {
                     </h3>
                     <a
                       href={item.href}
-                      target={item.title === 'Address' ? '_blank' : undefined}
-                      rel={item.title === 'Address' ? 'noopener noreferrer' : undefined}
+                      target={item.openInNewTab ? '_blank' : undefined}
+                      rel={item.openInNewTab ? 'noopener noreferrer' : undefined}
                       className="mt-3 block space-y-1 text-[16px] leading-[1.55] text-[#151515] transition-colors duration-200 hover:text-[#005D9A]"
                     >
                       {item.content.map((line) => (
@@ -151,6 +208,23 @@ export function ContactPage() {
                       ))}
                     </a>
                   </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t border-[#F6CDD5] bg-[#FFF1F4] px-6 py-4 md:px-10 lg:px-[30px]">
+              <div className="flex flex-wrap items-center gap-5">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link.platform}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={link.platform}
+                    className={socialItemClasses}
+                  >
+                    <Icon name={ICONS[link.platform]} size={16} color={SOCIAL_COLORS[link.platform]} />
+                  </a>
                 ))}
               </div>
             </div>

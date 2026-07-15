@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Spin } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { ExecutiveCard } from '@/components/common/ExecutiveCard';
 import { TeamMemberCard } from '@/components/common/TeamMemberCard';
@@ -6,7 +7,9 @@ import { LeaderMemberModal } from '@/components/common/LeaderMemberModal';
 import { CTABanner } from '@/components/common/CTABanner';
 import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data';
 import { cn } from '@/lib/utils';
+import { useJoinNavigation } from '@/hooks';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { StrapiService } from '@/lib/strapi';
 import type { Continent, RegionGroup, TeamMember } from '@/types';
 
 /* ─── constants ─────────────────────────────────────────────────────────── */
@@ -30,12 +33,14 @@ const SEPARATOR_GRADIENT =
 /* ─── component ─────────────────────────────────────────────────────────── */
 
 export function LeadershipPage() {
+  const [allTeamMembers, setAllTeamMembers] = useState<TeamMember[]>([...EXECUTIVE_LEADERSHIP, ...TEAM_DATA]);
+  const [loading, setLoading] = useState(true);
   const [activeContinent, setActiveContinent] = useState<Continent>('Asia');
   const [activeRegion, setActiveRegion] = useState<RegionGroup>('East Asia');
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [showAllDirectors, setShowAllDirectors] = useState(false);
 
-
+  const goToJoin = useJoinNavigation();
   const openModal = (member: TeamMember) => setSelectedMember(member);
   const closeModal = () => setSelectedMember(null);
 
@@ -43,14 +48,36 @@ export function LeadershipPage() {
   const { ref: execRef, visible: execVisible } = useScrollReveal(0.05);
   const { ref: directorsRef, visible: directorsVisible } = useScrollReveal(0.05);
 
+  useEffect(() => {
+    StrapiService.getTeamMembers()
+      .then((data) => {
+        if (data && data.length > 0) {
+          setAllTeamMembers(data);
+        } else {
+          setAllTeamMembers([...EXECUTIVE_LEADERSHIP, ...TEAM_DATA]);
+        }
+      })
+      .catch((err) => {
+        console.error('API failed, falling back to static team database:', err);
+        setAllTeamMembers([...EXECUTIVE_LEADERSHIP, ...TEAM_DATA]);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const executives = useMemo(
+    () => allTeamMembers.filter((m) => m.role !== 'Continental Director'),
+    [allTeamMembers],
+  );
+
   const filteredMembers = useMemo(() => {
+    const directors = allTeamMembers.filter((m) => m.role === 'Continental Director');
     if (activeContinent === 'Asia') {
-      return TEAM_DATA.filter(
+      return directors.filter(
         (m) => m.continent === 'Asia' && m.regionGroup === activeRegion
       );
     }
-    return TEAM_DATA.filter((m) => m.continent === activeContinent);
-  }, [activeContinent, activeRegion]);
+    return directors.filter((m) => m.continent === activeContinent);
+  }, [allTeamMembers, activeContinent, activeRegion]);
 
   const visibleDirectors = showAllDirectors ? filteredMembers : filteredMembers.slice(0, 5);
   const hasMoreDirectors = filteredMembers.length > visibleDirectors.length;
@@ -65,6 +92,14 @@ export function LeadershipPage() {
     setActiveRegion(region);
     setShowAllDirectors(false);
   };
+
+  if (loading) {
+    return (
+      <div className="py-20 text-center">
+        <Spin size="large" tip="Đang tải danh sách đội ngũ..." />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -163,7 +198,7 @@ export function LeadershipPage() {
 
             {/* Cards — row, space-between, center, width:828px, centered via mx-auto */}
             <div className="flex flex-wrap lg:flex-nowrap justify-center lg:justify-between items-center gap-10 lg:gap-0 w-full lg:max-w-[828px] mx-auto">
-              {EXECUTIVE_LEADERSHIP.map((member, index) => (
+              {executives.map((member, index) => (
                 <div
                   key={member.id}
                   className={cn(execVisible ? 'animate-fade-in-up' : 'opacity-0')}
@@ -313,6 +348,8 @@ export function LeadershipPage() {
         title="Ready to Make an Impact?"
         description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
         ctaLabel="Register Now"
+        className="my-0 md:my-0 lg:my-0"
+        onCtaClick={goToJoin}
       />
 
       <LeaderMemberModal

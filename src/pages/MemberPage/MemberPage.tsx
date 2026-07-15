@@ -1,32 +1,17 @@
 import { useNavigate } from 'react-router-dom';
-import { useState, useMemo } from 'react';
-import { Empty, Input, Popover } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
+import { Empty, Input, Popover, Spin } from 'antd';
 import { SearchOutlined, DownOutlined, CheckOutlined } from '@ant-design/icons';
 import { Container } from '@/components/ui/Container';
 import { MemberCardLarge } from '@/components/common/MemberCardLarge/MemberCardLarge';
 import { Pagination } from '@/components/common/Pagination';
 import { CTABanner } from '@/components/common/CTABanner';
 import { ROUTES } from '@/routes/paths';
-import { usePagination } from '@/hooks';
+import { useJoinNavigation, usePagination } from '@/hooks';
+import { StrapiService } from '@/lib/strapi';
+import { MEMBERS_DATA } from '@/data';
+import type { Member } from '@/types';
 
-
-const MOCK_MEMBER = {
-  name: 'YouthBridge PH',
-  country: 'Philippines',
-  period: '2021 → nay',
-  leader: 'Maria Santos',
-  focusSdgs: [1, 4, 8],
-  coverUrl: '/images/members/covers/cover-image1.png',
-  logoUrl: '/images/members/logos/small-logo1.png',
-};
-
-const MOCK_MEMBERS = Array.from({ length: 30 }, (_, i) => ({
-  ...MOCK_MEMBER,
-  id: `member-${i + 1}`,
-  coverUrl: i % 3 === 0 ? '/images/members/covers/cover-image1.png' : i % 3 === 1 ? '/images/members/covers/cover-image2.png' : '/images/members/covers/cover-image3.png',
-  logoUrl: i % 3 === 0 ? '/images/members/logos/small-logo1.png' : i % 3 === 1 ? '/images/members/logos/small-logo2.png' : '/images/members/logos/small-logo3.png',
-  name: i % 3 === 0 ? 'YouthBridge PH' : i % 3 === 1 ? 'CSE Global' : 'Future Leaders Kenya',
-}));
 
 const SORT_OPTIONS = [
   { label: 'Mới nhất - cũ nhất', value: 'newest' },
@@ -41,12 +26,31 @@ const SORT_OPTIONS = [
 
 export function MemberPage() {
   const navigate = useNavigate();
+  const goToJoin = useJoinNavigation();
+  const [members, setMembers] = useState<Member[]>(MEMBERS_DATA);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
 
+  useEffect(() => {
+    StrapiService.getMembers()
+      .then((data) => {
+        if (data && data.length > 0) {
+          setMembers(data);
+        } else {
+          setMembers(MEMBERS_DATA);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setMembers(MEMBERS_DATA);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
   const filteredMembers = useMemo(() => {
-    let result = MOCK_MEMBERS;
+    let result = [...members];
 
     if (searchQuery.trim()) {
       result = result.filter(
@@ -68,7 +72,7 @@ export function MemberPage() {
       default:
         return result;
     }
-  }, [searchQuery, sortBy]);
+  }, [members, searchQuery, sortBy]);
 
   const { pageItems, total, currentPage, pageSize, goToPage, resetPage } =
     usePagination(filteredMembers, 9);
@@ -176,7 +180,11 @@ export function MemberPage() {
           </Popover>
         </div>
 
-        {pageItems.length === 0 ? (
+        {loading ? (
+          <div className="py-20 text-center">
+            <Spin size="large" tip="Đang tải dữ liệu thành viên..." />
+          </div>
+        ) : pageItems.length === 0 ? (
           <Empty description="No members found for this filter." className="py-12" />
         ) : (
           <>
@@ -215,6 +223,8 @@ export function MemberPage() {
         title="Ready to Make an Impact?"
         description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
         ctaLabel="Register Now"
+        className="my-0 md:my-0 lg:my-0"
+        onCtaClick={goToJoin}
       />
     </div>
   );

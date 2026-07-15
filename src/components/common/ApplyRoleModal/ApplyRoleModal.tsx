@@ -1,12 +1,14 @@
+// src/components/common/ApplyRoleModal/ApplyRoleModal.tsx
 import { useState } from 'react';
 import type { ReactNode } from 'react';
-import { Modal, Form, Input, Radio, DatePicker, Upload, ConfigProvider } from 'antd';
+import { Modal, Form, Input, Radio, DatePicker, Upload, ConfigProvider, message } from 'antd';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import type { UploadFile } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { PillButton } from '@/components/ui/PillButton';
 import { urlRule, phoneRule, maxWordsRule } from '@/lib/utils';
+import { StrapiService } from '@/lib/strapi';
 
 export type Continent = 'africa' | 'asia' | 'europe' | 'americas' | 'middle_east' | 'oceania';
 
@@ -137,7 +139,6 @@ const CONTINENTS: { value: Continent; label: string }[] = [
   { value: 'oceania', label: 'Oceania' },
 ];
 
-// Mock region lists per continent — replace with real data once the backend is ready.
 const REGIONS: Record<Continent, string[]> = {
   africa: ['Northern Africa', 'Western Africa', 'Central Africa', 'Eastern Africa', 'Southern Africa'],
   asia: ['South Asia', 'East Asia', 'West Asia', 'North Asia', 'Southeast Asia'],
@@ -156,7 +157,6 @@ export interface ApplyRoleModalProps {
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
 const UPLOAD_HINT = 'Upload up to 10 supported files. Each file can be up to 100 MB.';
 
-/** Label with the red asterisk placed after the text, plus an optional italic hint line below. */
 function FieldLabel({ text, required, hint }: { text: string; required?: boolean; hint?: string }) {
   return (
     <span className="flex flex-col gap-0.5" style={FONT}>
@@ -193,14 +193,10 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
   const continent = Form.useWatch('continent', form);
   const [step, setStep] = useState(1);
 
-  // Closing while filling in (X / click outside) keeps entered data and the
-  // current step so the user can resume where they left off when reopening.
   const close = () => {
     onClose();
   };
 
-  // Used by the "Done" button after a successful submit: wipe everything so the
-  // next open starts fresh.
   const finishAndClose = () => {
     form.resetFields();
     setStep(1);
@@ -230,7 +226,6 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
 
   const handleNextFromContinent = async () => {
     await form.validateFields(['continent']);
-    // Selecting a different continent invalidates any previously picked region.
     form.setFieldValue('region', undefined);
     setStep(3);
   };
@@ -240,9 +235,16 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
     setStep(4);
   };
 
-  const handleFinish = (values: ApplyRoleFormValues) => {
-    onSubmit?.(values);
-    setStep(5);
+  const handleFinish = async (values: ApplyRoleFormValues) => {
+    try {
+      await StrapiService.submitLeadershipApplication(values);
+      message.success('Nộp đơn ứng tuyển thành công! Cảm ơn sự quan tâm của bạn.');
+      onSubmit?.(values);
+      setStep(5); // Transition to the success screen
+    } catch (err) {
+      console.error(err);
+      message.error('Lỗi khi gửi thông tin ứng tuyển. Vui lòng thử lại.');
+    }
   };
 
   return (
@@ -271,10 +273,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
             Continental Director
           </h3>
           <p className="text-neutral-600 text-[15px] sm:text-[16px] leading-relaxed mb-4" style={FONT}>
-            Thank you for your interest in serving as a Continental Director for the Youth Organization
-            Union (YOU). This role is designed for experienced youth leaders who share our vision of
-            empowering young people, strengthening youth organizations, and fostering global
-            collaboration.
+            Thank you for your interest in serving as a Continental Director for the Youth Organization Union (YOU).
           </p>
 
           <div className="flex flex-wrap items-center gap-3 mb-6">
@@ -321,9 +320,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
             Thank you for submitting your application!
           </h2>
           <p className="text-[15px] sm:text-[16px] text-[#111111] leading-relaxed mb-8" style={FONT}>
-            We appreciate your time and interest in joining us. Your application has been
-            successfully received. Keep an eye on your inbox, as we will update you on the next
-            steps soon!
+            We appreciate your time and interest in joining us. Your application has been successfully received.
           </p>
           <PillButton
             variant="solid"
@@ -336,276 +333,276 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
           </PillButton>
         </div>
       ) : (
-      <ConfigProvider theme={{ token: { controlHeight: 48, borderRadius: 8, colorPrimary: '#005D9A' } }}>
-        <Form form={form} layout="vertical" onFinish={handleFinish} requiredMark={false}>
-          <div className={step === 1 ? 'block' : 'hidden'}>
-          <Form.Item
-            label={<FieldLabel text="Full name" required />}
-            name="fullName"
-            rules={[{ required: true, message: 'Please enter your full name' }]}
-          >
-            <Input placeholder="Enter your full name" style={FONT} />
-          </Form.Item>
-
-          <Form.Item
-            label={<FieldLabel text="Sex" required />}
-            name="sex"
-            rules={[{ required: true, message: 'Please select an option' }]}
-          >
-            <Radio.Group className="flex flex-col gap-3">
-              <Radio value="male" style={FONT}>Male</Radio>
-              <Radio value="female" style={FONT}>Female</Radio>
-              <Radio value="prefer_not" style={FONT}>Prefer not to say</Radio>
-              <Radio value="other" style={FONT}>Other:</Radio>
-            </Radio.Group>
-          </Form.Item>
-
-          {sex === 'other' && (
-            <Form.Item
-              name="sexOther"
-              rules={[{ required: true, message: 'Please specify' }]}
-            >
-              <Input placeholder="Please specify" style={FONT} />
-            </Form.Item>
-          )}
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5">
-            <Form.Item
-              label={<FieldLabel text="Date of Birth" required hint="mm/dd/yyyy" />}
-              name="dateOfBirth"
-              rules={[{ required: true, message: 'Please select your date of birth' }]}
-            >
-              <DatePicker
-                format="MM/DD/YYYY"
-                placeholder="mm/dd/yyyy"
-                className="w-full"
-                style={FONT}
-                disabledDate={(current) => current && current > dayjs().endOf('day')}
-                suffixIcon={<Icon name="lucide:chevron-down" size={16} />}
-              />
-            </Form.Item>
-            <Form.Item
-              label={
-                <FieldLabel
-                  text="Nationality"
-                  required
-                  hint="Your citizenship as stated in your passport."
-                />
-              }
-              name="nationality"
-              rules={[{ required: true, message: 'Please enter your nationality' }]}
-            >
-              <Input placeholder="Enter your nationality" style={FONT} />
-            </Form.Item>
-          </div>
-
-          <Form.Item
-            label={
-              <FieldLabel
-                text="Country of Residence"
-                required
-                hint="The country where you currently live."
-              />
-            }
-            name="countryOfResidence"
-            rules={[{ required: true, message: 'Please enter your country of residence' }]}
-          >
-            <Input placeholder="Enter your country of residence" style={FONT} />
-          </Form.Item>
-
-          <Form.Item
-            label={<FieldLabel text="City/Town" required />}
-            name="cityTown"
-            rules={[{ required: true, message: 'Please enter your city/town' }]}
-          >
-            <Input placeholder="Enter your city/town" style={FONT} />
-          </Form.Item>
-
-          <Form.Item
-            label={<FieldLabel text="Email Address" required />}
-            name="email"
-            rules={[
-              { required: true, message: 'Please enter your email' },
-              { type: 'email', message: 'Invalid email' },
-            ]}
-          >
-            <Input placeholder="Enter your email" style={FONT} />
-          </Form.Item>
-
-          <Form.Item
-            label={
-              <FieldLabel
-                text="WhatsApp Number"
-                required
-                hint="Include country code (e.g., 84 for Vietnam)"
-              />
-            }
-            name="whatsappNumber"
-            rules={[
-              { required: true, message: 'Please enter your WhatsApp number' },
-              phoneRule('Please enter a valid WhatsApp number'),
-            ]}
-          >
-            <Input addonBefore="+84" placeholder="Enter your WhatsApp number" style={FONT} />
-          </Form.Item>
-
-          <Form.Item
-            label={<FieldLabel text="Profile Image" required />}
-            name="profileImage"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-            rules={[{ required: true, message: 'Please upload a profile image' }]}
-            extra={<span className="text-[13px] italic text-[#EE334E]">{UPLOAD_HINT}</span>}
-          >
-            <Upload beforeUpload={() => false} multiple maxCount={10} listType="text">
-              <UploadButton />
-            </Upload>
-          </Form.Item>
-
-          <Form.Item
-            label={<FieldLabel text="LinkedIn Profile" required />}
-            name="linkedinProfile"
-            rules={[
-              { required: true, message: 'Please enter your LinkedIn profile' },
-              urlRule('Please enter a valid LinkedIn URL'),
-            ]}
-          >
-            <Input placeholder="Enter your LinkedIn profile URL" style={FONT} />
-          </Form.Item>
-
-          <Form.Item
-            label={
-              <FieldLabel
-                text="Website or Social Media Profile"
-                hint="Please provide the links to your professional or personal social media accounts or website."
-              />
-            }
-            name="websiteOrSocial"
-            rules={[urlRule('Please enter a valid URL')]}
-          >
-            <Input placeholder="Enter your website or social media URL" style={FONT} />
-          </Form.Item>
-
-          <Form.Item
-            label={<FieldLabel text="Resume/CV" required />}
-            name="resumeCv"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-            rules={[{ required: true, message: 'Please upload your resume/CV' }]}
-            extra={<span className="text-[13px] italic text-[#EE334E]">{UPLOAD_HINT}</span>}
-          >
-            <Upload beforeUpload={() => false} multiple maxCount={10} listType="text">
-              <UploadButton />
-            </Upload>
-          </Form.Item>
-
-          <button
-            type="button"
-            onClick={handleNextFromDetails}
-            className="w-full mt-2 px-8 py-3 sm:py-4 bg-[#005D9A] text-white text-[17px] sm:text-[20px] font-semibold rounded-full hover:opacity-90 transition-opacity"
-            style={FONT}
-          >
-            Next
-          </button>
-          </div>
-
-          <div className={step === 2 ? 'block' : 'hidden'}>
-            <Form.Item
-              label={<FieldLabel text="Continent" required />}
-              name="continent"
-              rules={[{ required: true, message: 'Please select a continent' }]}
-            >
-              <Radio.Group className="flex flex-col gap-3">
-                {CONTINENTS.map((c) => (
-                  <Radio key={c.value} value={c.value} style={FONT}>
-                    {c.label}
-                  </Radio>
-                ))}
-              </Radio.Group>
-            </Form.Item>
-
-            <button
-              type="button"
-              onClick={handleNextFromContinent}
-              className="w-full mt-2 px-8 py-3 sm:py-4 bg-[#005D9A] text-white text-[17px] sm:text-[20px] font-semibold rounded-full hover:opacity-90 transition-opacity"
-              style={FONT}
-            >
-              Next
-            </button>
-          </div>
-
-          <div className={step === 3 ? 'block' : 'hidden'}>
-            <Form.Item
-              label={
-                <FieldLabel
-                  text={`Which region of ${continentLabel} are you located in?`}
-                  required
-                  hint="Please select the specific region where you or your project operates."
-                />
-              }
-              name="region"
-              rules={[{ required: true, message: 'Please select a region' }]}
-            >
-              <Radio.Group className="flex flex-col gap-3">
-                {regions.map((r) => (
-                  <Radio key={r} value={r} style={FONT}>
-                    {r}
-                  </Radio>
-                ))}
-              </Radio.Group>
-            </Form.Item>
-
-            <button
-              type="button"
-              onClick={handleNextFromRegion}
-              className="w-full mt-2 px-8 py-3 sm:py-4 bg-[#005D9A] text-white text-[17px] sm:text-[20px] font-semibold rounded-full hover:opacity-90 transition-opacity"
-              style={FONT}
-            >
-              Next
-            </button>
-          </div>
-
-          <div className={step === 4 ? 'block' : 'hidden'}>
-            {ASSESSMENT_QUESTIONS.map((q) => (
+        <ConfigProvider theme={{ token: { controlHeight: 48, borderRadius: 8, colorPrimary: '#005D9A' } }}>
+          <Form form={form} layout="vertical" onFinish={handleFinish} requiredMark={false}>
+            <div className={step === 1 ? 'block' : 'hidden'}>
               <Form.Item
-                key={q.key}
+                label={<FieldLabel text="Full name" required />}
+                name="fullName"
+                rules={[{ required: true, message: 'Please enter your full name' }]}
+              >
+                <Input placeholder="Enter your full name" style={FONT} />
+              </Form.Item>
+
+              <Form.Item
+                label={<FieldLabel text="Sex" required />}
+                name="sex"
+                rules={[{ required: true, message: 'Please select an option' }]}
+              >
+                <Radio.Group className="flex flex-col gap-3">
+                  <Radio value="male" style={FONT}>Male</Radio>
+                  <Radio value="female" style={FONT}>Female</Radio>
+                  <Radio value="prefer_not" style={FONT}>Prefer not to say</Radio>
+                  <Radio value="other" style={FONT}>Other:</Radio>
+                </Radio.Group>
+              </Form.Item>
+
+              {sex === 'other' && (
+                <Form.Item
+                  name="sexOther"
+                  rules={[{ required: true, message: 'Please specify' }]}
+                >
+                  <Input placeholder="Please specify" style={FONT} />
+                </Form.Item>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5">
+                <Form.Item
+                  label={<FieldLabel text="Date of Birth" required hint="mm/dd/yyyy" />}
+                  name="dateOfBirth"
+                  rules={[{ required: true, message: 'Please select your date of birth' }]}
+                >
+                  <DatePicker
+                    format="MM/DD/YYYY"
+                    placeholder="mm/dd/yyyy"
+                    className="w-full"
+                    style={FONT}
+                    disabledDate={(current) => current && current > dayjs().endOf('day')}
+                    suffixIcon={<Icon name="lucide:chevron-down" size={16} />}
+                  />
+                </Form.Item>
+                <Form.Item
+                  label={
+                    <FieldLabel
+                      text="Nationality"
+                      required
+                      hint="Your citizenship as stated in your passport."
+                    />
+                  }
+                  name="nationality"
+                  rules={[{ required: true, message: 'Please enter your nationality' }]}
+                >
+                  <Input placeholder="Enter your nationality" style={FONT} />
+                </Form.Item>
+              </div>
+
+              <Form.Item
                 label={
-                  <span className="flex flex-col gap-0.5" style={FONT}>
-                    <span className="text-[15px] sm:text-[16px] text-[#111111]">
-                      {q.label}
-                      <span className="text-[#EE334E]"> *</span>
-                    </span>
-                    <span className="text-[13px] italic font-normal text-neutral-500">
-                      Maximum {q.maxWords} words.
-                    </span>
-                  </span>
+                  <FieldLabel
+                    text="Country of Residence"
+                    required
+                    hint="The country where you currently live."
+                  />
                 }
-                name={['assessment', q.key]}
+                name="countryOfResidence"
+                rules={[{ required: true, message: 'Please enter your country of residence' }]}
+              >
+                <Input placeholder="Enter your country of residence" style={FONT} />
+              </Form.Item>
+
+              <Form.Item
+                label={<FieldLabel text="City/Town" required />}
+                name="cityTown"
+                rules={[{ required: true, message: 'Please enter your city/town' }]}
+              >
+                <Input placeholder="Enter your city/town" style={FONT} />
+              </Form.Item>
+
+              <Form.Item
+                label={<FieldLabel text="Email Address" required />}
+                name="email"
                 rules={[
-                  { required: true, message: 'Please answer this question' },
-                  maxWordsRule(q.maxWords),
+                  { required: true, message: 'Please enter your email' },
+                  { type: 'email', message: 'Invalid email' },
                 ]}
               >
-                <Input.TextArea
-                  rows={4}
-                  placeholder="Enter your answer"
-                  style={FONT}
-                  className="!resize-none"
-                />
+                <Input placeholder="Enter your email" style={FONT} />
               </Form.Item>
-            ))}
 
-            <button
-              type="button"
-              onClick={() => form.submit()}
-              className="w-full mt-2 px-8 py-3 sm:py-4 bg-[#005D9A] text-white text-[17px] sm:text-[20px] font-semibold rounded-full hover:opacity-90 transition-opacity"
-              style={FONT}
-            >
-              Submit
-            </button>
-          </div>
-        </Form>
-      </ConfigProvider>
+              <Form.Item
+                label={
+                  <FieldLabel
+                    text="WhatsApp Number"
+                    required
+                    hint="Include country code (e.g., 84 for Vietnam)"
+                  />
+                }
+                name="whatsappNumber"
+                rules={[
+                  { required: true, message: 'Please enter your WhatsApp number' },
+                  phoneRule('Please enter a valid WhatsApp number'),
+                ]}
+              >
+                <Input addonBefore="+84" placeholder="Enter your WhatsApp number" style={FONT} />
+              </Form.Item>
+
+              <Form.Item
+                label={<FieldLabel text="Profile Image" required />}
+                name="profileImage"
+                valuePropName="fileList"
+                getValueFromEvent={normFile}
+                rules={[{ required: true, message: 'Please upload a profile image' }]}
+                extra={<span className="text-[13px] italic text-[#EE334E]">{UPLOAD_HINT}</span>}
+              >
+                <Upload beforeUpload={() => false} multiple maxCount={10} listType="text">
+                  <UploadButton />
+                </Upload>
+              </Form.Item>
+
+              <Form.Item
+                label={<FieldLabel text="LinkedIn Profile" required />}
+                name="linkedinProfile"
+                rules={[
+                  { required: true, message: 'Please enter your LinkedIn profile' },
+                  urlRule('Please enter a valid LinkedIn URL'),
+                ]}
+              >
+                <Input placeholder="Enter your LinkedIn profile URL" style={FONT} />
+              </Form.Item>
+
+              <Form.Item
+                label={
+                  <FieldLabel
+                    text="Website or Social Media Profile"
+                    hint="Please provide the links to your professional or personal social media accounts or website."
+                  />
+                }
+                name="websiteOrSocial"
+                rules={[urlRule('Please enter a valid URL')]}
+              >
+                <Input placeholder="Enter your website or social media URL" style={FONT} />
+              </Form.Item>
+
+              <Form.Item
+                label={<FieldLabel text="Resume/CV" required />}
+                name="resumeCv"
+                valuePropName="fileList"
+                getValueFromEvent={normFile}
+                rules={[{ required: true, message: 'Please upload your resume/CV' }]}
+                extra={<span className="text-[13px] italic text-[#EE334E]">{UPLOAD_HINT}</span>}
+              >
+                <Upload beforeUpload={() => false} multiple maxCount={10} listType="text">
+                  <UploadButton />
+                </Upload>
+              </Form.Item>
+
+              <button
+                type="button"
+                onClick={handleNextFromDetails}
+                className="w-full mt-2 px-8 py-3 sm:py-4 bg-[#005D9A] text-white text-[17px] sm:text-[20px] font-semibold rounded-full hover:opacity-90 transition-opacity"
+                style={FONT}
+              >
+                Next
+              </button>
+            </div>
+
+            <div className={step === 2 ? 'block' : 'hidden'}>
+              <Form.Item
+                label={<FieldLabel text="Continent" required />}
+                name="continent"
+                rules={[{ required: true, message: 'Please select a continent' }]}
+              >
+                <Radio.Group className="flex flex-col gap-3">
+                  {CONTINENTS.map((c) => (
+                    <Radio key={c.value} value={c.value} style={FONT}>
+                      {c.label}
+                    </Radio>
+                  ))}
+                </Radio.Group>
+              </Form.Item>
+
+              <button
+                type="button"
+                onClick={handleNextFromContinent}
+                className="w-full mt-2 px-8 py-3 sm:py-4 bg-[#005D9A] text-white text-[17px] sm:text-[20px] font-semibold rounded-full hover:opacity-90 transition-opacity"
+                style={FONT}
+              >
+                Next
+              </button>
+            </div>
+
+            <div className={step === 3 ? 'block' : 'hidden'}>
+              <Form.Item
+                label={
+                  <FieldLabel
+                    text={`Which region of ${continentLabel} are you located in?`}
+                    required
+                    hint="Please select the specific region where you or your project operates."
+                  />
+                }
+                name="region"
+                rules={[{ required: true, message: 'Please select a region' }]}
+              >
+                <Radio.Group className="flex flex-col gap-3">
+                  {regions.map((r) => (
+                    <Radio key={r} value={r} style={FONT}>
+                      {r}
+                    </Radio>
+                  ))}
+                </Radio.Group>
+              </Form.Item>
+
+              <button
+                type="button"
+                onClick={handleNextFromRegion}
+                className="w-full mt-2 px-8 py-3 sm:py-4 bg-[#005D9A] text-white text-[17px] sm:text-[20px] font-semibold rounded-full hover:opacity-90 transition-opacity"
+                style={FONT}
+              >
+                Next
+              </button>
+            </div>
+
+            <div className={step === 4 ? 'block' : 'hidden'}>
+              {ASSESSMENT_QUESTIONS.map((q) => (
+                <Form.Item
+                  key={q.key}
+                  label={
+                    <span className="flex flex-col gap-0.5" style={FONT}>
+                      <span className="text-[15px] sm:text-[16px] text-[#111111]">
+                        {q.label}
+                        <span className="text-[#EE334E]"> *</span>
+                      </span>
+                      <span className="text-[13px] italic font-normal text-neutral-500">
+                        Maximum {q.maxWords} words.
+                      </span>
+                    </span>
+                  }
+                  name={['assessment', q.key]}
+                  rules={[
+                    { required: true, message: 'Please answer this question' },
+                    maxWordsRule(q.maxWords),
+                  ]}
+                >
+                  <Input.TextArea
+                    rows={4}
+                    placeholder="Enter your answer"
+                    style={FONT}
+                    className="!resize-none"
+                  />
+                </Form.Item>
+              ))}
+
+              <button
+                type="button"
+                onClick={() => form.submit()}
+                className="w-full mt-2 px-8 py-3 sm:py-4 bg-[#005D9A] text-white text-[17px] sm:text-[20px] font-semibold rounded-full hover:opacity-90 transition-opacity"
+                style={FONT}
+              >
+                Submit
+              </button>
+            </div>
+          </Form>
+        </ConfigProvider>
       )}
     </Modal>
   );

@@ -1,9 +1,13 @@
+import { useEffect, useState } from 'react';
 import { Container } from '@/components/ui/Container';
 import { CTABanner } from '@/components/common/CTABanner';
 import { StatsGrid } from '@/components/common/StatsGrid';
+import type { StatsGridItem } from '@/components/common/StatsGrid';
 import { Icon } from '@/components/ui/Icon';
+import { useJoinNavigation } from '@/hooks';
+import { StrapiService } from '@/lib/strapi';
 
-const STATS = [
+const DEFAULT_STATS: StatsGridItem[] = [
   { label: 'Member Organizations', value: 50 },
   { label: 'Continents', value: 6 },
   { label: 'Countries', value: 30 },
@@ -66,6 +70,20 @@ const ABOUT_CONTAINER_CLASS = 'max-w-none lg:px-[90px]';
 const ABOUT_SECTION_TITLE_CLASS = 'font-heading text-[clamp(1.75rem,3vw,3rem)] font-semibold leading-tight text-black';
 
 export function AboutPage() {
+  const goToJoin = useJoinNavigation();
+  const [stats, setStats] = useState<StatsGridItem[]>(DEFAULT_STATS);
+
+  useEffect(() => {
+    StrapiService.getStatItems()
+      .then((data) => {
+        if (data.length > 0) {
+          setStats(data.map((stat) => ({ label: stat.label, value: stat.value })));
+        }
+      })
+      .catch((err) => {
+        console.error('Error fetching stats:', err);
+      });
+  }, []);
 
   return (
     <div className="relative z-10 bg-white">
@@ -153,7 +171,7 @@ export function AboutPage() {
 
       <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container size="narrow" className="lg:max-w-[1080px]">
-          <StatsGrid stats={STATS} variant="about" animated />
+          <StatsGrid stats={stats} variant="about" animated />
         </Container>
       </section>
 
@@ -217,6 +235,7 @@ export function AboutPage() {
         title="Ready to Make an Impact?"
         description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
         ctaLabel="Register Now"
+        onCtaClick={goToJoin}
       />
     </div>
   );

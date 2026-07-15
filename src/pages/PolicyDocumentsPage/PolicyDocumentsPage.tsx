@@ -1,11 +1,12 @@
-import { useState, useMemo } from 'react';
-import { Empty } from 'antd';
+import { useEffect, useMemo, useState } from 'react';
+import { Empty, Spin } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/common/SectionHeading';
 import { DocumentRow } from '@/components/common/DocumentRow';
 import { cn } from '@/lib/utils';
 import { DOCUMENTS_DATA } from '@/data';
-import type { DocCategory } from '@/types';
+import { StrapiService } from '@/lib/strapi';
+import type { DocCategory, DocumentItem } from '@/types';
 
 const CATEGORIES: { key: DocCategory | 'all'; label: string }[] = [
   { key: 'all', label: 'All Documents' },
@@ -15,14 +16,32 @@ const CATEGORIES: { key: DocCategory | 'all'; label: string }[] = [
 ];
 
 export function PolicyDocumentsPage() {
+  const [documents, setDocuments] = useState<DocumentItem[]>(DOCUMENTS_DATA);
+  const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState<DocCategory | 'all'>('all');
+
+  useEffect(() => {
+    StrapiService.getDocuments()
+      .then((data) => {
+        if (data && data.length > 0) {
+          setDocuments(data);
+        } else {
+          setDocuments(DOCUMENTS_DATA);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setDocuments(DOCUMENTS_DATA);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   const filteredDocs = useMemo(
     () =>
       activeCategory === 'all'
-        ? DOCUMENTS_DATA
-        : DOCUMENTS_DATA.filter((d) => d.category === activeCategory),
-    [activeCategory]
+        ? documents
+        : documents.filter((d) => d.category === activeCategory),
+    [documents, activeCategory]
   );
 
   return (
@@ -64,11 +83,16 @@ export function PolicyDocumentsPage() {
 
           {/* Document list */}
           <div className="min-w-0 divide-y divide-neutral-200">
-            {filteredDocs.map((doc) => (
-              <DocumentRow key={doc.id} document={doc} />
-            ))}
-            {filteredDocs.length === 0 && (
+            {loading ? (
+              <div className="py-12 text-center">
+                <Spin size="large" tip="Loading documents..." />
+              </div>
+            ) : filteredDocs.length === 0 ? (
               <Empty description="No documents in this category." className="py-8" />
+            ) : (
+              filteredDocs.map((doc) => (
+                <DocumentRow key={doc.id} document={doc} />
+              ))
             )}
           </div>
         </div>
