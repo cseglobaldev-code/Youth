@@ -37,13 +37,13 @@ export function MemberPage() {
         if (data && data.length > 0) {
           setMembers(data);
         } else {
-          setMembers(MEMBERS_DATA); // Fallback if database is empty
+          setMembers(MEMBERS_DATA);
         }
         setLoading(false);
       })
       .catch((err) => {
         console.error(err);
-        setMembers(MEMBERS_DATA); // Fallback if API fails
+        setMembers(MEMBERS_DATA);
         setLoading(false);
       });
   }, []);

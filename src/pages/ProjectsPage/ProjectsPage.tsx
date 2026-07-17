@@ -161,9 +161,10 @@ export function ProjectsPage() {
               )}
             </div>
 
+            {/* Styled Search + Sort row */}
             <div className="flex flex-wrap justify-center items-center gap-5">
               <Input
-                placeholder="Từ khóa"
+                placeholder="Keyword"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 suffix={<Icon name={ICONS.search} size={20} color="#CDCED7" />}
@@ -174,18 +175,19 @@ export function ProjectsPage() {
                   fontSize: 14,
                   color: '#151515',
                 }}
-                className="h-[50px] w-full max-w-[302px]"
+                className="h-[50px] w-full max-w-[302px] [&_.ant-input]:text-[#151515] [&_.ant-input::placeholder]:text-[#CDCED7]"
               />
 
               <Select
                 value={sortOrder}
                 onChange={(v) => setSortOrder(v)}
                 options={[
-                  { value: 'newest', label: 'Mới nhất - cũ nhất' },
-                  { value: 'oldest', label: 'Cũ nhất - mới nhất' },
+                  { value: 'newest', label: 'Newest - Oldest' },
+                  { value: 'oldest', label: 'Oldest - Newest' },
                 ]}
                 suffixIcon={<Icon name={ICONS.chevronDown} size={16} color="#000" />}
-                className="you-sort-select h-[50px] w-full max-w-[302px]"
+                style={{ fontFamily: 'Inter, sans-serif', fontSize: 14, borderRadius: 100, overflow: 'hidden' }}
+                className="you-sort-select h-[50px] w-full max-w-[302px] [&_.ant-select-selector]:!rounded-[100px] [&_.ant-select-selector]:!h-[50px] [&_.ant-select-selector]:!border-[#CDCED7] [&_.ant-select-selection-item]:!flex [&_.ant-select-selection-item]:!items-center [&_.ant-select-selection-item]:!h-full"
               />
             </div>
 

@@ -61,6 +61,26 @@ export function ContactPage() {
     { platform: 'youtube', url: '#' },
   ];
 
+  const mapHref = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+
+  const contactDetails = [
+    {
+      title: 'Address',
+      content: address.includes(',') ? address.split(', ') : [address],
+      href: mapHref,
+    },
+    {
+      title: 'Hotline/WhatsApp/Zalo',
+      content: [phone],
+      href: `tel:${phone.replace(/[^+\d]/g, '')}`,
+    },
+    {
+      title: 'Email',
+      content: [email],
+      href: `mailto:${email}`,
+    },
+  ] as const;
+
   return (
     <div className="relative z-10 pb-16 pt-10 md:pb-24 md:pt-16 lg:pb-[120px] lg:pt-[96px]" style={FONT}>
       <Container className="max-w-[1180px]">
@@ -143,34 +163,25 @@ export function ContactPage() {
               </h2>
 
               <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-                <div>
-                  <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515]">Address</h3>
-                  <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515]">
-                    <p>{address}</p>
+                {contactDetails.map((item) => (
+                  <div key={item.title} className="min-w-0">
+                    <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515]">
+                      {item.title}
+                    </h3>
+                    <a
+                      href={item.href}
+                      target={item.title === 'Address' ? '_blank' : undefined}
+                      rel={item.title === 'Address' ? 'noopener noreferrer' : undefined}
+                      className="mt-3 block space-y-1 text-[16px] leading-[1.55] text-[#151515] transition-colors duration-200 hover:text-[#005D9A]"
+                    >
+                      {item.content.map((line: string) => (
+                        <p key={line} className="break-words">
+                          {line}
+                        </p>
+                      ))}
+                    </a>
                   </div>
-                </div>
-
-                <div>
-                  <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515]">Hotline/WhatsApp/Zalo</h3>
-                  <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515]">
-                    <p>
-                      <a href={`tel:${phone}`} className="hover:text-[#EE334E]">
-                        {phone}
-                      </a>
-                    </p>
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-[20px] font-semibold leading-[140%] text-[#151515]">Email</h3>
-                  <div className="mt-3 space-y-1 text-[16px] leading-[1.55] text-[#151515]">
-                    <p>
-                      <a href={`mailto:${email}`} className="break-all hover:text-[#EE334E]">
-                        {email}
-                      </a>
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 

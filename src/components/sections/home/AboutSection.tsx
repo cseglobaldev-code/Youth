@@ -1,11 +1,12 @@
 // src/components/sections/home/AboutSection.tsx
-import { useEffect, useRef, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { ROUTES } from '@/routes/paths';
 import { StrapiService } from '@/lib/strapi';
+import { StatsGrid } from '@/components/common/StatsGrid'; // <-- Imported StatsGrid
 import type { StatItem } from '@/types';
 
 type AboutItem = {
@@ -26,16 +27,13 @@ const ABOUT_ITEMS: AboutItem[] = [
 export function AboutSection() {
   const [activeId, setActiveId] = useState<AboutItem['id']>('vision');
   const [stats, setStats] = useState<StatItem[]>([]);
-  const [hasStartedStats, setHasStartedStats] = useState(false);
-  const [statValues, setStatValues] = useState<number[]>([]);
-  const statsRef = useRef<HTMLDivElement>(null);
 
   const activeItem = ABOUT_ITEMS.find((item) => item.id === activeId) ?? ABOUT_ITEMS[0];
 
   useEffect(() => {
     StrapiService.getStatItems()
       .then((data) => {
-        if (data.length > 0) {
+        if (data && data.length > 0) {
           setStats(data);
         } else {
           setStats(defaultStats);
@@ -55,63 +53,6 @@ export function AboutSection() {
   ];
 
   const displayStats = stats.length > 0 ? stats : defaultStats;
-
-  useEffect(() => {
-    if (displayStats.length > 0) {
-      setStatValues(displayStats.map(() => 0));
-    }
-  }, [stats]);
-
-  useEffect(() => {
-    const statsElement = statsRef.current;
-    if (!statsElement || hasStartedStats || displayStats.length === 0) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setHasStartedStats(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.25 },
-    );
-
-    observer.observe(statsElement);
-    return () => observer.disconnect();
-  }, [hasStartedStats, displayStats]);
-
-  useEffect(() => {
-    if (!hasStartedStats || displayStats.length === 0) return;
-
-    const targets = displayStats.map((stat) => stat.value);
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      setStatValues(targets);
-      return;
-    }
-
-    const duration = 1200;
-    const startTime = performance.now();
-    let frameId = 0;
-
-    const animate = (now: number) => {
-      const progress = Math.min((now - startTime) / duration, 1);
-      const easedProgress = 1 - (1 - progress) ** 3;
-      setStatValues(targets.map((target) => Math.round(target * easedProgress)));
-
-      if (progress < 1) frameId = window.requestAnimationFrame(animate);
-    };
-
-    frameId = window.requestAnimationFrame(animate);
-    return () => window.cancelAnimationFrame(frameId);
-  }, [hasStartedStats, displayStats]);
-
-  function renderFormattedStat(stat: StatItem, animatedValue: number) {
-    const prefix = stat.prefix || '';
-    const suffix = stat.suffix || '';
-    const formattedNum = animatedValue.toLocaleString('en-US').replace(/,/g, ' ');
-    return `${prefix}${formattedNum}${suffix}`;
-  }
 
   return (
     <>
@@ -137,29 +78,8 @@ export function AboutSection() {
             </div>
           </div>
 
-          <div ref={statsRef} className="bg-[#F2F7FF] rounded-3xl lg:rounded-[40px] px-4 sm:px-6 lg:px-10 py-6 lg:py-10 mt-10 lg:mt-0">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-0">
-              {displayStats.slice(0, 4).map((stat, index) => (
-                <div key={stat.label} className="flex items-center min-w-0">
-                  <div className="flex flex-col items-center text-center w-full py-2">
-                    <span className="text-neutral-500 text-[clamp(0.875rem,1.56vw,1.5rem)] font-normal" style={{ fontFamily: 'Open Sans, sans-serif' }}>{stat.label}</span>
-                    <span
-                      className="font-semibold text-[clamp(1.75rem,3.13vw,3rem)] text-[#1E293B]"
-                      aria-label={`${stat.value} ${stat.label}`}
-                      style={{ fontFamily: 'Open Sans, sans-serif' }}
-                    >
-                      {renderFormattedStat(stat, statValues[index] || 0)}
-                    </span>
-                  </div>
-                  {index < displayStats.length - 1 && (
-                    <svg width="24" height="120" viewBox="0 0 24 120" className="hidden lg:block flex-shrink-0" aria-hidden="true">
-                      <line x1="20" y1="0" x2="4" y2="120" stroke="#C0D8FF" strokeWidth="1.5" />
-                    </svg>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+          {/* Dynamic Stats Grid using your live CMS data with rolling count-up animations */}
+          <StatsGrid stats={displayStats} variant="home" animated />
         </Container>
       </section>
 

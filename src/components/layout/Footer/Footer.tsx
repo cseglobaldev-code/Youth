@@ -66,7 +66,16 @@ export function Footer({ className }: FooterProps) {
 
           {/* Information */}
           <div className="min-w-0">
-            <h4 className="mb-4 text-base font-medium text-white sm:text-lg lg:mb-5">
+            <h4
+              className="mb-4 text-white lg:mb-5"
+              style={{
+                fontFamily: 'Open Sans, sans-serif',
+                fontWeight: 600,
+                fontSize: '24px',
+                lineHeight: '140%',
+                letterSpacing: '0%',
+              }}
+            >
               Infomation
             </h4>
             <div className="flex flex-col gap-3 lg:gap-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
@@ -97,31 +106,72 @@ export function Footer({ className }: FooterProps) {
 
           {/* Discover */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <h4 className="mb-4 text-base font-medium text-white sm:text-lg lg:mb-5">
+            <h4
+              className="mb-4 text-white lg:mb-5"
+              style={{
+                fontFamily: 'Open Sans, sans-serif',
+                fontWeight: 600,
+                fontSize: '24px',
+                lineHeight: '140%',
+                letterSpacing: '0%',
+              }}
+            >
               Discover
             </h4>
-            <nav className="flex flex-col items-start gap-3" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            <nav className="flex flex-col items-start gap-3">
               <Link
                 to={ROUTES.ABOUT}
-                className="text-sm font-normal text-white transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
+                className="text-white transition-colors hover:text-[#005D9A]"
+                style={{
+                  fontFamily: 'Open Sans, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '20px',
+                  lineHeight: '100%',
+                  letterSpacing: '0%',
+                  verticalAlign: 'middle',
+                }}
               >
                 About us
               </Link>
               <Link
                 to={ROUTES.LEADERSHIP}
-                className="text-sm font-normal text-white transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
+                className="text-white transition-colors hover:text-[#005D9A]"
+                style={{
+                  fontFamily: 'Open Sans, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '20px',
+                  lineHeight: '100%',
+                  letterSpacing: '0%',
+                  verticalAlign: 'middle',
+                }}
               >
                 Leadership
               </Link>
               <Link
                 to={ROUTES.MEMBERS}
-                className="text-sm font-normal text-white transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
+                className="text-white transition-colors hover:text-[#005D9A]"
+                style={{
+                  fontFamily: 'Open Sans, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '20px',
+                  lineHeight: '100%',
+                  letterSpacing: '0%',
+                  verticalAlign: 'middle',
+                }}
               >
                 Members
               </Link>
               <Link
                 to={ROUTES.PROJECTS}
-                className="text-sm font-normal text-white transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
+                className="text-white transition-colors hover:text-[#005D9A]"
+                style={{
+                  fontFamily: 'Open Sans, sans-serif',
+                  fontWeight: 400,
+                  fontSize: '20px',
+                  lineHeight: '100%',
+                  letterSpacing: '0%',
+                  verticalAlign: 'middle',
+                }}
               >
                 Projects
               </Link>

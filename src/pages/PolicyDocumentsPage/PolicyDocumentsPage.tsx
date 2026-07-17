@@ -21,7 +21,6 @@ export function PolicyDocumentsPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<DocCategory | 'all'>('all');
 
-  // Fetch documents dynamically from Strapi
   useEffect(() => {
     StrapiService.getDocuments()
       .then((data) => {
@@ -80,8 +79,8 @@ export function PolicyDocumentsPage() {
             })}
           </aside>
 
-          {/* Document list with loaders and error states */}
-          <div className="divide-y divide-neutral-200">
+          {/* Document list */}
+          <div className="min-w-0 divide-y divide-neutral-200">
             {loading ? (
               <div className="py-12 text-center">
                 <Spin size="large" tip="Loading documents..." />
