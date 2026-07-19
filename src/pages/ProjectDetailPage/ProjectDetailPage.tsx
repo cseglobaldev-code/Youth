@@ -1,9 +1,9 @@
 import { useParams } from 'react-router-dom';
 import { Divider, Image } from "antd";
 import { Icon } from "@/components/ui/Icon";
-import { ProjectCard } from "@/components/common/ProjectCard";
-import { SupportCTA } from "@/components/common/SupportCTA";
-import { useSupportModal } from "@/components/common/SupportModal";
+import { ProjectCard } from "@/components/projects/ProjectCard";
+import { SupportCTA } from "@/components/shared/SupportCTA";
+import { useSupportModal } from "@/components/modals/SupportModal";
 import { SDGTag } from "@/components/ui/SDGTag";
 import { Container } from "@/components/ui/Container";
 import { PROJECTS_DATA, MEMBERS_DATA } from "@/data";

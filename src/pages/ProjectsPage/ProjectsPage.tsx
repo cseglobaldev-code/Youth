@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { Button, Empty, Input, Select } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
-import { ProjectCard } from '@/components/common/ProjectCard';
+import { ProjectCard } from '@/components/projects/ProjectCard';
 import { filterBySdg } from '@/lib/utils';
 import { PROJECTS_DATA, SDGS_DATA, MEMBERS_DATA } from '@/data';
 import { ICONS } from '@/config/icons';

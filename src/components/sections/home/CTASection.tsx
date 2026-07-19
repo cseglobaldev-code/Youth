@@ -1,4 +1,4 @@
-import { CTABanner } from '@/components/common/CTABanner';
+import { CTABanner } from '@/components/shared/CTABanner';
 
 export function CTASection() {
 

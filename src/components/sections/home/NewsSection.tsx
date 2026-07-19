@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
-import { ViewAllButton } from '@/components/common/ViewAllButton';
+import { ViewAllButton } from '@/components/shared/ViewAllButton';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
 

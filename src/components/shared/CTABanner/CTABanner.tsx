@@ -1,30 +1,30 @@
 import { cn } from '@/lib/utils';
-import { useJoinModal } from '@/components/common/JoinModal';
+import { useJoinModal } from '@/components/modals/JoinModal';
 import { PillButton } from '@/components/ui/PillButton';
 
 const DEFAULT_GRADIENT =
   'linear-gradient(to right, #EE334E 0%, #F14D48 7%, #F56F40 16%, #F88F39 24%, #FCB131 33%, #C3AF38 41%, #79AB42 51%, #00A651 67%, #0081C8 100%)';
 
 export interface CTABannerProps {
-  /** Tiêu đề lớn của banner */
+  /** Large banner title */
   title: string;
-  /** Mô tả phụ dưới tiêu đề */
+  /** Supporting description under the title */
   description?: string;
-  /** Nhãn nút hành động */
+  /** CTA button label */
   ctaLabel: string;
-  /** Đường dẫn nội bộ (react-router) cho nút */
+  /** Internal route path (react-router) for the button */
   ctaTo?: string;
-  /** Đường dẫn ngoài cho nút (mở tab mới) */
+  /** External URL for the button (opens in a new tab) */
   ctaHref?: string;
-  /** Handler khi không dùng to/href */
+  /** Click handler when not using ctaTo/ctaHref */
   onCtaClick?: () => void;
-  /** Ghi đè gradient nền */
+  /** Override background gradient */
   gradient?: string;
-  /** Độ mờ lớp phủ trắng (0–100), mặc định 45 */
+  /** White overlay opacity (0–100), defaults to 45 */
   overlayOpacity?: number;
-  /** Ẩn ngôi sao watermark */
+  /** Hide the star watermark */
   hideStar?: boolean;
-  /** Class mở rộng cho thẻ section bọc ngoài */
+  /** Extra class for the outer section wrapper */
   className?: string;
 }
 

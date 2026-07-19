@@ -1,14 +1,14 @@
 import { useParams } from 'react-router-dom';
 import { Container } from '@/components/ui/Container';
 import { SDGTag } from '@/components/ui/SDGTag';
-import { SocialLinks } from '@/components/common/SocialLinks';
-import { ProjectCard } from '@/components/common/ProjectCard';
-import { ImageGallery } from '@/components/common/ImageGallery';
-import { SupportCTA } from '@/components/common/SupportCTA';
-import { CTABanner } from '@/components/common/CTABanner';
-import { SectionHeading } from '@/components/common/SectionHeading';
+import { SocialLinks } from '@/components/shared/SocialLinks';
+import { ProjectCard } from '@/components/projects/ProjectCard';
+import { ImageGallery } from '@/components/shared/ImageGallery';
+import { SupportCTA } from '@/components/shared/SupportCTA';
+import { CTABanner } from '@/components/shared/CTABanner';
+import { SectionHeading } from '@/components/shared/SectionHeading';
 import { MEMBERS_DATA, PROJECTS_DATA } from '@/data';
-import { useSupportModal } from '@/components/common/SupportModal';
+import { useSupportModal } from '@/components/modals/SupportModal';
 
 export function MemberDetailPage() {
   const { memberId } = useParams<{ memberId: string }>();

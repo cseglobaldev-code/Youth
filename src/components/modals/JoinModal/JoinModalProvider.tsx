@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import { RegisterOrganizationModal } from '@/components/common/RegisterOrganizationModal';
-import { ApplyRoleModal } from '@/components/common/ApplyRoleModal';
+import { RegisterOrganizationModal } from '@/components/modals/RegisterOrganizationModal';
+import { ApplyRoleModal } from '@/components/modals/ApplyRoleModal';
 import { JoinChoiceModal } from './JoinChoiceModal';
 
 type JoinStep = 'closed' | 'choice' | 'organization' | 'individual';

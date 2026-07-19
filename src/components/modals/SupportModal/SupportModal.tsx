@@ -234,7 +234,7 @@ export function SupportModal({
                   <div className="mb-6 text-[16px] leading-relaxed text-[#111111]" style={FONT}>
                     <p className="mb-2 text-[18px]">QR Code</p>
                     <p className="mb-2 font-bold italic">
-                      Note Des: Nút nhấn giữ để tải mã QR về điện thoại
+                      Note: Press and hold the QR code to save it to your phone
                     </p>
                     <p className="font-bold">Bank Account Information</p>
                     <p className="italic">- Account Number: 000999999999</p>

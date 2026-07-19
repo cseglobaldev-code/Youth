@@ -1,5 +1,5 @@
 import { Button } from 'antd';
-import { useJoinModal } from '@/components/common/JoinModal';
+import { useJoinModal } from '@/components/modals/JoinModal';
 import { Container } from '@/components/ui/Container';
 
 const ORG_BENEFITS = [

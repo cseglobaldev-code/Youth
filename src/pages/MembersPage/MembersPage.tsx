@@ -3,9 +3,9 @@ import { useState, useMemo } from 'react';
 import { Empty, Input, Popover } from 'antd';
 import { SearchOutlined, DownOutlined, CheckOutlined } from '@ant-design/icons';
 import { Container } from '@/components/ui/Container';
-import { MemberCardLarge } from '@/components/common/MemberCardLarge/MemberCardLarge';
-import { Pagination } from '@/components/common/Pagination';
-import { CTABanner } from '@/components/common/CTABanner';
+import { MemberCardLarge } from '@/components/members/MemberCardLarge';
+import { Pagination } from '@/components/shared/Pagination';
+import { CTABanner } from '@/components/shared/CTABanner';
 import { ROUTES } from '@/routes/paths';
 import { usePagination } from '@/hooks';
 
@@ -29,17 +29,17 @@ const MOCK_MEMBERS = Array.from({ length: 30 }, (_, i) => ({
 }));
 
 const SORT_OPTIONS = [
-  { label: 'Mới nhất - cũ nhất', value: 'newest' },
-  { label: 'Cũ nhất - mới nhất', value: 'oldest' },
-  { label: 'Đơn vị tổ chức, cung cấp', value: 'organization' },
-  { label: 'Địa điểm', value: 'location' },
+  { label: 'Newest - oldest', value: 'newest' },
+  { label: 'Oldest - newest', value: 'oldest' },
+  { label: 'Organization', value: 'organization' },
+  { label: 'Location', value: 'location' },
   { label: 'SDG', value: 'sdg' },
-  { label: 'Cơ hội', value: 'opportunity' },
-  { label: 'Được xem nhiều nhất', value: 'mostViewed' },
-  { label: 'Được yêu thích nhất', value: 'mostLiked' },
+  { label: 'Opportunity', value: 'opportunity' },
+  { label: 'Most viewed', value: 'mostViewed' },
+  { label: 'Most liked', value: 'mostLiked' },
 ];
 
-export function MemberPage() {
+export function MembersPage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
@@ -153,7 +153,7 @@ export function MemberPage() {
           <Input
             value={searchQuery}
             onChange={handleSearch}
-            placeholder="Từ khóa"
+            placeholder="Keyword"
             suffix={<SearchOutlined className="text-[18px] text-[#1F2A44]" />}
             className="h-[48px] w-full rounded-full border border-[#E7E7E7] bg-white px-4 shadow-none md:w-[302px] md:max-w-full [&_.ant-input]:text-[15px] [&_.ant-input]:text-[#111111] [&_.ant-input::placeholder]:text-[#B7B7B7] [&_.ant-input-suffix]:ml-3"
           />

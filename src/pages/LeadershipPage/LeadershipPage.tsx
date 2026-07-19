@@ -1,9 +1,9 @@
 import { useState, useMemo } from 'react';
 import { Container } from '@/components/ui/Container';
-import { ExecutiveCard } from '@/components/common/ExecutiveCard';
-import { TeamMemberCard } from '@/components/common/TeamMemberCard';
-import { LeaderMemberModal } from '@/components/common/LeaderMemberModal';
-import { CTABanner } from '@/components/common/CTABanner';
+import { ExecutiveCard } from '@/components/leadership/ExecutiveCard';
+import { TeamMemberCard } from '@/components/leadership/TeamMemberCard';
+import { LeaderMemberModal } from '@/components/leadership/LeaderMemberModal';
+import { CTABanner } from '@/components/shared/CTABanner';
 import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data';
 import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';

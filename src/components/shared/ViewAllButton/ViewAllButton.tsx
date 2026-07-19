@@ -1,22 +1,22 @@
 import { PillButton, type PillButtonSize } from '@/components/ui/PillButton';
 
 export interface ViewAllButtonProps {
-  /** Đường dẫn nội bộ (react-router) */
+  /** Internal route path (react-router) */
   to?: string;
-  /** Đường dẫn ngoài (mở tab mới) */
+  /** External URL (opens in a new tab) */
   href?: string;
-  /** Handler khi không dùng to/href */
+  /** Click handler when not using to/href */
   onClick?: () => void;
-  /** Nhãn nút, mặc định "View All" */
+  /** Button label, defaults to "View All" */
   label?: string;
-  /** Kích thước nút, mặc định "sm" */
+  /** Button size, defaults to "sm" */
   size?: PillButtonSize;
   className?: string;
 }
 
 /**
- * Nút "View All" dùng chung — viền đỏ thương hiệu, hover đổ nền đỏ chữ trắng.
- * Dùng ở các section danh sách (Members, News/Projects, ...).
+ * Shared "View All" button — brand red outline, fills red on hover.
+ * Used in list sections (Members, News/Projects, ...).
  */
 export function ViewAllButton({
   to,

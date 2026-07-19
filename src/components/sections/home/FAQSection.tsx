@@ -1,7 +1,7 @@
 import { Collapse } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/utils';
-import { ViewAllButton } from '@/components/common/ViewAllButton';
+import { ViewAllButton } from '@/components/shared/ViewAllButton';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
 

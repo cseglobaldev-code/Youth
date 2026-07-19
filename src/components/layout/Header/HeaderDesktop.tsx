@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/layout/Logo';
 import { Icon } from '@/components/ui/Icon';
-import { useJoinModal } from '@/components/common/JoinModal';
+import { useJoinModal } from '@/components/modals/JoinModal';
 import { NAV_ITEMS } from '@/data';
 import type { NavItem } from '@/types';
 

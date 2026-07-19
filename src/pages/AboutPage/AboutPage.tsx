@@ -1,6 +1,6 @@
 import { Container } from '@/components/ui/Container';
-import { CTABanner } from '@/components/common/CTABanner';
-import { StatsGrid } from '@/components/common/StatsGrid';
+import { CTABanner } from '@/components/shared/CTABanner';
+import { StatsGrid } from '@/components/shared/StatsGrid';
 import { Icon } from '@/components/ui/Icon';
 
 const STATS = [

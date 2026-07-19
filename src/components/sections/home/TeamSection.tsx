@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
-import { ViewAllButton } from '@/components/common/ViewAllButton';
+import { ViewAllButton } from '@/components/shared/ViewAllButton';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
 import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data';

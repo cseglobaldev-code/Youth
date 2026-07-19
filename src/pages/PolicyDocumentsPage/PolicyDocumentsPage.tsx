@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Empty } from 'antd';
 import { Container } from '@/components/ui/Container';
-import { SectionHeading } from '@/components/common/SectionHeading';
-import { DocumentRow } from '@/components/common/DocumentRow';
+import { SectionHeading } from '@/components/shared/SectionHeading';
+import { DocumentRow } from '@/components/documents/DocumentRow';
 import { cn } from '@/lib/utils';
 import { DOCUMENTS_DATA } from '@/data';
 import type { DocCategory } from '@/types';
