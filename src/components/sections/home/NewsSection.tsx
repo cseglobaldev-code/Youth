@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Image } from 'antd';
+import { Button } from 'antd';
 import { Icon } from '@/components/ui/Icon';
+import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { ViewAllButton } from '@/components/shared/ViewAllButton';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
@@ -97,13 +98,10 @@ export function NewsSection() {
         <div className="md:hidden">
           <div className="flex cursor-pointer flex-col group" onClick={() => navigate(ROUTES.PROJECT_DETAIL(mobileFeatured.id))}>
             <div className="mb-4 overflow-hidden rounded-2xl aspect-[343/230]">
-              <Image
+              <ImageWithFallback
                 src={mobileFeatured.imageUrl}
                 alt={mobileFeatured.title}
-                preview={false}
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                wrapperStyle={{ width: '100%', height: '100%' }}
               />
             </div>
             <h4 className="mb-3 font-semibold text-[clamp(1.5rem,6.2vw,1.75rem)] leading-tight text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
@@ -161,13 +159,10 @@ export function NewsSection() {
             onClick={() => navigate(ROUTES.PROJECT_DETAIL(featured.id))}
           >
             <div className="mb-4 overflow-hidden rounded-2xl aspect-[652/436]">
-              <Image
+              <ImageWithFallback
                 src={featured.imageUrl}
                 alt={featured.title}
-                preview={false}
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                wrapperStyle={{ width: '100%', height: '100%' }}
               />
             </div>
             {/* Meta */}
@@ -219,7 +214,7 @@ export function NewsSection() {
                 onClick={() => navigate(ROUTES.PROJECT_DETAIL(news.id))}
               >
                 <div className="h-[72px] w-[96px] flex-shrink-0 overflow-hidden rounded-xl sm:h-[96px] sm:w-[140px] lg:h-[130px] lg:w-[200px]">
-                  <Image src={news.imageUrl} alt={news.title} preview={false} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
+                  <ImageWithFallback src={news.imageUrl} alt={news.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col justify-center">
                   <h4 className="mb-1 line-clamp-1 font-semibold text-[clamp(0.875rem,1.30vw,1.25rem)] text-[#111111] transition-colors group-hover:text-[#EE334E]" style={{ fontFamily: 'Open Sans, sans-serif' }}>

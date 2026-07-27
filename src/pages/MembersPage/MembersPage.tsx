@@ -1,32 +1,13 @@
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useState, useMemo } from 'react';
-import { Empty, Input, Popover } from 'antd';
+import { Alert, Empty, Input, Popover, Skeleton } from 'antd';
 import { SearchOutlined, DownOutlined, CheckOutlined } from '@ant-design/icons';
 import { Container } from '@/components/ui/Container';
 import { MemberCardLarge } from '@/components/members/MemberCardLarge';
 import { Pagination } from '@/components/shared/Pagination';
 import { CTABanner } from '@/components/shared/CTABanner';
-import { ROUTES } from '@/routes/paths';
 import { usePagination } from '@/hooks';
-
-
-const MOCK_MEMBER = {
-  name: 'YouthBridge PH',
-  country: 'Philippines',
-  period: '2021 → nay',
-  leader: 'Maria Santos',
-  focusSdgs: [1, 4, 8],
-  coverUrl: '/images/members/covers/cover-image1.png',
-  logoUrl: '/images/members/logos/small-logo1.png',
-};
-
-const MOCK_MEMBERS = Array.from({ length: 30 }, (_, i) => ({
-  ...MOCK_MEMBER,
-  id: `member-${i + 1}`,
-  coverUrl: i % 3 === 0 ? '/images/members/covers/cover-image1.png' : i % 3 === 1 ? '/images/members/covers/cover-image2.png' : '/images/members/covers/cover-image3.png',
-  logoUrl: i % 3 === 0 ? '/images/members/logos/small-logo1.png' : i % 3 === 1 ? '/images/members/logos/small-logo2.png' : '/images/members/logos/small-logo3.png',
-  name: i % 3 === 0 ? 'YouthBridge PH' : i % 3 === 1 ? 'CSE Global' : 'Future Leaders Kenya',
-}));
+import { fetchMembers, type MemberListItem } from '@/api/members';
 
 const SORT_OPTIONS = [
   { label: 'Newest - oldest', value: 'newest' },
@@ -44,15 +25,36 @@ export function MembersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
+  const [members, setMembers] = useState<MemberListItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchMembers({ signal: controller.signal })
+      .then(setMembers)
+      .catch((requestError: unknown) => {
+        if (requestError instanceof DOMException && requestError.name === 'AbortError') return;
+        console.error('Failed to load members from CMS', requestError);
+        setError(true);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [retryCount]);
 
   const filteredMembers = useMemo(() => {
-    let result = MOCK_MEMBERS;
+    let result = members;
+    const query = searchQuery.trim().toLowerCase();
 
-    if (searchQuery.trim()) {
+    if (query) {
       result = result.filter(
-        (m) =>
-          m.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          m.country.toLowerCase().includes(searchQuery.toLowerCase())
+        (member) =>
+          member.name.toLowerCase().includes(query) || member.country.toLowerCase().includes(query)
       );
     }
 
@@ -62,16 +64,76 @@ export function MembersPage() {
       case 'location':
         return [...result].sort((a, b) => a.country.localeCompare(b.country));
       case 'mostViewed':
-        return [...result].sort((a, b) => b.id.localeCompare(a.id));
       case 'mostLiked':
-        return [...result].sort((a, b) => a.id.localeCompare(b.id));
+        return [...result].sort((a, b) => b.id.localeCompare(a.id));
       default:
         return result;
     }
-  }, [searchQuery, sortBy]);
+  }, [members, searchQuery, sortBy]);
 
   const { pageItems, total, currentPage, pageSize, goToPage, resetPage } =
     usePagination(filteredMembers, 9);
+
+  const retry = () => {
+    setLoading(true);
+    setError(false);
+    setRetryCount((count) => count + 1);
+  };
+
+  const renderContent = () => {
+    if (loading && members.length === 0) {
+      return (
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 9 }, (_, index) => (
+            <Skeleton key={index} active paragraph={{ rows: 3 }} />
+          ))}
+        </div>
+      );
+    }
+
+    if (error && members.length === 0) {
+      return (
+        <Alert
+          type="error"
+          showIcon
+          message="Unable to load members from the CMS."
+          action={<button type="button" onClick={retry}>Retry</button>}
+          className="my-12"
+        />
+      );
+    }
+
+    if (pageItems.length === 0) {
+      return <Empty description="No members found for this filter." className="py-12" />;
+    }
+
+    return (
+      <>
+        <div className="mb-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {pageItems.map((member) => (
+            <div key={member.id} className="flex justify-center">
+              <MemberCardLarge
+                onClick={() => navigate(`/members/${member.id}`)}
+                member={{
+                  name: member.name,
+                  country: member.country,
+                  period: member.period || '2020 → nay',
+                  leader: member.leader || 'TBD',
+                  focusSdgs: member.focusSdgs,
+                  coverUrl: member.coverUrl || '',
+                  logoUrl: member.logoUrl,
+                }}
+              />
+            </div>
+          ))}
+        </div>
+
+        <div className="mb-12 flex justify-center">
+          <Pagination current={currentPage} total={total} pageSize={pageSize} onChange={goToPage} />
+        </div>
+      </>
+    );
+  };
 
   const activeSortLabel =
     SORT_OPTIONS.find((option) => option.value === sortBy)?.label ?? SORT_OPTIONS[0].label;
@@ -176,39 +238,7 @@ export function MembersPage() {
           </Popover>
         </div>
 
-        {pageItems.length === 0 ? (
-          <Empty description="No members found for this filter." className="py-12" />
-        ) : (
-          <>
-            <div className="mb-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {pageItems.map((member) => (
-                <div key={member.id} className="flex justify-center">
-                  <MemberCardLarge
-                    member={{
-                      name: member.name,
-                      country: member.country,
-                      period: member.period || '2020 → nay',
-                      leader: member.leader || 'TBD',
-                      focusSdgs: member.focusSdgs,
-                      coverUrl: member.coverUrl || '',
-                      logoUrl: member.logoUrl,
-                    }}
-                    onClick={() => navigate(ROUTES.MEMBER_DETAIL(member.id))}
-                  />
-                </div>
-              ))}
-            </div>
-
-            <div className="mb-12 flex justify-center">
-              <Pagination
-                current={currentPage}
-                total={total}
-                pageSize={pageSize}
-                onChange={goToPage}
-              />
-            </div>
-          </>
-        )}
+        {renderContent()}
       </Container>
 
       <CTABanner

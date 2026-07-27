@@ -1,5 +1,8 @@
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { Skeleton } from 'antd';
 import { Container } from '@/components/ui/Container';
+import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { SDGTag } from '@/components/ui/SDGTag';
 import { SocialLinks } from '@/components/shared/SocialLinks';
 import { ProjectCard } from '@/components/projects/ProjectCard';
@@ -7,13 +10,41 @@ import { ImageGallery } from '@/components/shared/ImageGallery';
 import { SupportCTA } from '@/components/shared/SupportCTA';
 import { CTABanner } from '@/components/shared/CTABanner';
 import { SectionHeading } from '@/components/shared/SectionHeading';
-import { MEMBERS_DATA, PROJECTS_DATA } from '@/data';
 import { useSupportModal } from '@/components/modals/SupportModal';
+import { fetchMemberById, type MemberDetailItem } from '@/api/members';
 
 export function MemberDetailPage() {
   const { memberId } = useParams<{ memberId: string }>();
   const { openSupport } = useSupportModal();
-  const member = MEMBERS_DATA.find((m) => m.id === memberId);
+  const [member, setMember] = useState<MemberDetailItem | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!memberId) return;
+    const controller = new AbortController();
+
+    setLoading(true);
+    fetchMemberById(memberId, { signal: controller.signal })
+      .then(setMember)
+      .catch((requestError: unknown) => {
+        if (requestError instanceof DOMException && requestError.name === 'AbortError') return;
+        console.error('Failed to load member from CMS', requestError);
+        setMember(null);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [memberId]);
+
+  if (loading) {
+    return (
+      <Container className="py-section">
+        <Skeleton active paragraph={{ rows: 6 }} />
+      </Container>
+    );
+  }
 
   if (!member) {
     return (
@@ -24,11 +55,7 @@ export function MemberDetailPage() {
     );
   }
 
-  const memberProjects = PROJECTS_DATA.filter((p) => member.projectIds.includes(p.id));
-  const relatedProjects = [
-    ...memberProjects,
-    ...PROJECTS_DATA.filter((p) => !member.projectIds.includes(p.id)),
-  ].slice(0, 3);
+  const relatedProjects = member.projects.slice(0, 3);
 
   return (
     <div className="py-section-sm lg:py-section">
@@ -73,11 +100,9 @@ export function MemberDetailPage() {
             <SupportCTA onClick={openSupport} />
           </div>
 
-          {member.coverUrl && (
-            <div className="overflow-hidden rounded-[40px] bg-[#EAF3FA]" style={{ height: 'clamp(240px, 32.7vw, 628px)' }}>
-              <img src={member.coverUrl} alt={member.name} className="h-full w-full object-cover" />
-            </div>
-          )}
+          <div className="overflow-hidden rounded-[40px] bg-[#EAF3FA]" style={{ height: 'clamp(240px, 32.7vw, 628px)' }}>
+            <ImageWithFallback src={member.coverUrl} alt={member.name} className="h-full w-full object-cover" />
+          </div>
         </div>
 
         <div className="mb-14 grid gap-10 lg:grid-cols-2 lg:gap-24">

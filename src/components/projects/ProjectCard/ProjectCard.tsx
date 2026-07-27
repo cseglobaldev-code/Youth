@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import { Icon } from '@/components/ui/Icon';
+import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/routes/paths';
 import type { Project } from '@/types';
@@ -29,7 +30,7 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
     >
       {/* Image — top corners only (outer card handles full rounding) */}
       <div className="w-full rounded-t-2xl overflow-hidden" style={{ aspectRatio: '421/237' }}>
-        <img
+        <ImageWithFallback
           src={project.outstandingImageUrl}
           alt={project.name}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out will-change-transform"

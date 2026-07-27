@@ -78,7 +78,7 @@ export function LeadershipPage() {
                  row, justifyContent:center, gap:24px
           ══════════════════════════════════════════════════ */}
           <div
-            ref={heroRef as React.RefObject<HTMLDivElement>}
+            ref={heroRef}
             className={cn(
               'flex flex-col items-center gap-[24px] w-full transition-all duration-700',
               heroVisible ? 'animate-fade-in-up' : 'opacity-0'
@@ -131,7 +131,7 @@ export function LeadershipPage() {
                  Frame 41 (cards): row, space-between, center, width:828
           ══════════════════════════════════════════════════ */}
           <div
-            ref={execRef as React.RefObject<HTMLDivElement>}
+            ref={execRef}
             className={cn(
               'flex flex-col items-center gap-[40px] w-full transition-all duration-700',
               execVisible ? 'animate-fade-in-up' : 'opacity-0'
@@ -189,7 +189,7 @@ export function LeadershipPage() {
              Cards row (Frame 2071857648): row, center, gap:32px, alignSelf:stretch
       ══════════════════════════════════════════════════ */}
       <div
-        ref={directorsRef as React.RefObject<HTMLDivElement>}
+        ref={directorsRef}
         className={cn(
           'flex flex-col items-center gap-[40px] lg:gap-[60px] w-full py-0 transition-all duration-700',
           directorsVisible ? 'animate-fade-in-up' : 'opacity-0'

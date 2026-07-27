@@ -1,15 +1,14 @@
-import { useState, useMemo } from 'react';
-import { Button, Empty, Input, Select } from 'antd';
+import { useEffect, useState, useMemo } from 'react';
+import { Alert, Button, Empty, Input, Select, Skeleton } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
 import { ProjectCard } from '@/components/projects/ProjectCard';
 import { filterBySdg } from '@/lib/utils';
-import { PROJECTS_DATA, SDGS_DATA, MEMBERS_DATA } from '@/data';
+import { SDGS_DATA } from '@/data';
+import { fetchProjects, type ProjectListItem } from '@/api/projects';
 import { ICONS } from '@/config/icons';
 import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
-
-const MEMBER_MAP = Object.fromEntries(MEMBERS_DATA.map((m) => [m.id, m.name]));
 
 const MAX_VISIBLE = 8; // "All Project" + 7 SDGs
 
@@ -18,24 +17,45 @@ export function ProjectsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
   const [showAllFilters, setShowAllFilters] = useState(false);
+  const [projects, setProjects] = useState<ProjectListItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const { ref: heroRef, visible: heroVisible } = useScrollReveal(0.05);
   const { ref: cardsRef, visible: cardsVisible } = useScrollReveal(0.05);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchProjects({ signal: controller.signal })
+      .then(setProjects)
+      .catch((requestError: unknown) => {
+        if (requestError instanceof DOMException && requestError.name === 'AbortError') return;
+        console.error('Failed to load projects from CMS', requestError);
+        setError(true);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [retryCount]);
 
   const filterItems = useMemo(
     () => [
       { key: 'all', label: 'All Project' },
-      ...SDGS_DATA.filter((sdg) => PROJECTS_DATA.some((p) => p.focusSdgs.includes(sdg.id))).map(
+      ...SDGS_DATA.filter((sdg) => projects.some((p) => p.focusSdgs.includes(sdg.id))).map(
         (sdg) => ({ key: `sdg-${sdg.id}`, label: `SDG ${sdg.id} – ${sdg.title}` })
       ),
     ],
-    []
+    [projects]
   );
 
   const visibleFilters = showAllFilters ? filterItems : filterItems.slice(0, MAX_VISIBLE);
   const hasMore = filterItems.length > MAX_VISIBLE;
 
   const filteredProjects = useMemo(() => {
-    let result = filterBySdg(PROJECTS_DATA, activeFilter);
+    let result = filterBySdg(projects, activeFilter);
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       result = result.filter((p) => p.name.toLowerCase().includes(q));
@@ -45,7 +65,13 @@ export function ProjectsPage() {
       const yb = b.year ?? 0;
       return sortOrder === 'newest' ? yb - ya : ya - yb;
     });
-  }, [activeFilter, searchQuery, sortOrder]);
+  }, [projects, activeFilter, searchQuery, sortOrder]);
+
+  const retry = () => {
+    setLoading(true);
+    setError(false);
+    setRetryCount((count) => count + 1);
+  };
 
   return (
     <div>
@@ -54,7 +80,7 @@ export function ProjectsPage() {
 
             {/* Hero */}
             <div
-              ref={heroRef as React.RefObject<HTMLDivElement>}
+              ref={heroRef}
               className={cn(
                 'flex flex-col items-center gap-4 lg:gap-6 w-full transition-all duration-700',
                 heroVisible ? 'animate-fade-in-up' : 'opacity-0'
@@ -174,28 +200,43 @@ export function ProjectsPage() {
               </div>
 
               {/* Cards grid — stagger fade on mount & filter change */}
-              <div
-                ref={cardsRef as React.RefObject<HTMLDivElement>}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10"
-              >
-                {filteredProjects.map((project, index) => (
+              {loading && projects.length === 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
+                  {Array.from({ length: 6 }, (_, index) => (
+                    <Skeleton key={index} active paragraph={{ rows: 3 }} />
+                  ))}
+                </div>
+              ) : error && projects.length === 0 ? (
+                <Alert
+                  type="error"
+                  showIcon
+                  message="Unable to load projects from the CMS."
+                  action={<button type="button" onClick={retry}>Retry</button>}
+                  className="my-12"
+                />
+              ) : (
+                <>
                   <div
-                    key={`${activeFilter}-${project.id}`}
-                    className={cn(
-                      cardsVisible ? 'animate-fade-in-up' : 'opacity-0'
-                    )}
-                    style={{ animationDelay: `${index * 80}ms` }}
+                    ref={cardsRef}
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10"
                   >
-                    <ProjectCard
-                      project={project}
-                      ledBy={MEMBER_MAP[project.memberId]}
-                    />
+                    {filteredProjects.map((project, index) => (
+                      <div
+                        key={`${activeFilter}-${project.id}`}
+                        className={cn(
+                          cardsVisible ? 'animate-fade-in-up' : 'opacity-0'
+                        )}
+                        style={{ animationDelay: `${index * 80}ms` }}
+                      >
+                        <ProjectCard project={project} ledBy={project.ledBy} />
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
 
-              {filteredProjects.length === 0 && (
-                <Empty description="No projects found for this SDG." className="py-12" />
+                  {filteredProjects.length === 0 && (
+                    <Empty description="No projects found for this SDG." className="py-12" />
+                  )}
+                </>
               )}
             </div>
           </div>

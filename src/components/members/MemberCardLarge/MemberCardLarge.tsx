@@ -1,5 +1,5 @@
-import { Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
+import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { SDGTag } from '@/components/ui/SDGTag';
 import { cn } from '@/lib/utils';
 
@@ -42,24 +42,10 @@ export function MemberCardLarge({
     >
       {/* Cover */}
       <div className="relative w-full aspect-[426.67/214.68] flex-shrink-0">
-        <Image
-          src={coverUrl}
-          alt={name}
-          preview={false}
-          className="w-full h-full object-cover"
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          wrapperStyle={{ width: '100%', height: '100%' }}
-        />
+        <ImageWithFallback src={coverUrl} alt={name} className="w-full h-full object-cover" />
         {/* Logo circle */}
         <div className="absolute bottom-[-28px] sm:bottom-[-34px] lg:bottom-[-40px] left-3 sm:left-4 w-14 h-14 sm:w-[68px] sm:h-[68px] lg:w-[80px] lg:h-[80px] rounded-full border-[3px] lg:border-4 border-white overflow-hidden bg-white shadow">
-          <Image
-            src={logoUrl}
-            alt={`${name} logo`}
-            preview={false}
-            className="w-full h-full object-cover"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            wrapperStyle={{ width: '100%', height: '100%' }}
-          />
+          <ImageWithFallback src={logoUrl} alt={`${name} logo`} className="w-full h-full object-cover" />
         </div>
       </div>
 
