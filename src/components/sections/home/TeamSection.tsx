@@ -4,35 +4,50 @@ import { Icon } from '@/components/ui/Icon';
 import { ViewAllButton } from '@/components/shared/ViewAllButton';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
-import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data';
-
-// Single source of truth (see src/data/team.ts) — shared with the /leadership page.
-const LEADERS = EXECUTIVE_LEADERSHIP;
-const DIRECTORS = TEAM_DATA;
-const PREVIEW_DIRECTORS = DIRECTORS.slice(0, 5);
+import { fetchLeadership, type LeadershipRoster } from '@/api/leadership';
+import { currentTermLabel } from '@/lib/utils';
 
 export function TeamSection() {
+  const [leadership, setLeadership] = useState<LeadershipRoster>({ executives: [], directors: [] });
   const [directorIndex, setDirectorIndex] = useState(0);
   const [manualNavigationCount, setManualNavigationCount] = useState(0);
-  const activeDirector = DIRECTORS[directorIndex];
+  const leaders = leadership.executives;
+  const directors = leadership.directors;
+  const activeDirector = directors[directorIndex];
+  const previewDirectors = directors.slice(0, 5);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchLeadership({ signal: controller.signal })
+      .then(setLeadership)
+      .catch((error: unknown) => {
+        if (!(error instanceof DOMException && error.name === 'AbortError')) {
+          console.error('Failed to load leadership from CMS', error);
+        }
+      });
+    return () => controller.abort();
+  }, []);
 
   const showPreviousDirector = () => {
-    setDirectorIndex((current) => (current - 1 + DIRECTORS.length) % DIRECTORS.length);
+    if (!directors.length) return;
+    setDirectorIndex((current) => (current - 1 + directors.length) % directors.length);
     setManualNavigationCount((current) => current + 1);
   };
 
   const showNextDirector = () => {
-    setDirectorIndex((current) => (current + 1) % DIRECTORS.length);
+    if (!directors.length) return;
+    setDirectorIndex((current) => (current + 1) % directors.length);
     setManualNavigationCount((current) => current + 1);
   };
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
-      setDirectorIndex((current) => (current + 1) % DIRECTORS.length);
+      if (!directors.length) return;
+    setDirectorIndex((current) => (current + 1) % directors.length);
     }, 3000);
 
     return () => window.clearInterval(intervalId);
-  }, [manualNavigationCount]);
+  }, [manualNavigationCount, directors.length]);
   return (
     <section className="bg-white py-0">
       <Container size="wide">
@@ -48,10 +63,10 @@ export function TeamSection() {
 
         {/* Leaders — 3 large circles */}
         <h3 className="mb-8 text-center font-semibold text-[clamp(1.25rem,1.82vw,1.75rem)] text-[#111111] lg:mb-[40px]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-          Executive Leadership 2020 - 2026
+          Executive Leadership {currentTermLabel()}
         </h3>
         <div className="mx-auto grid grid-cols-2 lg:grid-cols-3 justify-items-center gap-x-4 gap-y-8 sm:gap-x-8 lg:max-w-[860px] lg:gap-[24px] mb-8 lg:mb-[40px]">
-          {LEADERS.map((leader, index) => (
+          {leaders.map((leader, index) => (
             <div key={leader.id} className={`flex flex-col items-center max-w-[280px] ${index === 0 ? 'col-span-2 lg:col-span-1' : ''}`}>
               <div className="w-40 h-40 sm:w-52 sm:h-52 lg:w-[240px] lg:h-[240px] rounded-full overflow-hidden border-4 border-neutral-200 mb-4 relative group cursor-pointer">
                 <Image src={leader.avatarUrl} alt={leader.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
@@ -90,8 +105,9 @@ export function TeamSection() {
         </div>
 
         {/* Mobile/tablet carousel */}
-        <div className="flex flex-col items-center mb-10 lg:hidden">
-          <div className="flex items-center justify-center gap-4 sm:gap-6">
+        {activeDirector ? (
+          <div className="flex flex-col items-center mb-10 lg:hidden">
+            <div className="flex items-center justify-center gap-4 sm:gap-6">
             <button
               type="button"
               onClick={showPreviousDirector}
@@ -134,10 +150,11 @@ export function TeamSection() {
             </p>
           </div>
         </div>
+        ) : null}
 
         {/* Desktop grid */}
         <div className="hidden lg:grid grid-cols-5 justify-items-center gap-[32px] mb-[60px]">
-          {PREVIEW_DIRECTORS.map((dir) => (
+          {previewDirectors.map((dir) => (
             <div key={dir.id} className="flex flex-col items-center max-w-[200px]">
               <div className="w-[180px] h-[180px] rounded-full overflow-hidden border-4 border-neutral-200 mb-3 relative group cursor-pointer">
                 <Image src={dir.avatarUrl} alt={dir.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />

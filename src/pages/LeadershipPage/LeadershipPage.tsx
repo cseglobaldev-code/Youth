@@ -1,10 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { Alert, Skeleton } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { ExecutiveCard } from '@/components/leadership/ExecutiveCard';
 import { TeamMemberCard } from '@/components/leadership/TeamMemberCard';
 import { LeaderMemberModal } from '@/components/leadership/LeaderMemberModal';
 import { CTABanner } from '@/components/shared/CTABanner';
-import { EXECUTIVE_LEADERSHIP, TEAM_DATA } from '@/data';
+import { fetchLeadership, type LeadershipRoster } from '@/api/leadership';
+import { currentTermLabel } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import type { Continent, RegionGroup, TeamMember } from '@/types';
@@ -34,7 +36,31 @@ export function LeadershipPage() {
   const [activeRegion, setActiveRegion] = useState<RegionGroup>('East Asia');
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [showAllDirectors, setShowAllDirectors] = useState(false);
+  const [leadership, setLeadership] = useState<LeadershipRoster>({ executives: [], directors: [] });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchLeadership({ signal: controller.signal })
+      .then(setLeadership)
+      .catch((requestError: unknown) => {
+        if (requestError instanceof DOMException && requestError.name === 'AbortError') return;
+        console.error('Failed to load leadership from CMS', requestError);
+        setError(true);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+    return () => controller.abort();
+  }, [retryCount]);
+
+  const retry = () => {
+    setLoading(true);
+    setError(false);
+    setRetryCount((count) => count + 1);
+  };
 
   const openModal = (member: TeamMember) => setSelectedMember(member);
   const closeModal = () => setSelectedMember(null);
@@ -45,12 +71,12 @@ export function LeadershipPage() {
 
   const filteredMembers = useMemo(() => {
     if (activeContinent === 'Asia') {
-      return TEAM_DATA.filter(
+      return leadership.directors.filter(
         (m) => m.continent === 'Asia' && m.regionGroup === activeRegion
       );
     }
-    return TEAM_DATA.filter((m) => m.continent === activeContinent);
-  }, [activeContinent, activeRegion]);
+    return leadership.directors.filter((m) => m.continent === activeContinent);
+  }, [activeContinent, activeRegion, leadership.directors]);
 
   const visibleDirectors = showAllDirectors ? filteredMembers : filteredMembers.slice(0, 5);
   const hasMoreDirectors = filteredMembers.length > visibleDirectors.length;
@@ -147,7 +173,7 @@ export function LeadershipPage() {
                   fontFamily: 'Open Sans, sans-serif',
                 }}
               >
-                2026 - 2027
+                {currentTermLabel()}
               </span>
               <h2
                 className="font-semibold text-black"
@@ -162,17 +188,19 @@ export function LeadershipPage() {
             </div>
 
             {/* Cards — row, space-between, center, width:828px, centered via mx-auto */}
-            <div className="flex flex-wrap lg:flex-nowrap justify-center lg:justify-between items-center gap-10 lg:gap-0 w-full lg:max-w-[828px] mx-auto">
-              {EXECUTIVE_LEADERSHIP.map((member, index) => (
-                <div
-                  key={member.id}
-                  className={cn(execVisible ? 'animate-fade-in-up' : 'opacity-0')}
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <ExecutiveCard member={member} onClick={() => openModal(member)} />
-                </div>
-              ))}
-            </div>
+            {loading && leadership.executives.length === 0 ? (
+              <Skeleton active paragraph={{ rows: 3 }} />
+            ) : error && leadership.executives.length === 0 ? (
+              <Alert type="error" showIcon message="Unable to load leadership from the CMS." action={<button type="button" onClick={retry}>Retry</button>} />
+            ) : (
+              <div className="flex flex-wrap lg:flex-nowrap justify-center lg:justify-between items-center gap-10 lg:gap-0 w-full lg:max-w-[828px] mx-auto">
+                {leadership.executives.map((member, index) => (
+                  <div key={member.id} className={cn(execVisible ? 'animate-fade-in-up' : 'opacity-0')} style={{ animationDelay: `${index * 100}ms` }}>
+                    <ExecutiveCard member={member} onClick={() => openModal(member)} />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* ══════════════════════════════════════════════════

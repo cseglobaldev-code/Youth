@@ -102,10 +102,10 @@ export function LeaderMemberModal({ member, open, onClose }: LeaderMemberModalPr
             </span>
 
             {/* SDG tags — colored pill badges */}
-            {member.sdgTags && member.sdgTags.length > 0 && (
+            {member.focusSdgs && member.focusSdgs.length > 0 && (
               <div className="flex flex-wrap gap-2">
-                {member.sdgTags.map(tag => (
-                  <SDGTag key={tag} sdgId={Number(tag.replace('SDG', ''))} variant="solid" size="md" />
+                {member.focusSdgs.map((sdgId) => (
+                  <SDGTag key={sdgId} sdgId={sdgId} variant="solid" size="md" />
                 ))}
               </div>
             )}
