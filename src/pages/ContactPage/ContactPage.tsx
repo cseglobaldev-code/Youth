@@ -1,6 +1,8 @@
-import { useRef, type FormEvent } from 'react';
+import { useRef, type FormEvent, useState } from 'react';
+import { message } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { PillButton } from '@/components/ui/PillButton';
+import { submitInquiry, type Inquiry } from '@/api/inquiries';
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
 
@@ -31,9 +33,31 @@ const labelClasses = 'mb-3 block text-[16px] font-normal leading-[140%] text-[#1
 
 export function ContactPage() {
   const formRef = useRef<HTMLFormElement>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
+    const inquiry: Inquiry = {
+      name: String(formData.get('name')),
+      email: String(formData.get('email')),
+      phone: String(formData.get('phone')),
+      reason: String(formData.get('reason')),
+      message: String(formData.get('message')),
+    };
+
+    try {
+      setLoading(true);
+      await submitInquiry(inquiry);
+      message.success('Thank you! Your inquiry has been submitted.');
+      formRef.current?.reset();
+    } catch (error) {
+      message.error('Failed to submit inquiry. Please try again.');
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -119,8 +143,10 @@ export function ContactPage() {
               size="lg"
               onClick={() => formRef.current?.requestSubmit()}
               className="min-w-[176px] px-10"
+              loading={loading}
+              disabled={loading}
             >
-              Submit
+              {loading ? 'Submitting...' : 'Submit'}
             </PillButton>
           </form>
         </section>
