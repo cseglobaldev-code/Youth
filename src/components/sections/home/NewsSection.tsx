@@ -1,14 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Skeleton } from 'antd';
+import { Button } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { ViewAllButton } from '@/components/shared/ViewAllButton';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
-import { fetchProjects, type ProjectListItem } from '@/api/projects';
 
-const DEFAULT_NEWS_DATA = [
+const NEWS_DATA = [
   {
     id: 'project-1',
     title: 'Global Diplomacy Leadership Certification',
@@ -52,57 +51,33 @@ const DEFAULT_NEWS_DATA = [
   },
 ];
 
+const MOBILE_NEWS_DATA = [
+  NEWS_DATA[1],
+  NEWS_DATA[2],
+  NEWS_DATA[3],
+  NEWS_DATA[0],
+  NEWS_DATA[4],
+  NEWS_DATA[1],
+  NEWS_DATA[2],
+  NEWS_DATA[3],
+  NEWS_DATA[0],
+  NEWS_DATA[4],
+];
+
 export function NewsSection() {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState<ProjectListItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [mobileIndex, setMobileIndex] = useState(0);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    fetchProjects({ signal: controller.signal })
-      .then(setProjects)
-      .catch((error: unknown) => {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
-        console.error('Failed to load projects', error);
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) setLoading(false);
-      });
-
-    return () => controller.abort();
-  }, []);
-
-  const newsData = projects.length > 0 ? projects : DEFAULT_NEWS_DATA;
-  const featured = newsData[0];
-  const sideNews = newsData.slice(1);
-  const mobileFeatured = newsData[mobileIndex % newsData.length];
+  const [mobileIndex, setMobileIndex] = useState(3);
+  const featured = NEWS_DATA[0];
+  const sideNews = NEWS_DATA.slice(1);
+  const mobileFeatured = MOBILE_NEWS_DATA[mobileIndex];
 
   const showPreviousNews = () => {
-    setMobileIndex((current) => (current - 1 + newsData.length) % newsData.length);
+    setMobileIndex((current) => (current - 1 + MOBILE_NEWS_DATA.length) % MOBILE_NEWS_DATA.length);
   };
 
   const showNextNews = () => {
-    setMobileIndex((current) => (current + 1) % newsData.length);
+    setMobileIndex((current) => (current + 1) % MOBILE_NEWS_DATA.length);
   };
-
-  if (loading && projects.length === 0) {
-    return (
-      <section className="bg-white py-0">
-        <Container size="wide">
-          <div className="mb-8">
-            <Skeleton active paragraph={{ rows: 2 }} />
-          </div>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {Array.from({ length: 4 }, (_, i) => (
-              <Skeleton key={i} active paragraph={{ rows: 3 }} />
-            ))}
-          </div>
-        </Container>
-      </section>
-    );
-  }
 
   return (
     <section className="bg-white py-0 pt-[120px] pb-[120px]">
@@ -163,7 +138,7 @@ export function NewsSection() {
               <Icon name="lucide:arrow-left" size={20} />
             </Button>
             <span className="text-sm font-medium text-neutral-600">
-              {mobileIndex + 1}/{newsData.length}
+              {mobileIndex + 1}/{MOBILE_NEWS_DATA.length}
             </span>
             <Button
               type="text"
