@@ -1,9 +1,10 @@
 import {
   cacheGet,
   cacheSet,
-  mapImage,
+  mediaUrl,
   resolveConfig,
   text,
+  type StrapiMedia,
   type StrapiRequestOptions,
 } from './strapi';
 
@@ -22,7 +23,7 @@ interface StrapiNewsItem {
   documentId?: unknown;
   title?: unknown;
   excerpt?: unknown;
-  image?: unknown;
+  image?: StrapiMedia | null;
   date?: unknown;
   category?: unknown;
 }
@@ -60,7 +61,7 @@ export async function fetchNews(options: StrapiRequestOptions = {}): Promise<New
     id: text(entry.documentId) || String(entry.id ?? ''),
     title: text(entry.title) || '',
     description: text(entry.excerpt) || '',
-    coverUrl: mapImage(entry.image, baseUrl),
+    coverUrl: mediaUrl(entry.image, baseUrl),
     location: text(entry.category) || 'Global',
     author: 'Y.O.U Alliance',
     period: entry.date ? new Date(entry.date as string).getFullYear().toString() : undefined,

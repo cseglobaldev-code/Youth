@@ -6,7 +6,8 @@ import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { ViewAllButton } from '@/components/shared/ViewAllButton';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
-import { fetchNews, type NewsItem } from '@/api/news';
+import { fetchProjects } from '@/api/projects';
+import type { NewsItem } from '@/api/news';
 
 const DEFAULT_NEWS_DATA: NewsItem[] = [
   {
@@ -61,8 +62,20 @@ export function NewsSection() {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetchNews({ signal: controller.signal })
-      .then(setNewsData)
+    fetchProjects({ signal: controller.signal })
+      .then((projects) =>
+        setNewsData(
+          projects.map((project) => ({
+            id: project.id,
+            title: project.name,
+            description: project.description,
+            coverUrl: project.outstandingImageUrl,
+            location: project.region || project.countriesCovered.join(', ') || 'Global',
+            author: project.ledBy || 'Y.O.U Alliance',
+            period: project.year ? String(project.year) : undefined,
+          }))
+        )
+      )
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === 'AbortError') return;
         console.error('Failed to load news', error);
