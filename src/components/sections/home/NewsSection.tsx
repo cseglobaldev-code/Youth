@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'antd';
+import { Button, Skeleton } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { ViewAllButton } from '@/components/shared/ViewAllButton';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
+import { fetchNews, type NewsItem } from '@/api/news';
 
-const NEWS_DATA = [
+const DEFAULT_NEWS_DATA: NewsItem[] = [
   {
     id: 'project-1',
     title: 'Global Diplomacy Leadership Certification',
@@ -51,33 +52,41 @@ const NEWS_DATA = [
   },
 ];
 
-const MOBILE_NEWS_DATA = [
-  NEWS_DATA[1],
-  NEWS_DATA[2],
-  NEWS_DATA[3],
-  NEWS_DATA[0],
-  NEWS_DATA[4],
-  NEWS_DATA[1],
-  NEWS_DATA[2],
-  NEWS_DATA[3],
-  NEWS_DATA[0],
-  NEWS_DATA[4],
-];
-
 export function NewsSection() {
   const navigate = useNavigate();
-  const [mobileIndex, setMobileIndex] = useState(3);
-  const featured = NEWS_DATA[0];
-  const sideNews = NEWS_DATA.slice(1);
-  const mobileFeatured = MOBILE_NEWS_DATA[mobileIndex];
+  const [newsData, setNewsData] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [mobileIndex, setMobileIndex] = useState(0);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchNews({ signal: controller.signal })
+      .then(setNewsData)
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        console.error('Failed to load news', error);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+
+    return () => controller.abort();
+  }, []);
+
+  const displayData = newsData.length > 0 ? newsData : DEFAULT_NEWS_DATA;
+  const featured = displayData[0];
+  const sideNews = displayData.slice(1);
 
   const showPreviousNews = () => {
-    setMobileIndex((current) => (current - 1 + MOBILE_NEWS_DATA.length) % MOBILE_NEWS_DATA.length);
+    setMobileIndex((current) => (current - 1 + displayData.length) % displayData.length);
   };
 
   const showNextNews = () => {
-    setMobileIndex((current) => (current + 1) % MOBILE_NEWS_DATA.length);
+    setMobileIndex((current) => (current + 1) % displayData.length);
   };
+
+  const mobileFeatured = displayData[mobileIndex % displayData.length];
 
   return (
     <section className="bg-white py-0 pt-[120px] pb-[120px]">
@@ -94,8 +103,17 @@ export function NewsSection() {
           <ViewAllButton to={ROUTES.PROJECTS} className="flex-shrink-0 !px-4 !py-1.5 !text-sm sm:!px-6 sm:!py-2.5 sm:!text-[16px]" />
         </div>
 
-        {/* Mobile: single card + pager */}
-        <div className="md:hidden">
+        {/* Loading state */}
+        {loading && displayData.length === 0 ? (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {Array.from({ length: 4 }, (_, i) => (
+              <Skeleton key={i} active paragraph={{ rows: 3 }} />
+            ))}
+          </div>
+        ) : (
+          <>
+            {/* Mobile: single card + pager */}
+            <div className="md:hidden">
           <div className="flex cursor-pointer flex-col group" onClick={() => navigate(ROUTES.PROJECT_DETAIL(mobileFeatured.id))}>
             <div className="mb-4 overflow-hidden rounded-2xl aspect-[343/230]">
               <ImageWithFallback
@@ -138,7 +156,7 @@ export function NewsSection() {
               <Icon name="lucide:arrow-left" size={20} />
             </Button>
             <span className="text-sm font-medium text-neutral-600">
-              {mobileIndex + 1}/{MOBILE_NEWS_DATA.length}
+              {mobileIndex + 1}/{displayData.length}
             </span>
             <Button
               type="text"
@@ -238,6 +256,8 @@ export function NewsSection() {
             ))}
           </div>
         </div>
+          </>
+        )}
       </Container>
     </section>
   );
