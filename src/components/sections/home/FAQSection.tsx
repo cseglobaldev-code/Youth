@@ -1,11 +1,13 @@
-import { Collapse } from 'antd';
+import { useEffect, useState } from 'react';
+import { Collapse, Skeleton } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/utils';
 import { ViewAllButton } from '@/components/shared/ViewAllButton';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
+import { fetchFAQs, type FAQ } from '@/api/faqs';
 
-const FAQ_DATA = [
+const DEFAULT_FAQ_DATA: FAQ[] = [
   { id: 'faq-1', question: 'What is Y.O.U and who can join?', answer: 'Y.O.U – Youth Organization Union is a global alliance of youth-led organizations and individual leaders committed to the UN\'s SDGs. Any registered youth organization or young leader can apply.' },
   { id: 'faq-2', question: 'What are the benefits of joining as an organization?', answer: 'Members gain access to a global network, collaborative project opportunities, capacity building resources, funding connections, and visibility through our platform.' },
   { id: 'faq-3', question: 'What opportunities are available to members?', answer: 'Organizations can participate in joint programs, attend the Annual Summit, and connect with partners across 30+ countries.' },
@@ -14,6 +16,26 @@ const FAQ_DATA = [
 ];
 
 export function FAQSection() {
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchFAQs({ signal: controller.signal })
+      .then(setFaqs)
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        console.error('Failed to load FAQs', error);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+
+    return () => controller.abort();
+  }, []);
+
+  const faqData = faqs.length > 0 ? faqs : DEFAULT_FAQ_DATA;
   return (
     <section className="bg-white pb-12 pt-0 md:pb-16 lg:pb-[7.5rem]">
       <Container size="narrow">
@@ -26,22 +48,26 @@ export function FAQSection() {
         </div>
 
         {/* FAQ items */}
-        <Collapse
-          accordion
-          defaultActiveKey="faq-1"
-          ghost
-          expandIconPosition="end"
-          expandIcon={({ isActive }) => (
-            <Icon name="lucide:chevron-down" size={22} className={cn('text-[#EE334E] transition-transform duration-200', isActive && 'rotate-180')} />
-          )}
-          items={FAQ_DATA.map((faq) => ({
-            key: faq.id,
-            label: <span className="font-medium text-[clamp(1.125rem,1.43vw,1.375rem)] text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.question}</span>,
-            children: <p className="pb-5 text-[clamp(0.875rem,1.04vw,1rem)] text-neutral-600 font-normal leading-relaxed" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.answer}</p>,
-            style: { borderBottom: '1px solid #E5E7EB' },
-          }))}
-          className="!bg-transparent"
-        />
+        {loading && faqData.length === 0 ? (
+          <Skeleton active paragraph={{ rows: 8 }} />
+        ) : (
+          <Collapse
+            accordion
+            defaultActiveKey={faqData[0]?.id || 'faq-1'}
+            ghost
+            expandIconPosition="end"
+            expandIcon={({ isActive }) => (
+              <Icon name="lucide:chevron-down" size={22} className={cn('text-[#EE334E] transition-transform duration-200', isActive && 'rotate-180')} />
+            )}
+            items={faqData.map((faq) => ({
+              key: faq.id,
+              label: <span className="font-medium text-[clamp(1.125rem,1.43vw,1.375rem)] text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.question}</span>,
+              children: <p className="pb-5 text-[clamp(0.875rem,1.04vw,1rem)] text-neutral-600 font-normal leading-relaxed" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.answer}</p>,
+              style: { borderBottom: '1px solid #E5E7EB' },
+            }))}
+            className="!bg-transparent"
+          />
+        )}
       </Container>
     </section>
   );
