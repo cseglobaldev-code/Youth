@@ -1,6 +1,5 @@
 import type { DocumentItem } from '@/types';
 import {
-  cacheClear,
   cacheGet,
   cacheSet,
   mediaUrl,
