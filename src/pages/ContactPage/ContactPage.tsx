@@ -143,7 +143,6 @@ export function ContactPage() {
               size="lg"
               onClick={() => formRef.current?.requestSubmit()}
               className="min-w-[176px] px-10"
-              loading={loading}
               disabled={loading}
             >
               {loading ? 'Submitting...' : 'Submit'}
