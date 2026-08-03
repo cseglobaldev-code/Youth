@@ -83,7 +83,7 @@ export function MembersPage() {
   const renderContent = () => {
     if (loading && members.length === 0) {
       return (
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-8" style={{ gridTemplateColumns: 'repeat(3, 426.67px)', gap: '32px' }}>
           {Array.from({ length: 9 }, (_, index) => (
             <Skeleton key={index} active paragraph={{ rows: 3 }} />
           ))}
@@ -109,22 +109,21 @@ export function MembersPage() {
 
     return (
       <>
-        <div className="mb-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mb-12" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 426.67px)', gap: '32px', justifyContent: 'center' }}>
           {pageItems.map((member) => (
-            <div key={member.id} className="flex justify-center">
-              <MemberCardLarge
-                onClick={() => navigate(`/members/${member.id}`)}
-                member={{
-                  name: member.name,
-                  country: member.country,
-                  period: member.period || '2020 → nay',
-                  leader: member.leader || 'TBD',
-                  focusSdgs: member.focusSdgs,
-                  coverUrl: member.coverUrl || '',
-                  logoUrl: member.logoUrl,
-                }}
-              />
-            </div>
+            <MemberCardLarge
+              key={member.id}
+              onClick={() => navigate(`/members/${member.id}`)}
+              member={{
+                name: member.name,
+                country: member.country,
+                period: member.period || '2020 → nay',
+                leader: member.leader || 'TBD',
+                focusSdgs: member.focusSdgs,
+                coverUrl: member.coverUrl || '',
+                logoUrl: member.logoUrl,
+              }}
+            />
           ))}
         </div>
 

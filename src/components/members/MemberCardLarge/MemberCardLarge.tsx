@@ -35,15 +35,19 @@ export function MemberCardLarge({
   return (
     <div
       className={cn(
-        'w-full max-w-sm bg-white rounded-[20px] overflow-visible shadow-sm flex flex-col cursor-pointer transition-shadow duration-200 hover:shadow-md',
+        'w-full bg-white rounded-[16px] overflow-visible shadow-sm flex flex-col cursor-pointer transition-shadow duration-200 hover:shadow-md',
         className
       )}
       onClick={onClick}
+      style={{
+        width: '426.67px',
+        height: '448.68px',
+      }}
     >
       {/* Container with Logo positioned absolutely */}
       <div className="relative">
         {/* Cover Image */}
-        <div className="w-full aspect-video flex-shrink-0 bg-gray-100 overflow-hidden rounded-t-[20px]">
+        <div className="w-full h-[200px] flex-shrink-0 bg-gray-100 overflow-hidden rounded-t-[16px]">
           <ImageWithFallback src={coverUrl} alt={name} className="w-full h-full object-cover" />
         </div>
 
