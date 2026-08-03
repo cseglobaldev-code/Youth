@@ -71,7 +71,7 @@ export function AboutSection() {
       </section>
 
       {/* Part 2: About Vision */}
-      <section className="bg-white pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
+      <section className="bg-white pb-[120px] pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container>
           {/* Heading */}
           <div className="text-left mb-8 lg:mb-12">
