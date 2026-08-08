@@ -1,12 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Image } from 'antd';
+import { Button, Skeleton } from 'antd';
 import { Icon } from '@/components/ui/Icon';
-import { ViewAllButton } from '@/components/common/ViewAllButton';
+import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
+import { ViewAllButton } from '@/components/shared/ViewAllButton';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
+import { fetchProjects } from '@/api/projects';
+import type { NewsItem } from '@/api/news';
 
-const NEWS_DATA = [
+const DEFAULT_NEWS_DATA: NewsItem[] = [
   {
     id: 'project-1',
     title: 'Global Diplomacy Leadership Certification',
@@ -14,7 +17,7 @@ const NEWS_DATA = [
     location: 'Asia, Africa',
     author: 'Maria Santos',
     period: '2021 → now',
-    imageUrl: '/images/home/news/image-new.png',
+    coverUrl: '/images/home/news/image-new.png',
   },
   {
     id: 'project-2',
@@ -22,7 +25,7 @@ const NEWS_DATA = [
     description: 'The agenda included welcoming remarks, institutional presentations, discussions on future collaboration opportunities.',
     location: 'Asia, Africa',
     author: 'Maria Santos',
-    imageUrl: '/images/home/news/image-new1.png',
+    coverUrl: '/images/home/news/image-new1.png',
   },
   {
     id: 'project-3',
@@ -30,7 +33,7 @@ const NEWS_DATA = [
     description: 'On Friday, 15 May 2026, ASEAN Youth Organization (AYO), through the implementation of the AI Ready ASEAN Program.',
     location: 'Asia, Africa',
     author: 'Maria Santos',
-    imageUrl: '/images/home/news/image-new2.png',
+    coverUrl: '/images/home/news/image-new2.png',
   },
   {
     id: 'project-4',
@@ -38,7 +41,7 @@ const NEWS_DATA = [
     description: 'Rangsit University on 15 May 2026 to strengthen collaboration in AI literacy and youth empowerment.',
     location: 'Asia, Africa',
     author: 'Maria Santos',
-    imageUrl: '/images/home/news/image-new3.png',
+    coverUrl: '/images/home/news/image-new3.png',
   },
   {
     id: 'project-5',
@@ -46,40 +49,60 @@ const NEWS_DATA = [
     description: 'ASEAN Youth Organization, through the AI Ready ASEAN program, officially signed a Memorandum of Understanding (MoU).',
     location: 'Asia, Africa',
     author: 'Maria Santos',
-    imageUrl: '/images/home/news/image-new4.png',
+    coverUrl: '/images/home/news/image-new4.png',
   },
-];
-
-const MOBILE_NEWS_DATA = [
-  NEWS_DATA[1],
-  NEWS_DATA[2],
-  NEWS_DATA[3],
-  NEWS_DATA[0],
-  NEWS_DATA[4],
-  NEWS_DATA[1],
-  NEWS_DATA[2],
-  NEWS_DATA[3],
-  NEWS_DATA[0],
-  NEWS_DATA[4],
 ];
 
 export function NewsSection() {
   const navigate = useNavigate();
-  const [mobileIndex, setMobileIndex] = useState(3);
-  const featured = NEWS_DATA[0];
-  const sideNews = NEWS_DATA.slice(1);
-  const mobileFeatured = MOBILE_NEWS_DATA[mobileIndex];
+  const [newsData, setNewsData] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [mobileIndex, setMobileIndex] = useState(0);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchProjects({ signal: controller.signal })
+      .then((projects) =>
+        setNewsData(
+          projects.map((project) => ({
+            id: project.id,
+            title: project.name,
+            description: project.description,
+            coverUrl: project.outstandingImageUrl,
+            location: project.region || project.countriesCovered.join(', ') || 'Global',
+            author: project.ledBy || 'Y.O.U Alliance',
+            period: project.year ? String(project.year) : undefined,
+          }))
+        )
+      )
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        console.error('Failed to load news', error);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+
+    return () => controller.abort();
+  }, []);
+
+  const displayData = newsData.length > 0 ? newsData : DEFAULT_NEWS_DATA;
+  const featured = displayData[0];
+  const sideNews = displayData.slice(1);
 
   const showPreviousNews = () => {
-    setMobileIndex((current) => (current - 1 + MOBILE_NEWS_DATA.length) % MOBILE_NEWS_DATA.length);
+    setMobileIndex((current) => (current - 1 + displayData.length) % displayData.length);
   };
 
   const showNextNews = () => {
-    setMobileIndex((current) => (current + 1) % MOBILE_NEWS_DATA.length);
+    setMobileIndex((current) => (current + 1) % displayData.length);
   };
 
+  const mobileFeatured = displayData[mobileIndex % displayData.length];
+
   return (
-    <section className="bg-white py-0">
+    <section className="bg-white py-0 pt-[120px] pb-[120px]">
       <Container size="wide">
         {/* Header */}
         <div className="mb-8 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between lg:mb-[40px]">
@@ -93,17 +116,23 @@ export function NewsSection() {
           <ViewAllButton to={ROUTES.PROJECTS} className="flex-shrink-0 !px-4 !py-1.5 !text-sm sm:!px-6 sm:!py-2.5 sm:!text-[16px]" />
         </div>
 
-        {/* Mobile: single card + pager */}
-        <div className="md:hidden">
+        {/* Loading state */}
+        {loading && displayData.length === 0 ? (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {Array.from({ length: 4 }, (_, i) => (
+              <Skeleton key={i} active paragraph={{ rows: 3 }} />
+            ))}
+          </div>
+        ) : (
+          <>
+            {/* Mobile: single card + pager */}
+            <div className="md:hidden">
           <div className="flex cursor-pointer flex-col group" onClick={() => navigate(ROUTES.PROJECT_DETAIL(mobileFeatured.id))}>
             <div className="mb-4 overflow-hidden rounded-2xl aspect-[343/230]">
-              <Image
-                src={mobileFeatured.imageUrl}
+              <ImageWithFallback
+                src={mobileFeatured.coverUrl}
                 alt={mobileFeatured.title}
-                preview={false}
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                wrapperStyle={{ width: '100%', height: '100%' }}
               />
             </div>
             <h4 className="mb-3 font-semibold text-[clamp(1.5rem,6.2vw,1.75rem)] leading-tight text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
@@ -140,7 +169,7 @@ export function NewsSection() {
               <Icon name="lucide:arrow-left" size={20} />
             </Button>
             <span className="text-sm font-medium text-neutral-600">
-              {mobileIndex + 1}/{MOBILE_NEWS_DATA.length}
+              {mobileIndex + 1}/{displayData.length}
             </span>
             <Button
               type="text"
@@ -161,13 +190,10 @@ export function NewsSection() {
             onClick={() => navigate(ROUTES.PROJECT_DETAIL(featured.id))}
           >
             <div className="mb-4 overflow-hidden rounded-2xl aspect-[652/436]">
-              <Image
-                src={featured.imageUrl}
+              <ImageWithFallback
+                src={featured.coverUrl}
                 alt={featured.title}
-                preview={false}
                 className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                wrapperStyle={{ width: '100%', height: '100%' }}
               />
             </div>
             {/* Meta */}
@@ -219,7 +245,7 @@ export function NewsSection() {
                 onClick={() => navigate(ROUTES.PROJECT_DETAIL(news.id))}
               >
                 <div className="h-[72px] w-[96px] flex-shrink-0 overflow-hidden rounded-xl sm:h-[96px] sm:w-[140px] lg:h-[130px] lg:w-[200px]">
-                  <Image src={news.imageUrl} alt={news.title} preview={false} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
+                  <ImageWithFallback src={news.coverUrl} alt={news.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
                 </div>
                 <div className="flex min-w-0 flex-1 flex-col justify-center">
                   <h4 className="mb-1 line-clamp-1 font-semibold text-[clamp(0.875rem,1.30vw,1.25rem)] text-[#111111] transition-colors group-hover:text-[#EE334E]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
@@ -243,6 +269,8 @@ export function NewsSection() {
             ))}
           </div>
         </div>
+          </>
+        )}
       </Container>
     </section>
   );

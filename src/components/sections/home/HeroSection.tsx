@@ -126,23 +126,6 @@ export function HeroSection() {
             )}
           </div>
 
-          <button
-            type="button"
-            aria-label="Previous slide"
-            className="absolute top-1/2 left-3 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-neutral-900 shadow-sm transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EE334E] md:left-6 md:h-11 md:w-11"
-            onClick={() => selectSlide(activeIndex - 1)}
-          >
-            <Icon name="lucide:chevron-left" size={22} />
-          </button>
-          <button
-            type="button"
-            aria-label="Next slide"
-            className="absolute top-1/2 right-3 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-neutral-900 shadow-sm transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#EE334E] md:right-6 md:h-11 md:w-11"
-            onClick={() => selectSlide(activeIndex + 1)}
-          >
-            <Icon name="lucide:chevron-right" size={22} />
-          </button>
-
           <div className="absolute right-3 bottom-3 z-10 flex items-center gap-2 rounded-full bg-neutral-900/65 px-3 py-2 text-white md:right-6 md:bottom-6">
             <button
               type="button"

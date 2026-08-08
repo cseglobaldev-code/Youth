@@ -4,15 +4,15 @@ import { Button } from '@/components/ui/Button';
 import { Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { ROUTES } from '@/routes/paths';
-import { StatsGrid } from '@/components/common/StatsGrid';
+import { StatsGrid } from '@/components/shared/StatsGrid';
 
 type AboutItem = {
   id: 'vision' | 'mission' | 'approach' | 'why';
   title: string;
   color: string;
   description: string;
-  // Tạm thời dùng chung ảnh hiện tại cho các tab khác (chưa có ảnh riêng).
-  // Khi có ảnh thật, chỉ cần thay đổi field `image` này.
+  // Temporarily reuse the same image across tabs (no per-tab assets yet).
+  // Replace the `image` field when real assets are available.
   image: string;
 };
 
@@ -71,7 +71,7 @@ export function AboutSection() {
       </section>
 
       {/* Part 2: About Vision */}
-      <section className="bg-white pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
+      <section className="bg-white pb-[120px] pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container>
           {/* Heading */}
           <div className="text-left mb-8 lg:mb-12">
@@ -89,7 +89,7 @@ export function AboutSection() {
             <div className="min-w-0 flex-1 max-w-full lg:max-w-[602px]">
               {ABOUT_ITEMS.map((item, index) => {
                 const isActive = item.id === activeId;
-                // Không hiển thị line ngăn cách dưới tab cuối cùng ("Why join us").
+                // Hide the divider under the last tab ("Why join us").
                 const isLast = index === ABOUT_ITEMS.length - 1;
                 return (
                   <div key={item.id}>
@@ -143,7 +143,7 @@ export function AboutSection() {
               })}
             </div>
 
-            {/* Right: image thay đổi theo tab đang chọn (tạm dùng chung ảnh) */}
+            {/* Right: image for the active tab (temporarily shared asset) */}
             <div className="w-full min-w-0 flex-1 lg:basis-[52%] xl:max-w-[702px]">
               <div className="rounded-2xl overflow-hidden aspect-[702/513] relative">
                 <Image

@@ -21,11 +21,11 @@ const baseClasses =
   'inline-flex items-center justify-center gap-2 font-semibold rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EE334E] focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none';
 
 const variantClasses: Record<PillButtonVariant, string> = {
-  // Nền đỏ đặc, chữ trắng (Join "Register")
+  // Solid red background, white text (Join "Register")
   solid: 'bg-[#EE334E] text-white hover:opacity-90',
-  // Viền đỏ, hover đổ nền đỏ (News/Team "View all")
+  // Red outline, fills red on hover (News/Team "View all")
   outline: 'border-2 border-[#EE334E] text-[#EE334E] hover:bg-[#EE334E] hover:text-white',
-  // Nền trắng, chữ đỏ — dùng trên nền gradient/tối (CTA)
+  // White background, red text — for gradient/dark surfaces (CTA)
   white: 'bg-white text-[#EE334E] hover:bg-neutral-50',
 };
 

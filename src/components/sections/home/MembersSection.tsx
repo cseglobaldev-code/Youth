@@ -1,43 +1,41 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from 'antd';
+import { Button, Skeleton } from 'antd';
 import { Icon } from '@/components/ui/Icon';
-import { ViewAllButton } from '@/components/common/ViewAllButton';
-import { MemberCardLarge } from '@/components/common/MemberCardLarge/MemberCardLarge';
+import { ViewAllButton } from '@/components/shared/ViewAllButton';
+import { MemberCardLarge } from '@/components/members/MemberCardLarge';
 import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
 import { useMediaQuery } from '@/hooks';
-
-const MOCK_MEMBER = {
-  name: 'YouthBridge PH',
-  country: 'Philippines',
-  period: '2021 → nay',
-  leader: 'Maria Santos',
-  focusSdgs: [1, 4, 8],
-  coverUrl: '/images/members/covers/cover-image1.png',
-  logoUrl: '/images/members/logos/small-logo1.png',
-};
-
-// Render 30 cards from mock data
-const MEMBERS = Array.from({ length: 30 }, (_, i) => ({
-  ...MOCK_MEMBER,
-  id: `member-${i + 1}`,
-  coverUrl: i % 3 === 0 ? '/images/members/covers/cover-image1.png' : i % 3 === 1 ? '/images/members/covers/cover-image2.png' : '/images/members/covers/cover-image3.png',
-  logoUrl: i % 3 === 0 ? '/images/members/logos/small-logo1.png' : i % 3 === 1 ? '/images/members/logos/small-logo2.png' : '/images/members/logos/small-logo3.png',
-  name: i % 3 === 0 ? 'YouthBridge PH' : i % 3 === 1 ? 'CSE Global' : 'Future Leaders Kenya',
-}));
+import { fetchMembers, type MemberListItem } from '@/api/members';
 
 export function MembersSection() {
   const navigate = useNavigate();
   const isMobile = useMediaQuery('(max-width: 767px)');
   const [page, setPage] = useState(0);
+  const [members, setMembers] = useState<MemberListItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const pageSize = isMobile ? 3 : 6;
-  const totalPages = Math.ceil(MEMBERS.length / pageSize);
-  const visibleMembers = MEMBERS.slice(page * pageSize, (page + 1) * pageSize);
+  const totalPages = Math.ceil(members.length / pageSize);
+  const currentPage = Math.min(page, Math.max(totalPages - 1, 0));
+  const visibleMembers = members.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
 
   useEffect(() => {
-    setPage(0);
-  }, [pageSize]);
+    const controller = new AbortController();
+
+    fetchMembers({ signal: controller.signal })
+      .then(setMembers)
+      .catch((err: unknown) => {
+        if (err instanceof DOMException && err.name === 'AbortError') return;
+        console.error('Failed to load members', err);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+
+    return () => controller.abort();
+  }, []);
 
   return (
     <section className="bg-[#F2F7FF] py-12 md:py-16 lg:py-[7.5rem]">
@@ -52,47 +50,55 @@ export function MembersSection() {
 
         {/* Grid: mobile 1 column, tablet 2 columns, desktop 3 columns; max 3 rows per page */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
-          {visibleMembers.map((member) => (
-            <MemberCardLarge
-              key={member.id}
-              member={{
-                name: member.name,
-                country: member.country,
-                period: member.period || '2020 → nay',
-                leader: member.leader || 'TBD',
-                focusSdgs: member.focusSdgs,
-                coverUrl: member.coverUrl || '',
-                logoUrl: member.logoUrl,
-              }}
-              onClick={() => navigate(ROUTES.MEMBER_DETAIL(member.id))}
-            />
-          ))}
+          {loading ? (
+            Array.from({ length: pageSize }, (_, i) => (
+              <Skeleton key={i} active paragraph={{ rows: 3 }} />
+            ))
+          ) : (
+            visibleMembers.map((member) => (
+              <MemberCardLarge
+                key={member.id}
+                member={{
+                  name: member.name,
+                  country: member.country,
+                  period: member.period || '2020 → nay',
+                  leader: member.leader || 'TBD',
+                  focusSdgs: member.focusSdgs,
+                  coverUrl: member.coverUrl || '',
+                  logoUrl: member.logoUrl,
+                }}
+                onClick={() => navigate(ROUTES.MEMBER_DETAIL(member.id))}
+              />
+            ))
+          )}
         </div>
 
         {/* Pagination: arrows + page number */}
-        <div className="flex justify-center items-center gap-4 mt-8 lg:mt-[40px]">
-          <Button
-            type="text"
-            className="!w-8 !h-8 !p-0 !flex !items-center !justify-center text-neutral-500 hover:text-neutral-900 disabled:opacity-30 disabled:cursor-not-allowed"
-            onClick={() => setPage(Math.max(0, page - 1))}
-            disabled={page === 0}
-            aria-label="Previous page"
-          >
-            <Icon name="lucide:arrow-left" size={20} />
-          </Button>
-          <span className="text-sm text-neutral-600 font-medium">
-            {page + 1}/{totalPages}
-          </span>
-          <Button
-            type="text"
-            className="!w-8 !h-8 !p-0 !flex !items-center !justify-center text-[#EE334E] hover:text-[#d42a43] disabled:opacity-30 disabled:cursor-not-allowed"
-            onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
-            disabled={page === totalPages - 1}
-            aria-label="Next page"
-          >
-            <Icon name="lucide:arrow-right" size={20} />
-          </Button>
-        </div>
+        {!loading && (
+          <div className="flex justify-center items-center gap-4 mt-8 lg:mt-[40px]">
+            <Button
+              type="text"
+              className="!w-8 !h-8 !p-0 !flex !items-center !justify-center text-neutral-500 hover:text-neutral-900 disabled:opacity-30 disabled:cursor-not-allowed"
+              onClick={() => setPage(Math.max(0, page - 1))}
+              disabled={page === 0}
+              aria-label="Previous page"
+            >
+              <Icon name="lucide:arrow-left" size={20} />
+            </Button>
+            <span className="text-sm text-neutral-600 font-medium">
+              {page + 1}/{totalPages}
+            </span>
+            <Button
+              type="text"
+              className="!w-8 !h-8 !p-0 !flex !items-center !justify-center text-[#EE334E] hover:text-[#d42a43] disabled:opacity-30 disabled:cursor-not-allowed"
+              onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
+              disabled={page === totalPages - 1}
+              aria-label="Next page"
+            >
+              <Icon name="lucide:arrow-right" size={20} />
+            </Button>
+          </div>
+        )}
       </Container>
     </section>
   );

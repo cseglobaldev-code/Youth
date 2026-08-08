@@ -22,7 +22,7 @@ export interface TeamMember {
   regionGroup?: RegionGroup;
   socialLinks?: SocialLink[];
   bio?: string[];
-  sdgTags?: string[];
+  focusSdgs?: number[];
   year?: string;
   activityImages?: string[];
 }

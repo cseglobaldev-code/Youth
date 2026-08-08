@@ -1,9 +1,9 @@
 import { useSyncExternalStore } from 'react';
 
 /**
- * Theo dõi một media query và trả về true khi khớp.
- * Dùng useSyncExternalStore để đăng ký/huỷ đăng ký an toàn,
- * tránh setState trong effect (cascading renders).
+ * Subscribe to a media query and return true when it matches.
+ * Uses useSyncExternalStore for safe subscribe/unsubscribe,
+ * avoiding setState inside effects (cascading renders).
  */
 export function useMediaQuery(query: string): boolean {
   const subscribe = (onChange: () => void) => {

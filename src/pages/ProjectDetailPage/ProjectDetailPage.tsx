@@ -1,12 +1,19 @@
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Divider, Image } from "antd";
+import { Divider, Skeleton } from "antd";
 import { Icon } from "@/components/ui/Icon";
-import { ProjectCard } from "@/components/common/ProjectCard";
-import { SupportCTA } from "@/components/common/SupportCTA";
-import { useSupportModal } from "@/components/common/SupportModal";
+import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
+import { ProjectCard } from "@/components/projects/ProjectCard";
+import { SupportCTA } from "@/components/shared/SupportCTA";
+import { useSupportModal } from "@/components/modals/SupportModal";
 import { SDGTag } from "@/components/ui/SDGTag";
 import { Container } from "@/components/ui/Container";
-import { PROJECTS_DATA, MEMBERS_DATA } from "@/data";
+import {
+  fetchProjectById,
+  fetchProjects,
+  type ProjectDetailItem,
+  type ProjectListItem,
+} from "@/api/projects";
 import { cn } from "@/lib/utils";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
@@ -77,12 +84,48 @@ const GRADIENT_DIVIDER =
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
-  const project = PROJECTS_DATA.find((p) => p.id === projectId);
   const { openSupport } = useSupportModal();
+
+  const [project, setProject] = useState<ProjectDetailItem | null>(null);
+  const [otherProjects, setOtherProjects] = useState<ProjectListItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const { ref: orgRef, visible: orgVisible } = useScrollReveal();
   const { ref: detailRef, visible: detailVisible } = useScrollReveal();
   const { ref: otherRef, visible: otherVisible } = useScrollReveal();
+
+  useEffect(() => {
+    if (!projectId) return;
+    const controller = new AbortController();
+
+    setLoading(true);
+    Promise.all([
+      fetchProjectById(projectId, { signal: controller.signal }),
+      fetchProjects({ signal: controller.signal }),
+    ])
+      .then(([detail, all]) => {
+        setProject(detail);
+        setOtherProjects(all.filter((p) => p.id !== projectId).slice(0, 3));
+      })
+      .catch((requestError: unknown) => {
+        if (requestError instanceof DOMException && requestError.name === 'AbortError') return;
+        console.error('Failed to load project from CMS', requestError);
+        setProject(null);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [projectId]);
+
+  if (loading) {
+    return (
+      <Container className="py-section">
+        <Skeleton active paragraph={{ rows: 6 }} />
+      </Container>
+    );
+  }
 
   if (!project) {
     return (
@@ -93,15 +136,6 @@ export function ProjectDetailPage() {
       </div>
     );
   }
-
-  const member = MEMBERS_DATA.find((m) => m.id === project.memberId);
-  const MEMBER_MAP = Object.fromEntries(
-    MEMBERS_DATA.map((m) => [m.id, m.name]),
-  );
-  const otherProjects = PROJECTS_DATA.filter((p) => p.id !== project.id).slice(
-    0,
-    3,
-  );
 
   return (
     <div>
@@ -132,7 +166,7 @@ export function ProjectDetailPage() {
               }}
             >
               {project.countriesCovered.join(", ")} &nbsp;·&nbsp; Led by{" "}
-              {member?.name}
+              {project.ledBy}
             </p>
             <div className="flex flex-wrap gap-2">
               {project.focusSdgs.map((sdgId) => (
@@ -166,13 +200,10 @@ export function ProjectDetailPage() {
             height: "clamp(240px, 32.7vw, 628px)",
           }}
         >
-          <Image
+          <ImageWithFallback
             src={project.outstandingImageUrl}
             alt={project.name}
-            preview={false}
             className="w-full h-full object-cover"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            wrapperStyle={{ width: "100%", height: "100%" }}
           />
         </div>
       </Container>
@@ -182,7 +213,7 @@ export function ProjectDetailPage() {
         <div className="flex flex-col gap-10 lg:gap-[80px]">
           {/* Organization */}
           <div
-            ref={orgRef as React.RefObject<HTMLDivElement>}
+            ref={orgRef}
             className={cn(
               "max-w-[746px] transition-all duration-700",
               orgVisible ? "animate-fade-in-up" : "opacity-0",
@@ -199,7 +230,7 @@ export function ProjectDetailPage() {
               >
                 Organization
               </h2>
-              {member?.description && (
+              {project.memberDescription && (
                 <p
                   style={{
                     fontFamily: "Open Sans, sans-serif",
@@ -209,12 +240,12 @@ export function ProjectDetailPage() {
                     color: "#000000",
                   }}
                 >
-                  {member.description}
+                  {project.memberDescription}
                 </p>
               )}
-              {member?.socialLinks && member.socialLinks.length > 0 && (
+              {project.memberSocialLinks.length > 0 && (
                 <div className="flex gap-4 flex-wrap">
-                  {member.socialLinks.map((link) => {
+                  {project.memberSocialLinks.map((link) => {
                     const iconName =
                       SOCIAL_ICON_MAP[link.platform.toLowerCase()];
                     if (!iconName) return null;
@@ -240,7 +271,7 @@ export function ProjectDetailPage() {
 
           {/* Project detail rows */}
           <div
-            ref={detailRef as React.RefObject<HTMLDivElement>}
+            ref={detailRef}
             className={cn(
               "flex flex-col gap-4 lg:gap-6 transition-all duration-700",
               detailVisible ? "animate-fade-in-up" : "opacity-0",
@@ -296,7 +327,7 @@ export function ProjectDetailPage() {
 
           {/* Other Projects */}
           <div
-            ref={otherRef as React.RefObject<HTMLDivElement>}
+            ref={otherRef}
             className={cn(
               "flex flex-col gap-4 lg:gap-6 transition-all duration-700",
               otherVisible ? "animate-fade-in-up" : "opacity-0",
@@ -321,7 +352,7 @@ export function ProjectDetailPage() {
                   )}
                   style={{ animationDelay: `${index * 80}ms` }}
                 >
-                  <ProjectCard project={p} ledBy={MEMBER_MAP[p.memberId]} />
+                  <ProjectCard project={p} ledBy={p.ledBy} />
                 </div>
               ))}
             </div>

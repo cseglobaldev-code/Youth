@@ -2,8 +2,8 @@ import { Outlet } from 'react-router-dom';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
-import { JoinModalProvider } from '@/components/common/JoinModal';
-import { SupportModalProvider } from '@/components/common/SupportModal';
+import { JoinModalProvider } from '@/components/modals/JoinModal';
+import { SupportModalProvider } from '@/components/modals/SupportModal';
 
 export function RootLayout() {
   useScrollToTop();

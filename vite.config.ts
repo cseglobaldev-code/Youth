@@ -8,6 +8,9 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), babel({ presets: [reactCompilerPreset()] }), cloudflare()],
+  define: {
+    'import.meta.vitest': 'undefined',
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

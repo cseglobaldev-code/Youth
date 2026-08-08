@@ -1,11 +1,11 @@
-import { useState, useMemo } from 'react';
-import { Empty } from 'antd';
+import { useState, useMemo, useEffect } from 'react';
+import { Empty, Spin } from 'antd';
 import { Container } from '@/components/ui/Container';
-import { SectionHeading } from '@/components/common/SectionHeading';
-import { DocumentRow } from '@/components/common/DocumentRow';
+import { SectionHeading } from '@/components/shared/SectionHeading';
+import { DocumentRow } from '@/components/documents/DocumentRow';
 import { cn } from '@/lib/utils';
-import { DOCUMENTS_DATA } from '@/data';
-import type { DocCategory } from '@/types';
+import { fetchDocuments } from '@/api/documents';
+import type { DocCategory, DocumentItem } from '@/types';
 
 const CATEGORIES: { key: DocCategory | 'all'; label: string }[] = [
   { key: 'all', label: 'All Documents' },
@@ -16,13 +16,23 @@ const CATEGORIES: { key: DocCategory | 'all'; label: string }[] = [
 
 export function PolicyDocumentsPage() {
   const [activeCategory, setActiveCategory] = useState<DocCategory | 'all'>('all');
+  const [docs, setDocs] = useState<DocumentItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetchDocuments()
+      .then(setDocs)
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
 
   const filteredDocs = useMemo(
     () =>
       activeCategory === 'all'
-        ? DOCUMENTS_DATA
-        : DOCUMENTS_DATA.filter((d) => d.category === activeCategory),
-    [activeCategory]
+        ? docs
+        : docs.filter((d) => d.category === activeCategory),
+    [docs, activeCategory]
   );
 
   return (
@@ -64,12 +74,14 @@ export function PolicyDocumentsPage() {
 
           {/* Document list */}
           <div className="min-w-0 divide-y divide-neutral-200">
-            {filteredDocs.map((doc) => (
-              <DocumentRow key={doc.id} document={doc} />
-            ))}
-            {filteredDocs.length === 0 && (
+            {loading && <Spin className="py-8" />}
+            {error && <Empty description={`Error: ${error}`} className="py-8" />}
+            {!loading && !error && filteredDocs.length === 0 && (
               <Empty description="No documents in this category." className="py-8" />
             )}
+            {!loading && !error && filteredDocs.map((doc) => (
+              <DocumentRow key={doc.id} document={doc} />
+            ))}
           </div>
         </div>
       </Container>
