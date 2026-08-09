@@ -1,7 +1,8 @@
-const PREVIEW_PATH = /^\/(projects|members)\/[^/]+$/;
+const STATIC_PREVIEW_PATHS = new Set(['/', '/leadership', '/policy-documents']);
+const DETAIL_PREVIEW_PATH = /^\/(projects|members)\/[A-Za-z0-9_-]+$/;
 
 export function isAllowedPreviewPath(pathname: string): boolean {
-  return PREVIEW_PATH.test(pathname);
+  return STATIC_PREVIEW_PATHS.has(pathname) || DETAIL_PREVIEW_PATH.test(pathname);
 }
 
 export function isPreviewStatus(status: string | null): status is 'draft' | 'published' {

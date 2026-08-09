@@ -3,12 +3,17 @@ import { onRequest } from '../api/preview';
 import { isAllowedPreviewPath, isPreviewStatus, sameSecret } from './preview';
 
 describe('preview helpers', () => {
-  it('allows only local project and member detail paths', () => {
+  it('allows configured frontend preview paths only', () => {
+    expect(isAllowedPreviewPath('/')).toBe(true);
+    expect(isAllowedPreviewPath('/leadership')).toBe(true);
+    expect(isAllowedPreviewPath('/policy-documents')).toBe(true);
     expect(isAllowedPreviewPath('/projects/project-1')).toBe(true);
     expect(isAllowedPreviewPath('/members/member-1')).toBe(true);
     expect(isAllowedPreviewPath('https://evil.example/steal')).toBe(false);
+    expect(isAllowedPreviewPath('//evil.example')).toBe(false);
     expect(isAllowedPreviewPath('/api/cms/projects/project-1')).toBe(false);
     expect(isAllowedPreviewPath('/projects/project-1/extra')).toBe(false);
+    expect(isAllowedPreviewPath('/leadership/extra')).toBe(false);
   });
 
   it('accepts only Strapi publication statuses', () => {

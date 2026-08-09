@@ -1,0 +1,5 @@
+# Local Wrangler variables template. Copy to `.dev.vars` (ignored).
+# Production: configure these as Cloudflare secrets/environment variables.
+STRAPI_API_URL=http://localhost:1337
+STRAPI_API_TOKEN=<strapi-api-token>
+PREVIEW_SECRET=<preview-secret>
