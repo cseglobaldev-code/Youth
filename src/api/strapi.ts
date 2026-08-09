@@ -8,7 +8,9 @@ export interface StrapiRequestOptions {
 }
 
 export function resolveConfig(options: StrapiRequestOptions): { baseUrl: string; token?: string } {
-  const baseUrl = (options.baseUrl ?? import.meta.env.VITE_STRAPI_API_URL ?? '').replace(/\/$/, '');
+  const configuredBaseUrl = import.meta.env.VITE_STRAPI_API_URL;
+  const fallbackBaseUrl = typeof window === 'undefined' ? '' : window.location.origin;
+  const baseUrl = (options.baseUrl ?? configuredBaseUrl ?? fallbackBaseUrl).replace(/\/$/, '');
   const token = options.token ?? import.meta.env.VITE_STRAPI_API_TOKEN;
   if (!baseUrl) throw new Error('VITE_STRAPI_API_URL is not configured');
   return { baseUrl, token };
