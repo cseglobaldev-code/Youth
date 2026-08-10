@@ -2,6 +2,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "youorg",
   "main": "src/worker/index.ts",
+  "vars": {
+    "STRAPI_API_URL": "https://admin.youthorgunion.com"
+  },
   "compatibility_date": "2026-06-02",
   "observability": {
     "enabled": true,
