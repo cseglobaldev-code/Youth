@@ -8,10 +8,13 @@ export interface StrapiRequestOptions {
 }
 
 export function resolveConfig(options: StrapiRequestOptions): { baseUrl: string; token?: string } {
-  const configuredBaseUrl = import.meta.env.VITE_STRAPI_API_URL;
+  // Empty string must fall through to the same-origin proxy, so `||` (not `??`).
+  const configuredBaseUrl = import.meta.env.VITE_STRAPI_API_URL || undefined;
   const fallbackBaseUrl = typeof window === 'undefined' ? '' : window.location.origin;
   const baseUrl = (options.baseUrl ?? configuredBaseUrl ?? fallbackBaseUrl).replace(/\/$/, '');
-  const token = options.token ?? import.meta.env.VITE_STRAPI_API_TOKEN;
+  // No token is read from import.meta.env: every VITE_* value ships to the
+  // browser. Production authenticates server-side in the Worker CMS proxy.
+  const token = options.token;
   if (!baseUrl) throw new Error('VITE_STRAPI_API_URL is not configured');
   return { baseUrl, token };
 }
@@ -85,7 +88,8 @@ export function mapSocialLinks(value: StrapiSocialLink[] | null | undefined): So
   if (!Array.isArray(value)) return [];
   return value
     .filter((link) => VALID_SOCIAL_PLATFORMS.has(text(link.platform)))
-    .map((link) => ({ platform: text(link.platform) as SocialLink['platform'], url: text(link.url) }));
+    .map((link) => ({ platform: text(link.platform) as SocialLink['platform'], url: text(link.url) }))
+    .filter((link) => /^https?:\/\//i.test(link.url));
 }
 
 export interface StrapiProject {

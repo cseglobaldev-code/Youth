@@ -1,5 +1,6 @@
 # Local Wrangler variables template. Copy to `.dev.vars` (ignored).
-# Production: configure these as Cloudflare secrets/environment variables.
+# Production: configure these as Cloudflare Worker secrets.
+# Production Strapi origin: https://admin.youthorgonion.com
 STRAPI_API_URL=http://localhost:1337
-STRAPI_API_TOKEN=<strapi-api-token>
-PREVIEW_SECRET=<preview-secret>
+STRAPI_API_TOKEN=<strapi-read-only-api-token>
+PREVIEW_SECRET=<same-value-as-youth-cms>

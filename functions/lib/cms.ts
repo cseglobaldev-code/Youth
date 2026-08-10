@@ -1,8 +1,19 @@
 const ALLOWED_PREFIXES = ['/api/projects', '/api/members', '/api/team-members', '/api/faqs', '/api/news-items', '/api/policy-documents'];
 
 export function isAllowedCmsPath(pathname: string): boolean {
+  let decodedPathname: string;
+  try {
+    decodedPathname = decodeURIComponent(pathname);
+  } catch {
+    return false;
+  }
+
+  if (decodedPathname.split('/').some((segment) => segment === '.' || segment === '..')) {
+    return false;
+  }
+
   return ALLOWED_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+    (prefix) => decodedPathname === prefix || decodedPathname.startsWith(`${prefix}/`)
   );
 }
 

@@ -10,6 +10,12 @@ describe('CMS proxy helpers', () => {
     expect(isAllowedCmsPath('/admin/init')).toBe(false);
   });
 
+  it('rejects path traversal attempts', () => {
+    expect(isAllowedCmsPath('/api/projects/../users')).toBe(false);
+    expect(isAllowedCmsPath('/api/projects/%2e%2e/users')).toBe(false);
+    expect(isAllowedCmsPath('/api/projects/%ZZ')).toBe(false);
+  });
+
   it('enables draft status only for the draft preview cookie', () => {
     expect(draftStatus('you_preview=draft')).toBe('draft');
     expect(draftStatus('you_preview=published')).toBe('published');
