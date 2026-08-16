@@ -5,24 +5,14 @@ import { ExecutiveCard } from '@/components/leadership/ExecutiveCard';
 import { TeamMemberCard } from '@/components/leadership/TeamMemberCard';
 import { LeaderMemberModal } from '@/components/leadership/LeaderMemberModal';
 import { CTABanner } from '@/components/shared/CTABanner';
-import { fetchLeadership, type LeadershipRoster } from '@/api/leadership';
-import { currentTermLabel } from '@/lib/utils';
-import { cn } from '@/lib/utils';
-import { useScrollReveal } from '@/hooks/useScrollReveal';
 import type { Continent, RegionGroup, TeamMember } from '@/types';
+import { CONTINENT_REGIONS, fetchLeadership, type LeadershipRoster } from '@/api/leadership';
+import { currentTermLabel, cn } from '@/lib/utils';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 /* ─── constants ─────────────────────────────────────────────────────────── */
 
 const CONTINENTS: Continent[] = ['Asia', 'Africa', 'America', 'Australia', 'Europe'];
-
-const ASIA_REGIONS: RegionGroup[] = [
-  'East Asia',
-  'Southeast Asia',
-  'South Asia',
-  'Central Asia',
-  'West Asia',
-  'North Asia',
-];
 
 const HERO_GRADIENT =
   'linear-gradient(90deg, #EE334E 0%, #FCB131 33%, #00A651 67%, #0081C8 100%)';
@@ -70,12 +60,9 @@ export function LeadershipPage() {
   const { ref: directorsRef, visible: directorsVisible } = useScrollReveal(0.05);
 
   const filteredMembers = useMemo(() => {
-    if (activeContinent === 'Asia') {
-      return leadership.directors.filter(
-        (m) => m.continent === 'Asia' && m.regionGroup === activeRegion
-      );
-    }
-    return leadership.directors.filter((m) => m.continent === activeContinent);
+    return leadership.directors.filter(
+      (m) => m.continent === activeContinent && m.regionGroup === activeRegion
+    );
   }, [activeContinent, activeRegion, leadership.directors]);
 
   const visibleDirectors = showAllDirectors ? filteredMembers : filteredMembers.slice(0, 5);
@@ -83,7 +70,7 @@ export function LeadershipPage() {
 
   const handleContinentChange = (continent: Continent) => {
     setActiveContinent(continent);
-    if (continent === 'Asia') setActiveRegion('East Asia');
+    setActiveRegion(CONTINENT_REGIONS[continent][0]);
     setShowAllDirectors(false);
   };
 
@@ -263,31 +250,29 @@ export function LeadershipPage() {
               ))}
             </div>
 
-            {/* Sub-region tabs — row, center, gap:40px (only for Asia) */}
-            {activeContinent === 'Asia' && (
-              <div className="flex flex-wrap justify-center gap-4 lg:gap-[40px]">
-                {ASIA_REGIONS.map((region) => (
-                  <button
-                    key={region}
-                    onClick={() => handleRegionChange(region)}
-                    className={cn(
-                      'font-semibold transition-colors duration-200',
-                      activeRegion === region
-                        ? 'text-[#1771B9] border-b border-[#1771B9]'
-                        : 'text-black border-b border-transparent'
-                    )}
-                    style={{
-                      fontSize: 'clamp(0.875rem, 1.15vw, 22px)',
-                      lineHeight: '140%',
-                      fontFamily: 'Open Sans, sans-serif',
-                      padding: 'clamp(8px, 0.83vw, 16px) 0',
-                    }}
-                  >
-                    {region}
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* Sub-region tabs — one set per continent */}
+            <div className="flex flex-wrap justify-center gap-4 lg:gap-[40px]">
+              {CONTINENT_REGIONS[activeContinent].map((region) => (
+                <button
+                  key={region}
+                  onClick={() => handleRegionChange(region)}
+                  className={cn(
+                    'font-semibold transition-colors duration-200',
+                    activeRegion === region
+                      ? 'text-[#1771B9] border-b border-[#1771B9]'
+                      : 'text-black border-b border-transparent'
+                  )}
+                  style={{
+                    fontSize: 'clamp(0.875rem, 1.15vw, 22px)',
+                    lineHeight: '140%',
+                    fontFamily: 'Open Sans, sans-serif',
+                    padding: 'clamp(8px, 0.83vw, 16px) 0',
+                  }}
+                >
+                  {region}
+                </button>
+              ))}
+            </div>
           </div>
         </Container>
 

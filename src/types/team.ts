@@ -8,10 +8,24 @@ export type RegionGroup =
   | 'Central Asia'
   | 'West Asia'
   | 'North Asia'
-  | 'Africa'
-  | 'America'
+  | 'North Africa'
+  | 'West Africa'
+  | 'Central Africa'
+  | 'East Africa'
+  | 'Southern Africa'
+  | 'North America'
+  | 'Central America'
+  | 'Caribbean'
+  | 'South America'
   | 'Australia'
-  | 'Europe';
+  | 'New Zealand'
+  | 'Melanesia'
+  | 'Micronesia'
+  | 'Polynesia'
+  | 'Northern Europe'
+  | 'Western Europe'
+  | 'Eastern Europe'
+  | 'Southern Europe';
 
 export interface TeamMember {
   id: string;

@@ -60,13 +60,6 @@ export function Footer({ className }: FooterProps) {
                 <span>Global - Operating across 6 continents</span>
               </div>
               <a
-                href="tel:+84982421109"
-                className="flex items-start gap-3 text-sm font-normal text-neutral-300 transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
-              >
-                <Icon name="lucide:phone" size={18} className="mt-0.5 shrink-0 text-blue-400" />
-                <span>+84 982.421.109</span>
-              </a>
-              <a
                 href="mailto:info@youthorgunion.org"
                 className="flex items-start gap-3 text-sm font-normal text-neutral-300 transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
               >
