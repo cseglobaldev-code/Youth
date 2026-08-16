@@ -9,50 +9,6 @@ import { ROUTES } from '@/routes/paths';
 import { fetchProjects } from '@/api/projects';
 import type { NewsItem } from '@/api/news';
 
-const DEFAULT_NEWS_DATA: NewsItem[] = [
-  {
-    id: 'project-1',
-    title: 'Global Diplomacy Leadership Certification',
-    description: 'A world where every young person has the platform and tools to lead positive change in their community and beyond.',
-    location: 'Asia, Africa',
-    author: 'Maria Santos',
-    period: '2021 → now',
-    coverUrl: '/images/home/news/image-new.png',
-  },
-  {
-    id: 'project-2',
-    title: 'ASEAN China Media Cooperation',
-    description: 'The agenda included welcoming remarks, institutional presentations, discussions on future collaboration opportunities.',
-    location: 'Asia, Africa',
-    author: 'Maria Santos',
-    coverUrl: '/images/home/news/image-new1.png',
-  },
-  {
-    id: 'project-3',
-    title: 'The Moon-Like Volcanic Landscape...',
-    description: 'On Friday, 15 May 2026, ASEAN Youth Organization (AYO), through the implementation of the AI Ready ASEAN Program.',
-    location: 'Asia, Africa',
-    author: 'Maria Santos',
-    coverUrl: '/images/home/news/image-new2.png',
-  },
-  {
-    id: 'project-4',
-    title: 'What Motivates Students to Join Or...',
-    description: 'Rangsit University on 15 May 2026 to strengthen collaboration in AI literacy and youth empowerment.',
-    location: 'Asia, Africa',
-    author: 'Maria Santos',
-    coverUrl: '/images/home/news/image-new3.png',
-  },
-  {
-    id: 'project-5',
-    title: 'ASEAN Youth Organization Establis...',
-    description: 'ASEAN Youth Organization, through the AI Ready ASEAN program, officially signed a Memorandum of Understanding (MoU).',
-    location: 'Asia, Africa',
-    author: 'Maria Santos',
-    coverUrl: '/images/home/news/image-new4.png',
-  },
-];
-
 export function NewsSection() {
   const navigate = useNavigate();
   const [newsData, setNewsData] = useState<NewsItem[]>([]);
@@ -87,7 +43,9 @@ export function NewsSection() {
     return () => controller.abort();
   }, []);
 
-  const displayData = newsData.length > 0 ? newsData : DEFAULT_NEWS_DATA;
+  if (!loading && newsData.length === 0) return null;
+
+  const displayData = newsData;
   const featured = displayData[0];
   const sideNews = displayData.slice(1);
 
