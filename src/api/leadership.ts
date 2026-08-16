@@ -46,11 +46,33 @@ const VALID_REGIONS = new Set<RegionGroup>([
   'Central Asia',
   'West Asia',
   'North Asia',
-  'Africa',
-  'America',
+  'North Africa',
+  'West Africa',
+  'Central Africa',
+  'East Africa',
+  'Southern Africa',
+  'North America',
+  'Central America',
+  'Caribbean',
+  'South America',
   'Australia',
-  'Europe',
+  'New Zealand',
+  'Melanesia',
+  'Micronesia',
+  'Polynesia',
+  'Northern Europe',
+  'Western Europe',
+  'Eastern Europe',
+  'Southern Europe',
 ]);
+
+export const CONTINENT_REGIONS: Record<Continent, RegionGroup[]> = {
+  Asia: ['East Asia', 'Southeast Asia', 'South Asia', 'Central Asia', 'West Asia', 'North Asia'],
+  Africa: ['North Africa', 'West Africa', 'Central Africa', 'East Africa', 'Southern Africa'],
+  America: ['North America', 'Central America', 'Caribbean', 'South America'],
+  Australia: ['Australia', 'New Zealand', 'Melanesia', 'Micronesia', 'Polynesia'],
+  Europe: ['Northern Europe', 'Western Europe', 'Eastern Europe', 'Southern Europe'],
+};
 
 function parseBio(value: unknown): string[] {
   return text(value)
@@ -173,7 +195,7 @@ if (import.meta.vitest) {
               displayOrder: 2,
               avatar: { url: 'https://cdn.example/avatar.png' },
               continent: 'Europe',
-              regionGroup: 'Europe',
+              regionGroup: 'Southern Europe',
               focusSdgs: ['5'],
             },
           ],
@@ -190,7 +212,7 @@ if (import.meta.vitest) {
         focusSdgs: [4, 17],
         activityImages: ['http://localhost:1337/uploads/activity.png'],
       });
-      expect(roster.directors[0]).toMatchObject({ id: 'director-doc', regionGroup: 'Europe' });
+      expect(roster.directors[0]).toMatchObject({ id: 'director-doc', regionGroup: 'Southern Europe' });
     });
 
     it('rejects failed CMS responses', async () => {
@@ -198,6 +220,52 @@ if (import.meta.vitest) {
       await expect(fetchLeadership({ baseUrl: 'http://other-host:1337' })).rejects.toThrow(
         'Unable to load leadership (403)'
       );
+    });
+
+    it('maps a non-Asia director region from Strapi', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          data: [{
+            id: 3,
+            documentId: 'africa-doc',
+            name: 'Amara Okafor',
+            role: 'Continental Director',
+            leadershipType: 'continental-director',
+            displayOrder: 1,
+            continent: 'Africa',
+            regionGroup: 'West Africa',
+          }],
+        }),
+      }));
+
+      const roster = await fetchLeadership({ baseUrl: 'http://africa-host:1337' });
+
+      expect(roster.directors).toHaveLength(1);
+      expect(roster.directors[0].regionGroup).toBe('West Africa');
+    });
+  });
+
+  describe('CONTINENT_REGIONS', () => {
+    it('covers all five continents with 24 valid sub-regions', () => {
+      expect(Object.keys(CONTINENT_REGIONS).sort()).toEqual(
+        ['Africa', 'America', 'Asia', 'Australia', 'Europe']
+      );
+
+      const regions = Object.values(CONTINENT_REGIONS).flat();
+      expect(regions).toHaveLength(24);
+      expect(regions.every((region) => VALID_REGIONS.has(region))).toBe(true);
+    });
+
+    it('preserves the original six Asia sub-regions', () => {
+      expect(CONTINENT_REGIONS.Asia).toEqual([
+        'East Asia',
+        'Southeast Asia',
+        'South Asia',
+        'Central Asia',
+        'West Asia',
+        'North Asia',
+      ]);
     });
   });
 }
