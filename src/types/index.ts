@@ -7,3 +7,23 @@ export type { NewsItem } from './news';
 export type { DocumentItem, DocCategory, FileType } from './document';
 export type { StatItem } from './stats';
 export type { FAQ } from './faq';
+export type {
+  SectionStyle,
+  SharedButton,
+  SharedStatItem,
+  SharedFaqItem,
+  SEOData,
+  HeroBlockData,
+  RichTextBlockData,
+  MediaTextBlockData,
+  StatsGridBlockData,
+  CTABannerBlockData,
+  ImageGalleryBlockData,
+  FaqSectionBlockData,
+  FeaturedProjectsBlockData,
+  FeaturedMembersBlockData,
+  TeamGridBlockData,
+  EmbedBlockData,
+  DynamicContentBlock,
+  PageDetailItem,
+} from './page';

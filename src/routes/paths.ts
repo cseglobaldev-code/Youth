@@ -8,4 +8,5 @@ export const ROUTES = {
   PROJECT_DETAIL: (id: string = ':projectId') => `/projects/${id}`,
   POLICY_DOCUMENTS: '/policy-documents',
   CONTACT: '/contact',
+  PAGE_DETAIL: (slug: string = ':slug') => `/pages/${slug}`,
 } as const;

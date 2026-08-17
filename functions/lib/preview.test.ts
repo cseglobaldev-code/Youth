@@ -9,6 +9,7 @@ describe('preview helpers', () => {
     expect(isAllowedPreviewPath('/policy-documents')).toBe(true);
     expect(isAllowedPreviewPath('/projects/project-1')).toBe(true);
     expect(isAllowedPreviewPath('/members/member-1')).toBe(true);
+    expect(isAllowedPreviewPath('/pages/page-1')).toBe(true);
     expect(isAllowedPreviewPath('https://evil.example/steal')).toBe(false);
     expect(isAllowedPreviewPath('//evil.example')).toBe(false);
     expect(isAllowedPreviewPath('/api/cms/projects/project-1')).toBe(false);

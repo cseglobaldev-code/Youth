@@ -22,7 +22,6 @@ export async function handlePreview(request: Request, env: Env): Promise<Respons
   if (!(await sameSecret(secret, env.PREVIEW_SECRET))) {
     return new Response('Invalid preview token', { status: 401 });
   }
-  // Never redirect to a caller-supplied URL verbatim — open redirect risk.
   if (!isAllowedPreviewPath(pathname)) {
     return new Response('Invalid preview path', { status: 400 });
   }
@@ -30,6 +29,7 @@ export async function handlePreview(request: Request, env: Env): Promise<Respons
     return new Response('Invalid preview status', { status: 400 });
   }
 
+  const cookieStatus = rawStatus === 'published' ? 'published' : 'draft';
   const redirectUrl = new URL(pathname, requestUrl.origin);
   redirectUrl.searchParams.set('preview', '1');
 
@@ -39,7 +39,7 @@ export async function handlePreview(request: Request, env: Env): Promise<Respons
   });
   response.headers.append(
     'Set-Cookie',
-    `${PREVIEW_COOKIE}=${rawStatus}; Max-Age=${PREVIEW_MAX_AGE_SECONDS}; Path=/; HttpOnly; Secure; SameSite=Lax`
+    `${PREVIEW_COOKIE}=${cookieStatus}; Max-Age=${PREVIEW_MAX_AGE_SECONDS}; Path=/; HttpOnly; Secure; SameSite=Lax`
   );
   return response;
 }

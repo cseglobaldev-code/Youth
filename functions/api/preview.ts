@@ -45,7 +45,8 @@ export async function onRequest(context: PagesContext): Promise<Response> {
     return new Response('Invalid preview status', { status: 400 });
   }
 
-  return redirectResponse(context.request, pathname, rawStatus);
+  const cookieStatus = rawStatus === 'published' ? 'published' : 'draft';
+  return redirectResponse(context.request, pathname, cookieStatus as 'draft' | 'published');
 }
 
 export { COOKIE_NAME };

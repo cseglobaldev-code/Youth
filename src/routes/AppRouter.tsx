@@ -9,6 +9,7 @@ import { ProjectsPage } from '@/pages/ProjectsPage';
 import { ProjectDetailPage } from '@/pages/ProjectDetailPage';
 import { PolicyDocumentsPage } from '@/pages/PolicyDocumentsPage';
 import { ContactPage } from '@/pages/ContactPage';
+import { DynamicPage } from '@/pages/DynamicPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 
 export function AppRouter() {
@@ -24,6 +25,7 @@ export function AppRouter() {
         <Route path="projects/:projectId" element={<ProjectDetailPage />} />
         <Route path="policy-documents" element={<PolicyDocumentsPage />} />
         <Route path="contact" element={<ContactPage />} />
+        <Route path="pages/:slug" element={<DynamicPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

@@ -1,4 +1,12 @@
-const ALLOWED_PREFIXES = ['/api/projects', '/api/members', '/api/team-members', '/api/faqs', '/api/news-items', '/api/policy-documents'];
+const ALLOWED_PREFIXES = [
+  '/api/projects',
+  '/api/members',
+  '/api/team-members',
+  '/api/faqs',
+  '/api/news-items',
+  '/api/policy-documents',
+  '/api/pages',
+];
 
 export function isAllowedCmsPath(pathname: string): boolean {
   let decodedPathname: string;
