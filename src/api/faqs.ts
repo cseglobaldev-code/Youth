@@ -29,7 +29,7 @@ export async function fetchFAQs(options: StrapiRequestOptions = {}): Promise<FAQ
   const query = new URLSearchParams();
   query.append('pagination[pageSize]', '100');
   query.append('pagination[withCount]', 'false');
-  query.append('sort[0]', 'createdAt:desc');
+  query.append('sort[0]', 'order:asc');
 
   const url = `${baseUrl}/api/faqs?${query}`;
   let payload = cacheGet(url) as StrapiFAQsResponse | undefined;

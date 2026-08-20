@@ -52,7 +52,7 @@ export function Footer({ className }: FooterProps) {
                 letterSpacing: '0%',
               }}
             >
-              Infomation
+              Information
             </h4>
             <div className="flex flex-col gap-3 lg:gap-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
