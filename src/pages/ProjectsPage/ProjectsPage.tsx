@@ -168,7 +168,7 @@ export function ProjectsPage() {
               </div>
 
               {/* Search + Sort row */}
-              <div className="flex flex-wrap justify-center items-center gap-5">
+              <div className="flex flex-wrap justify-start items-center gap-5">
                 {/* Search input */}
                 <Input
                   placeholder="Keyword"

@@ -65,7 +65,7 @@ export function NewsSection() {
         {/* Header */}
         <div className="mb-8 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between lg:mb-[40px]">
           <h2 className="font-semibold text-[32px] leading-none md:text-[clamp(1.5rem,3.13vw,3rem)] md:leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-            <span className="block md:inline">Impact Aligned with</span>
+            <span className="block md:inline">Impact Aligned with{' '}</span>
             <br className="md:hidden" />
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Global Goals

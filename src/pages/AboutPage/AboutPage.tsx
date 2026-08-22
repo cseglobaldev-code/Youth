@@ -66,7 +66,6 @@ const ABOUT_CONTAINER_CLASS = 'max-w-none lg:px-[90px]';
 const ABOUT_SECTION_TITLE_CLASS = 'font-heading text-[clamp(1.75rem,3vw,3rem)] font-semibold leading-tight text-black';
 
 export function AboutPage() {
-
   return (
     <div className="relative z-10 bg-white">
       <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">

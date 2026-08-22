@@ -24,6 +24,10 @@ export function resolveConfig(options: StrapiRequestOptions): { baseUrl: string;
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const responseCache = new Map<string, { at: number; data: unknown }>();
 
+export function clearCache(): void {
+  responseCache.clear();
+}
+
 export function cacheGet(url: string, bypassCache = false): unknown | undefined {
   if (bypassCache) return undefined;
   const hit = responseCache.get(url);

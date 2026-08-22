@@ -7,14 +7,6 @@ import { Container } from '@/components/ui/Container';
 import { ROUTES } from '@/routes/paths';
 import { fetchFAQs, type FAQ } from '@/api/faqs';
 
-const DEFAULT_FAQ_DATA: FAQ[] = [
-  { id: 'faq-1', question: 'What is Y.O.U and who can join?', answer: 'Y.O.U – Youth Organization Union is a global alliance of youth-led organizations and individual leaders committed to the UN\'s SDGs. Any registered youth organization or young leader can apply.' },
-  { id: 'faq-2', question: 'What are the benefits of joining as an organization?', answer: 'Members gain access to a global network, collaborative project opportunities, capacity building resources, funding connections, and visibility through our platform.' },
-  { id: 'faq-3', question: 'What opportunities are available to members?', answer: 'Organizations can participate in joint programs, attend the Annual Summit, and connect with partners across 30+ countries.' },
-  { id: 'faq-4', question: 'What is the difference between Continental and Country Directors?', answer: 'Continental Directors oversee operations across an entire continent, while Country Directors manage activities within a specific country.' },
-  { id: 'faq-5', question: 'Are there membership fees?', answer: 'No, Y.O.U membership is free for qualifying youth organizations and individual leaders.' },
-];
-
 export function FAQSection() {
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +27,8 @@ export function FAQSection() {
     return () => controller.abort();
   }, []);
 
-  const faqData = faqs.length > 0 ? faqs : DEFAULT_FAQ_DATA;
+  if (!loading && faqs.length === 0) return null;
+
   return (
     <section className="bg-white pb-12 pt-0 md:pb-16 lg:pb-[7.5rem]">
       <Container size="narrow">
@@ -48,18 +41,18 @@ export function FAQSection() {
         </div>
 
         {/* FAQ items */}
-        {loading && faqData.length === 0 ? (
+        {loading ? (
           <Skeleton active paragraph={{ rows: 8 }} />
         ) : (
           <Collapse
             accordion
-            defaultActiveKey={faqData[0]?.id || 'faq-1'}
+            defaultActiveKey={faqs[0]?.id}
             ghost
             expandIconPosition="end"
             expandIcon={({ isActive }) => (
               <Icon name="lucide:chevron-down" size={22} className={cn('text-[#EE334E] transition-transform duration-200', isActive && 'rotate-180')} />
             )}
-            items={faqData.map((faq) => ({
+            items={faqs.map((faq) => ({
               key: faq.id,
               label: <span className="font-medium text-[clamp(1.125rem,1.43vw,1.375rem)] text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.question}</span>,
               children: <p className="pb-5 text-[clamp(0.875rem,1.04vw,1rem)] text-neutral-600 font-normal leading-relaxed" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.answer}</p>,
