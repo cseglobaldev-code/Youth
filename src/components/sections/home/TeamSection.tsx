@@ -70,7 +70,12 @@ export function TeamSection() {
           {leaders.map((leader, index) => {
             const hasSocial = leader.socialLinks && leader.socialLinks.length > 0;
             return (
-              <div key={leader.id} className={`flex flex-col items-center max-w-[280px] ${index === 0 ? 'col-span-2 lg:col-span-1' : ''}`}>
+              <div
+                key={leader.id}
+                className={`flex flex-col items-center max-w-[280px] ${
+                  index === 1 ? 'col-span-2 -order-1 lg:order-none lg:col-span-1' : ''
+                }`}
+              >
                 <div className="w-40 h-40 sm:w-52 sm:h-52 lg:w-[240px] lg:h-[240px] rounded-full overflow-hidden border-4 border-neutral-200 mb-4 relative group cursor-pointer">
                   <Image src={leader.avatarUrl} alt={leader.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
                   {hasSocial && (
