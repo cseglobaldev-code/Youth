@@ -17,7 +17,6 @@ const SORT_OPTIONS = [
   { label: 'SDG', value: 'sdg' },
   { label: 'Opportunity', value: 'opportunity' },
   { label: 'Most viewed', value: 'mostViewed' },
-  { label: 'Most liked', value: 'mostLiked' },
 ];
 
 export function MembersPage() {
@@ -64,7 +63,6 @@ export function MembersPage() {
       case 'location':
         return [...result].sort((a, b) => a.country.localeCompare(b.country));
       case 'mostViewed':
-      case 'mostLiked':
         return [...result].sort((a, b) => b.id.localeCompare(a.id));
       default:
         return result;
