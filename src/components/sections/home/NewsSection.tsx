@@ -61,7 +61,7 @@ export function NewsSection() {
 
   return (
     <section className="bg-white py-0 pt-[120px] pb-[120px]">
-      <Container size="wide">
+      <Container className="max-w-[95%] sm:max-w-[85%]">
         {/* Header */}
         <div className="mb-8 flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between lg:mb-[40px]">
           <h2 className="font-semibold text-[32px] leading-none md:text-[clamp(1.5rem,3.13vw,3rem)] md:leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>

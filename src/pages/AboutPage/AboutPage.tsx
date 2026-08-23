@@ -84,13 +84,13 @@ export function AboutPage() {
               </span>
             </h1>
             <p className="max-w-[1314px] font-normal text-[clamp(1rem,1.2vw,1.375rem)] leading-[140%] tracking-[0px] text-neutral-900 2xl:text-[24px]">
-              Y.O.U (Your Opportunity – Your Future) is a non-profit organization working in the fields of education,
-              community development, and international cooperation.
+              The Youth Organization Union (Y.O.U) is an international entity dedicated to driving global youth
+              initiatives. Operating under a NGO model, Y.O.U maintains a strict commitment to a non-profit missions.
               <br />
               We aim to create equal opportunities for everyone to learn, develop, and contribute to society.
               <br />
-              With a passionate team and a wide network of partners, Y.O.U is constantly innovating and acting for a
-              sustainable future, where no one is left behind.
+              The platform brings together capable youth leaders and global networks to constantly innovate and act
+              for a sustainable future, where no one is left behind.
             </p>
           </div>
 
@@ -122,29 +122,21 @@ export function AboutPage() {
                   We are committed to continuously striving to build a solid foundation, where every individual and
                   organization can find opportunities for growth and together create sustainable value.
                   <br />
-                  Thank you for accompanying Y.O.U on this meaningful journey.
+                  Thank you for accompanying Y.O.U on this meaningful journey!
                 </p>
                 <p className="pt-3 font-semibold">
-                  Nguyễn Thùy Linh
+                  Y.O.U President,
                   <br />
-                  <span className="font-normal italic">Founder of Y.O.U</span>
+                  <span className="font-normal italic">Mr. Safin H. Mohammed</span>
                 </p>
               </div>
             </div>
             <div className="relative aspect-[702/513] w-full overflow-hidden rounded-3xl lg:h-[300px] lg:aspect-auto">
               <img
-                src="/images/home/about/about-image.png"
+                src="https://res.cloudinary.com/mutcixn2/image/upload/v1787475504/1787475427050_1673495044080632904_1673495044080632904_87405948f999a6f911d8e9a1ba1795b8_6ece0e7ef5.jpg"
                 alt="A global alliance for youth-led impact"
                 className="h-full w-full object-cover"
               />
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <img
-                  src="/images/common/decor/group.svg"
-                  alt=""
-                  aria-hidden="true"
-                  className="h-auto w-[28%] max-w-[128px] object-contain opacity-20"
-                />
-              </div>
             </div>
           </div>
         </Container>

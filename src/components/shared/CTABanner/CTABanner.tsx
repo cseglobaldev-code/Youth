@@ -26,6 +26,8 @@ export interface CTABannerProps {
   hideStar?: boolean;
   /** Extra class for the outer section wrapper */
   className?: string;
+  /** Override the inner banner's max-width (defaults to 1344px) */
+  widthClassName?: string;
 }
 
 export function CTABanner({
@@ -39,6 +41,7 @@ export function CTABanner({
   overlayOpacity = 45,
   hideStar = false,
   className,
+  widthClassName = 'max-w-[1344px]',
 }: CTABannerProps) {
   const { openJoin } = useJoinModal();
   const buttonAs = ctaTo ? 'router-link' : ctaHref ? 'a' : 'button';
@@ -46,7 +49,7 @@ export function CTABanner({
 
   return (
     <section className={cn('mx-4 my-12 sm:mx-6 md:my-16 lg:mx-8 lg:my-[7.5rem]', className)}>
-      <div className="mx-auto max-w-[1344px] rounded-3xl lg:rounded-[40px] overflow-hidden relative" style={{ background: gradient }}>
+      <div className={cn('mx-auto rounded-3xl lg:rounded-[40px] overflow-hidden relative', widthClassName)} style={{ background: gradient }}>
         {/* White overlay to soften into pastel */}
         <div className="absolute inset-0 bg-white" style={{ opacity: overlayOpacity / 100 }} />
 
