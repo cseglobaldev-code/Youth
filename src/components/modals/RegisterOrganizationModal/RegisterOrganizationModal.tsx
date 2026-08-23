@@ -203,9 +203,18 @@ export function RegisterOrganizationModal({
             <Form.Item
               label={labelText('Organization Description')}
               name="organizationDescription"
-              rules={[{ required: true, message: 'Please enter organization description' }]}
+              rules={[
+                { required: true, message: 'Please enter organization description' },
+                { max: 500, message: 'Description must be at most 500 characters' },
+              ]}
             >
-              <Input.TextArea rows={3} placeholder="Describe your organization" style={FONT} />
+              <Input.TextArea
+                rows={3}
+                maxLength={500}
+                showCount
+                placeholder="Describe your organization"
+                style={FONT}
+              />
             </Form.Item>
 
             <Form.Item

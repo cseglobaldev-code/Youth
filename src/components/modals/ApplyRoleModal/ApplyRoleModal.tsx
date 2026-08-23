@@ -283,13 +283,15 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
             <span className="font-semibold text-[15px] sm:text-[16px] text-[#111111]" style={FONT}>
               Criteria For Recruiting Continental Directors
             </span>
-            <button
-              type="button"
+            <a
+              href="https://docs.google.com/document/d/1pyn77tCjnGVH7xVnMfh6VxrdT3S3dU0YSRqUPGjN-fo/edit?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
               className="rounded-full border border-[#EE334E] px-5 py-1 text-[14px] font-semibold text-[#EE334E] transition-colors hover:bg-[#EE334E]/5"
               style={FONT}
             >
               Link
-            </button>
+            </a>
           </div>
         </>
       )}
