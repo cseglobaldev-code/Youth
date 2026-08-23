@@ -29,11 +29,10 @@ const SOCIAL_ICON_MAP: Record<string, string> = {
 
 interface DetailRowProps {
   label: string;
-  uploadLink?: boolean;
   children: React.ReactNode;
 }
 
-function DetailRow({ label, uploadLink, children }: DetailRowProps) {
+function DetailRow({ label, children }: DetailRowProps) {
   return (
     <div className="flex items-start w-full gap-2">
       <div className="flex-shrink-0 w-[120px] sm:w-[140px] lg:w-[220px] xl:w-[300px]">
@@ -50,22 +49,6 @@ function DetailRow({ label, uploadLink, children }: DetailRowProps) {
         </span>
       </div>
       <div className="flex-1 min-w-0">{children}</div>
-      {uploadLink && (
-        <a
-          href="#"
-          className="flex-shrink-0 flex items-center gap-1 ml-2 lg:ml-6 hover:opacity-75 transition-opacity"
-          style={{
-            fontFamily: "Open Sans, sans-serif",
-            fontWeight: 600,
-            fontSize: "clamp(0.8rem, 1.04vw, 1.25rem)",
-            color: "#EE334E",
-            textDecoration: "none",
-          }}
-        >
-          <span className="hidden sm:inline">Link to upload</span>
-          <Icon name="solar:arrow-right-up-bold" size={18} color="#EE334E" />
-        </a>
-      )}
     </div>
   );
 }
@@ -281,11 +264,11 @@ export function ProjectDetailPage() {
               <span style={VALUE_STYLE}>{project.name}</span>
             </DetailRow>
 
-            <DetailRow label="Project Description" uploadLink>
+            <DetailRow label="Project Description">
               <span style={VALUE_STYLE}>{project.description}</span>
             </DetailRow>
 
-            <DetailRow label="Indication of Impact" uploadLink>
+            <DetailRow label="Indication of Impact">
               <span style={VALUE_STYLE}>{project.impactIndication}</span>
             </DetailRow>
 
@@ -315,13 +298,6 @@ export function ProjectDetailPage() {
 
             <DetailRow label="Status">
               <span style={VALUE_STYLE}>{project.status}</span>
-            </DetailRow>
-
-            <DetailRow label="Outstanding Project Image" uploadLink>
-              <span style={{ ...VALUE_STYLE, color: "#EE334E" }}>
-                Create new folder with format &ldquo;Project name_Project
-                Image&rdquo;
-              </span>
             </DetailRow>
           </div>
 
