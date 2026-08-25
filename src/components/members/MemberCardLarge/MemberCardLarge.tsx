@@ -35,14 +35,10 @@ export function MemberCardLarge({
   return (
     <div
       className={cn(
-        'w-full bg-white rounded-[16px] overflow-visible shadow-sm flex flex-col cursor-pointer transition-shadow duration-200 hover:shadow-md',
+        'w-full h-full bg-white rounded-[16px] overflow-visible shadow-sm flex flex-col cursor-pointer transition-shadow duration-200 hover:shadow-md',
         className
       )}
       onClick={onClick}
-      style={{
-        width: '426.67px',
-        height: '448.68px',
-      }}
     >
       {/* Container with Logo positioned absolutely */}
       <div className="relative">

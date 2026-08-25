@@ -55,18 +55,18 @@ export function Footer({ className }: FooterProps) {
               Infomation
             </h4>
             <div className="flex flex-col gap-3 lg:gap-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-              <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
+              <div className="flex items-start gap-3 text-base font-normal text-neutral-300">
                 <Icon name="lucide:map-pin" size={18} className="mt-0.5 shrink-0 text-blue-400" />
                 <span>Global - Operating across 6 continents</span>
               </div>
               <a
                 href="mailto:info@youthorgunion.org"
-                className="flex items-start gap-3 text-sm font-normal text-neutral-300 transition-colors hover:text-[#005D9A] sm:text-base lg:text-[20px]"
+                className="flex items-start gap-3 text-base font-normal text-neutral-300 transition-colors hover:text-[#005D9A]"
               >
                 <Icon name="lucide:mail" size={18} className="mt-0.5 shrink-0 text-blue-400" />
                 <span className="break-all sm:break-normal">info@youthorgunion.org</span>
               </a>
-              <div className="flex items-start gap-3 text-sm font-normal text-neutral-300 sm:text-base lg:text-[20px]">
+              <div className="flex items-start gap-3 text-base font-normal text-neutral-300">
                 <Icon name="lucide:calendar" size={18} className="mt-0.5 shrink-0 text-blue-400" />
                 <span>Within 5-7 business days</span>
               </div>
@@ -94,7 +94,7 @@ export function Footer({ className }: FooterProps) {
                 style={{
                   fontFamily: 'Open Sans, sans-serif',
                   fontWeight: 400,
-                  fontSize: '20px',
+                  fontSize: '16px',
                   lineHeight: '100%',
                   letterSpacing: '0%',
                   verticalAlign: 'middle',
@@ -108,7 +108,7 @@ export function Footer({ className }: FooterProps) {
                 style={{
                   fontFamily: 'Open Sans, sans-serif',
                   fontWeight: 400,
-                  fontSize: '20px',
+                  fontSize: '16px',
                   lineHeight: '100%',
                   letterSpacing: '0%',
                   verticalAlign: 'middle',
@@ -122,7 +122,7 @@ export function Footer({ className }: FooterProps) {
                 style={{
                   fontFamily: 'Open Sans, sans-serif',
                   fontWeight: 400,
-                  fontSize: '20px',
+                  fontSize: '16px',
                   lineHeight: '100%',
                   letterSpacing: '0%',
                   verticalAlign: 'middle',
@@ -136,7 +136,7 @@ export function Footer({ className }: FooterProps) {
                 style={{
                   fontFamily: 'Open Sans, sans-serif',
                   fontWeight: 400,
-                  fontSize: '20px',
+                  fontSize: '16px',
                   lineHeight: '100%',
                   letterSpacing: '0%',
                   verticalAlign: 'middle',

@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react';
 import { Collapse, Skeleton } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { cn } from '@/lib/utils';
-import { ViewAllButton } from '@/components/shared/ViewAllButton';
 import { Container } from '@/components/ui/Container';
-import { ROUTES } from '@/routes/paths';
 import { fetchFAQs, type FAQ } from '@/api/faqs';
 
 export function FAQSection() {
@@ -31,13 +29,12 @@ export function FAQSection() {
 
   return (
     <section className="bg-white pb-12 pt-0 md:pb-16 lg:pb-[7.5rem]">
-      <Container size="narrow">
+      <Container className="max-w-[95%] sm:max-w-[85%]">
         {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">
           <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] text-[#111111] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             Frequently Asked Questions
           </h2>
-          <ViewAllButton to={ROUTES.POLICY_DOCUMENTS} className="flex-shrink-0 !px-4 !py-1.5 !text-sm sm:!px-6 sm:!py-2.5 sm:!text-[16px]" />
         </div>
 
         {/* FAQ items */}

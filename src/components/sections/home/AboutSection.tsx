@@ -1,26 +1,25 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import { Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { ROUTES } from '@/routes/paths';
 import { StatsGrid } from '@/components/shared/StatsGrid';
+import { VideoCarousel } from './VideoCarousel';
 
 type AboutItem = {
   id: 'vision' | 'mission' | 'approach' | 'why';
   title: string;
   color: string;
   description: string;
-  // Temporarily reuse the same image across tabs (no per-tab assets yet).
-  // Replace the `image` field when real assets are available.
-  image: string;
 };
 
 const ABOUT_ITEMS: AboutItem[] = [
-  { id: 'vision', title: 'Our Vision', color: '#F4F4F4', description: 'A world where every young person has the platform and tools to lead positive change in their community and beyond.', image: '/images/home/about/about-image.png' },
-  { id: 'mission', title: 'Our Mission', color: '#F4F4F4', description: 'To connect, support, and amplify youth-led organizations globally through collaboration, capacity building, and shared resources for sustainable development.', image: '/images/home/about/about-image2.jpeg' },
-  { id: 'approach', title: 'Our Approach', color: '#F4F4F4', description: 'We build bridges across borders, cultures, and generations by facilitating partnerships, joint programs, and knowledge exchange between youth organizations worldwide.', image: '/images/home/about/about-image3.jpeg' },
-  { id: 'why', title: 'Why join us', color: '#F4F4F4', description: 'Join a global network of 50+ organizations across 30 countries, access funding opportunities, leadership training, and collaborative projects aligned with the UN SDGs.', image: '/images/home/about/about-image4.jpeg' },
+  { id: 'vision', title: 'Our Vision', color: '#F4F4F4', description: 'A world where every young person has the platform and tools to lead positive change in their community and beyond.' },
+  { id: 'mission', title: 'Our Mission', color: '#F4F4F4', description: 'To connect, support, and amplify youth-led organizations globally through collaboration, capacity building, and shared resources for sustainable development.' },
+  { id: 'approach', title: 'Our Approach', color: '#F4F4F4', description: 'We build bridges across borders, cultures, and generations by facilitating partnerships, joint programs, and knowledge exchange between youth organizations worldwide.' },
+  { id: 'why', title: 'Why join us', color: '#F4F4F4', description: 'Join a global network of 50+ organizations across 30 countries, access funding opportunities, leadership training, and collaborative projects aligned with the UN SDGs.' },
 ];
 
 const STATS = [
@@ -33,13 +32,11 @@ const STATS = [
 export function AboutSection() {
   const [activeId, setActiveId] = useState<AboutItem['id']>('vision');
 
-  const activeItem = ABOUT_ITEMS.find((item) => item.id === activeId) ?? ABOUT_ITEMS[0];
-
   return (
     <>
       {/* Part 1: SDG Goals + CTA + Stats — white background */}
       <section className="bg-white pb-0 pt-0">
-        <Container>
+        <Container className="max-w-[95%] sm:max-w-[85%]">
           {/* SDG Goals logo + text + CTA — 2 columns */}
           <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-8 lg:gap-12">
             {/* Left: SDG logo */}
@@ -72,7 +69,7 @@ export function AboutSection() {
 
       {/* Part 2: About Vision */}
       <section className="bg-white pb-[120px] pt-12 md:pt-16 lg:pt-[7.5rem]">
-        <Container>
+        <Container className="max-w-[95%] sm:max-w-[85%]">
           {/* Heading */}
           <div className="text-left mb-8 lg:mb-12">
             <h2 className="font-heading font-semibold text-[clamp(1.75rem,3.13vw,3rem)] leading-tight">
@@ -86,7 +83,7 @@ export function AboutSection() {
           {/* Content: tab list left + image right */}
           <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
             {/* Left: tab list */}
-            <div className="min-w-0 flex-1 max-w-full lg:max-w-[602px]">
+            <div className="min-w-0 flex-1 max-w-full lg:basis-[45%] lg:max-w-[602px]">
               {ABOUT_ITEMS.map((item, index) => {
                 const isActive = item.id === activeId;
                 // Hide the divider under the last tab ("Why join us").
@@ -108,18 +105,21 @@ export function AboutSection() {
                           {item.title}
                         </h4>
                       </div>
-                      {isActive && (
-                        <div className="pl-[52px] sm:pl-[68px] pr-2 pb-3">
-                          <p className="text-neutral-600 text-[clamp(1rem,1.30vw,1.25rem)] font-normal leading-relaxed">
-                            {item.description}
-                          </p>
-                          <span className="mt-4 inline-flex items-center gap-2 font-semibold text-[#EE334E] text-[clamp(1rem,1.30vw,1.25rem)]">
-                            See more
-                            <Icon name="lucide:arrow-up-right" size={20} />
-                          </span>
-                        </div>
-                      )}
                     </button>
+                    {isActive && (
+                      <div className="pl-[52px] sm:pl-[68px] pr-2 pb-3">
+                        <p className="text-neutral-600 text-[clamp(1rem,1.30vw,1.25rem)] font-normal leading-relaxed">
+                          {item.description}
+                        </p>
+                        <Link
+                          to={ROUTES.ABOUT}
+                          className="mt-4 inline-flex items-center gap-2 font-semibold text-[#EE334E] text-[clamp(1rem,1.30vw,1.25rem)] hover:opacity-80"
+                        >
+                          See more
+                          <Icon name="lucide:arrow-up-right" size={20} />
+                        </Link>
+                      </div>
+                    )}
 
                     {!isLast && (
                       <div
@@ -143,29 +143,10 @@ export function AboutSection() {
               })}
             </div>
 
-            {/* Right: image for the active tab (temporarily shared asset) */}
+            {/* Right: video carousel */}
             <div className="w-full min-w-0 flex-1 lg:basis-[52%] xl:max-w-[702px]">
               <div className="rounded-2xl overflow-hidden aspect-[702/513] relative">
-                <Image
-                  key={activeItem.image}
-                  src={activeItem.image}
-                  alt={activeItem.title}
-                  preview={false}
-                  className="w-full h-full object-cover"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  wrapperStyle={{ width: '100%', height: '100%' }}
-                />
-                {activeItem.id === 'vision' && (
-                  <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
-                    <img
-                      src="/images/common/decor/group.svg"
-                      alt=""
-                      aria-hidden="true"
-                      className="w-[18%] h-auto object-contain opacity-20"
-                      style={{ marginTop: '15%', marginLeft: '5%' }}
-                    />
-                  </div>
-                )}
+                <VideoCarousel />
               </div>
             </div>
           </div>

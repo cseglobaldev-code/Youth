@@ -21,7 +21,7 @@ export function JoinSection() {
 
   return (
     <section id="join-section" className="bg-[#F2F7FF] py-12 md:py-16 lg:py-[7.5rem]">
-      <Container size="wide">
+      <Container className="max-w-[95%] sm:max-w-[85%]">
         {/* Header */}
         <div className="text-center mb-8 md:mb-12 lg:mb-[60px]">
           <h2 className="font-semibold text-[clamp(1.75rem,3.13vw,3rem)] leading-tight mb-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>

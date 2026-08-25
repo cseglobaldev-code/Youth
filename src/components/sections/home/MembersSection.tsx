@@ -38,8 +38,8 @@ export function MembersSection() {
   }, []);
 
   return (
-    <section className="bg-[#F2F7FF] py-12 md:py-16 lg:py-[7.5rem]">
-      <Container size="wide">
+    <section className="bg-[#F2F7FF] rounded-t-3xl py-12 md:py-16 lg:rounded-t-[40px] lg:py-[7.5rem]">
+      <Container className="max-w-[95%] sm:max-w-[85%]">
         {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">
           <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>

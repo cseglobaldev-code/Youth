@@ -50,8 +50,8 @@ export function TeamSection() {
     return () => window.clearInterval(intervalId);
   }, [manualNavigationCount, directors.length]);
   return (
-    <section className="bg-white py-0">
-      <Container size="wide">
+    <section className="bg-white pt-12 pb-0 md:pt-16 lg:pt-[7.5rem]">
+      <Container className="max-w-[95%] sm:max-w-[85%]">
         {/* Header */}
         <div className="text-center mb-8 md:mb-12 lg:mb-[60px]">
           <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>

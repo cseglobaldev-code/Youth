@@ -20,9 +20,12 @@ export interface ApplyRoleFormValues {
   cityTown: string;
   email: string;
   whatsappNumber: string;
-  profileImage: UploadFile[];
-  linkedinProfile: string;
-  websiteOrSocial?: string;
+  profilePhoto: UploadFile[];
+  activityPhotos?: UploadFile[];
+  facebookUrl?: string;
+  instagramUrl?: string;
+  linkedinUrl?: string;
+  portfolio?: string;
   resumeCv: UploadFile[];
   continent: Continent;
   region: string;
@@ -221,8 +224,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
       'cityTown',
       'email',
       'whatsappNumber',
-      'profileImage',
-      'linkedinProfile',
+      'profilePhoto',
       'resumeCv',
     ]);
     setStep(2);
@@ -281,13 +283,15 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
             <span className="font-semibold text-[15px] sm:text-[16px] text-[#111111]" style={FONT}>
               Criteria For Recruiting Continental Directors
             </span>
-            <button
-              type="button"
+            <a
+              href="https://docs.google.com/document/d/1pyn77tCjnGVH7xVnMfh6VxrdT3S3dU0YSRqUPGjN-fo/edit?usp=sharing"
+              target="_blank"
+              rel="noopener noreferrer"
               className="rounded-full border border-[#EE334E] px-5 py-1 text-[14px] font-semibold text-[#EE334E] transition-colors hover:bg-[#EE334E]/5"
               style={FONT}
             >
               Link
-            </button>
+            </a>
           </div>
         </>
       )}
@@ -450,40 +454,76 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
           </Form.Item>
 
           <Form.Item
-            label={<FieldLabel text="Profile Image" required />}
-            name="profileImage"
+            label={
+              <FieldLabel
+                text="Profile Photo"
+                required
+                hint="1 professional, formal headshot with a clear, visible face."
+              />
+            }
+            name="profilePhoto"
             valuePropName="fileList"
             getValueFromEvent={normFile}
-            rules={[{ required: true, message: 'Please upload a profile image' }]}
-            extra={<span className="text-[13px] italic text-[#EE334E]">{UPLOAD_HINT}</span>}
+            rules={[{ required: true, message: 'Please upload a profile photo' }]}
+            extra={<span className="text-[13px] italic text-[#EE334E]">JPG or PNG, up to 100 MB.</span>}
+          >
+            <Upload beforeUpload={() => false} maxCount={1} listType="text">
+              <UploadButton />
+            </Upload>
+          </Form.Item>
+
+          <Form.Item
+            label={
+              <FieldLabel
+                text="Activity Photos"
+                hint="Photos of your activities or achievements."
+              />
+            }
+            name="activityPhotos"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+            extra={<span className="text-[13px] italic text-[#EE334E]">Upload up to 10 photos. Each file can be up to 100 MB.</span>}
           >
             <Upload beforeUpload={() => false} multiple maxCount={10} listType="text">
               <UploadButton />
             </Upload>
           </Form.Item>
 
-          <Form.Item
-            label={<FieldLabel text="LinkedIn Profile" required />}
-            name="linkedinProfile"
-            rules={[
-              { required: true, message: 'Please enter your LinkedIn profile' },
-              urlRule('Please enter a valid LinkedIn URL'),
-            ]}
-          >
-            <Input placeholder="Enter your LinkedIn profile URL" style={FONT} />
-          </Form.Item>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5">
+            <Form.Item
+              label={<FieldLabel text="Facebook" />}
+              name="facebookUrl"
+              rules={[urlRule('Please enter a valid URL')]}
+            >
+              <Input placeholder="Enter Facebook profile URL" style={FONT} />
+            </Form.Item>
+            <Form.Item
+              label={<FieldLabel text="Instagram" />}
+              name="instagramUrl"
+              rules={[urlRule('Please enter a valid URL')]}
+            >
+              <Input placeholder="Enter Instagram profile URL" style={FONT} />
+            </Form.Item>
+            <Form.Item
+              label={<FieldLabel text="LinkedIn" />}
+              name="linkedinUrl"
+              rules={[urlRule('Please enter a valid URL')]}
+            >
+              <Input placeholder="Enter LinkedIn profile URL" style={FONT} />
+            </Form.Item>
+          </div>
 
           <Form.Item
             label={
               <FieldLabel
-                text="Website or Social Media Profile"
-                hint="Please provide the links to your professional or personal social media accounts or website."
+                text="Portfolio"
+                hint="Link to your personal portfolio or work samples."
               />
             }
-            name="websiteOrSocial"
+            name="portfolio"
             rules={[urlRule('Please enter a valid URL')]}
           >
-            <Input placeholder="Enter your website or social media URL" style={FONT} />
+            <Input placeholder="Enter your portfolio URL" style={FONT} />
           </Form.Item>
 
           <Form.Item

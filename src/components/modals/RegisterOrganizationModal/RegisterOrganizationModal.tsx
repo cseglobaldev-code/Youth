@@ -15,10 +15,12 @@ export interface RegisterOrganizationFormValues {
   country: string;
   address: string;
   email: string;
-  website: string;
+  website?: string;
   focusArea: string;
   focusSDGs: string[];
-  socialProfile: string;
+  facebookUrl?: string;
+  instagramUrl?: string;
+  linkedinUrl?: string;
   organizationImage?: unknown[];
   organizationLogo?: unknown[];
   // Step 2 — Project Information
@@ -82,9 +84,11 @@ const STEP_FIELDS: Record<1 | 2, (keyof RegisterOrganizationFormValues)[]> = {
     'address',
     'email',
     'website',
+    'facebookUrl',
+    'instagramUrl',
+    'linkedinUrl',
     'focusArea',
     'focusSDGs',
-    'socialProfile',
     'organizationImage',
     'organizationLogo',
   ],
@@ -199,9 +203,18 @@ export function RegisterOrganizationModal({
             <Form.Item
               label={labelText('Organization Description')}
               name="organizationDescription"
-              rules={[{ required: true, message: 'Please enter organization description' }]}
+              rules={[
+                { required: true, message: 'Please enter organization description' },
+                { max: 500, message: 'Description must be at most 500 characters' },
+              ]}
             >
-              <Input.TextArea rows={3} placeholder="Describe your organization" style={FONT} />
+              <Input.TextArea
+                rows={3}
+                maxLength={500}
+                showCount
+                placeholder="Describe your organization"
+                style={FONT}
+              />
             </Form.Item>
 
             <Form.Item
@@ -287,19 +300,40 @@ export function RegisterOrganizationModal({
             <Form.Item
               label={labelText('Website')}
               name="website"
-              rules={[
-                { required: true, message: 'Please enter website' },
-                urlRule(),
-              ]}
+              rules={[urlRule()]}
             >
               <Input placeholder="Enter website URL" style={FONT} />
             </Form.Item>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5">
+              <Form.Item
+                label={labelText('Facebook')}
+                name="facebookUrl"
+                rules={[urlRule()]}
+              >
+                <Input placeholder="Enter Facebook profile URL" style={FONT} />
+              </Form.Item>
+              <Form.Item
+                label={labelText('Instagram')}
+                name="instagramUrl"
+                rules={[urlRule()]}
+              >
+                <Input placeholder="Enter Instagram profile URL" style={FONT} />
+              </Form.Item>
+              <Form.Item
+                label={labelText('LinkedIn')}
+                name="linkedinUrl"
+                rules={[urlRule()]}
+              >
+                <Input placeholder="Enter LinkedIn profile URL" style={FONT} />
+              </Form.Item>
+            </div>
 
             <Form.Item
               label={labelText('Focus Area')}
               name="focusArea"
               rules={[{ required: true, message: 'Please enter focus area' }]}
-              extra={<span className="italic" style={FONT}>(eg. Climate Policy, Social Innovation,...)</span>}
+              extra={<span className="italic" style={FONT}>(e.g. Climate Policy, Social Innovation, ... — separate multiple entries with a comma)</span>}
             >
               <Input placeholder="Enter focus area" style={FONT} />
             </Form.Item>
@@ -327,17 +361,6 @@ export function RegisterOrganizationModal({
                   ))}
                 </div>
               </Checkbox.Group>
-            </Form.Item>
-
-            <Form.Item
-              label={labelText('Website or Social Media Profile')}
-              name="socialProfile"
-              rules={[
-                { required: true, message: 'Please enter a website or social media profile' },
-                urlRule(),
-              ]}
-            >
-              <Input placeholder="Enter link" style={FONT} />
             </Form.Item>
 
             <Form.Item
