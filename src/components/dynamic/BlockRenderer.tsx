@@ -1,7 +1,6 @@
 import { SectionWrapper } from './SectionWrapper';
 import { BlockErrorBoundary } from './BlockErrorBoundary';
 
-// Import trực tiếp từng file block
 import { HeroBlock } from './blocks/HeroBlock';
 import { RichTextBlock } from './blocks/RichTextBlock';
 import { MediaTextBlock } from './blocks/MediaTextBlock';
@@ -13,6 +12,8 @@ import { FeaturedProjectsBlock } from './blocks/FeaturedProjectsBlock';
 import { FeaturedMembersBlock } from './blocks/FeaturedMembersBlock';
 import { TeamGridBlock } from './blocks/TeamGridBlock';
 import { EmbedBlock } from './blocks/EmbedBlock';
+import { FeatureGridBlock } from './blocks/FeatureGridBlock';
+import { ImageTextGridBlock } from './blocks/ImageTextGridBlock';
 
 import type { DynamicContentBlock } from '@/types';
 
@@ -55,6 +56,10 @@ export function BlockRenderer({ blocks }: BlockRendererProps) {
                     return <TeamGridBlock data={block} />;
                   case 'sections.embed':
                     return <EmbedBlock data={block} />;
+                  case 'sections.feature-grid':
+                    return <FeatureGridBlock data={block} />;
+                  case 'sections.image-text-grid':
+                    return <ImageTextGridBlock data={block} />;
                   default:
                     return null;
                 }

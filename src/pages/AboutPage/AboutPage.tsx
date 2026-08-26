@@ -1,8 +1,15 @@
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { Skeleton } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { CTABanner } from '@/components/shared/CTABanner';
 import { StatsGrid } from '@/components/shared/StatsGrid';
 import { Icon } from '@/components/ui/Icon';
+import { BlockRenderer } from '@/components/dynamic';
+import { fetchPageBySlugOrId } from '@/api/pages';
+import type { PageDetailItem } from '@/types';
 
+// Dữ liệu tĩnh dự phòng (Static Fallback) nếu CMS chưa có dữ liệu
 const STATS = [
   { label: 'Member Organizations', value: 50 },
   { label: 'Continents', value: 6 },
@@ -65,7 +72,7 @@ const ACTIVITIES = [
 const ABOUT_CONTAINER_CLASS = 'max-w-none lg:px-[90px]';
 const ABOUT_SECTION_TITLE_CLASS = 'font-heading text-[clamp(1.75rem,3vw,3rem)] font-semibold leading-tight text-black';
 
-export function AboutPage() {
+function StaticAboutFallback() {
   return (
     <div className="relative z-10 bg-white">
       <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
@@ -211,4 +218,71 @@ export function AboutPage() {
       />
     </div>
   );
+}
+
+export function AboutPage() {
+  const [searchParams] = useSearchParams();
+  const isPreview = searchParams.get('preview') === '1';
+  const [page, setPage] = useState<PageDetailItem | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetchPageBySlugOrId('about-us', {
+      signal: controller.signal,
+      bypassCache: isPreview,
+    })
+      .then((data) => {
+        setPage(data);
+      })
+      .catch(() => {
+        // Nếu lỗi mạng hoặc chưa có trên Strapi -> setPage null để tự động dùng fallback tĩnh
+        setPage(null);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      });
+
+    return () => controller.abort();
+  }, [isPreview]);
+
+  // Cập nhật SEO Title nếu có từ Strapi
+  useEffect(() => {
+    if (page?.title) {
+      document.title = page.seo?.metaTitle || `${page.title} · Y.O.U`;
+    }
+  }, [page]);
+
+  if (loading) {
+    return (
+      <Container className="py-20">
+        <Skeleton active paragraph={{ rows: 10 }} />
+      </Container>
+    );
+  }
+
+  // NẾU STRAPI ĐÃ CÓ BLOCKS DỮ LIỆU ĐỘNG -> RENDER DYNAMIC
+  if (page && page.contentBlocks && page.contentBlocks.length > 0) {
+    return (
+      <div className="relative w-full">
+        {isPreview && (
+          <div className="sticky top-[clamp(3.75rem,5.5vw,5.25rem)] z-40 flex items-center justify-between bg-amber-500 px-4 py-2 text-white shadow-md">
+            <div className="mx-auto flex items-center gap-2 text-sm font-medium">
+              <Icon name="lucide:eye" size={16} />
+              <span>
+                <strong>Preview Mode:</strong> You are viewing a draft version of this page.
+              </span>
+            </div>
+          </div>
+        )}
+        <BlockRenderer blocks={page.contentBlocks} />
+      </div>
+    );
+  }
+
+  // NẾU CHƯA CÓ TRÊN STRAPI / RỖNG -> TỰ ĐỘNG HIỂN THỊ GIAO DIỆN TĨNH MẶC ĐỊNH
+  return <StaticAboutFallback />;
 }

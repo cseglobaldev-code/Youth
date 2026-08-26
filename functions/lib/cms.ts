@@ -6,6 +6,8 @@ const ALLOWED_PREFIXES = [
   '/api/news-items',
   '/api/policy-documents',
   '/api/pages',
+  '/api/about-us',
+  '/api/global-setting',
 ];
 
 export function isAllowedCmsPath(pathname: string): boolean {

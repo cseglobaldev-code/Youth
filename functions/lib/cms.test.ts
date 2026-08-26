@@ -8,6 +8,8 @@ describe('CMS proxy helpers', () => {
     expect(isAllowedCmsPath('/api/members')).toBe(true);
     expect(isAllowedCmsPath('/api/pages')).toBe(true);
     expect(isAllowedCmsPath('/api/pages/page-1')).toBe(true);
+    expect(isAllowedCmsPath('/api/about-us')).toBe(true);
+    expect(isAllowedCmsPath('/api/global-setting')).toBe(true);
     expect(isAllowedCmsPath('/api/inquiries')).toBe(false);
     expect(isAllowedCmsPath('/admin/init')).toBe(false);
   });

@@ -12,6 +12,8 @@ import type {
   FeaturedMembersBlockData,
   TeamGridBlockData,
   EmbedBlockData,
+  FeatureGridBlockData,
+  ImageTextGridBlockData,
   SEOData,
 } from '@/types';
 import {
@@ -236,6 +238,47 @@ function mapContentBlock(raw: Record<string, any>, baseUrl: string): DynamicCont
         style,
       } as EmbedBlockData;
 
+    case 'sections.feature-grid':
+      return {
+        __component: 'sections.feature-grid',
+        id,
+        eyebrow: text(raw.eyebrow) || undefined,
+        title: text(raw.title),
+        highlightTitle: text(raw.highlightTitle) || undefined,
+        subtitle: text(raw.subtitle) || undefined,
+        columns: typeof raw.columns === 'number' ? raw.columns : 4,
+        items: Array.isArray(raw.items)
+          ? raw.items.map((item: any) => ({
+              icon: text(item.icon) || 'lucide:badge-check',
+              title: text(item.title),
+              description: text(item.description),
+              active: Boolean(item.active),
+            }))
+          : [],
+        style,
+      } as FeatureGridBlockData;
+
+    case 'sections.image-text-grid':
+      return {
+        __component: 'sections.image-text-grid',
+        id,
+        eyebrow: text(raw.eyebrow) || undefined,
+        title: text(raw.title),
+        highlightTitle: text(raw.highlightTitle) || undefined,
+        subtitle: text(raw.subtitle) || undefined,
+        imageShape: raw.imageShape || 'circle',
+        columns: typeof raw.columns === 'number' ? raw.columns : 5,
+        items: Array.isArray(raw.items)
+          ? raw.items.map((item: any) => ({
+              image: item.image,
+              imageUrl: mediaUrl(item.image, baseUrl) || (typeof item.image === 'string' ? item.image : ''),
+              title: text(item.title),
+              description: text(item.description),
+            }))
+          : [],
+        style,
+      } as ImageTextGridBlockData;
+
     default:
       return null;
   }
@@ -251,8 +294,8 @@ function mapPageDetail(raw: StrapiRawPage, baseUrl: string): PageDetailItem {
   return {
     id: String(raw.id ?? ''),
     documentId: text(raw.documentId),
-    title: text(raw.title),
-    slug: text(raw.slug),
+    title: text(raw.title) || 'About Us',
+    slug: text(raw.slug) || 'about-us',
     seo: mapSEO(raw.seo, baseUrl),
     contentBlocks: blocks,
     updatedAt: text(raw.updatedAt) || undefined,
@@ -268,17 +311,13 @@ export async function fetchPageBySlugOrId(
     options.bypassCache ||
     (typeof window !== 'undefined' && window.location.search.includes('preview=1'));
 
-  // 1. Tìm kiếm theo Slug chuẩn
+  // 1. Tìm kiếm theo Slug chuẩn (Collection Type /api/pages)
   const query = new URLSearchParams();
   query.append('filters[slug][$eq]', slugOrId);
   query.append('populate[seo][populate]', '*');
   query.append('populate[contentBlocks][populate]', '*');
   query.append('pagination[pageSize]', '1');
-
-  // Khi đang ở chế độ xem trước -> Yêu cầu Strapi trả về bản DRAFT / MODIFIED
-  if (isPreview) {
-    query.append('status', 'draft');
-  }
+  if (isPreview) query.append('status', 'draft');
 
   const slugUrl = `${baseUrl}/api/pages?${query.toString()}`;
   let payload = cacheGet(slugUrl, isPreview) as StrapiPagesResponse | undefined;
@@ -298,19 +337,49 @@ export async function fetchPageBySlugOrId(
         }
       }
     } catch {
-      // Bỏ qua để thử fallback documentId
+      // Bỏ qua để thử fallback
     }
   } else if (Array.isArray(payload.data) && payload.data.length > 0 && payload.data[0]) {
     return mapPageDetail(payload.data[0], baseUrl);
   }
 
-  // 2. Fallback: Tìm theo Document ID (Dành cho link Preview trực tiếp từ Strapi Admin)
+  // 2. Fallback: Nếu là Single Type 'about-us' (/api/about-us)
+  if (slugOrId === 'about-us') {
+    const aboutQuery = new URLSearchParams();
+    aboutQuery.append('populate[seo][populate]', '*');
+    aboutQuery.append('populate[contentBlocks][populate]', '*');
+    if (isPreview) aboutQuery.append('status', 'draft');
+
+    const aboutUrl = `${baseUrl}/api/about-us?${aboutQuery.toString()}`;
+    let aboutPayload = cacheGet(aboutUrl, isPreview) as { data?: StrapiRawPage } | undefined;
+
+    if (aboutPayload === undefined) {
+      try {
+        const response = await fetch(aboutUrl, {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+          signal: options.signal,
+        });
+
+        if (response.ok) {
+          aboutPayload = (await response.json()) as { data?: StrapiRawPage };
+          if (aboutPayload.data && typeof aboutPayload.data === 'object' && !Array.isArray(aboutPayload.data)) {
+            cacheSet(aboutUrl, aboutPayload, isPreview);
+            return mapPageDetail(aboutPayload.data, baseUrl);
+          }
+        }
+      } catch {
+        // Bỏ qua
+      }
+    } else if (aboutPayload.data && typeof aboutPayload.data === 'object' && !Array.isArray(aboutPayload.data)) {
+      return mapPageDetail(aboutPayload.data, baseUrl);
+    }
+  }
+
+  // 3. Fallback: Tìm theo Document ID (Dành cho link Preview trực tiếp)
   const docQuery = new URLSearchParams();
   docQuery.append('populate[seo][populate]', '*');
   docQuery.append('populate[contentBlocks][populate]', '*');
-  if (isPreview) {
-    docQuery.append('status', 'draft');
-  }
+  if (isPreview) docQuery.append('status', 'draft');
 
   const docUrl = `${baseUrl}/api/pages/${encodeURIComponent(slugOrId)}?${docQuery.toString()}`;
   let docPayload = cacheGet(docUrl, isPreview) as { data?: StrapiRawPage } | undefined;

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { Container } from '@/components/ui/Container';
@@ -5,12 +6,27 @@ import { Icon } from '@/components/ui/Icon';
 import { ICONS } from '@/config/icons';
 import { SOCIAL_LINKS } from '@/data';
 import { ROUTES } from '@/routes/paths';
+import { fetchGlobalSettings, DEFAULT_GLOBAL_SETTINGS } from '@/api/global';
+import type { GlobalSetting } from '@/types';
 
 export interface FooterProps {
   className?: string;
 }
 
 export function Footer({ className }: FooterProps) {
+  const [settings, setSettings] = useState<GlobalSetting>(DEFAULT_GLOBAL_SETTINGS);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchGlobalSettings({ signal: controller.signal })
+      .then(setSettings)
+      .catch(() => setSettings(DEFAULT_GLOBAL_SETTINGS));
+
+    return () => controller.abort();
+  }, []);
+
+  const socialLinks = settings.socialLinks && settings.socialLinks.length > 0 ? settings.socialLinks : SOCIAL_LINKS;
+
   return (
     <footer className={cn('bg-[#0B1A2B] text-white', className)}>
       <Container>
@@ -25,7 +41,7 @@ export function Footer({ className }: FooterProps) {
               />
             </Link>
             <div className="mt-5 flex w-[168px] items-center justify-center gap-4 sm:mt-6 sm:w-[190px] lg:w-[225px]">
-              {SOCIAL_LINKS.map((link) => (
+              {socialLinks.map((link) => (
                 <a
                   key={link.platform}
                   href={link.url}
@@ -52,23 +68,23 @@ export function Footer({ className }: FooterProps) {
                 letterSpacing: '0%',
               }}
             >
-              Infomation
+              Information
             </h4>
             <div className="flex flex-col gap-3 lg:gap-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               <div className="flex items-start gap-3 text-base font-normal text-neutral-300">
                 <Icon name="lucide:map-pin" size={18} className="mt-0.5 shrink-0 text-blue-400" />
-                <span>Global - Operating across 6 continents</span>
+                <span>{settings.address}</span>
               </div>
               <a
-                href="mailto:info@youthorgunion.org"
+                href={`mailto:${settings.email}`}
                 className="flex items-start gap-3 text-base font-normal text-neutral-300 transition-colors hover:text-[#005D9A]"
               >
                 <Icon name="lucide:mail" size={18} className="mt-0.5 shrink-0 text-blue-400" />
-                <span className="break-all sm:break-normal">info@youthorgunion.org</span>
+                <span className="break-all sm:break-normal">{settings.email}</span>
               </a>
               <div className="flex items-start gap-3 text-base font-normal text-neutral-300">
                 <Icon name="lucide:calendar" size={18} className="mt-0.5 shrink-0 text-blue-400" />
-                <span>Within 5-7 business days</span>
+                <span>{settings.operatingTime}</span>
               </div>
             </div>
           </div>

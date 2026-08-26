@@ -9,3 +9,5 @@ export { FeaturedProjectsBlock } from './FeaturedProjectsBlock';
 export { FeaturedMembersBlock } from './FeaturedMembersBlock';
 export { TeamGridBlock } from './TeamGridBlock';
 export { EmbedBlock } from './EmbedBlock';
+export { FeatureGridBlock } from './FeatureGridBlock';
+export { ImageTextGridBlock } from './ImageTextGridBlock';

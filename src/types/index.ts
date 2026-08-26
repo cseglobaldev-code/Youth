@@ -7,11 +7,14 @@ export type { NewsItem } from './news';
 export type { DocumentItem, DocCategory, FileType } from './document';
 export type { StatItem } from './stats';
 export type { FAQ } from './faq';
+export type { GlobalSetting } from './global';
 export type {
   SectionStyle,
   SharedButton,
   SharedStatItem,
   SharedFaqItem,
+  SharedFeatureItem,
+  SharedImageTextItem,
   SEOData,
   HeroBlockData,
   RichTextBlockData,
@@ -24,6 +27,8 @@ export type {
   FeaturedMembersBlockData,
   TeamGridBlockData,
   EmbedBlockData,
+  FeatureGridBlockData,
+  ImageTextGridBlockData,
   DynamicContentBlock,
   PageDetailItem,
 } from './page';

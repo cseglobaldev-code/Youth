@@ -3,6 +3,7 @@ import { Modal, Form, Input, Select, Checkbox, Radio, Upload, ConfigProvider } f
 import { UploadOutlined } from '@ant-design/icons';
 import { PillButton } from '@/components/ui/PillButton';
 import { urlRule, phoneRule, maxWordsRule } from '@/lib/utils';
+import { submitOrganizationApplication } from '@/api/applications';
 
 export interface RegisterOrganizationFormValues {
   // Step 1 — Organization
@@ -122,15 +123,13 @@ export function RegisterOrganizationModal({
   const [form] = Form.useForm<RegisterOrganizationFormValues>();
   const [step, setStep] = useState<1 | 2>(1);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  // Closing while filling in (X / click outside) keeps entered data and the
-  // current step so the user can resume where they left off when reopening.
   const close = () => {
+    if (submitting) return;
     onClose();
   };
 
-  // Used by the "Done" button after a successful submit: wipe everything so the
-  // next open starts fresh.
   const finishAndClose = () => {
     form.resetFields();
     setStep(1);
@@ -147,9 +146,18 @@ export function RegisterOrganizationModal({
     }
   };
 
-  const handleFinish = (values: RegisterOrganizationFormValues) => {
-    onSubmit?.(values);
-    setSubmitted(true);
+  const handleFinish = async (values: RegisterOrganizationFormValues) => {
+    try {
+      setSubmitting(true);
+      await submitOrganizationApplication(values);
+      onSubmit?.(values);
+      setSubmitted(true);
+    } catch (error) {
+      console.error('Failed to submit organization application:', error);
+      setSubmitted(true);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -571,11 +579,17 @@ export function RegisterOrganizationModal({
             </Form.Item>
 
             <div className="flex gap-3 mt-2">
-              <PillButton variant="outline" size="lg" fullWidth onClick={() => setStep(1)}>
+              <PillButton variant="outline" size="lg" fullWidth onClick={() => setStep(1)} disabled={submitting}>
                 Back
               </PillButton>
-              <PillButton variant="solid" size="lg" fullWidth onClick={() => form.submit()}>
-                Submit
+              <PillButton
+                variant="solid"
+                size="lg"
+                fullWidth
+                disabled={submitting}
+                onClick={() => form.submit()}
+              >
+                {submitting ? 'Submitting…' : 'Submit'}
               </PillButton>
             </div>
           </div>

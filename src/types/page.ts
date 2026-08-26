@@ -31,6 +31,20 @@ export interface SharedFaqItem {
   answer: string;
 }
 
+export interface SharedFeatureItem {
+  icon: string;
+  title: string;
+  description: string;
+  active?: boolean;
+}
+
+export interface SharedImageTextItem {
+  image?: StrapiMedia | null;
+  imageUrl?: string;
+  title: string;
+  description?: string;
+}
+
 export interface SEOData {
   metaTitle?: string;
   metaDescription?: string;
@@ -39,7 +53,7 @@ export interface SEOData {
   preventIndexing?: boolean;
 }
 
-// ── 11 Section Block Interfaces ─────────────────────────────────────────────
+// ── 13 Section Block Interfaces ─────────────────────────────────────────────
 
 export interface HeroBlockData {
   __component: 'sections.hero';
@@ -163,6 +177,31 @@ export interface EmbedBlockData {
   style?: SectionStyle;
 }
 
+export interface FeatureGridBlockData {
+  __component: 'sections.feature-grid';
+  id: number | string;
+  eyebrow?: string;
+  title: string;
+  highlightTitle?: string;
+  subtitle?: string;
+  columns?: number;
+  items: SharedFeatureItem[];
+  style?: SectionStyle;
+}
+
+export interface ImageTextGridBlockData {
+  __component: 'sections.image-text-grid';
+  id: number | string;
+  eyebrow?: string;
+  title: string;
+  highlightTitle?: string;
+  subtitle?: string;
+  imageShape?: 'circle' | 'rounded' | 'square';
+  columns?: number;
+  items: SharedImageTextItem[];
+  style?: SectionStyle;
+}
+
 export type DynamicContentBlock =
   | HeroBlockData
   | RichTextBlockData
@@ -174,7 +213,9 @@ export type DynamicContentBlock =
   | FeaturedProjectsBlockData
   | FeaturedMembersBlockData
   | TeamGridBlockData
-  | EmbedBlockData;
+  | EmbedBlockData
+  | FeatureGridBlockData
+  | ImageTextGridBlockData;
 
 export interface PageDetailItem {
   id: string;
