@@ -126,7 +126,7 @@ export function ProjectDetailPage() {
       <Container>
         <div className="pt-10 lg:pt-[120px] flex flex-col md:flex-row md:items-start md:justify-between gap-4 lg:gap-8 xl:gap-10">
         {/* Left — title + meta + SDG tags */}
-        <div className="flex flex-col gap-4 lg:gap-6 min-w-0 flex-1 xl:max-w-[1024px] animate-fade-in-up">
+        <div className="flex flex-col gap-4 lg:gap-6 min-w-0 flex-1 animate-fade-in-up">
           <h1
             className="font-semibold text-black"
             style={{

@@ -98,7 +98,7 @@ export function LeadershipPage() {
             )}
           >
             {/* Title row — center, gap:24px */}
-            <div className="flex flex-wrap justify-center items-center gap-[16px] lg:gap-[24px]">
+            <div className="flex flex-wrap justify-center items-center gap-[16px] lg:gap-[24px] text-center">
               <span
                 className="font-semibold text-black"
                 style={{
@@ -180,16 +180,22 @@ export function LeadershipPage() {
             ) : error && leadership.executives.length === 0 ? (
               <Alert type="error" showIcon message="Unable to load leadership from the CMS." action={<button type="button" onClick={retry}>Retry</button>} />
             ) : (
-              <div className="flex flex-wrap lg:flex-nowrap justify-center lg:justify-between items-center gap-10 lg:gap-0 w-full lg:max-w-[828px] mx-auto">
-                {leadership.executives.map((member, index) => (
-                  <div key={member.id} className={cn(execVisible ? 'animate-fade-in-up' : 'opacity-0')} style={{ animationDelay: `${index * 100}ms` }}>
-                    <ExecutiveCard
-                      member={member}
-                      isPresident={/president/i.test(member.role) && !/vice/i.test(member.role)}
-                      onClick={() => openModal(member)}
-                    />
-                  </div>
-                ))}
+              <div className="grid grid-cols-2 justify-items-center gap-x-6 gap-y-10 lg:flex lg:flex-nowrap lg:justify-between lg:items-start lg:gap-0 w-full lg:max-w-[828px] mx-auto">
+                {leadership.executives.map((member, index) => {
+                  const isPresident = /president/i.test(member.role) && !/vice/i.test(member.role);
+                  return (
+                    <div
+                      key={member.id}
+                      className={cn(
+                        execVisible ? 'animate-fade-in-up' : 'opacity-0',
+                        isPresident ? 'col-span-2 -order-1 lg:order-none lg:col-span-1' : ''
+                      )}
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      <ExecutiveCard member={member} isPresident={isPresident} onClick={() => openModal(member)} />
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

@@ -72,43 +72,48 @@ export function TeamSection() {
           </span>
         </div>
         <div className="mx-auto grid grid-cols-2 lg:grid-cols-3 justify-items-center gap-x-4 gap-y-8 sm:gap-x-8 lg:max-w-[860px] lg:gap-[24px] mb-8 lg:mb-[40px]">
-          {leaders.map((leader, index) => {
+          {leaders.map((leader) => {
             const hasSocial = leader.socialLinks && leader.socialLinks.length > 0;
             const isPresident = /president/i.test(leader.role) && !/vice/i.test(leader.role);
             return (
               <div
                 key={leader.id}
                 className={`flex flex-col items-center max-w-[280px] ${
-                  index === 1 ? 'col-span-2 -order-1 lg:order-none lg:col-span-1' : ''
+                  isPresident ? 'col-span-2 -order-1 lg:order-none lg:col-span-1' : ''
                 }`}
               >
-                <div
-                  className={`rounded-full overflow-hidden border-4 border-neutral-200 mb-4 relative group cursor-pointer ${
-                    isPresident
-                      ? 'w-44 h-44 sm:w-60 sm:h-60 lg:w-[280px] lg:h-[280px]'
-                      : 'w-40 h-40 sm:w-52 sm:h-52 lg:w-[240px] lg:h-[240px]'
-                  }`}
-                >
-                  <Image src={leader.avatarUrl} alt={leader.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
-                  {hasSocial && (
-                    <div className="absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="flex gap-3">
-                        {leader.socialLinks!.map((link) => (
-                          <a
-                            key={link.platform}
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={link.platform}
-                            onClick={(e) => e.stopPropagation()}
-                            className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform"
-                          >
-                            <Icon name={ICONS[link.platform]} size={16} color={SOCIAL_COLORS[link.platform]} />
-                          </a>
-                        ))}
+                {/* Fixed-height, bottom-aligned wrapper sized to the president's larger
+                    avatar so every avatar's bottom edge lines up regardless of its own
+                    size, keeping the name/role rows level across the row. */}
+                <div className="mb-4 flex items-end justify-center w-44 h-44 sm:w-60 sm:h-60 lg:w-[280px] lg:h-[280px]">
+                  <div
+                    className={`rounded-full overflow-hidden border-4 border-neutral-200 relative group cursor-pointer ${
+                      isPresident
+                        ? 'w-44 h-44 sm:w-60 sm:h-60 lg:w-[280px] lg:h-[280px]'
+                        : 'w-40 h-40 sm:w-52 sm:h-52 lg:w-[240px] lg:h-[240px]'
+                    }`}
+                  >
+                    <Image src={leader.avatarUrl} alt={leader.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
+                    {hasSocial && (
+                      <div className="absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="flex gap-3">
+                          {leader.socialLinks!.map((link) => (
+                            <a
+                              key={link.platform}
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={link.platform}
+                              onClick={(e) => e.stopPropagation()}
+                              className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform"
+                            >
+                              <Icon name={ICONS[link.platform]} size={16} color={SOCIAL_COLORS[link.platform]} />
+                            </a>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
                 <h4 className="font-semibold text-[clamp(1rem,1.30vw,1.25rem)] text-[#111111] text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                   {leader.name}

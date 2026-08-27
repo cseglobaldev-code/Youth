@@ -36,9 +36,9 @@ export function SupportCTA({
 
   return (
     <div
-      className={['relative flex-shrink-0 pb-[54px]', className].filter(Boolean).join(' ')}
+      className={['relative flex-shrink-0 pb-0 sm:pb-[54px]', className].filter(Boolean).join(' ')}
     >
-      <div className="flex items-center justify-end gap-[18px]">
+      <div className="flex flex-col items-end gap-3 sm:flex-row sm:items-center sm:gap-[18px]">
         <span
           className="block max-w-[280px] text-right text-black"
           style={{
@@ -73,8 +73,8 @@ export function SupportCTA({
         )}
       </div>
 
-      {/* Decorative arrow under the caption, pointing up to the CTA button. */}
-      <div className="absolute pointer-events-none left-[116px] top-[70px] h-[51px] w-[270.188px] opacity-100">
+      {/* Decorative arrow under the caption, pointing up to the CTA button — only fits the row layout used from sm and up. */}
+      <div className="hidden sm:block absolute pointer-events-none left-[116px] top-[70px] h-[51px] w-[270.188px] opacity-100">
         <img
           src={supportCtaArrowUrl}
           alt=""

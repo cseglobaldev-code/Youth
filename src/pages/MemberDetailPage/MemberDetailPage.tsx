@@ -61,8 +61,8 @@ export function MemberDetailPage() {
     <div className="py-section-sm lg:py-section">
       <Container>
         <div className="mb-14">
-          <div className="mb-10 flex flex-row items-start justify-between gap-4 lg:gap-8">
-            <div className="min-w-0 flex-1 max-w-4xl">
+          <div className="mb-10 flex flex-col md:flex-row md:items-start md:justify-between gap-4 lg:gap-8">
+            <div className="min-w-0 flex-1">
               <h1
                 className="font-semibold text-black"
                 style={{

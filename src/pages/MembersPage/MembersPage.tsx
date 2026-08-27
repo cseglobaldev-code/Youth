@@ -81,7 +81,7 @@ export function MembersPage() {
   const renderContent = () => {
     if (loading && members.length === 0) {
       return (
-        <div className="grid gap-8" style={{ gridTemplateColumns: 'repeat(3, 426.67px)', gap: '32px' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {Array.from({ length: 9 }, (_, index) => (
             <Skeleton key={index} active paragraph={{ rows: 3 }} />
           ))}
@@ -107,7 +107,7 @@ export function MembersPage() {
 
     return (
       <>
-        <div className="mb-12" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 426.67px)', gap: '32px', justifyContent: 'center' }}>
+        <div className="mb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {pageItems.map((member) => (
             <MemberCardLarge
               key={member.id}
