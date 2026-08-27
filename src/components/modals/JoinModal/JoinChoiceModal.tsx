@@ -12,8 +12,8 @@ export interface JoinChoiceModalProps {
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
 
 const OPTIONS: { value: JoinChoice; label: string }[] = [
-  { value: 'organization', label: 'For Organizations' },
-  { value: 'individual', label: 'For Individuals' },
+  { value: 'organization', label: 'Join as Organization' },
+  { value: 'individual', label: 'Join as Individual' },
 ];
 
 export function JoinChoiceModal({ open, onClose, onNext }: JoinChoiceModalProps) {

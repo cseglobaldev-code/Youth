@@ -95,7 +95,11 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
   return (
     <div
       ref={containerRef}
-      className={cn('bg-[#F2F7FF] rounded-3xl lg:rounded-[40px] px-4 sm:px-6 lg:px-10 py-6 lg:py-10 mt-10 lg:mt-0', className)}
+      className={cn(
+        'rounded-3xl lg:rounded-[40px] px-4 sm:px-6 lg:px-10 py-6 lg:py-10 mt-10 lg:mt-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]',
+        className
+      )}
+      style={{ background: 'linear-gradient(180deg, #FBFDFF 0%, #EAF2FF 55%, #DCEAFF 100%)' }}
     >
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-0">
         {stats.map((stat, index) => (
@@ -108,7 +112,7 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
                 {stat.label}
               </span>
               <span
-                className="font-semibold text-[clamp(1.75rem,3.13vw,3rem)] text-[#1E293B]"
+                className="you-stat-metallic font-extrabold text-[clamp(2rem,3.6vw,3.5rem)] tracking-tight"
                 aria-label={`${stat.value} ${stat.label}`}
                 style={{ fontFamily: 'Open Sans, sans-serif' }}
               >

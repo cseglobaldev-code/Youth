@@ -24,7 +24,7 @@ export function JoinSection() {
       <Container className="max-w-[95%] sm:max-w-[85%]">
         {/* Header */}
         <div className="text-center mb-8 md:mb-12 lg:mb-[60px]">
-          <h2 className="font-semibold text-[clamp(1.75rem,3.13vw,3rem)] leading-tight mb-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <h2 className="font-semibold text-[clamp(2rem,3.13vw,3rem)] leading-tight mb-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             Join the{' '}
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Movement

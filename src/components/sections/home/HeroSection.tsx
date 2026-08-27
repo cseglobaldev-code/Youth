@@ -5,15 +5,23 @@ export function HeroSection() {
     <section className="relative overflow-hidden pb-12 md:pb-16 lg:pb-[7.5rem]">
       {/* Heading row */}
       <div className="mx-auto w-full max-w-[95%] px-[30px]">
-        <div className="flex h-fit flex-col gap-4 pt-10 text-left md:flex-row md:items-end md:gap-6 md:pt-14 lg:gap-6 lg:pt-[120px]">
+        <div className="flex h-fit flex-col gap-4 pt-10 text-left md:flex-row md:items-center md:gap-6 md:pt-14 lg:gap-6">
           <h1
             className="font-semibold text-neutral-900 text-[clamp(2rem,8vw,2.75rem)] leading-[110%] tracking-[0px] md:w-3/5 md:text-[clamp(2.5rem,6.1vw,4.5rem)] 2xl:text-[86px]"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
-            <span className="whitespace-nowrap">Uniting Youth</span>
+            <span className="whitespace-nowrap">
+              Where{' '}
+              <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
+                Unity
+              </span>
+            </span>
             <br />
-            <span className="whitespace-nowrap bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
-              Shaping Tomorrow
+            <span className="whitespace-nowrap">
+              Drives{' '}
+              <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
+                Change
+              </span>
             </span>
           </h1>
           <p

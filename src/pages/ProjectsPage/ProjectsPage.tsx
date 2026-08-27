@@ -43,7 +43,7 @@ export function ProjectsPage() {
 
   const filterItems = useMemo(
     () => [
-      { key: 'all', label: 'All Project' },
+      { key: 'all', label: 'All' },
       ...SDGS_DATA.filter((sdg) => projects.some((p) => p.focusSdgs.includes(sdg.id))).map(
         (sdg) => ({ key: `sdg-${sdg.id}`, label: `SDG ${sdg.id} – ${sdg.title}` })
       ),

@@ -106,15 +106,23 @@ export function AboutPage() {
 
       <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container size="narrow" className="lg:max-w-[1080px]">
-          <div className="grid items-center gap-8 lg:grid-cols-[1fr_400px] lg:gap-20">
+          <div className="grid items-center gap-8 lg:grid-cols-[400px_1fr] lg:gap-20">
+            <div className="relative aspect-[702/513] w-full overflow-hidden rounded-3xl lg:h-[300px] lg:aspect-auto">
+              <img
+                src="https://res.cloudinary.com/mutcixn2/image/upload/v1787475504/1787475427050_1673495044080632904_1673495044080632904_87405948f999a6f911d8e9a1ba1795b8_6ece0e7ef5.jpg"
+                alt="A global alliance for youth-led impact"
+                className="h-full w-full object-cover"
+              />
+            </div>
             <div>
               <h2 className={`mb-5 ${ABOUT_SECTION_TITLE_CLASS}`}>
                 Open Letter
               </h2>
               <div className="space-y-4 text-sm leading-relaxed text-black md:text-base">
-                <p>
+                <p className="font-semibold">
                   Together We Create Sustainable Value
-                  <br />
+                </p>
+                <p>
                   Y.O.U was founded on the belief that when we connect, share, and collaborate, we can create positive
                   and lasting changes for the community.
                 </p>
@@ -130,13 +138,6 @@ export function AboutPage() {
                   <span className="font-normal italic">Mr. Safin H. Mohammed</span>
                 </p>
               </div>
-            </div>
-            <div className="relative aspect-[702/513] w-full overflow-hidden rounded-3xl lg:h-[300px] lg:aspect-auto">
-              <img
-                src="https://res.cloudinary.com/mutcixn2/image/upload/v1787475504/1787475427050_1673495044080632904_1673495044080632904_87405948f999a6f911d8e9a1ba1795b8_6ece0e7ef5.jpg"
-                alt="A global alliance for youth-led impact"
-                className="h-full w-full object-cover"
-              />
             </div>
           </div>
         </Container>

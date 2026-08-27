@@ -32,7 +32,7 @@ export function FAQSection() {
       <Container className="max-w-[95%] sm:max-w-[85%]">
         {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">
-          <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] text-[#111111] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <h2 className="font-semibold text-[clamp(2rem,3.13vw,3rem)] text-[#111111] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             Frequently Asked Questions
           </h2>
         </div>

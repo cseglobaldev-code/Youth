@@ -5,21 +5,30 @@ import type { TeamMember } from '@/types';
 
 export interface ExecutiveCardProps {
   member: TeamMember;
+  isPresident?: boolean;
   className?: string;
   onClick?: () => void;
 }
 
-export function ExecutiveCard({ member, className, onClick }: ExecutiveCardProps) {
+export function ExecutiveCard({ member, isPresident = false, className, onClick }: ExecutiveCardProps) {
   const hasSocial = member.socialLinks && member.socialLinks.length > 0;
 
   return (
     <div className={cn('flex flex-col gap-5', className)} onClick={onClick}>
       {/*
-        Avatar 240×240 — hover darkens the photo (brightness-50) and fades in
-        brand-colored social icons from the bottom. Matches the homepage
-        TeamSection so hover is consistent across the app.
+        Avatar 240×240 (280×280 for the president) — hover darkens the photo
+        (brightness-50) and fades in brand-colored social icons from the
+        bottom. Matches the homepage TeamSection so hover is consistent
+        across the app.
       */}
-      <div className="relative w-[150px] h-[150px] sm:w-[190px] sm:h-[190px] lg:w-[240px] lg:h-[240px] flex-shrink-0 group cursor-pointer mx-auto">
+      <div
+        className={cn(
+          'relative flex-shrink-0 group cursor-pointer mx-auto',
+          isPresident
+            ? 'w-[170px] h-[170px] sm:w-[220px] sm:h-[220px] lg:w-[280px] lg:h-[280px]'
+            : 'w-[150px] h-[150px] sm:w-[190px] sm:h-[190px] lg:w-[240px] lg:h-[240px]'
+        )}
+      >
         {/* Photo */}
         <div className="w-full h-full rounded-full overflow-hidden bg-[#EEEEEE]">
           {member.avatarUrl && (

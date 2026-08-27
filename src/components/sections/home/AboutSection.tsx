@@ -68,11 +68,11 @@ export function AboutSection() {
       </section>
 
       {/* Part 2: About Vision */}
-      <section className="bg-white pb-[120px] pt-12 md:pt-16 lg:pt-[7.5rem]">
+      <section className="bg-white pb-20 pt-20 md:pb-[120px] md:pt-16 lg:pt-[7.5rem]">
         <Container className="max-w-[95%] sm:max-w-[85%]">
           {/* Heading */}
           <div className="text-left mb-8 lg:mb-12">
-            <h2 className="font-heading font-semibold text-[clamp(1.75rem,3.13vw,3rem)] leading-tight">
+            <h2 className="font-heading font-semibold text-[clamp(2rem,3.13vw,3rem)] leading-tight">
               <span className="text-neutral-900">A Global Alliance for </span>
               <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
                 Youth-Led Impact
@@ -144,7 +144,7 @@ export function AboutSection() {
             </div>
 
             {/* Right: video carousel */}
-            <div className="w-full min-w-0 flex-1 lg:basis-[52%] xl:max-w-[702px]">
+            <div className="hidden w-full min-w-0 flex-1 lg:block lg:basis-[52%] xl:max-w-[702px]">
               <div className="rounded-2xl overflow-hidden aspect-[702/513] relative">
                 <VideoCarousel />
               </div>

@@ -54,7 +54,7 @@ export function TeamSection() {
       <Container className="max-w-[95%] sm:max-w-[85%]">
         {/* Header */}
         <div className="text-center mb-8 md:mb-12 lg:mb-[60px]">
-          <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <h2 className="font-semibold text-[clamp(2rem,3.13vw,3rem)] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             The People Behind{' '}
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Y.O.U
@@ -63,12 +63,18 @@ export function TeamSection() {
         </div>
 
         {/* Leaders — 3 large circles */}
-        <h3 className="mb-8 text-center font-semibold text-[clamp(1.25rem,1.82vw,1.75rem)] text-[#111111] lg:mb-[40px]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-          Executive Leadership {currentTermLabel()}
-        </h3>
+        <div className="mb-8 flex flex-col items-center gap-1 lg:mb-[40px]">
+          <h3 className="text-center font-semibold text-[clamp(1.5rem,1.82vw,1.75rem)] text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            Executive Leadership
+          </h3>
+          <span className="text-center text-neutral-500" style={{ fontSize: 'clamp(0.875rem, 1.04vw, 1rem)', fontFamily: 'Open Sans, sans-serif' }}>
+            Term {currentTermLabel()}
+          </span>
+        </div>
         <div className="mx-auto grid grid-cols-2 lg:grid-cols-3 justify-items-center gap-x-4 gap-y-8 sm:gap-x-8 lg:max-w-[860px] lg:gap-[24px] mb-8 lg:mb-[40px]">
           {leaders.map((leader, index) => {
             const hasSocial = leader.socialLinks && leader.socialLinks.length > 0;
+            const isPresident = /president/i.test(leader.role) && !/vice/i.test(leader.role);
             return (
               <div
                 key={leader.id}
@@ -76,7 +82,13 @@ export function TeamSection() {
                   index === 1 ? 'col-span-2 -order-1 lg:order-none lg:col-span-1' : ''
                 }`}
               >
-                <div className="w-40 h-40 sm:w-52 sm:h-52 lg:w-[240px] lg:h-[240px] rounded-full overflow-hidden border-4 border-neutral-200 mb-4 relative group cursor-pointer">
+                <div
+                  className={`rounded-full overflow-hidden border-4 border-neutral-200 mb-4 relative group cursor-pointer ${
+                    isPresident
+                      ? 'w-44 h-44 sm:w-60 sm:h-60 lg:w-[280px] lg:h-[280px]'
+                      : 'w-40 h-40 sm:w-52 sm:h-52 lg:w-[240px] lg:h-[240px]'
+                  }`}
+                >
                   <Image src={leader.avatarUrl} alt={leader.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
                   {hasSocial && (
                     <div className="absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -113,10 +125,13 @@ export function TeamSection() {
         <hr className="border-neutral-200 my-10 lg:my-[60px]" />
 
         {/* Continental Directors */}
-        <div className="text-center mb-8 lg:mb-[40px]">
-          <h3 className="font-semibold text-[clamp(1.5rem,1.82vw,1.75rem)] text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+        <div className="flex flex-col items-center gap-1 mb-8 lg:mb-[40px]">
+          <h3 className="text-center font-semibold text-[clamp(1.5rem,1.82vw,1.75rem)] text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             Continental Directors
           </h3>
+          <span className="text-center text-neutral-500" style={{ fontSize: 'clamp(0.875rem, 1.04vw, 1rem)', fontFamily: 'Open Sans, sans-serif' }}>
+            Term {currentTermLabel()}
+          </span>
         </div>
 
         {/* Mobile/tablet carousel */}

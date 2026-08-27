@@ -121,6 +121,27 @@
   outline: none !important;
 }
 
+/* ── Homepage stats: brushed-chrome number treatment ── */
+.you-stat-metallic {
+  background-image: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #4f88cd 16%,
+    #4f88cd 32%,
+    #4f88cd 48%,
+    #4f88cd 64%,
+    #ffffff 84%,
+    #66daff 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.7))
+    drop-shadow(0 3px 3px rgba(15, 40, 80, 0.35))
+    drop-shadow(0 0 20px rgba(79, 136, 205, 0.4));
+}
+
 .ant-image-preview-img {
   width: 60vw;
   height: 60vh;
