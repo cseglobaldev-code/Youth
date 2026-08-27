@@ -8,6 +8,8 @@ type SupportCTAButtonProps = {
   /** Optional accessibility text for the CTA. */
   description?: string;
   className?: string;
+  /** Greys out the button (e.g. a completed project) while keeping onClick wired — the caller decides what happens on click. */
+  disabled?: boolean;
 };
 
 type SupportCTALinkProps = {
@@ -18,6 +20,8 @@ type SupportCTALinkProps = {
   /** Optional accessibility text for the CTA. */
   description?: string;
   className?: string;
+  /** Not applicable to the link variant — always renders active. */
+  disabled?: never;
 };
 
 export type SupportCTAProps = SupportCTAButtonProps | SupportCTALinkProps;
@@ -28,9 +32,11 @@ export function SupportCTA({
   title = 'Support our Mission',
   description = 'Send your spiritual or financial support to this organization',
   className,
+  disabled = false,
 }: SupportCTAProps) {
-  const buttonClasses =
-    'inline-flex h-[50px] min-w-[220px] items-center justify-center rounded-full border border-[#EE334E] bg-transparent px-8 text-[16px] font-normal leading-none text-[#EE334E] transition-colors duration-200 hover:bg-[#EE334E] hover:text-white active:scale-[0.99] whitespace-nowrap sm:h-[58px] sm:min-w-[270px] sm:px-10 sm:text-[18px] lg:h-[64px] lg:min-w-[300px] lg:text-[20px]';
+  const buttonClasses = disabled
+    ? 'inline-flex h-[50px] min-w-[220px] items-center justify-center rounded-full border border-[#CDCED7] bg-transparent px-8 text-[16px] font-normal leading-none text-[#8A8B94] whitespace-nowrap sm:h-[58px] sm:min-w-[270px] sm:px-10 sm:text-[18px] lg:h-[64px] lg:min-w-[300px] lg:text-[20px]'
+    : 'inline-flex h-[50px] min-w-[220px] items-center justify-center rounded-full border border-[#EE334E] bg-transparent px-8 text-[16px] font-normal leading-none text-[#EE334E] transition-colors duration-200 hover:bg-[#EE334E] hover:text-white active:scale-[0.99] whitespace-nowrap sm:h-[58px] sm:min-w-[270px] sm:px-10 sm:text-[18px] lg:h-[64px] lg:min-w-[300px] lg:text-[20px]';
 
   const buttonContent = <span style={{ fontFamily: 'Open Sans, sans-serif' }}>{title}</span>;
 
@@ -38,9 +44,9 @@ export function SupportCTA({
     <div
       className={['relative flex-shrink-0 pb-0 sm:pb-[54px]', className].filter(Boolean).join(' ')}
     >
-      <div className="flex flex-col items-end gap-3 sm:flex-row sm:items-center sm:gap-[18px]">
+      <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-[18px]">
         <span
-          className="block max-w-[280px] text-right text-black"
+          className="block max-w-[280px] text-center sm:text-right text-black"
           style={{
             fontFamily: 'Open Sans, sans-serif',
             fontSize: '18px',
@@ -57,6 +63,7 @@ export function SupportCTA({
           <button
             type="button"
             onClick={onClick}
+            aria-disabled={disabled}
             className={buttonClasses}
           >
             {buttonContent}

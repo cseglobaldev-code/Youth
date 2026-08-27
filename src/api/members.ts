@@ -34,6 +34,9 @@ export interface MemberDetailItem extends MemberListItem {
   gallery: { id: string; src: string; alt: string }[];
   donationQrUrl?: string;
   projects: Project[];
+  leaderRole?: string;
+  leaderEmail: string;
+  leaderPhone?: string;
 }
 
 interface StrapiMember {
@@ -56,6 +59,9 @@ interface StrapiMemberDetail extends StrapiMember {
   socialLinks?: StrapiSocialLink[] | null;
   gallery?: StrapiMedia[] | null;
   donationQr?: StrapiMedia | null;
+  leaderRole?: unknown;
+  leaderEmail?: unknown;
+  leaderPhone?: unknown;
   projects?: StrapiProject[] | null;
 }
 
@@ -100,6 +106,9 @@ function mapMemberDetail(entry: StrapiMemberDetail, baseUrl: string): MemberDeta
     socialLinks: mapSocialLinks(entry.socialLinks),
     gallery: mapGallery(entry.gallery, baseUrl),
     donationQrUrl: mediaUrl(entry.donationQr, baseUrl) || undefined,
+    leaderRole: text(entry.leaderRole) || undefined,
+    leaderEmail: text(entry.leaderEmail),
+    leaderPhone: text(entry.leaderPhone) || undefined,
     projects: Array.isArray(entry.projects)
       ? entry.projects.map((project) => mapProject(project, baseUrl, base.id))
       : [],

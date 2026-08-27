@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from 'react';
-import { Alert, Button, Empty, Input, Select, Skeleton } from 'antd';
+import { Alert, Button, Empty, Input, Select, Skeleton, Tooltip } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
+import { SDGTag } from '@/components/ui/SDGTag';
 import { ProjectCard } from '@/components/projects/ProjectCard';
 import { filterBySdg } from '@/lib/utils';
 import { SDGS_DATA } from '@/data';
@@ -43,9 +44,9 @@ export function ProjectsPage() {
 
   const filterItems = useMemo(
     () => [
-      { key: 'all', label: 'All' },
+      { key: 'all', label: 'All', sdgId: null as number | null, title: undefined as string | undefined },
       ...SDGS_DATA.filter((sdg) => projects.some((p) => p.focusSdgs.includes(sdg.id))).map(
-        (sdg) => ({ key: `sdg-${sdg.id}`, label: `SDG ${sdg.id} – ${sdg.title}` })
+        (sdg) => ({ key: `sdg-${sdg.id}`, label: `SDG ${sdg.id}`, sdgId: sdg.id, title: sdg.title })
       ),
     ],
     [projects]
@@ -125,28 +126,48 @@ export function ProjectsPage() {
             <div className="flex flex-col w-full gap-8 lg:gap-[60px] pb-10 lg:pb-[80px]">
 
               {/* Filter pills */}
-              <div className="flex flex-wrap justify-center gap-[11px]">
-                {visibleFilters.map((item) => (
-                  <Button
-                    key={item.key}
-                    shape="round"
-                    onClick={() => setActiveFilter(item.key)}
-                    className={cn(
-                      '!font-medium !transition-all !duration-200 !whitespace-nowrap hover:!scale-[1.03] active:!scale-[0.97] !h-auto',
-                      activeFilter === item.key ? '!text-white !shadow-md' : '!text-[#151515]'
-                    )}
-                    style={{
-                      fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
-                      backgroundColor: activeFilter === item.key ? '#005D9A' : '#E3F2FD',
-                      borderColor: activeFilter === item.key ? '#005D9A' : '#E3F2FD',
-                      fontFamily: 'Open Sans, sans-serif',
-                      lineHeight: '140%',
-                      padding: 'clamp(8px,0.8vw,10px) clamp(14px,1.25vw,24px)',
-                    }}
-                  >
-                    {item.label}
-                  </Button>
-                ))}
+              <div className="flex flex-wrap justify-center items-center gap-[11px]">
+                {visibleFilters.map((item) =>
+                  item.sdgId === null ? (
+                    <Button
+                      key={item.key}
+                      shape="round"
+                      onClick={() => setActiveFilter(item.key)}
+                      className={cn(
+                        '!font-medium !transition-all !duration-200 !whitespace-nowrap hover:!scale-[1.03] active:!scale-[0.97] !h-auto',
+                        activeFilter === item.key ? '!text-white !shadow-md' : '!text-[#151515]'
+                      )}
+                      style={{
+                        fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
+                        backgroundColor: activeFilter === item.key ? '#005D9A' : '#E3F2FD',
+                        borderColor: activeFilter === item.key ? '#005D9A' : '#E3F2FD',
+                        fontFamily: 'Open Sans, sans-serif',
+                        lineHeight: '140%',
+                        padding: 'clamp(8px,0.8vw,10px) clamp(14px,1.25vw,24px)',
+                      }}
+                    >
+                      {item.label}
+                    </Button>
+                  ) : (
+                    <Tooltip key={item.key} title={item.title}>
+                      <button
+                        type="button"
+                        onClick={() => setActiveFilter(item.key)}
+                        className="cursor-pointer transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] rounded-full"
+                      >
+                        <SDGTag
+                          sdgId={item.sdgId}
+                          variant={activeFilter === item.key ? 'solid' : 'soft'}
+                          size="md"
+                          style={{
+                            fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
+                            padding: 'clamp(8px,0.8vw,10px) clamp(14px,1.25vw,24px)',
+                          }}
+                        />
+                      </button>
+                    </Tooltip>
+                  )
+                )}
 
                 {hasMore && (
                   <Button

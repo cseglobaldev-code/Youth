@@ -87,7 +87,7 @@ export function TeamSection() {
                     size, keeping the name/role rows level across the row. */}
                 <div className="mb-4 flex items-end justify-center w-44 h-44 sm:w-60 sm:h-60 lg:w-[280px] lg:h-[280px]">
                   <div
-                    className={`rounded-full overflow-hidden border-4 border-neutral-200 relative group cursor-pointer ${
+                    className={`rounded-full overflow-hidden relative group cursor-pointer ${
                       isPresident
                         ? 'w-44 h-44 sm:w-60 sm:h-60 lg:w-[280px] lg:h-[280px]'
                         : 'w-40 h-40 sm:w-52 sm:h-52 lg:w-[240px] lg:h-[240px]'
@@ -151,7 +151,7 @@ export function TeamSection() {
             >
               <Icon name="lucide:chevron-left" size={20} />
             </button>
-            <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-neutral-200 relative group cursor-pointer transition-all duration-300">
+            <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden relative group cursor-pointer transition-all duration-300">
               <Image src={activeDirector.avatarUrl} alt={activeDirector.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
               {activeDirector.socialLinks && activeDirector.socialLinks.length > 0 && (
                 <div className="absolute inset-0 flex items-end justify-center pb-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -199,7 +199,7 @@ export function TeamSection() {
             const hasSocial = dir.socialLinks && dir.socialLinks.length > 0;
             return (
               <div key={dir.id} className="flex flex-col items-center max-w-[200px]">
-                <div className="w-[180px] h-[180px] rounded-full overflow-hidden border-4 border-neutral-200 mb-3 relative group cursor-pointer">
+                <div className="w-[180px] h-[180px] rounded-full overflow-hidden mb-3 relative group cursor-pointer">
                   <Image src={dir.avatarUrl} alt={dir.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
                   {hasSocial && (
                     <div className="absolute inset-0 flex items-end justify-center pb-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

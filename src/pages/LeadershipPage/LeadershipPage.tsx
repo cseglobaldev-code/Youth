@@ -180,7 +180,7 @@ export function LeadershipPage() {
             ) : error && leadership.executives.length === 0 ? (
               <Alert type="error" showIcon message="Unable to load leadership from the CMS." action={<button type="button" onClick={retry}>Retry</button>} />
             ) : (
-              <div className="grid grid-cols-2 justify-items-center gap-x-6 gap-y-10 lg:flex lg:flex-nowrap lg:justify-between lg:items-start lg:gap-0 w-full lg:max-w-[828px] mx-auto">
+              <div className="grid grid-cols-2 justify-items-center gap-x-6 gap-y-10 lg:flex lg:flex-nowrap lg:justify-center lg:items-start lg:gap-[34px] w-full mx-auto">
                 {leadership.executives.map((member, index) => {
                   const isPresident = /president/i.test(member.role) && !/vice/i.test(member.role);
                   return (

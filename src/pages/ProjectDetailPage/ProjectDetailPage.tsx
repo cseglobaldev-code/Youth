@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Divider, Skeleton } from "antd";
+import { Link, useParams } from 'react-router-dom';
+import { Divider, Popover, Skeleton } from "antd";
 import { Icon } from "@/components/ui/Icon";
 import { ImageWithFallback } from "@/components/ui/ImageWithFallback";
 import { ProjectCard } from "@/components/projects/ProjectCard";
@@ -14,8 +14,15 @@ import {
   type ProjectDetailItem,
   type ProjectListItem,
 } from "@/api/projects";
+import { ROUTES } from "@/routes/paths";
 import { cn } from "@/lib/utils";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+
+const STATUS_LABELS: Record<string, string> = {
+  ongoing: "Ongoing",
+  planned: "Planning",
+  completed: "Completed",
+};
 
 // ─── Social icons via @iconify/react ─────────────────────────────────────────
 const SOCIAL_ICON_MAP: Record<string, string> = {
@@ -148,8 +155,20 @@ export function ProjectDetailPage() {
                 color: "#151515",
               }}
             >
-              {project.countriesCovered.join(", ")} &nbsp;·&nbsp; Led by{" "}
-              {project.ledBy}
+              {project.countriesCovered.length > 0 && (
+                <>{project.countriesCovered.join(", ")} &nbsp;·&nbsp; </>
+              )}
+              Led by{" "}
+              {project.memberId ? (
+                <Link
+                  to={ROUTES.MEMBER_DETAIL(project.memberId)}
+                  className="underline decoration-1 underline-offset-2 hover:opacity-80"
+                >
+                  {project.ledBy}
+                </Link>
+              ) : (
+                project.ledBy
+              )}
             </p>
             <div className="flex flex-wrap gap-2">
               {project.focusSdgs.map((sdgId) => (
@@ -170,7 +189,25 @@ export function ProjectDetailPage() {
         </div>
 
         {/* Right — Support CTA (below xl stacks below title naturally) */}
-        <SupportCTA onClick={openSupport} />
+        {project.status === "completed" ? (
+          <Popover
+            trigger="click"
+            content={
+              <div style={{ maxWidth: 280, fontFamily: "Open Sans, sans-serif" }}>
+                This project has been completed / is no longer active. You can support this
+                organization&apos;s other projects{" "}
+                <Link to={ROUTES.MEMBER_DETAIL(project.memberId)} className="text-[#005D9A] underline">
+                  here
+                </Link>
+                .
+              </div>
+            }
+          >
+            <SupportCTA onClick={() => {}} disabled />
+          </Popover>
+        ) : (
+          <SupportCTA onClick={openSupport} />
+        )}
         </div>
       </Container>
 
@@ -297,7 +334,7 @@ export function ProjectDetailPage() {
             </DetailRow>
 
             <DetailRow label="Status">
-              <span style={VALUE_STYLE}>{project.status}</span>
+              <span style={VALUE_STYLE}>{STATUS_LABELS[project.status] ?? project.status}</span>
             </DetailRow>
           </div>
 

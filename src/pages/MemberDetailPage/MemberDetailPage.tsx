@@ -12,6 +12,7 @@ import { CTABanner } from '@/components/shared/CTABanner';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { useSupportModal } from '@/components/modals/SupportModal';
 import { fetchMemberById, type MemberDetailItem } from '@/api/members';
+import { cn, countryFlagEmoji, formatJoinDate } from '@/lib/utils';
 
 export function MemberDetailPage() {
   const { memberId } = useParams<{ memberId: string }>();
@@ -56,6 +57,9 @@ export function MemberDetailPage() {
   }
 
   const relatedProjects = member.projects.slice(0, 3);
+  const hasRepresentative = Boolean(
+    member.leader || member.leaderRole || member.leaderEmail || member.leaderPhone
+  );
 
   return (
     <div className="py-section-sm lg:py-section">
@@ -74,15 +78,16 @@ export function MemberDetailPage() {
                 {member.name}
               </h1>
               <p
-                className="mt-5 text-[#151515]"
+                className="mt-5 text-[#151515] whitespace-nowrap overflow-x-auto"
                 style={{
                   fontFamily: 'Open Sans, sans-serif',
-                  fontSize: 'clamp(1rem, 1.25vw, 1.5rem)',
+                  fontSize: 'clamp(0.75rem, 1.9vw, 1rem)',
                   lineHeight: '140%',
                 }}
               >
-                {member.country} &nbsp;·&nbsp; {member.shortDescription.split(' ').slice(0, 3).join(' ')} &nbsp;·&nbsp; Member since:{' '}
-                {member.period?.split(' ')[0] ?? '2021'}
+                Originated in {countryFlagEmoji(member.country)} {member.country} &nbsp;·&nbsp; Since{' '}
+                {member.period?.split(' ')[0] ?? '2021'} &nbsp;·&nbsp; Join Union from:{' '}
+                {formatJoinDate(member.createdAt) ?? '—'}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
                 {member.focusSdgs.map((sdgId) => (
@@ -106,7 +111,7 @@ export function MemberDetailPage() {
         </div>
 
         <div className="mb-14 grid gap-10 lg:grid-cols-2 lg:gap-24">
-          <div>
+          <div className={cn(!hasRepresentative && 'lg:col-span-2')}>
             <h2
               className="mb-6 font-semibold text-black"
               style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(1.5rem, 2.29vw, 2.75rem)', lineHeight: '140%' }}
@@ -114,18 +119,42 @@ export function MemberDetailPage() {
               About Organization
             </h2>
             <p className="leading-relaxed text-neutral-700">{member.description}</p>
-            {member.socialLinks.length > 0 && <SocialLinks links={member.socialLinks} className="mt-4" />}
+            {member.socialLinks.length > 0 && (
+              <div className="mt-4 flex items-center gap-3">
+                <span className="font-semibold text-black">Follow us</span>
+                <SocialLinks links={member.socialLinks} />
+              </div>
+            )}
           </div>
 
-          <div>
-            <h2
-              className="mb-6 font-semibold text-black"
-              style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(1.5rem, 2.29vw, 2.75rem)', lineHeight: '140%' }}
-            >
-              Representative
-            </h2>
-            <p className="leading-relaxed text-neutral-700">{member.leader ?? 'TBD'}</p>
-          </div>
+          {hasRepresentative && (
+            <div>
+              <h2
+                className="mb-6 font-semibold text-black"
+                style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(1.5rem, 2.29vw, 2.75rem)', lineHeight: '140%' }}
+              >
+                Representative
+              </h2>
+              <div className="flex flex-col gap-2 leading-relaxed text-neutral-700">
+                {member.leader && <p className="font-semibold text-black">{member.leader}</p>}
+                {member.leaderRole && <p>{member.leaderRole}</p>}
+                {member.leaderEmail && (
+                  <p>
+                    <a href={`mailto:${member.leaderEmail}`} className="text-[#005D9A] hover:underline">
+                      {member.leaderEmail}
+                    </a>
+                  </p>
+                )}
+                {member.leaderPhone && (
+                  <p>
+                    <a href={`tel:${member.leaderPhone}`} className="text-[#005D9A] hover:underline">
+                      {member.leaderPhone}
+                    </a>
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {relatedProjects.length > 0 && (

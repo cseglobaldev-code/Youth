@@ -148,4 +148,11 @@
   max-width: 60vw;
   max-height: 60vh;
   object-fit: contain;
+  border-radius: 5px;
+}
+
+/* ── Gallery lightbox: blur the page behind the previewed image instead of a flat dark mask ── */
+.ant-image-preview-mask {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }

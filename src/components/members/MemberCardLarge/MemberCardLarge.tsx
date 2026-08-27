@@ -35,7 +35,7 @@ export function MemberCardLarge({
   return (
     <div
       className={cn(
-        'w-full h-full bg-white rounded-[16px] overflow-visible shadow-sm flex flex-col cursor-pointer transition-shadow duration-200 hover:shadow-md',
+        'group w-full h-full bg-white rounded-[16px] overflow-visible shadow-sm flex flex-col cursor-pointer transition-shadow duration-200 hover:shadow-md',
         className
       )}
       onClick={onClick}
@@ -57,7 +57,7 @@ export function MemberCardLarge({
       <div className="flex-1 px-5 pt-12 pb-5 flex flex-col gap-3">
         {/* Title */}
         <h3
-          className="font-bold text-[18px] text-[#111111] line-clamp-2 leading-tight"
+          className="font-bold text-[18px] text-[#111111] line-clamp-2 leading-tight transition-colors duration-200 group-hover:text-[#EE334E]"
           style={{ fontFamily: 'Open Sans, sans-serif' }}
         >
           {name}
