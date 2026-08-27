@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Alert, Empty, Input, Popover, Skeleton } from 'antd';
+import { Alert, Empty, Input, Popover, Select, Skeleton } from 'antd';
 import { SearchOutlined, DownOutlined, CheckOutlined } from '@ant-design/icons';
 import { Container } from '@/components/ui/Container';
 import { MemberCardLarge } from '@/components/members/MemberCardLarge';
@@ -8,15 +8,11 @@ import { Pagination } from '@/components/shared/Pagination';
 import { CTABanner } from '@/components/shared/CTABanner';
 import { usePagination } from '@/hooks';
 import { fetchMembers, type MemberListItem } from '@/api/members';
+import { SDGS_DATA } from '@/data';
 
 const SORT_OPTIONS = [
   { label: 'Newest - oldest', value: 'newest' },
   { label: 'Oldest - newest', value: 'oldest' },
-  { label: 'Organization', value: 'organization' },
-  { label: 'Location', value: 'location' },
-  { label: 'SDG', value: 'sdg' },
-  { label: 'Opportunity', value: 'opportunity' },
-  { label: 'Most viewed', value: 'mostViewed' },
 ];
 
 export function MembersPage() {
@@ -24,6 +20,10 @@ export function MembersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
+  const [filterMenuOpen, setFilterMenuOpen] = useState(false);
+  const [filterOrganization, setFilterOrganization] = useState<string>();
+  const [filterLocation, setFilterLocation] = useState<string>();
+  const [filterSdg, setFilterSdg] = useState<number>();
   const [members, setMembers] = useState<MemberListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -46,6 +46,31 @@ export function MembersPage() {
     return () => controller.abort();
   }, [retryCount]);
 
+  const organizationOptions = useMemo(
+    () =>
+      [...new Set(members.map((m) => m.name))]
+        .sort((a, b) => a.localeCompare(b))
+        .map((name) => ({ label: name, value: name })),
+    [members]
+  );
+
+  const locationOptions = useMemo(
+    () =>
+      [...new Set(members.map((m) => m.country))]
+        .sort((a, b) => a.localeCompare(b))
+        .map((country) => ({ label: country, value: country })),
+    [members]
+  );
+
+  const sdgOptions = useMemo(
+    () => SDGS_DATA.map((sdg) => ({ label: `SDG ${sdg.id} – ${sdg.title}`, value: sdg.id })),
+    []
+  );
+
+  const activeFilterCount = [filterOrganization, filterLocation, filterSdg].filter(
+    (value) => value !== undefined
+  ).length;
+
   const filteredMembers = useMemo(() => {
     let result = members;
     const query = searchQuery.trim().toLowerCase();
@@ -57,17 +82,18 @@ export function MembersPage() {
       );
     }
 
-    switch (sortBy) {
-      case 'oldest':
-        return [...result].reverse();
-      case 'location':
-        return [...result].sort((a, b) => a.country.localeCompare(b.country));
-      case 'mostViewed':
-        return [...result].sort((a, b) => b.id.localeCompare(a.id));
-      default:
-        return result;
+    if (filterOrganization) {
+      result = result.filter((member) => member.name === filterOrganization);
     }
-  }, [members, searchQuery, sortBy]);
+    if (filterLocation) {
+      result = result.filter((member) => member.country === filterLocation);
+    }
+    if (filterSdg !== undefined) {
+      result = result.filter((member) => member.focusSdgs.includes(filterSdg));
+    }
+
+    return sortBy === 'oldest' ? [...result].reverse() : result;
+  }, [members, searchQuery, sortBy, filterOrganization, filterLocation, filterSdg]);
 
   const { pageItems, total, currentPage, pageSize, goToPage, resetPage } =
     usePagination(filteredMembers, 9);
@@ -145,6 +171,75 @@ export function MembersPage() {
     resetPage();
     setSortMenuOpen(false);
   };
+
+  const handleClearFilters = () => {
+    setFilterOrganization(undefined);
+    setFilterLocation(undefined);
+    setFilterSdg(undefined);
+    resetPage();
+  };
+
+  const filterMenu = (
+    <div className="w-[302px] max-w-[calc(100vw-32px)] space-y-4">
+      <div>
+        <label className="mb-1.5 block text-[13px] font-medium text-[#6B7280]">Organization</label>
+        <Select
+          allowClear
+          showSearch
+          placeholder="All organizations"
+          value={filterOrganization}
+          onChange={(value) => {
+            setFilterOrganization(value);
+            resetPage();
+          }}
+          options={organizationOptions}
+          optionFilterProp="label"
+          className="w-full"
+        />
+      </div>
+      <div>
+        <label className="mb-1.5 block text-[13px] font-medium text-[#6B7280]">Location</label>
+        <Select
+          allowClear
+          showSearch
+          placeholder="All locations"
+          value={filterLocation}
+          onChange={(value) => {
+            setFilterLocation(value);
+            resetPage();
+          }}
+          options={locationOptions}
+          optionFilterProp="label"
+          className="w-full"
+        />
+      </div>
+      <div>
+        <label className="mb-1.5 block text-[13px] font-medium text-[#6B7280]">SDGs</label>
+        <Select
+          allowClear
+          showSearch
+          placeholder="All SDGs"
+          value={filterSdg}
+          onChange={(value) => {
+            setFilterSdg(value);
+            resetPage();
+          }}
+          options={sdgOptions}
+          optionFilterProp="label"
+          className="w-full"
+        />
+      </div>
+      {activeFilterCount > 0 && (
+        <button
+          type="button"
+          onClick={handleClearFilters}
+          className="text-[13px] font-medium text-[#EE334E] hover:underline"
+        >
+          Clear filters
+        </button>
+      )}
+    </div>
+  );
 
   const sortMenu = (
     <div className="w-[302px] max-w-[calc(100vw-32px)] bg-transparent p-0 shadow-none">
@@ -230,6 +325,23 @@ export function MembersPage() {
               className="flex h-[48px] w-full items-center justify-between rounded-full border border-[#E7E7E7] bg-white px-5 text-[15px] text-[#111111] shadow-none transition hover:bg-white md:w-[302px] md:max-w-full"
             >
               <span>{activeSortLabel}</span>
+              <DownOutlined className="text-[14px] text-[#1F2A44]" />
+            </button>
+          </Popover>
+
+          <Popover
+            trigger="click"
+            open={filterMenuOpen}
+            onOpenChange={setFilterMenuOpen}
+            content={filterMenu}
+            placement="bottom"
+            overlayClassName="member-filter-popover"
+          >
+            <button
+              type="button"
+              className="flex h-[48px] w-full items-center justify-between rounded-full border border-[#E7E7E7] bg-white px-5 text-[15px] text-[#111111] shadow-none transition hover:bg-white md:w-[302px] md:max-w-full"
+            >
+              <span>Filter{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}</span>
               <DownOutlined className="text-[14px] text-[#1F2A44]" />
             </button>
           </Popover>

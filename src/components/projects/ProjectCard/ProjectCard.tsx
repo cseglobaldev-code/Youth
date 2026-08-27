@@ -84,7 +84,7 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
               )}
             </div>
 
-            {/* Local */}
+            {/* Region */}
             <div className="flex items-baseline gap-1.5 min-w-0">
               <span
                 className="flex-shrink-0"
@@ -96,7 +96,7 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
                   lineHeight: '140%',
                 }}
               >
-                Local
+                Region
               </span>
               <span
                 className="truncate"
@@ -108,7 +108,7 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
                   lineHeight: '140%',
                 }}
               >
-                {project.countriesCovered.slice(0, 2).join(', ')}
+                {project.region}
               </span>
             </div>
           </div>

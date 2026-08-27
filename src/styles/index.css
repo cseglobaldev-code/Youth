@@ -148,11 +148,16 @@
   max-width: 60vw;
   max-height: 60vh;
   object-fit: contain;
-  border-radius: 5px;
+  border-radius: 5px !important;
 }
 
-/* ── Gallery lightbox: blur the page behind the previewed image instead of a flat dark mask ── */
+/*
+  Gallery lightbox: blur the page behind the previewed image instead of a
+  flat dark mask. Antd ships its own `.ant-image-preview .ant-image-preview-mask`
+  rule with `backdrop-filter: blur(0px)` — a more specific selector than a
+  bare `.ant-image-preview-mask`, so it silently wins without !important here.
+*/
 .ant-image-preview-mask {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
 }

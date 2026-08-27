@@ -162,7 +162,7 @@ export function ProjectDetailPage() {
               {project.memberId ? (
                 <Link
                   to={ROUTES.MEMBER_DETAIL(project.memberId)}
-                  className="underline decoration-1 underline-offset-2 hover:opacity-80"
+                  className="underline decoration-1 underline-offset-2 transition-colors duration-200 hover:text-[#005D9A]"
                 >
                   {project.ledBy}
                 </Link>

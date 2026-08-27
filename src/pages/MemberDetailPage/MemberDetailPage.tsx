@@ -85,8 +85,8 @@ export function MemberDetailPage() {
                   lineHeight: '140%',
                 }}
               >
-                Originated in {countryFlagEmoji(member.country)} {member.country} &nbsp;·&nbsp; Since{' '}
-                {member.period?.split(' ')[0] ?? '2021'} &nbsp;·&nbsp; Join Union from:{' '}
+                Originated in {countryFlagEmoji(member.country)} {member.country} &nbsp;|&nbsp; Since{' '}
+                {member.period?.split(' ')[0] ?? '2021'} &nbsp;|&nbsp; Join Union from:{' '}
                 {formatJoinDate(member.createdAt) ?? '—'}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
@@ -162,7 +162,7 @@ export function MemberDetailPage() {
             <SectionHeading title="Our Projects" align="left" />
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {relatedProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
+                <ProjectCard key={project.id} project={project} ledBy={member.name} />
               ))}
             </div>
           </div>

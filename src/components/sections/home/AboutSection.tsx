@@ -45,8 +45,8 @@ export function AboutSection() {
                 src="/images/home/about/sdg-goals-logo.png"
                 alt="UN Sustainable Development Goals"
                 preview={false}
-                className="h-16 sm:h-[87px] w-auto object-contain"
-                style={{ width: 'auto', objectFit: 'contain' }}
+                className="!h-16 sm:!h-[87px] !w-auto !max-w-none object-contain"
+                style={{ height: 64, width: 'auto', objectFit: 'contain' }}
               />
             </div>
             {/* Right: text + CTA */}
