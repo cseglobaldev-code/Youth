@@ -103,63 +103,31 @@ export function Footer({ className }: FooterProps) {
             >
               Discover
             </h4>
-            <nav className="flex flex-col items-start gap-3">
-              <Link
-                to={ROUTES.ABOUT}
-                className="text-white transition-colors hover:text-[#005D9A]"
-                style={{
-                  fontFamily: 'Open Sans, sans-serif',
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  lineHeight: '100%',
-                  letterSpacing: '0%',
-                  verticalAlign: 'middle',
-                }}
-              >
-                About us
-              </Link>
-              <Link
-                to={ROUTES.LEADERSHIP}
-                className="text-white transition-colors hover:text-[#005D9A]"
-                style={{
-                  fontFamily: 'Open Sans, sans-serif',
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  lineHeight: '100%',
-                  letterSpacing: '0%',
-                  verticalAlign: 'middle',
-                }}
-              >
-                Leadership
-              </Link>
-              <Link
-                to={ROUTES.MEMBERS}
-                className="text-white transition-colors hover:text-[#005D9A]"
-                style={{
-                  fontFamily: 'Open Sans, sans-serif',
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  lineHeight: '100%',
-                  letterSpacing: '0%',
-                  verticalAlign: 'middle',
-                }}
-              >
-                Members
-              </Link>
-              <Link
-                to={ROUTES.PROJECTS}
-                className="text-white transition-colors hover:text-[#005D9A]"
-                style={{
-                  fontFamily: 'Open Sans, sans-serif',
-                  fontWeight: 400,
-                  fontSize: '16px',
-                  lineHeight: '100%',
-                  letterSpacing: '0%',
-                  verticalAlign: 'middle',
-                }}
-              >
-                Projects
-              </Link>
+            <nav className="grid w-fit grid-cols-2 gap-x-10 gap-y-3">
+              {[
+                { to: ROUTES.ABOUT, label: 'About us' },
+                { to: ROUTES.LEADERSHIP, label: 'Leadership' },
+                { to: ROUTES.MEMBERS, label: 'Members' },
+                { to: ROUTES.PROJECTS, label: 'Projects' },
+                { to: ROUTES.POLICY_DOCUMENTS, label: 'Document' },
+                { to: ROUTES.CONTACT, label: 'Contact' },
+              ].map(({ to, label }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className="text-neutral-300 transition-colors hover:text-[#005D9A]"
+                  style={{
+                    fontFamily: 'Open Sans, sans-serif',
+                    fontWeight: 400,
+                    fontSize: '16px',
+                    lineHeight: '100%',
+                    letterSpacing: '0%',
+                    verticalAlign: 'middle',
+                  }}
+                >
+                  {label}
+                </Link>
+              ))}
             </nav>
           </div>
         </div>

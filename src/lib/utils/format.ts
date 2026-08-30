@@ -19,6 +19,14 @@ export function currentTermLabel(now: Date = new Date()): string {
   return `${year} - ${year + 1}`;
 }
 
+/** Formats an ISO date string (e.g. a member's CMS `createdAt`) as "Jul 19, 2026". */
+export function formatJoinDate(isoDate?: string): string | undefined {
+  if (!isoDate) return undefined;
+  const date = new Date(isoDate);
+  if (Number.isNaN(date.getTime())) return undefined;
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
 if (import.meta.vitest) {
   const { describe, expect, it } = import.meta.vitest;
 

@@ -54,7 +54,7 @@ export function TeamSection() {
       <Container className="max-w-[95%] sm:max-w-[85%]">
         {/* Header */}
         <div className="text-center mb-8 md:mb-12 lg:mb-[60px]">
-          <h2 className="font-semibold text-[clamp(1.5rem,3.13vw,3rem)] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+          <h2 className="font-semibold text-[clamp(2rem,3.13vw,3rem)] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             The People Behind{' '}
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Y.O.U
@@ -63,40 +63,57 @@ export function TeamSection() {
         </div>
 
         {/* Leaders — 3 large circles */}
-        <h3 className="mb-8 text-center font-semibold text-[clamp(1.25rem,1.82vw,1.75rem)] text-[#111111] lg:mb-[40px]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-          Executive Leadership {currentTermLabel()}
-        </h3>
+        <div className="mb-8 flex flex-col items-center gap-1 lg:mb-[40px]">
+          <h3 className="text-center font-semibold text-[clamp(1.5rem,1.82vw,1.75rem)] text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+            Executive Leadership
+          </h3>
+          <span className="text-center text-neutral-500" style={{ fontSize: 'clamp(0.875rem, 1.04vw, 1rem)', fontFamily: 'Open Sans, sans-serif' }}>
+            Term {currentTermLabel()}
+          </span>
+        </div>
         <div className="mx-auto grid grid-cols-2 lg:grid-cols-3 justify-items-center gap-x-4 gap-y-8 sm:gap-x-8 lg:max-w-[860px] lg:gap-[24px] mb-8 lg:mb-[40px]">
-          {leaders.map((leader, index) => {
+          {leaders.map((leader) => {
             const hasSocial = leader.socialLinks && leader.socialLinks.length > 0;
+            const isPresident = /president/i.test(leader.role) && !/vice/i.test(leader.role);
             return (
               <div
                 key={leader.id}
                 className={`flex flex-col items-center max-w-[280px] ${
-                  index === 1 ? 'col-span-2 -order-1 lg:order-none lg:col-span-1' : ''
+                  isPresident ? 'col-span-2 -order-1 lg:order-none lg:col-span-1' : ''
                 }`}
               >
-                <div className="w-40 h-40 sm:w-52 sm:h-52 lg:w-[240px] lg:h-[240px] rounded-full overflow-hidden border-4 border-neutral-200 mb-4 relative group cursor-pointer">
-                  <Image src={leader.avatarUrl} alt={leader.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
-                  {hasSocial && (
-                    <div className="absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="flex gap-3">
-                        {leader.socialLinks!.map((link) => (
-                          <a
-                            key={link.platform}
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={link.platform}
-                            onClick={(e) => e.stopPropagation()}
-                            className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform"
-                          >
-                            <Icon name={ICONS[link.platform]} size={16} color={SOCIAL_COLORS[link.platform]} />
-                          </a>
-                        ))}
+                {/* Fixed-height, bottom-aligned wrapper sized to the president's larger
+                    avatar so every avatar's bottom edge lines up regardless of its own
+                    size, keeping the name/role rows level across the row. */}
+                <div className="mb-4 flex items-end justify-center w-44 h-44 sm:w-60 sm:h-60 lg:w-[280px] lg:h-[280px]">
+                  <div
+                    className={`rounded-full overflow-hidden relative group cursor-pointer ${
+                      isPresident
+                        ? 'w-44 h-44 sm:w-60 sm:h-60 lg:w-[280px] lg:h-[280px]'
+                        : 'w-40 h-40 sm:w-52 sm:h-52 lg:w-[240px] lg:h-[240px]'
+                    }`}
+                  >
+                    <Image src={leader.avatarUrl} alt={leader.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
+                    {hasSocial && (
+                      <div className="absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="flex gap-3">
+                          {leader.socialLinks!.map((link) => (
+                            <a
+                              key={link.platform}
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={link.platform}
+                              onClick={(e) => e.stopPropagation()}
+                              className="w-8 h-8 rounded-full bg-white flex items-center justify-center hover:scale-110 transition-transform"
+                            >
+                              <Icon name={ICONS[link.platform]} size={16} color={SOCIAL_COLORS[link.platform]} />
+                            </a>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
                 <h4 className="font-semibold text-[clamp(1rem,1.30vw,1.25rem)] text-[#111111] text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                   {leader.name}
@@ -113,10 +130,13 @@ export function TeamSection() {
         <hr className="border-neutral-200 my-10 lg:my-[60px]" />
 
         {/* Continental Directors */}
-        <div className="text-center mb-8 lg:mb-[40px]">
-          <h3 className="font-semibold text-[clamp(1.5rem,1.82vw,1.75rem)] text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+        <div className="flex flex-col items-center gap-1 mb-8 lg:mb-[40px]">
+          <h3 className="text-center font-semibold text-[clamp(1.5rem,1.82vw,1.75rem)] text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             Continental Directors
           </h3>
+          <span className="text-center text-neutral-500" style={{ fontSize: 'clamp(0.875rem, 1.04vw, 1rem)', fontFamily: 'Open Sans, sans-serif' }}>
+            Term {currentTermLabel()}
+          </span>
         </div>
 
         {/* Mobile/tablet carousel */}
@@ -131,7 +151,7 @@ export function TeamSection() {
             >
               <Icon name="lucide:chevron-left" size={20} />
             </button>
-            <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-neutral-200 relative group cursor-pointer transition-all duration-300">
+            <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden relative group cursor-pointer transition-all duration-300">
               <Image src={activeDirector.avatarUrl} alt={activeDirector.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
               {activeDirector.socialLinks && activeDirector.socialLinks.length > 0 && (
                 <div className="absolute inset-0 flex items-end justify-center pb-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -179,7 +199,7 @@ export function TeamSection() {
             const hasSocial = dir.socialLinks && dir.socialLinks.length > 0;
             return (
               <div key={dir.id} className="flex flex-col items-center max-w-[200px]">
-                <div className="w-[180px] h-[180px] rounded-full overflow-hidden border-4 border-neutral-200 mb-3 relative group cursor-pointer">
+                <div className="w-[180px] h-[180px] rounded-full overflow-hidden mb-3 relative group cursor-pointer">
                   <Image src={dir.avatarUrl} alt={dir.name} preview={false} className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50" style={{ width: '100%', height: '100%', objectFit: 'cover' }} wrapperStyle={{ width: '100%', height: '100%' }} />
                   {hasSocial && (
                     <div className="absolute inset-0 flex items-end justify-center pb-5 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

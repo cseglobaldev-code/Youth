@@ -98,7 +98,7 @@ export function LeadershipPage() {
             )}
           >
             {/* Title row — center, gap:24px */}
-            <div className="flex flex-wrap justify-center items-center gap-[16px] lg:gap-[24px]">
+            <div className="flex flex-wrap justify-center items-center gap-[16px] lg:gap-[24px] text-center">
               <span
                 className="font-semibold text-black"
                 style={{
@@ -150,18 +150,8 @@ export function LeadershipPage() {
               execVisible ? 'animate-fade-in-up' : 'opacity-0'
             )}
           >
-            {/* Badge + heading — column, center, gap:4px */}
+            {/* Heading + term — column, center, gap:4px */}
             <div className="flex flex-col items-center gap-[4px]">
-              <span
-                className="text-black font-normal"
-                style={{
-                  fontSize: 'clamp(1.25rem, 1.67vw, 32px)',
-                  lineHeight: '140%',
-                  fontFamily: 'Open Sans, sans-serif',
-                }}
-              >
-                {currentTermLabel()}
-              </span>
               <h2
                 className="font-semibold text-black"
                 style={{
@@ -172,6 +162,16 @@ export function LeadershipPage() {
               >
                 Executive Leadership
               </h2>
+              <span
+                className="text-neutral-500 font-normal"
+                style={{
+                  fontSize: 'clamp(0.875rem, 1.04vw, 1rem)',
+                  lineHeight: '140%',
+                  fontFamily: 'Open Sans, sans-serif',
+                }}
+              >
+                Term {currentTermLabel()}
+              </span>
             </div>
 
             {/* Cards — row, space-between, center, width:828px, centered via mx-auto */}
@@ -180,12 +180,22 @@ export function LeadershipPage() {
             ) : error && leadership.executives.length === 0 ? (
               <Alert type="error" showIcon message="Unable to load leadership from the CMS." action={<button type="button" onClick={retry}>Retry</button>} />
             ) : (
-              <div className="flex flex-wrap lg:flex-nowrap justify-center lg:justify-between items-center gap-10 lg:gap-0 w-full lg:max-w-[828px] mx-auto">
-                {leadership.executives.map((member, index) => (
-                  <div key={member.id} className={cn(execVisible ? 'animate-fade-in-up' : 'opacity-0')} style={{ animationDelay: `${index * 100}ms` }}>
-                    <ExecutiveCard member={member} onClick={() => openModal(member)} />
-                  </div>
-                ))}
+              <div className="grid grid-cols-2 justify-items-center gap-x-6 gap-y-10 lg:flex lg:flex-nowrap lg:justify-center lg:items-start lg:gap-[34px] w-full mx-auto">
+                {leadership.executives.map((member, index) => {
+                  const isPresident = /president/i.test(member.role) && !/vice/i.test(member.role);
+                  return (
+                    <div
+                      key={member.id}
+                      className={cn(
+                        execVisible ? 'animate-fade-in-up' : 'opacity-0',
+                        isPresident ? 'col-span-2 -order-1 lg:order-none lg:col-span-1' : ''
+                      )}
+                      style={{ animationDelay: `${index * 100}ms` }}
+                    >
+                      <ExecutiveCard member={member} isPresident={isPresident} onClick={() => openModal(member)} />
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -212,17 +222,29 @@ export function LeadershipPage() {
       >
         {/* Header + tabs — column, center, gap:40px */}
         <Container className="flex flex-col items-center gap-[40px]">
-          {/* Heading */}
-          <h2
-            className="font-semibold text-black text-center"
-            style={{
-              fontSize: 'clamp(1.5rem, 2.08vw, 2.5rem)',
-              lineHeight: '140%',
-              fontFamily: 'Open Sans, sans-serif',
-            }}
-          >
-            Continental Directors
-          </h2>
+          {/* Heading + term */}
+          <div className="flex flex-col items-center gap-[4px]">
+            <h2
+              className="font-semibold text-black text-center"
+              style={{
+                fontSize: 'clamp(1.5rem, 2.08vw, 2.5rem)',
+                lineHeight: '140%',
+                fontFamily: 'Open Sans, sans-serif',
+              }}
+            >
+              Continental Directors
+            </h2>
+            <span
+              className="text-neutral-500 font-normal"
+              style={{
+                fontSize: 'clamp(0.875rem, 1.04vw, 1rem)',
+                lineHeight: '140%',
+                fontFamily: 'Open Sans, sans-serif',
+              }}
+            >
+              Term {currentTermLabel()}
+            </span>
+          </div>
 
           {/* Filter tabs — column, gap:24px */}
           <div className="flex flex-col items-stretch gap-[24px] w-full">
