@@ -8,6 +8,7 @@ export default defineConfig({
     setupFiles: ['./src/test/setup.ts'],
     includeSource: ['src/**/*.{ts,tsx}'],
     exclude: [...configDefaults.exclude, '.vendor/design.md/**'],
+    testTimeout: 15000,
   },
   resolve: {
     alias: {

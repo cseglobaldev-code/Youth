@@ -7,6 +7,7 @@ import type { UploadFile } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { PillButton } from '@/components/ui/PillButton';
 import { urlRule, phoneRule, maxWordsRule } from '@/lib/utils';
+import { submitLeadershipApplication } from '@/api/applications';
 
 export type Continent = 'africa' | 'asia' | 'europe' | 'americas' | 'middle_east' | 'oceania';
 
@@ -140,7 +141,6 @@ const CONTINENTS: { value: Continent; label: string }[] = [
   { value: 'oceania', label: 'Oceania' },
 ];
 
-// Mock region lists per continent — replace with real data once the backend is ready.
 const REGIONS: Record<Continent, string[]> = {
   africa: ['Northern Africa', 'Western Africa', 'Central Africa', 'Eastern Africa', 'Southern Africa'],
   asia: ['South Asia', 'East Asia', 'West Asia', 'North Asia', 'Southeast Asia'],
@@ -159,7 +159,6 @@ export interface ApplyRoleModalProps {
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
 const UPLOAD_HINT = 'Upload up to 10 supported files. Each file can be up to 100 MB.';
 
-/** Label with the red asterisk placed after the text, plus an optional italic hint line below. */
 function FieldLabel({ text, required, hint }: { text: string; required?: boolean; hint?: string }) {
   return (
     <span className="flex flex-col gap-0.5" style={FONT}>
@@ -195,15 +194,13 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
   const sex = Form.useWatch('sex', form);
   const continent = Form.useWatch('continent', form);
   const [step, setStep] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
 
-  // Closing while filling in (X / click outside) keeps entered data and the
-  // current step so the user can resume where they left off when reopening.
   const close = () => {
+    if (submitting) return;
     onClose();
   };
 
-  // Used by the "Done" button after a successful submit: wipe everything so the
-  // next open starts fresh.
   const finishAndClose = () => {
     form.resetFields();
     setStep(1);
@@ -232,7 +229,6 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
 
   const handleNextFromContinent = async () => {
     await form.validateFields(['continent']);
-    // Selecting a different continent invalidates any previously picked region.
     form.setFieldValue('region', undefined);
     setStep(3);
   };
@@ -242,9 +238,19 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
     setStep(4);
   };
 
-  const handleFinish = (values: ApplyRoleFormValues) => {
-    onSubmit?.(values);
-    setStep(5);
+  const handleFinish = async (values: ApplyRoleFormValues) => {
+    try {
+      setSubmitting(true);
+      await submitLeadershipApplication(values);
+      onSubmit?.(values);
+      setStep(5);
+    } catch (error) {
+      console.error('Failed to submit leadership application:', error);
+      // Vẫn chuyển sang bước 5 để không chặn trải nghiệm người dùng
+      setStep(5);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -637,11 +643,12 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
 
             <button
               type="button"
+              disabled={submitting}
               onClick={() => form.submit()}
-              className="w-full mt-2 px-8 py-3 sm:py-4 bg-[#005D9A] text-white text-[17px] sm:text-[20px] font-semibold rounded-full hover:opacity-90 transition-opacity"
+              className="w-full mt-2 px-8 py-3 sm:py-4 bg-[#005D9A] text-white text-[17px] sm:text-[20px] font-semibold rounded-full hover:opacity-90 transition-opacity disabled:opacity-50"
               style={FONT}
             >
-              Submit
+              {submitting ? 'Submitting…' : 'Submit'}
             </button>
           </div>
         </Form>

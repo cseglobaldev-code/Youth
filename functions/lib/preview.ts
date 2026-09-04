@@ -1,12 +1,12 @@
 const STATIC_PREVIEW_PATHS = new Set(['/', '/leadership', '/policy-documents']);
-const DETAIL_PREVIEW_PATH = /^\/(projects|members)\/[A-Za-z0-9_-]+$/;
+const DETAIL_PREVIEW_PATH = /^\/(projects|members|pages)\/[A-Za-z0-9_-]+$/;
 
 export function isAllowedPreviewPath(pathname: string): boolean {
   return STATIC_PREVIEW_PATHS.has(pathname) || DETAIL_PREVIEW_PATH.test(pathname);
 }
 
-export function isPreviewStatus(status: string | null): status is 'draft' | 'published' {
-  return status === 'draft' || status === 'published';
+export function isPreviewStatus(status: string | null): status is 'draft' | 'published' | 'modified' {
+  return status === 'draft' || status === 'published' || status === 'modified';
 }
 
 export async function sameSecret(candidate: string, expected: string): Promise<boolean> {

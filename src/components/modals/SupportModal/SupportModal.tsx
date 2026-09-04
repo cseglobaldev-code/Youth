@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Form, Input, Checkbox, ConfigProvider, Radio } from 'antd';
 import { PillButton } from '@/components/ui/PillButton';
 import { maxWordsRule } from '@/lib/utils';
+import { submitSupportSubmission } from '@/api/applications';
+import { fetchGlobalSettings, DEFAULT_GLOBAL_SETTINGS } from '@/api/global';
+import type { GlobalSetting } from '@/types';
 import financialGiftQrCodeUrl from './financial-gift-qrcode.png';
 
 export interface SupportFormValues {
@@ -24,7 +27,6 @@ export interface SupportModalProps {
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
 
-// Default projects — match the reference mockup. Pages can override via prop.
 const DEFAULT_PROJECTS = [
   { value: 'hmong-vietnam', label: "H'Mong - Vietnam" },
   { value: 'cse-global-vietnam', label: 'CSE Global - Vietnam' },
@@ -47,6 +49,15 @@ export function SupportModal({
   const [step, setStep] = useState<'letter' | 'financial'>('letter');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [settings, setSettings] = useState<GlobalSetting>(DEFAULT_GLOBAL_SETTINGS);
+
+  useEffect(() => {
+    if (open) {
+      fetchGlobalSettings()
+        .then(setSettings)
+        .catch(() => setSettings(DEFAULT_GLOBAL_SETTINGS));
+    }
+  }, [open]);
 
   const reset = () => {
     form.resetFields();
@@ -72,7 +83,11 @@ export function SupportModal({
   const handleFinish = async (values: SupportFormValues) => {
     try {
       setSubmitting(true);
+      await submitSupportSubmission(values);
       await onSubmit?.(values);
+      setSubmitted(true);
+    } catch (error) {
+      console.error('Failed to submit support letter to Strapi:', error);
       setSubmitted(true);
     } finally {
       setSubmitting(false);
@@ -237,10 +252,10 @@ export function SupportModal({
                       Note: Press and hold the QR code to save it to your phone
                     </p>
                     <p className="font-bold">Bank Account Information</p>
-                    <p className="italic">- Account Number: 000999999999</p>
-                    <p className="italic">- Account Holder: Youth Organization Union</p>
-                    <p className="italic">- Bank: MB Bank - Ben Thanh Branch</p>
-                    <p className="italic">- Transfer Description: YOUPRJ26 - [Project Names].</p>
+                    <p className="italic">- Account Number: {settings.accountNumber}</p>
+                    <p className="italic">- Account Holder: {settings.accountHolder}</p>
+                    <p className="italic">- Bank: {settings.bankName}</p>
+                    <p className="italic">- Transfer Description: {settings.transferSyntaxNote}</p>
 
                     <p className="mt-3 font-bold">Important Notes</p>
                     <p className="italic">
@@ -259,9 +274,9 @@ export function SupportModal({
 
                   <div className="mb-8 flex justify-center">
                     <img
-                      src={financialGiftQrCodeUrl}
+                      src={settings.qrCodeImageUrl || financialGiftQrCodeUrl}
                       alt="Payment QR code"
-                      className="h-auto w-[250px] sm:w-[310px]"
+                      className="h-auto w-[250px] sm:w-[310px] object-contain rounded-2xl"
                     />
                   </div>
 

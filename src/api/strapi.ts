@@ -5,6 +5,7 @@ export interface StrapiRequestOptions {
   baseUrl?: string;
   token?: string;
   signal?: AbortSignal;
+  bypassCache?: boolean;
 }
 
 export function resolveConfig(options: StrapiRequestOptions): { baseUrl: string; token?: string } {
@@ -20,7 +21,6 @@ export function resolveConfig(options: StrapiRequestOptions): { baseUrl: string;
 }
 
 // ── In-memory TTL cache ────────────────────────────────────────────────────
-// ponytail: đủ cho SPA vì data ít thay đổi. Nâng lên React Query nếu cần invalidation phức tạp.
 const CACHE_TTL_MS = 5 * 60 * 1000;
 const responseCache = new Map<string, { at: number; data: unknown }>();
 
@@ -28,12 +28,14 @@ export function clearCache(): void {
   responseCache.clear();
 }
 
-export function cacheGet(url: string): unknown | undefined {
+export function cacheGet(url: string, bypassCache = false): unknown | undefined {
+  if (bypassCache) return undefined;
   const hit = responseCache.get(url);
   return hit && Date.now() - hit.at < CACHE_TTL_MS ? hit.data : undefined;
 }
 
-export function cacheSet(url: string, data: unknown): void {
+export function cacheSet(url: string, data: unknown, skipCache = false): void {
+  if (skipCache) return;
   responseCache.set(url, { at: Date.now(), data });
 }
 
@@ -72,6 +74,7 @@ export function toProjectStatus(value: string): ProjectStatus {
 // ── Shared Strapi shapes ───────────────────────────────────────────────────
 export interface StrapiMedia {
   url?: unknown;
+  alternativeText?: unknown;
 }
 
 export interface StrapiSocialLink {
@@ -110,7 +113,7 @@ export interface StrapiProject {
   year?: unknown;
 }
 
-export function mapProject(project: StrapiProject, baseUrl: string, memberId: string): Project {
+export function mapProject(project: StrapiProject, baseUrl: string, memberId: string = ''): Project {
   return {
     id: text(project.documentId) || String(project.id ?? ''),
     name: text(project.name),
