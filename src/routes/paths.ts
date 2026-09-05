@@ -6,6 +6,8 @@ export const ROUTES = {
   MEMBER_DETAIL: (id: string = ':memberId') => `/members/${id}`,
   PROJECTS: '/projects',
   PROJECT_DETAIL: (id: string = ':projectId') => `/projects/${id}`,
+  NEWS: '/news',
+  NEWS_DETAIL: (id: string = ':newsId') => `/news/${id}`,
   POLICY_DOCUMENTS: '/policy-documents',
   CONTACT: '/contact',
   PAGE_DETAIL: (slug: string = ':slug') => `/pages/${slug}`,

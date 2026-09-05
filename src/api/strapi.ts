@@ -6,6 +6,7 @@ export interface StrapiRequestOptions {
   token?: string;
   signal?: AbortSignal;
   bypassCache?: boolean;
+  locale?: string;
 }
 
 export function resolveConfig(options: StrapiRequestOptions): { baseUrl: string; token?: string } {

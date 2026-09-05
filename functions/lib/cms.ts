@@ -1,4 +1,6 @@
 const ALLOWED_PREFIXES = [
+  '/api/home-page',
+  '/api/about-us',
   '/api/projects',
   '/api/members',
   '/api/team-members',
@@ -6,9 +8,7 @@ const ALLOWED_PREFIXES = [
   '/api/news-items',
   '/api/policy-documents',
   '/api/pages',
-  '/api/about-us',
   '/api/global-setting',
-  // Form submission and media upload endpoints
   '/api/inquiries',
   '/api/leadership-applications',
   '/api/organization-applications',

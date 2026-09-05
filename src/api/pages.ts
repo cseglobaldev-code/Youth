@@ -422,3 +422,43 @@ export async function fetchPageBySlugOrId(
 
   return null;
 }
+
+export async function fetchHomePage(
+  options: StrapiRequestOptions = {}
+): Promise<PageDetailItem | null> {
+  const { baseUrl, token } = resolveConfig(options);
+  const isPreview =
+    options.bypassCache ||
+    (typeof window !== 'undefined' && window.location.search.includes('preview=1'));
+
+  const query = new URLSearchParams();
+  appendDeepPopulateParams(query);
+  if (options.locale) query.append('locale', options.locale);
+  if (isPreview) query.append('status', 'draft');
+
+  const homeUrl = `${baseUrl}/api/home-page?${query.toString()}`;
+  let payload = cacheGet(homeUrl, isPreview) as { data?: StrapiRawPage } | undefined;
+
+  if (payload === undefined) {
+    try {
+      const response = await fetch(homeUrl, {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        signal: options.signal,
+      });
+
+      if (response.ok) {
+        payload = (await response.json()) as { data?: StrapiRawPage };
+        if (payload.data && typeof payload.data === 'object' && !Array.isArray(payload.data)) {
+          cacheSet(homeUrl, payload, isPreview);
+          return mapPageDetail(payload.data, baseUrl);
+        }
+      }
+    } catch {
+      // Return null on failure to use static section fallbacks
+    }
+  } else if (payload.data && typeof payload.data === 'object' && !Array.isArray(payload.data)) {
+    return mapPageDetail(payload.data, baseUrl);
+  }
+
+  return null;
+}
