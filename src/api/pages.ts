@@ -65,9 +65,9 @@ function mapSEO(rawSeo: StrapiRawPage['seo'], baseUrl: string): SEOData | undefi
   };
 }
 
-function mapContentBlock(raw: Record<string, any>, baseUrl: string): DynamicContentBlock | null {
+function mapContentBlock(raw: Record<string, any>, baseUrl: string, index: number): DynamicContentBlock | null {
   const component = text(raw.__component);
-  const id = raw.id ?? Math.random().toString(36).substring(2, 9);
+  const id = raw.id ?? `${component || 'block'}-${index}`;
   const style = raw.style ? {
     background: raw.style.background,
     paddingTop: raw.style.paddingTop,
@@ -287,7 +287,7 @@ function mapContentBlock(raw: Record<string, any>, baseUrl: string): DynamicCont
 function mapPageDetail(raw: StrapiRawPage, baseUrl: string): PageDetailItem {
   const blocks = Array.isArray(raw.contentBlocks)
     ? raw.contentBlocks
-        .map((block) => mapContentBlock(block, baseUrl))
+        .map((block, idx) => mapContentBlock(block, baseUrl, idx))
         .filter((block): block is DynamicContentBlock => block !== null)
     : [];
 
@@ -302,6 +302,14 @@ function mapPageDetail(raw: StrapiRawPage, baseUrl: string): PageDetailItem {
   };
 }
 
+function appendDeepPopulateParams(query: URLSearchParams) {
+  query.append('populate[seo][populate]', '*');
+  query.append('populate[contentBlocks][populate]', '*');
+  query.append('populate[contentBlocks][on][sections.featured-projects][populate][projects][populate]', '*');
+  query.append('populate[contentBlocks][on][sections.featured-members][populate][members][populate]', '*');
+  query.append('populate[contentBlocks][on][sections.team-grid][populate][teamMembers][populate]', '*');
+}
+
 export async function fetchPageBySlugOrId(
   slugOrId: string,
   options: StrapiRequestOptions = {}
@@ -311,11 +319,10 @@ export async function fetchPageBySlugOrId(
     options.bypassCache ||
     (typeof window !== 'undefined' && window.location.search.includes('preview=1'));
 
-  // 1. Tìm kiếm theo Slug chuẩn (Collection Type /api/pages)
+  // 1. Search by Slug (Collection Type /api/pages)
   const query = new URLSearchParams();
   query.append('filters[slug][$eq]', slugOrId);
-  query.append('populate[seo][populate]', '*');
-  query.append('populate[contentBlocks][populate]', '*');
+  appendDeepPopulateParams(query);
   query.append('pagination[pageSize]', '1');
   if (isPreview) query.append('status', 'draft');
 
@@ -337,17 +344,16 @@ export async function fetchPageBySlugOrId(
         }
       }
     } catch {
-      // Bỏ qua để thử fallback
+      // Fall through to fallback attempts
     }
   } else if (Array.isArray(payload.data) && payload.data.length > 0 && payload.data[0]) {
     return mapPageDetail(payload.data[0], baseUrl);
   }
 
-  // 2. Fallback: Nếu là Single Type 'about-us' (/api/about-us)
+  // 2. Fallback: Single Type 'about-us' (/api/about-us)
   if (slugOrId === 'about-us') {
     const aboutQuery = new URLSearchParams();
-    aboutQuery.append('populate[seo][populate]', '*');
-    aboutQuery.append('populate[contentBlocks][populate]', '*');
+    appendDeepPopulateParams(aboutQuery);
     if (isPreview) aboutQuery.append('status', 'draft');
 
     const aboutUrl = `${baseUrl}/api/about-us?${aboutQuery.toString()}`;
@@ -368,17 +374,16 @@ export async function fetchPageBySlugOrId(
           }
         }
       } catch {
-        // Bỏ qua
+        // Fall through
       }
     } else if (aboutPayload.data && typeof aboutPayload.data === 'object' && !Array.isArray(aboutPayload.data)) {
       return mapPageDetail(aboutPayload.data, baseUrl);
     }
   }
 
-  // 3. Fallback: Tìm theo Document ID (Dành cho link Preview trực tiếp)
+  // 3. Fallback: Search by Document ID (Direct Preview links)
   const docQuery = new URLSearchParams();
-  docQuery.append('populate[seo][populate]', '*');
-  docQuery.append('populate[contentBlocks][populate]', '*');
+  appendDeepPopulateParams(docQuery);
   if (isPreview) docQuery.append('status', 'draft');
 
   const docUrl = `${baseUrl}/api/pages/${encodeURIComponent(slugOrId)}?${docQuery.toString()}`;
@@ -404,7 +409,7 @@ export async function fetchPageBySlugOrId(
         }
       }
     } catch {
-      // Bỏ qua lỗi
+      // Return null on failure
     }
   } else if (
     docPayload.data &&

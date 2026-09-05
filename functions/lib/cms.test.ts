@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { draftStatus, isAllowedCmsPath } from './cms';
 
 describe('CMS proxy helpers', () => {
-  it('allows read-only content and upload paths', () => {
+  it('allows read-only content and upload/form paths', () => {
     expect(isAllowedCmsPath('/api/projects')).toBe(true);
     expect(isAllowedCmsPath('/api/projects/project-1')).toBe(true);
     expect(isAllowedCmsPath('/api/members')).toBe(true);
@@ -10,7 +10,11 @@ describe('CMS proxy helpers', () => {
     expect(isAllowedCmsPath('/api/pages/page-1')).toBe(true);
     expect(isAllowedCmsPath('/api/about-us')).toBe(true);
     expect(isAllowedCmsPath('/api/global-setting')).toBe(true);
-    expect(isAllowedCmsPath('/api/inquiries')).toBe(false);
+    expect(isAllowedCmsPath('/api/inquiries')).toBe(true);
+    expect(isAllowedCmsPath('/api/leadership-applications')).toBe(true);
+    expect(isAllowedCmsPath('/api/organization-applications')).toBe(true);
+    expect(isAllowedCmsPath('/api/support-submissions')).toBe(true);
+    expect(isAllowedCmsPath('/api/upload')).toBe(true);
     expect(isAllowedCmsPath('/admin/init')).toBe(false);
   });
 

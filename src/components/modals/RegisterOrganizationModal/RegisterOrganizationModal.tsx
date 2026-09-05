@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Modal, Form, Input, Select, Checkbox, Radio, Upload, ConfigProvider } from 'antd';
+import { Modal, Form, Input, Select, Checkbox, Radio, Upload, ConfigProvider, Alert } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { PillButton } from '@/components/ui/PillButton';
-import { urlRule, phoneRule, maxWordsRule } from '@/lib/utils';
+import { urlRule, phoneRule, maxWordsRule, countryFlagEmoji } from '@/lib/utils';
 import { submitOrganizationApplication } from '@/api/applications';
+import { DIAL_CODES } from '@/data/dialCodes';
+import { SDGS_DATA } from '@/data/sdgs';
 
 export interface RegisterOrganizationFormValues {
   // Step 1 — Organization
@@ -18,7 +20,7 @@ export interface RegisterOrganizationFormValues {
   email: string;
   website?: string;
   focusArea: string;
-  focusSDGs: string[];
+  focusSDGs: number[];
   facebookUrl?: string;
   instagramUrl?: string;
   linkedinUrl?: string;
@@ -32,8 +34,8 @@ export interface RegisterOrganizationFormValues {
   socialImpactMetrics: string;
   region: string;
   countriesCovered: string;
-  projectFocusSDGs: string[];
-  projectStatus: string;
+  projectFocusSDGs: number[];
+  projectStatus: 'ongoing' | 'completed' | 'planned';
   projectImages?: unknown[];
   projectSocialProfile: string;
 }
@@ -46,33 +48,41 @@ export interface RegisterOrganizationModalProps {
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
 
-const PHONE_CODES = ['+84', '+1', '+44', '+61', '+65', '+81', '+82', '+86'];
-
-const COUNTRIES = ['VietNam', 'United States', 'United Kingdom', 'Singapore', 'Japan', 'Korea', 'Australia'];
-
 const YEARS = Array.from({ length: 75 }, (_, i) => new Date().getFullYear() - i);
 
-const SDG_GOALS = [
-  'Goal 1. No poverty',
-  'Goal 2. Zero Hunger',
-  'Goal 3. Good health and well-being',
-  'Goal 4. Quality education',
-  'Goal 5. Gender Equality',
-  'Goal 6. Clean water and sanitation',
-  'Goal 7. Affordable and clean energy',
-  'Goal 8. Decent work and economic growth',
-  'Goal 9. Industry, innovation and infrastructure',
-  'Goal 10. Reduced inequalities',
-  'Goal 11. Sustainable cities and communities',
-  'Goal 12. Responsible consumption and production',
-  'Goal 13. Climate action',
-  'Goal 14. Life Below Water',
-  'Goal 15. Life on land',
-  'Goal 16. Peace, justice and strong institutions',
-  'Goal 17. Partnerships for the goals',
+const PROJECT_STATUS_OPTIONS: { value: 'ongoing' | 'completed' | 'planned'; label: string }[] = [
+  { value: 'ongoing', label: 'Ongoing' },
+  { value: 'planned', label: 'Planning' },
+  { value: 'completed', label: 'Completed' },
 ];
 
-const PROJECT_STATUSES = ['In Planning', 'Active', 'Ended', 'Inactive'];
+const GLOBAL_REGIONS = [
+  'Southeast Asia',
+  'East Asia',
+  'South Asia',
+  'Central Asia',
+  'West Asia',
+  'North Asia',
+  'North Africa',
+  'West Africa',
+  'Central Africa',
+  'East Africa',
+  'Southern Africa',
+  'North America',
+  'Central America',
+  'Caribbean',
+  'South America',
+  'Australia',
+  'New Zealand',
+  'Melanesia',
+  'Micronesia',
+  'Polynesia',
+  'Northern Europe',
+  'Western Europe',
+  'Eastern Europe',
+  'Southern Europe',
+  'Global',
+];
 
 const STEP_FIELDS: Record<1 | 2, (keyof RegisterOrganizationFormValues)[]> = {
   1: [
@@ -124,9 +134,11 @@ export function RegisterOrganizationModal({
   const [step, setStep] = useState<1 | 2>(1);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const close = () => {
     if (submitting) return;
+    setErrorMessage(null);
     onClose();
   };
 
@@ -134,6 +146,7 @@ export function RegisterOrganizationModal({
     form.resetFields();
     setStep(1);
     setSubmitted(false);
+    setErrorMessage(null);
     onClose();
   };
 
@@ -149,12 +162,13 @@ export function RegisterOrganizationModal({
   const handleFinish = async (values: RegisterOrganizationFormValues) => {
     try {
       setSubmitting(true);
+      setErrorMessage(null);
       await submitOrganizationApplication(values);
       onSubmit?.(values);
       setSubmitted(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to submit organization application:', error);
-      setSubmitted(true);
+      setErrorMessage(error?.message || 'Failed to submit application. Please check your network connection and try again.');
     } finally {
       setSubmitting(false);
     }
@@ -173,6 +187,18 @@ export function RegisterOrganizationModal({
         mask: { backgroundColor: 'rgba(0, 0, 0, 0.6)' },
       }}
     >
+      {errorMessage && (
+        <Alert
+          type="error"
+          showIcon
+          message="Submission Error"
+          description={errorMessage}
+          closable
+          onClose={() => setErrorMessage(null)}
+          className="mb-4"
+        />
+      )}
+
       {submitted ? (
         <div className="py-4 sm:py-6">
           <h2 className="font-bold text-[26px] sm:text-[34px] text-[#111111] mb-4" style={FONT}>
@@ -240,19 +266,20 @@ export function RegisterOrganizationModal({
                 { required: true, message: 'Please enter phone number' },
                 phoneRule(),
               ]}
-              extra={
-                <span className="italic text-[13px]" style={FONT}>
-                  Include country code (e.g., +84 for Vietnam)
-                </span>
-              }
             >
               <Input
                 placeholder="Enter phone number"
                 addonBefore={
                   <Form.Item name="representativePhoneCode" noStyle initialValue="+84">
                     <Select
-                      style={{ width: 90 }}
-                      options={PHONE_CODES.map((c) => ({ value: c, label: c }))}
+                      showSearch
+                      style={{ width: 120 }}
+                      optionFilterProp="title"
+                      options={DIAL_CODES.map((d) => ({
+                        value: d.code,
+                        label: `${countryFlagEmoji(d.country)} ${d.code}`,
+                        title: `${d.country} ${d.code}`,
+                      }))}
                     />
                   </Form.Item>
                 }
@@ -279,7 +306,10 @@ export function RegisterOrganizationModal({
               >
                 <Select
                   placeholder="Select country"
-                  options={COUNTRIES.map((c) => ({ value: c, label: c }))}
+                  options={DIAL_CODES.map((d) => ({
+                    value: d.country,
+                    label: `${countryFlagEmoji(d.country)} ${d.country}`,
+                  }))}
                   showSearch
                 />
               </Form.Item>
@@ -352,19 +382,19 @@ export function RegisterOrganizationModal({
               rules={[
                 { required: true, message: 'Please select at least one SDG' },
                 {
-                  validator: (_, value: string[]) =>
+                  validator: (_, value: number[]) =>
                     value && value.length > 3
                       ? Promise.reject(new Error('Please select at most 3 options'))
                       : Promise.resolve(),
                 },
               ]}
-              extra={<span className="italic" style={FONT}>Maximum 03 SDGs that best align with your organization.</span>}
+              extra={<span className="italic" style={FONT}>Maximum 3 SDGs that best align with your organization.</span>}
             >
-              <Checkbox.Group>
-                <div className="flex flex-col gap-2">
-                  {SDG_GOALS.map((goal) => (
-                    <Checkbox key={goal} value={goal} style={FONT}>
-                      {goal}
+              <Checkbox.Group className="w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {SDGS_DATA.map((sdg) => (
+                    <Checkbox key={sdg.id} value={sdg.id} style={FONT}>
+                      SDG {sdg.id} – {sdg.title}
                     </Checkbox>
                   ))}
                 </div>
@@ -469,8 +499,7 @@ export function RegisterOrganizationModal({
               rules={[{ required: true, message: 'Please enter social impact metrics' }]}
               extra={
                 <span className="italic text-[13px]" style={FONT}>
-                  Please list key quantitative data reflecting your project's impact. (e.g., specific SDGs
-                  targeted, number of beneficiaries reached, hours of training provided, or community tracking metrics).
+                  Please list key quantitative data reflecting your project's impact (e.g. 1,500 Beneficiaries, 500 hours training).
                 </span>
               }
             >
@@ -484,7 +513,7 @@ export function RegisterOrganizationModal({
             >
               <Select
                 placeholder="Select region"
-                options={COUNTRIES.map((c) => ({ value: c, label: c }))}
+                options={GLOBAL_REGIONS.map((r) => ({ value: r, label: r }))}
                 showSearch
               />
             </Form.Item>
@@ -495,8 +524,7 @@ export function RegisterOrganizationModal({
               rules={[{ required: true, message: 'Please enter countries covered' }]}
               extra={
                 <span className="italic text-[13px]" style={FONT}>
-                  Please list the countries where your project operates or has an active presence (e.g.,
-                  Vietnam, Singapore, South Korea).
+                  List countries separated by commas (e.g., Vietnam, Singapore, South Korea).
                 </span>
               }
             >
@@ -509,7 +537,7 @@ export function RegisterOrganizationModal({
               rules={[
                 { required: true, message: 'Please select at least one SDG' },
                 {
-                  validator: (_, value: string[]) =>
+                  validator: (_, value: number[]) =>
                     value && value.length > 3
                       ? Promise.reject(new Error('Please select at most 3 options'))
                       : Promise.resolve(),
@@ -517,11 +545,11 @@ export function RegisterOrganizationModal({
               ]}
               extra={<span className="italic" style={FONT}>Maximum 3 SDGs that best align with your project.</span>}
             >
-              <Checkbox.Group>
-                <div className="flex flex-col gap-2">
-                  {SDG_GOALS.map((goal) => (
-                    <Checkbox key={goal} value={goal} style={FONT}>
-                      {goal}
+              <Checkbox.Group className="w-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {SDGS_DATA.map((sdg) => (
+                    <Checkbox key={sdg.id} value={sdg.id} style={FONT}>
+                      SDG {sdg.id} – {sdg.title}
                     </Checkbox>
                   ))}
                 </div>
@@ -535,9 +563,9 @@ export function RegisterOrganizationModal({
             >
               <Radio.Group>
                 <div className="flex flex-wrap gap-x-8 gap-y-2">
-                  {PROJECT_STATUSES.map((s) => (
-                    <Radio key={s} value={s} style={FONT}>
-                      {s}
+                  {PROJECT_STATUS_OPTIONS.map((s) => (
+                    <Radio key={s.value} value={s.value} style={FONT}>
+                      {s.label}
                     </Radio>
                   ))}
                 </div>

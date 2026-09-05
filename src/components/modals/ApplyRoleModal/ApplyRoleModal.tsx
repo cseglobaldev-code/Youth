@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
-import { Modal, Form, Input, Radio, DatePicker, Upload, ConfigProvider } from 'antd';
+import { Modal, Form, Input, Radio, DatePicker, Upload, ConfigProvider, Alert, Select } from 'antd';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import type { UploadFile } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { PillButton } from '@/components/ui/PillButton';
-import { urlRule, phoneRule, maxWordsRule } from '@/lib/utils';
+import { urlRule, phoneRule, maxWordsRule, countryFlagEmoji } from '@/lib/utils';
 import { submitLeadershipApplication } from '@/api/applications';
-
-export type Continent = 'africa' | 'asia' | 'europe' | 'americas' | 'middle_east' | 'oceania';
+import { CONTINENT_REGIONS } from '@/api/leadership';
+import { DIAL_CODES } from '@/data/dialCodes';
+import type { Continent } from '@/types';
 
 export interface ApplyRoleFormValues {
   fullName: string;
@@ -20,6 +21,7 @@ export interface ApplyRoleFormValues {
   countryOfResidence: string;
   cityTown: string;
   email: string;
+  whatsappCode: string;
   whatsappNumber: string;
   profilePhoto: UploadFile[];
   activityPhotos?: UploadFile[];
@@ -133,22 +135,12 @@ const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
 ];
 
 const CONTINENTS: { value: Continent; label: string }[] = [
-  { value: 'africa', label: 'Africa' },
-  { value: 'asia', label: 'Asia' },
-  { value: 'europe', label: 'Europe' },
-  { value: 'americas', label: 'Americas' },
-  { value: 'middle_east', label: 'Middle East' },
-  { value: 'oceania', label: 'Oceania' },
+  { value: 'Africa', label: 'Africa' },
+  { value: 'America', label: 'America' },
+  { value: 'Asia', label: 'Asia' },
+  { value: 'Australia', label: 'Australia' },
+  { value: 'Europe', label: 'Europe' },
 ];
-
-const REGIONS: Record<Continent, string[]> = {
-  africa: ['Northern Africa', 'Western Africa', 'Central Africa', 'Eastern Africa', 'Southern Africa'],
-  asia: ['South Asia', 'East Asia', 'West Asia', 'North Asia', 'Southeast Asia'],
-  europe: ['Northern Europe', 'Western Europe', 'Eastern Europe', 'Southern Europe'],
-  americas: ['North America', 'Central America', 'South America', 'Caribbean'],
-  middle_east: ['Gulf', 'Levant', 'Arabian Peninsula', 'North Africa & Egypt'],
-  oceania: ['Australia & New Zealand', 'Melanesia', 'Micronesia', 'Polynesia'],
-};
 
 export interface ApplyRoleModalProps {
   open: boolean;
@@ -195,19 +187,22 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
   const continent = Form.useWatch('continent', form);
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const close = () => {
     if (submitting) return;
+    setErrorMessage(null);
     onClose();
   };
 
   const finishAndClose = () => {
     form.resetFields();
     setStep(1);
+    setErrorMessage(null);
     onClose();
   };
 
-  const regions = continent ? REGIONS[continent] : [];
+  const regions = continent && CONTINENT_REGIONS[continent] ? CONTINENT_REGIONS[continent] : [];
   const continentLabel = CONTINENTS.find((c) => c.value === continent)?.label ?? '';
 
   const handleNextFromDetails = async () => {
@@ -241,13 +236,21 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
   const handleFinish = async (values: ApplyRoleFormValues) => {
     try {
       setSubmitting(true);
-      await submitLeadershipApplication(values);
+      setErrorMessage(null);
+      const fullWhatsAppNumber = values.whatsappCode
+        ? `${values.whatsappCode} ${values.whatsappNumber}`
+        : values.whatsappNumber;
+
+      await submitLeadershipApplication({
+        ...values,
+        whatsappNumber: fullWhatsAppNumber,
+      });
+
       onSubmit?.(values);
       setStep(5);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to submit leadership application:', error);
-      // Vẫn chuyển sang bước 5 để không chặn trải nghiệm người dùng
-      setStep(5);
+      setErrorMessage(error?.message || 'Failed to submit application. Please check your network connection and try again.');
     } finally {
       setSubmitting(false);
     }
@@ -267,6 +270,18 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
         mask: { backgroundColor: 'rgba(0, 0, 0, 0.6)' },
       }}
     >
+      {errorMessage && (
+        <Alert
+          type="error"
+          showIcon
+          message="Submission Error"
+          description={errorMessage}
+          closable
+          onClose={() => setErrorMessage(null)}
+          className="mb-4"
+        />
+      )}
+
       {step !== 5 && (
         <h2 className="font-bold text-[28px] sm:text-[36px] text-[#111111] mb-3 sm:mb-4" style={FONT}>
           Leadership Roles
@@ -447,7 +462,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
               <FieldLabel
                 text="WhatsApp Number"
                 required
-                hint="Include country code (e.g., 84 for Vietnam)"
+                hint="Select country code and enter your WhatsApp number"
               />
             }
             name="whatsappNumber"
@@ -456,7 +471,24 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
               phoneRule('Please enter a valid WhatsApp number'),
             ]}
           >
-            <Input addonBefore="+84" placeholder="Enter your WhatsApp number" style={FONT} />
+            <Input
+              addonBefore={
+                <Form.Item name="whatsappCode" noStyle initialValue="+84">
+                  <Select
+                    showSearch
+                    style={{ width: 120 }}
+                    optionFilterProp="title"
+                    options={DIAL_CODES.map((d) => ({
+                      value: d.code,
+                      label: `${countryFlagEmoji(d.country)} ${d.code}`,
+                      title: `${d.country} ${d.code}`,
+                    }))}
+                  />
+                </Form.Item>
+              }
+              placeholder="Enter your WhatsApp number"
+              style={FONT}
+            />
           </Form.Item>
 
           <Form.Item

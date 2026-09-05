@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Modal, Form, Input, Checkbox, ConfigProvider, Radio } from 'antd';
+import { Modal, Form, Input, Checkbox, ConfigProvider, Radio, Alert } from 'antd';
 import { PillButton } from '@/components/ui/PillButton';
 import { maxWordsRule } from '@/lib/utils';
 import { submitSupportSubmission } from '@/api/applications';
 import { fetchGlobalSettings, DEFAULT_GLOBAL_SETTINGS } from '@/api/global';
+import { fetchProjects } from '@/api/projects';
 import type { GlobalSetting } from '@/types';
 import financialGiftQrCodeUrl from './financial-gift-qrcode.png';
 
@@ -12,26 +13,18 @@ export interface SupportFormValues {
   email: string;
   projects: string[];
   letter: string;
-  financialGiftDetails: string;
-  donationFrequency: 'monthly' | 'quarterly' | 'other' | 'once';
+  financialGiftDetails?: string;
+  donationFrequency?: 'monthly' | 'quarterly' | 'other' | 'once';
 }
 
 export interface SupportModalProps {
   open: boolean;
   onClose: () => void;
-  /** Optional list of projects the supporter can pick from. */
   projects?: { value: string; label: string }[];
-  /** Optional callback when the user submits a valid form. */
   onSubmit?: (values: SupportFormValues) => void | Promise<void>;
 }
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
-
-const DEFAULT_PROJECTS = [
-  { value: 'hmong-vietnam', label: "H'Mong - Vietnam" },
-  { value: 'cse-global-vietnam', label: 'CSE Global - Vietnam' },
-  { value: 'tale-nigeria', label: 'TALE - Nigeria' },
-];
 
 const requiredMark = (text: string) => (
   <span style={FONT}>
@@ -42,27 +35,47 @@ const requiredMark = (text: string) => (
 export function SupportModal({
   open,
   onClose,
-  projects = DEFAULT_PROJECTS,
+  projects: customProjects,
   onSubmit,
 }: SupportModalProps) {
   const [form] = Form.useForm<SupportFormValues>();
   const [step, setStep] = useState<'letter' | 'financial'>('letter');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [settings, setSettings] = useState<GlobalSetting>(DEFAULT_GLOBAL_SETTINGS);
+  const [projectOptions, setProjectOptions] = useState<{ value: string; label: string }[]>([]);
 
   useEffect(() => {
     if (open) {
       fetchGlobalSettings()
         .then(setSettings)
         .catch(() => setSettings(DEFAULT_GLOBAL_SETTINGS));
+
+      if (customProjects && customProjects.length > 0) {
+        setProjectOptions(customProjects);
+      } else {
+        fetchProjects()
+          .then((projects) => {
+            if (projects.length > 0) {
+              setProjectOptions(projects.map((p) => ({ value: p.id, label: p.name })));
+            }
+          })
+          .catch(() => {
+            setProjectOptions([
+              { value: 'education-initiative', label: 'Education for All Initiative' },
+              { value: 'green-belt', label: 'Green Belt Movement' },
+            ]);
+          });
+      }
     }
-  }, [open]);
+  }, [open, customProjects]);
 
   const reset = () => {
     form.resetFields();
     setStep('letter');
     setSubmitted(false);
+    setErrorMessage(null);
   };
 
   const close = () => {
@@ -80,15 +93,37 @@ export function SupportModal({
     }
   };
 
+  const handleSendLetterOnly = async () => {
+    try {
+      const values = await form.validateFields(['fullName', 'email', 'projects', 'letter']);
+      setSubmitting(true);
+      setErrorMessage(null);
+      await submitSupportSubmission({
+        ...values,
+        financialGiftDetails: undefined,
+        donationFrequency: 'once',
+      });
+      await onSubmit?.(values);
+      setSubmitted(true);
+    } catch (error: any) {
+      if (error?.errorFields) return; // Antd validation error
+      console.error('Failed to submit support letter:', error);
+      setErrorMessage(error?.message || 'Failed to submit your message. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const handleFinish = async (values: SupportFormValues) => {
     try {
       setSubmitting(true);
+      setErrorMessage(null);
       await submitSupportSubmission(values);
       await onSubmit?.(values);
       setSubmitted(true);
-    } catch (error) {
-      console.error('Failed to submit support letter to Strapi:', error);
-      setSubmitted(true);
+    } catch (error: any) {
+      console.error('Failed to submit support gift to Strapi:', error);
+      setErrorMessage(error?.message || 'Failed to submit your contribution. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -113,6 +148,18 @@ export function SupportModal({
       }}
       destroyOnHidden
     >
+      {errorMessage && (
+        <Alert
+          type="error"
+          showIcon
+          message="Submission Error"
+          description={errorMessage}
+          closable
+          onClose={() => setErrorMessage(null)}
+          className="mb-4"
+        />
+      )}
+
       {submitted ? (
         <div className="py-4 sm:py-6">
           <h2 className="font-bold text-[26px] sm:text-[34px] text-[#111111] mb-4" style={FONT}>
@@ -183,9 +230,9 @@ export function SupportModal({
                       </span>
                     }
                   >
-                    <Checkbox.Group>
+                    <Checkbox.Group className="w-full">
                       <div className="flex flex-col gap-2">
-                        {projects.map((project) => (
+                        {projectOptions.map((project) => (
                           <Checkbox key={project.value} value={project.value} style={FONT}>
                             {project.label}
                           </Checkbox>
@@ -214,17 +261,28 @@ export function SupportModal({
                     />
                   </Form.Item>
 
-                  <PillButton
-                    as="button"
-                    variant="solid"
-                    size="lg"
-                    fullWidth
-                    disabled={submitting}
-                    className="mt-2"
-                    onClick={goToFinancialGift}
-                  >
-                    Fuel the project with Financial support
-                  </PillButton>
+                  <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                    <PillButton
+                      as="button"
+                      variant="outline"
+                      size="lg"
+                      fullWidth
+                      disabled={submitting}
+                      onClick={handleSendLetterOnly}
+                    >
+                      Send Letter of Support Only
+                    </PillButton>
+                    <PillButton
+                      as="button"
+                      variant="solid"
+                      size="lg"
+                      fullWidth
+                      disabled={submitting}
+                      onClick={goToFinancialGift}
+                    >
+                      Fuel with Financial Gift
+                    </PillButton>
+                  </div>
                 </>
               ) : (
                 <>
@@ -235,20 +293,14 @@ export function SupportModal({
                   <Form.Item
                     label={requiredMark('Financial Gift Details')}
                     name="financialGiftDetails"
-                    rules={[{ required: true, message: 'Please enter financial gift details' }]}
+                    rules={[{ required: true, message: 'Please enter financial gift details or amount' }]}
                   >
-                    <div className="flex flex-col gap-2">
-                      <div className="italic text-[#111111]" style={FONT}>
-                        <div>Currency: USD</div>
-                        <div>Amount: $19,00 USD</div>
-                      </div>
-                      <Input style={FONT} />
-                    </div>
+                    <Input placeholder="e.g. 50 USD / Bank transfer pledge" style={FONT} />
                   </Form.Item>
 
                   <div className="mb-6 text-[16px] leading-relaxed text-[#111111]" style={FONT}>
-                    <p className="mb-2 text-[18px]">QR Code</p>
-                    <p className="mb-2 font-bold italic">
+                    <p className="mb-2 text-[18px] font-bold">QR Code</p>
+                    <p className="mb-2 font-bold italic text-neutral-600">
                       Note: Press and hold the QR code to save it to your phone
                     </p>
                     <p className="font-bold">Bank Account Information</p>
@@ -256,27 +308,13 @@ export function SupportModal({
                     <p className="italic">- Account Holder: {settings.accountHolder}</p>
                     <p className="italic">- Bank: {settings.bankName}</p>
                     <p className="italic">- Transfer Description: {settings.transferSyntaxNote}</p>
-
-                    <p className="mt-3 font-bold">Important Notes</p>
-                    <p className="italic">
-                      - Case 1 (Equal Split): To split one transfer equally among multiple projects,{' '}
-                      <strong>list all project names</strong> in the transfer description.
-                    </p>
-                    <p className="italic">
-                      - Case 2 (Specific Amounts): To give <strong>different amounts</strong> to
-                      different projects, please make <strong>separate transfers</strong> for each
-                      project.
-                    </p>
-                    <p className="italic">
-                      E.g. Supporting 3 projects with different amounts = 3 separate transfers.
-                    </p>
                   </div>
 
                   <div className="mb-8 flex justify-center">
                     <img
                       src={settings.qrCodeImageUrl || financialGiftQrCodeUrl}
                       alt="Payment QR code"
-                      className="h-auto w-[250px] sm:w-[310px] object-contain rounded-2xl"
+                      className="h-auto w-[250px] sm:w-[310px] object-contain rounded-2xl shadow-sm"
                     />
                   </div>
 
@@ -296,17 +334,28 @@ export function SupportModal({
                     </Radio.Group>
                   </Form.Item>
 
-                  <PillButton
-                    as="button"
-                    variant="solid"
-                    size="lg"
-                    fullWidth
-                    disabled={submitting}
-                    className="mt-2"
-                    onClick={() => form.submit()}
-                  >
-                    {submitting ? 'Sending…' : 'Send'}
-                  </PillButton>
+                  <div className="flex gap-3 mt-4">
+                    <PillButton
+                      as="button"
+                      variant="outline"
+                      size="lg"
+                      fullWidth
+                      disabled={submitting}
+                      onClick={() => setStep('letter')}
+                    >
+                      Back
+                    </PillButton>
+                    <PillButton
+                      as="button"
+                      variant="solid"
+                      size="lg"
+                      fullWidth
+                      disabled={submitting}
+                      onClick={() => form.submit()}
+                    >
+                      {submitting ? 'Sending…' : 'Send'}
+                    </PillButton>
+                  </div>
                 </>
               )}
             </Form>

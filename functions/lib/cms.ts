@@ -8,6 +8,12 @@ const ALLOWED_PREFIXES = [
   '/api/pages',
   '/api/about-us',
   '/api/global-setting',
+  // Form submission and media upload endpoints
+  '/api/inquiries',
+  '/api/leadership-applications',
+  '/api/organization-applications',
+  '/api/support-submissions',
+  '/api/upload',
 ];
 
 export function isAllowedCmsPath(pathname: string): boolean {

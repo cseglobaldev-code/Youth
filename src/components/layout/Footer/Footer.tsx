@@ -65,7 +65,6 @@ export function Footer({ className }: FooterProps) {
                 fontWeight: 600,
                 fontSize: '24px',
                 lineHeight: '140%',
-                letterSpacing: '0%',
               }}
             >
               Information
@@ -98,7 +97,6 @@ export function Footer({ className }: FooterProps) {
                 fontWeight: 600,
                 fontSize: '24px',
                 lineHeight: '140%',
-                letterSpacing: '0%',
               }}
             >
               Discover
@@ -109,7 +107,7 @@ export function Footer({ className }: FooterProps) {
                 { to: ROUTES.LEADERSHIP, label: 'Leadership' },
                 { to: ROUTES.MEMBERS, label: 'Members' },
                 { to: ROUTES.PROJECTS, label: 'Projects' },
-                { to: ROUTES.POLICY_DOCUMENTS, label: 'Document' },
+                { to: ROUTES.POLICY_DOCUMENTS, label: 'Documents' },
                 { to: ROUTES.CONTACT, label: 'Contact' },
               ].map(({ to, label }) => (
                 <Link
@@ -121,7 +119,6 @@ export function Footer({ className }: FooterProps) {
                     fontWeight: 400,
                     fontSize: '16px',
                     lineHeight: '100%',
-                    letterSpacing: '0%',
                     verticalAlign: 'middle',
                   }}
                 >
@@ -132,16 +129,26 @@ export function Footer({ className }: FooterProps) {
           </div>
         </div>
 
-        {/* Bottom bar */}
+        {/* Bottom bar with dynamic current year */}
         <div className="flex flex-col items-center justify-between gap-3 border-t border-neutral-700 py-5 text-center sm:flex-row sm:text-left">
           <p className="text-xs text-neutral-400">
-            © 2026 Youth Organization Union · All rights reserved
+            © {new Date().getFullYear()} Youth Organization Union · All rights reserved
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-end lg:gap-6">
-            <a href="#" className="text-xs text-white transition-colors hover:text-[#005D9A]">
+            <a
+              href={settings.termsOfServiceUrl || '#'}
+              target={settings.termsOfServiceUrl?.startsWith('http') ? '_blank' : undefined}
+              rel={settings.termsOfServiceUrl?.startsWith('http') ? 'noopener noreferrer' : undefined}
+              className="text-xs text-white transition-colors hover:text-[#005D9A]"
+            >
               Terms of Service
             </a>
-            <a href="#" className="text-xs text-white transition-colors hover:text-[#005D9A]">
+            <a
+              href={settings.privacyPolicyUrl || '#'}
+              target={settings.privacyPolicyUrl?.startsWith('http') ? '_blank' : undefined}
+              rel={settings.privacyPolicyUrl?.startsWith('http') ? 'noopener noreferrer' : undefined}
+              className="text-xs text-white transition-colors hover:text-[#005D9A]"
+            >
               Privacy Policy
             </a>
           </div>

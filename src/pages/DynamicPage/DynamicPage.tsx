@@ -6,6 +6,7 @@ import { Icon } from '@/components/ui/Icon';
 import { BlockRenderer } from '@/components/dynamic';
 import { fetchPageBySlugOrId } from '@/api/pages';
 import { NotFoundPage } from '@/pages/NotFoundPage';
+import { updatePageSEO } from '@/lib/utils/seo';
 import type { PageDetailItem } from '@/types';
 
 export function DynamicPage() {
@@ -45,10 +46,9 @@ export function DynamicPage() {
     return () => controller.abort();
   }, [slug, isPreview]);
 
-  // Cập nhật SEO Title động
   useEffect(() => {
-    if (page?.title) {
-      document.title = page.seo?.metaTitle || `${page.title} · Y.O.U`;
+    if (page) {
+      updatePageSEO(page.seo, page.title);
     }
   }, [page]);
 
@@ -66,7 +66,6 @@ export function DynamicPage() {
 
   return (
     <div className="relative w-full">
-      {/* Huy hiệu cảnh báo khi đang ở chế độ xem trước (Preview Mode) */}
       {isPreview && (
         <div className="sticky top-[clamp(3.75rem,5.5vw,5.25rem)] z-40 flex items-center justify-between bg-amber-500 px-4 py-2 text-white shadow-md">
           <div className="mx-auto flex items-center gap-2 text-sm font-medium">
@@ -78,7 +77,6 @@ export function DynamicPage() {
         </div>
       )}
 
-      {/* Render toàn bộ mảng dynamic blocks */}
       <BlockRenderer blocks={page.contentBlocks} />
     </div>
   );

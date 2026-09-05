@@ -7,7 +7,7 @@ const PREVIEW_COOKIE = 'you_preview';
 const PREVIEW_MAX_AGE_SECONDS = 60 * 60;
 
 /**
- * Strapi Admin redirects editors here (see youth-cms/config/admin.ts).
+ * Strapi Admin redirects editors here.
  * Validates the shared secret, then stores the draft flag in an HttpOnly cookie
  * so the CMS proxy below can add `status=draft` on subsequent API calls.
  */
@@ -45,11 +45,12 @@ export async function handlePreview(request: Request, env: Env): Promise<Respons
 }
 
 /**
- * Same-origin proxy to Strapi. The API token stays a runtime secret and is
- * never shipped to the browser, per Strapi's least-privilege guidance.
+ * Same-origin proxy to Strapi. Supports GET/HEAD for content and POST/PUT for forms and uploads.
+ * The API token stays a runtime secret in Cloudflare and is never shipped to the browser.
  */
 export async function handleCms(request: Request, env: Env): Promise<Response> {
-  if (request.method !== 'GET' && request.method !== 'HEAD') {
+  const allowedMethods = new Set(['GET', 'HEAD', 'POST', 'PUT']);
+  if (!allowedMethods.has(request.method)) {
     return new Response('Method not allowed', { status: 405 });
   }
 
@@ -61,14 +62,25 @@ export async function handleCms(request: Request, env: Env): Promise<Response> {
 
   const upstreamUrl = new URL(requestUrl.pathname, env.STRAPI_API_URL.replace(/\/$/, ''));
   upstreamUrl.search = requestUrl.search;
-  upstreamUrl.searchParams.set('status', draftStatus(request.headers.get('Cookie')));
+
+  if (request.method === 'GET' || request.method === 'HEAD') {
+    upstreamUrl.searchParams.set('status', draftStatus(request.headers.get('Cookie')));
+  }
 
   const headers = new Headers();
   headers.set('Authorization', `Bearer ${env.STRAPI_API_TOKEN}`);
+  
   const accept = request.headers.get('Accept');
   if (accept) headers.set('Accept', accept);
 
-  const upstreamResponse = await fetch(upstreamUrl, { method: request.method, headers });
+  const contentType = request.headers.get('Content-Type');
+  if (contentType) headers.set('Content-Type', contentType);
+
+  const upstreamResponse = await fetch(upstreamUrl, {
+    method: request.method,
+    headers,
+    body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined,
+  });
 
   const responseHeaders = new Headers(upstreamResponse.headers);
   responseHeaders.delete('set-cookie');

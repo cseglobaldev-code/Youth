@@ -17,7 +17,8 @@ function pathnameFromParams(params: PagesContext['params']): string {
 }
 
 export async function onRequest(context: PagesContext): Promise<Response> {
-  if (context.request.method !== 'GET' && context.request.method !== 'HEAD') {
+  const allowedMethods = new Set(['GET', 'HEAD', 'POST', 'PUT']);
+  if (!allowedMethods.has(context.request.method)) {
     return new Response('Method not allowed', { status: 405 });
   }
 
@@ -30,17 +31,26 @@ export async function onRequest(context: PagesContext): Promise<Response> {
   const requestUrl = new URL(context.request.url);
   const upstreamUrl = new URL(pathname, context.env.STRAPI_API_URL.replace(/\/$/, ''));
   upstreamUrl.search = requestUrl.search;
-  upstreamUrl.searchParams.set('status', draftStatus(context.request.headers.get('Cookie')));
+
+  if (context.request.method === 'GET' || context.request.method === 'HEAD') {
+    upstreamUrl.searchParams.set('status', draftStatus(context.request.headers.get('Cookie')));
+  }
 
   const headers = new Headers();
   headers.set('Authorization', `Bearer ${context.env.STRAPI_API_TOKEN}`);
+  
   const accept = context.request.headers.get('Accept');
   if (accept) headers.set('Accept', accept);
+
+  const contentType = context.request.headers.get('Content-Type');
+  if (contentType) headers.set('Content-Type', contentType);
 
   const upstreamResponse = await fetch(upstreamUrl, {
     method: context.request.method,
     headers,
+    body: context.request.method !== 'GET' && context.request.method !== 'HEAD' ? context.request.body : undefined,
   });
+
   const responseHeaders = new Headers(upstreamResponse.headers);
   responseHeaders.delete('set-cookie');
   responseHeaders.delete('www-authenticate');

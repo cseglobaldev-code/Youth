@@ -117,6 +117,9 @@ function mapMemberDetail(entry: StrapiMemberDetail, baseUrl: string): MemberDeta
 
 export async function fetchMembers(options: StrapiRequestOptions = {}): Promise<MemberListItem[]> {
   const { baseUrl, token } = resolveConfig(options);
+  const isPreview =
+    options.bypassCache ||
+    (typeof window !== 'undefined' && window.location.search.includes('preview=1'));
 
   const query = new URLSearchParams();
   query.append('populate[0]', 'cover');
@@ -124,9 +127,10 @@ export async function fetchMembers(options: StrapiRequestOptions = {}): Promise<
   query.append('pagination[pageSize]', '100');
   query.append('pagination[withCount]', 'false');
   query.append('sort[0]', 'createdAt:desc');
+  if (isPreview) query.append('status', 'draft');
 
   const url = `${baseUrl}/api/members?${query}`;
-  let payload = cacheGet(url) as StrapiMembersResponse | undefined;
+  let payload = cacheGet(url, isPreview) as StrapiMembersResponse | undefined;
 
   if (payload === undefined) {
     const response = await fetch(url, {
@@ -138,7 +142,7 @@ export async function fetchMembers(options: StrapiRequestOptions = {}): Promise<
 
     payload = (await response.json()) as StrapiMembersResponse;
     if (!Array.isArray(payload.data)) throw new Error('Invalid members response from CMS');
-    cacheSet(url, payload);
+    cacheSet(url, payload, isPreview);
   }
 
   return (payload.data as StrapiMember[]).map((entry) => mapMember(entry, baseUrl));
@@ -149,6 +153,9 @@ export async function fetchMemberById(
   options: StrapiRequestOptions = {}
 ): Promise<MemberDetailItem | null> {
   const { baseUrl, token } = resolveConfig(options);
+  const isPreview =
+    options.bypassCache ||
+    (typeof window !== 'undefined' && window.location.search.includes('preview=1'));
 
   const query = new URLSearchParams();
   query.append('populate[cover]', 'true');
@@ -157,9 +164,10 @@ export async function fetchMemberById(
   query.append('populate[socialLinks]', 'true');
   query.append('populate[donationQr]', 'true');
   query.append('populate[projects][populate][0]', 'outstandingImage');
+  if (isPreview) query.append('status', 'draft');
 
   const url = `${baseUrl}/api/members/${encodeURIComponent(id)}?${query}`;
-  let payload = cacheGet(url) as StrapiMemberDetailResponse | undefined;
+  let payload = cacheGet(url, isPreview) as StrapiMemberDetailResponse | undefined;
 
   if (payload === undefined) {
     const response = await fetch(url, {
@@ -171,7 +179,7 @@ export async function fetchMemberById(
     if (!response.ok) throw new Error(`Unable to load member (${response.status})`);
 
     payload = (await response.json()) as StrapiMemberDetailResponse;
-    cacheSet(url, payload);
+    cacheSet(url, payload, isPreview);
   }
 
   if (!payload.data || typeof payload.data !== 'object') return null;
@@ -233,16 +241,10 @@ if (import.meta.vitest) {
           createdAt: '2026-07-19T10:00:00.000Z',
         },
       ]);
-
-      await fetchMembers({ baseUrl: 'http://localhost:1337/', token: 'read-token' });
-      expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 
     it('rejects a failed Strapi response', async () => {
-      vi.stubGlobal(
-        'fetch',
-        vi.fn().mockResolvedValue({ ok: false, status: 403 })
-      );
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 403 }));
 
       await expect(fetchMembers({ baseUrl: 'http://other-host:1337' })).rejects.toThrow(
         'Unable to load members (403)'

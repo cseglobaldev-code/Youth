@@ -9,6 +9,7 @@ function toPillVariant(variant?: string): PillButtonVariant {
 
 export function MediaTextBlock({ data }: { data: MediaTextBlockData }) {
   const isLeft = data.mediaPosition === 'left';
+  const isExt = data.button?.isExternal || data.button?.url?.startsWith('http');
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
@@ -28,9 +29,9 @@ export function MediaTextBlock({ data }: { data: MediaTextBlockData }) {
           <div className="mt-2">
             <PillButton
               variant={toPillVariant(data.button.variant)}
-              as={data.button.isExternal || data.button.url.startsWith('http') ? 'a' : 'router-link'}
-              to={!data.button.isExternal && !data.button.url.startsWith('http') ? data.button.url : undefined}
-              href={data.button.isExternal || data.button.url.startsWith('http') ? data.button.url : undefined}
+              as={isExt ? 'a' : 'router-link'}
+              to={!isExt && data.button.url ? data.button.url : undefined}
+              href={isExt && data.button.url ? data.button.url : undefined}
             >
               {data.button.label}
             </PillButton>

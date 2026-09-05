@@ -1,5 +1,5 @@
-import { useEffect, useState, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Alert, Empty, Input, Popover, Select, Skeleton } from 'antd';
 import { SearchOutlined, DownOutlined, CheckOutlined } from '@ant-design/icons';
 import { Container } from '@/components/ui/Container';
@@ -17,17 +17,36 @@ const SORT_OPTIONS = [
 
 export function MembersPage() {
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('newest');
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
   const [filterMenuOpen, setFilterMenuOpen] = useState(false);
-  const [filterOrganization, setFilterOrganization] = useState<string>();
-  const [filterLocation, setFilterLocation] = useState<string>();
-  const [filterSdg, setFilterSdg] = useState<number>();
   const [members, setMembers] = useState<MemberListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+
+  // Sync state from URL search params
+  const searchQuery = searchParams.get('q') || '';
+  const sortBy = searchParams.get('sort') || 'newest';
+  const filterOrganization = searchParams.get('org') || undefined;
+  const filterLocation = searchParams.get('loc') || undefined;
+  const filterSdg = searchParams.get('sdg') ? Number(searchParams.get('sdg')) : undefined;
+
+  const updateFilters = useCallback(
+    (updates: Record<string, string | undefined>) => {
+      const nextParams = new URLSearchParams(searchParams);
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === undefined || value === '') {
+          nextParams.delete(key);
+        } else {
+          nextParams.set(key, value);
+        }
+      });
+      setSearchParams(nextParams, { replace: true });
+    },
+    [searchParams, setSearchParams]
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -104,78 +123,22 @@ export function MembersPage() {
     setRetryCount((count) => count + 1);
   };
 
-  const renderContent = () => {
-    if (loading && members.length === 0) {
-      return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {Array.from({ length: 9 }, (_, index) => (
-            <Skeleton key={index} active paragraph={{ rows: 3 }} />
-          ))}
-        </div>
-      );
-    }
-
-    if (error && members.length === 0) {
-      return (
-        <Alert
-          type="error"
-          showIcon
-          message="Unable to load members from the CMS."
-          action={<button type="button" onClick={retry}>Retry</button>}
-          className="my-12"
-        />
-      );
-    }
-
-    if (pageItems.length === 0) {
-      return <Empty description="No members found for this filter." className="py-12" />;
-    }
-
-    return (
-      <>
-        <div className="mb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {pageItems.map((member) => (
-            <MemberCardLarge
-              key={member.id}
-              onClick={() => navigate(`/members/${member.id}`)}
-              member={{
-                name: member.name,
-                country: member.country,
-                period: member.period || '2020 → nay',
-                leader: member.leader || 'TBD',
-                focusSdgs: member.focusSdgs,
-                coverUrl: member.coverUrl || '',
-                logoUrl: member.logoUrl,
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="mb-12 flex justify-center">
-          <Pagination current={currentPage} total={total} pageSize={pageSize} onChange={goToPage} />
-        </div>
-      </>
-    );
-  };
-
   const activeSortLabel =
     SORT_OPTIONS.find((option) => option.value === sortBy)?.label ?? SORT_OPTIONS[0].label;
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
+    updateFilters({ q: event.target.value });
     resetPage();
   };
 
   const handleSortChange = (value: string) => {
-    setSortBy(value);
+    updateFilters({ sort: value });
     resetPage();
     setSortMenuOpen(false);
   };
 
   const handleClearFilters = () => {
-    setFilterOrganization(undefined);
-    setFilterLocation(undefined);
-    setFilterSdg(undefined);
+    updateFilters({ org: undefined, loc: undefined, sdg: undefined });
     resetPage();
   };
 
@@ -189,7 +152,7 @@ export function MembersPage() {
           placeholder="All organizations"
           value={filterOrganization}
           onChange={(value) => {
-            setFilterOrganization(value);
+            updateFilters({ org: value });
             resetPage();
           }}
           options={organizationOptions}
@@ -205,7 +168,7 @@ export function MembersPage() {
           placeholder="All locations"
           value={filterLocation}
           onChange={(value) => {
-            setFilterLocation(value);
+            updateFilters({ loc: value });
             resetPage();
           }}
           options={locationOptions}
@@ -221,7 +184,7 @@ export function MembersPage() {
           placeholder="All SDGs"
           value={filterSdg}
           onChange={(value) => {
-            setFilterSdg(value);
+            updateFilters({ sdg: value ? String(value) : undefined });
             resetPage();
           }}
           options={sdgOptions}
@@ -347,12 +310,52 @@ export function MembersPage() {
           </Popover>
         </div>
 
-        {renderContent()}
+        {loading && members.length === 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {Array.from({ length: 9 }, (_, index) => (
+              <Skeleton key={index} active paragraph={{ rows: 3 }} />
+            ))}
+          </div>
+        ) : error && members.length === 0 ? (
+          <Alert
+            type="error"
+            showIcon
+            message="Unable to load members from the CMS."
+            action={<button type="button" onClick={retry}>Retry</button>}
+            className="my-12"
+          />
+        ) : pageItems.length === 0 ? (
+          <Empty description="No members found for this filter." className="py-12" />
+        ) : (
+          <>
+            <div className="mb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {pageItems.map((member) => (
+                <MemberCardLarge
+                  key={member.id}
+                  onClick={() => navigate(`/members/${member.id}`)}
+                  member={{
+                    name: member.name,
+                    country: member.country,
+                    period: member.period || '2020 → present',
+                    leader: member.leader || 'TBD',
+                    focusSdgs: member.focusSdgs,
+                    coverUrl: member.coverUrl || '',
+                    logoUrl: member.logoUrl,
+                  }}
+                />
+              ))}
+            </div>
+
+            <div className="mb-12 flex justify-center">
+              <Pagination current={currentPage} total={total} pageSize={pageSize} onChange={goToPage} />
+            </div>
+          </>
+        )}
       </Container>
 
       <CTABanner
         title="Ready to Make an Impact?"
-        description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
+        description="Join thousands of youth leaders across continents who are making a difference in their communities."
         ctaLabel="Register Now"
       />
     </div>

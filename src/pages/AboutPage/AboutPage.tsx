@@ -7,9 +7,9 @@ import { StatsGrid } from '@/components/shared/StatsGrid';
 import { Icon } from '@/components/ui/Icon';
 import { BlockRenderer } from '@/components/dynamic';
 import { fetchPageBySlugOrId } from '@/api/pages';
+import { updatePageSEO } from '@/lib/utils/seo';
 import type { PageDetailItem } from '@/types';
 
-// Dữ liệu tĩnh dự phòng (Static Fallback) nếu CMS chưa có dữ liệu
 const STATS = [
   { label: 'Member Organizations', value: 50 },
   { label: 'Continents', value: 6 },
@@ -114,9 +114,9 @@ function StaticAboutFallback() {
       <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container size="narrow" className="lg:max-w-[1080px]">
           <div className="grid items-center gap-8 lg:grid-cols-[400px_1fr] lg:gap-20">
-            <div className="relative aspect-[702/513] w-full overflow-hidden rounded-3xl lg:h-[300px] lg:aspect-auto">
+            <div className="relative aspect-[702/513] w-full overflow-hidden rounded-3xl lg:h-[300px] lg:aspect-auto bg-neutral-100">
               <img
-                src="https://res.cloudinary.com/mutcixn2/image/upload/v1787475504/1787475427050_1673495044080632904_1673495044080632904_87405948f999a6f911d8e9a1ba1795b8_6ece0e7ef5.jpg"
+                src="/images/about/banner.png"
                 alt="A global alliance for youth-led impact"
                 className="h-full w-full object-cover"
               />
@@ -140,9 +140,7 @@ function StaticAboutFallback() {
                   Thank you for accompanying Y.O.U on this meaningful journey!
                 </p>
                 <p className="pt-3 font-semibold">
-                  Y.O.U President,
-                  <br />
-                  <span className="font-normal italic">Mr. Safin H. Mohammed</span>
+                  Y.O.U Leadership Board
                 </p>
               </div>
             </div>
@@ -214,7 +212,7 @@ function StaticAboutFallback() {
 
       <CTABanner
         title="Ready to Make an Impact?"
-        description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
+        description="Join thousands of youth leaders across continents who are making a difference in their communities."
         ctaLabel="Register Now"
       />
     </div>
@@ -238,7 +236,6 @@ export function AboutPage() {
         setPage(data);
       })
       .catch(() => {
-        // Nếu lỗi mạng hoặc chưa có trên Strapi -> setPage null để tự động dùng fallback tĩnh
         setPage(null);
       })
       .finally(() => {
@@ -250,10 +247,11 @@ export function AboutPage() {
     return () => controller.abort();
   }, [isPreview]);
 
-  // Cập nhật SEO Title nếu có từ Strapi
   useEffect(() => {
-    if (page?.title) {
-      document.title = page.seo?.metaTitle || `${page.title} · Y.O.U`;
+    if (page) {
+      updatePageSEO(page.seo, page.title);
+    } else {
+      updatePageSEO(undefined, 'About Us');
     }
   }, [page]);
 
@@ -265,7 +263,6 @@ export function AboutPage() {
     );
   }
 
-  // NẾU STRAPI ĐÃ CÓ BLOCKS DỮ LIỆU ĐỘNG -> RENDER DYNAMIC
   if (page && page.contentBlocks && page.contentBlocks.length > 0) {
     return (
       <div className="relative w-full">
@@ -284,6 +281,5 @@ export function AboutPage() {
     );
   }
 
-  // NẾU CHƯA CÓ TRÊN STRAPI / RỖNG -> TỰ ĐỘNG HIỂN THỊ GIAO DIỆN TĨNH MẶC ĐỊNH
   return <StaticAboutFallback />;
 }

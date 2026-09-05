@@ -61,6 +61,10 @@ export function MemberDetailPage() {
     member.leader || member.leaderRole || member.leaderEmail || member.leaderPhone
   );
 
+  const cleanPeriodYear = member.period
+    ? member.period.replace(/^since\s+/i, '').split(' ')[0]
+    : '2021';
+
   return (
     <div className="py-section-sm lg:py-section">
       <Container>
@@ -86,7 +90,7 @@ export function MemberDetailPage() {
                 }}
               >
                 Originated in {countryFlagEmoji(member.country)} {member.country} &nbsp;|&nbsp; Since{' '}
-                {member.period?.split(' ')[0] ?? '2021'} &nbsp;|&nbsp; Join Union from:{' '}
+                {cleanPeriodYear} &nbsp;|&nbsp; Join Union from:{' '}
                 {formatJoinDate(member.createdAt) ?? '—'}
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
@@ -178,7 +182,7 @@ export function MemberDetailPage() {
 
       <CTABanner
         title="Ready to Make an Impact?"
-        description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
+        description="Join thousands of youth leaders across continents who are making a difference in their communities."
         ctaLabel="Register Now"
       />
     </div>

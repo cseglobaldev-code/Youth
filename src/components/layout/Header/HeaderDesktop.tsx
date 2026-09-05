@@ -32,7 +32,6 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
         className
       )}
     >
-      {/* Fluid row: padding/gaps scale with viewport instead of fixed px steps */}
       <div
         className="mx-auto flex h-[clamp(3.75rem,5.5vw,5.25rem)] w-full max-w-[1920px] items-center justify-between gap-[clamp(0.75rem,1.5vw,1.5rem)]"
         style={{
@@ -48,7 +47,7 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
             aria-label="Primary"
           >
             {items.map((item) => {
-              const active = pathname === item.path;
+              const active = item.path === '/' ? pathname === '/' : pathname.startsWith(item.path);
               return (
                 <Link
                   key={item.path}
@@ -87,7 +86,6 @@ export function HeaderDesktop({ navItems, className }: HeaderDesktopProps) {
               paddingBlock: 'clamp(0.4rem, 0.7vw, 0.75rem)',
             }}
           >
-            {/* Short label on tight desktops; full CTA when there is room */}
             <span className="xl:hidden">Join Y.O.U</span>
             <span className="hidden xl:inline">Join 1500+ Youth Organizations</span>
           </button>

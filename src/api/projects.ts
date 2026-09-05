@@ -65,6 +65,9 @@ function mapDetailItem(entry: StrapiProjectWithMember, baseUrl: string): Project
 
 export async function fetchProjects(options: StrapiRequestOptions = {}): Promise<ProjectListItem[]> {
   const { baseUrl, token } = resolveConfig(options);
+  const isPreview =
+    options.bypassCache ||
+    (typeof window !== 'undefined' && window.location.search.includes('preview=1'));
 
   const query = new URLSearchParams();
   query.append('populate[outstandingImage]', 'true');
@@ -72,9 +75,10 @@ export async function fetchProjects(options: StrapiRequestOptions = {}): Promise
   query.append('pagination[pageSize]', '100');
   query.append('pagination[withCount]', 'false');
   query.append('sort[0]', 'year:desc');
+  if (isPreview) query.append('status', 'draft');
 
   const url = `${baseUrl}/api/projects?${query}`;
-  let payload = cacheGet(url) as StrapiProjectsResponse | undefined;
+  let payload = cacheGet(url, isPreview) as StrapiProjectsResponse | undefined;
 
   if (payload === undefined) {
     const response = await fetch(url, {
@@ -86,7 +90,7 @@ export async function fetchProjects(options: StrapiRequestOptions = {}): Promise
 
     payload = (await response.json()) as StrapiProjectsResponse;
     if (!Array.isArray(payload.data)) throw new Error('Invalid projects response from CMS');
-    cacheSet(url, payload);
+    cacheSet(url, payload, isPreview);
   }
 
   return (payload.data as StrapiProjectWithMember[]).map((entry) => mapListItem(entry, baseUrl));
@@ -97,14 +101,18 @@ export async function fetchProjectById(
   options: StrapiRequestOptions = {}
 ): Promise<ProjectDetailItem | null> {
   const { baseUrl, token } = resolveConfig(options);
+  const isPreview =
+    options.bypassCache ||
+    (typeof window !== 'undefined' && window.location.search.includes('preview=1'));
 
   const query = new URLSearchParams();
   query.append('populate[outstandingImage]', 'true');
   query.append('populate[gallery]', 'true');
   query.append('populate[member][populate][0]', 'socialLinks');
+  if (isPreview) query.append('status', 'draft');
 
   const url = `${baseUrl}/api/projects/${encodeURIComponent(id)}?${query}`;
-  let payload = cacheGet(url) as StrapiProjectDetailResponse | undefined;
+  let payload = cacheGet(url, isPreview) as StrapiProjectDetailResponse | undefined;
 
   if (payload === undefined) {
     const response = await fetch(url, {
@@ -116,7 +124,7 @@ export async function fetchProjectById(
     if (!response.ok) throw new Error(`Unable to load project (${response.status})`);
 
     payload = (await response.json()) as StrapiProjectDetailResponse;
-    cacheSet(url, payload);
+    cacheSet(url, payload, isPreview);
   }
 
   if (!payload.data || typeof payload.data !== 'object') return null;
@@ -215,4 +223,42 @@ if (import.meta.vitest) {
       ).resolves.toBeNull();
     });
   });
+}
+
+export async function fetchRelatedProjects(
+  excludeId: string,
+  limit = 3,
+  options: StrapiRequestOptions = {}
+): Promise<ProjectListItem[]> {
+  const { baseUrl, token } = resolveConfig(options);
+  const isPreview =
+    options.bypassCache ||
+    (typeof window !== 'undefined' && window.location.search.includes('preview=1'));
+
+  const query = new URLSearchParams();
+  query.append('populate[outstandingImage]', 'true');
+  query.append('populate[member]', 'true');
+  query.append('filters[documentId][$ne]', excludeId);
+  query.append('pagination[pageSize]', String(limit));
+  query.append('pagination[withCount]', 'false');
+  query.append('sort[0]', 'year:desc');
+  if (isPreview) query.append('status', 'draft');
+
+  const url = `${baseUrl}/api/projects?${query}`;
+  let payload = cacheGet(url, isPreview) as StrapiProjectsResponse | undefined;
+
+  if (payload === undefined) {
+    const response = await fetch(url, {
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+      signal: options.signal,
+    });
+
+    if (!response.ok) return [];
+
+    payload = (await response.json()) as StrapiProjectsResponse;
+    if (!Array.isArray(payload.data)) return [];
+    cacheSet(url, payload, isPreview);
+  }
+
+  return (payload.data as StrapiProjectWithMember[]).map((entry) => mapListItem(entry, baseUrl));
 }

@@ -17,6 +17,7 @@ interface StrapiPolicyDocument {
   fileType?: unknown;
   file?: StrapiMedia | null;
   fileSize?: unknown;
+  updatedAt?: unknown;
 }
 
 interface StrapiPolicyDocumentsResponse {
@@ -31,6 +32,9 @@ function mapPolicyDocument(entry: StrapiPolicyDocument, baseUrl: string): Docume
 
   if (!title || !category || !fileType || !fileUrl) return null;
 
+  const rawUpdatedAt = text(entry.updatedAt);
+  const updatedAt = rawUpdatedAt ? rawUpdatedAt.split('T')[0] : undefined;
+
   return {
     id: text(entry.documentId) || String(entry.id ?? ''),
     title,
@@ -38,7 +42,7 @@ function mapPolicyDocument(entry: StrapiPolicyDocument, baseUrl: string): Docume
     fileType: fileType as 'pdf' | 'xls' | 'doc' | 'ppt',
     fileUrl,
     fileSize: text(entry.fileSize) || undefined,
-    updatedAt: new Date().toISOString().split('T')[0],
+    updatedAt,
   };
 }
 

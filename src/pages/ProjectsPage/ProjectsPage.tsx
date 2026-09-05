@@ -1,9 +1,11 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Alert, Button, Empty, Input, Select, Skeleton, Tooltip } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { Icon } from '@/components/ui/Icon';
 import { SDGTag } from '@/components/ui/SDGTag';
 import { ProjectCard } from '@/components/projects/ProjectCard';
+import { CTABanner } from '@/components/shared/CTABanner';
 import { filterBySdg } from '@/lib/utils';
 import { SDGS_DATA } from '@/data';
 import { fetchProjects, type ProjectListItem } from '@/api/projects';
@@ -14,9 +16,8 @@ import { useScrollReveal } from '@/hooks/useScrollReveal';
 const MAX_VISIBLE = 8; // "All Project" + 7 SDGs
 
 export function ProjectsPage() {
-  const [activeFilter, setActiveFilter] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortOrder, setSortOrder] = useState<'newest' | 'oldest'>('newest');
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [showAllFilters, setShowAllFilters] = useState(false);
   const [projects, setProjects] = useState<ProjectListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -24,6 +25,26 @@ export function ProjectsPage() {
   const [retryCount, setRetryCount] = useState(0);
   const { ref: heroRef, visible: heroVisible } = useScrollReveal(0.05);
   const { ref: cardsRef, visible: cardsVisible } = useScrollReveal(0.05);
+
+  // Sync state from URL
+  const activeFilter = searchParams.get('sdg') || 'all';
+  const searchQuery = searchParams.get('q') || '';
+  const sortOrder = (searchParams.get('sort') as 'newest' | 'oldest') || 'newest';
+
+  const updateParams = useCallback(
+    (updates: Record<string, string | undefined>) => {
+      const nextParams = new URLSearchParams(searchParams);
+      Object.entries(updates).forEach(([key, value]) => {
+        if (value === undefined || value === '' || (key === 'sdg' && value === 'all')) {
+          nextParams.delete(key);
+        } else {
+          nextParams.set(key, value);
+        }
+      });
+      setSearchParams(nextParams, { replace: true });
+    },
+    [searchParams, setSearchParams]
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -77,191 +98,193 @@ export function ProjectsPage() {
   return (
     <div>
       <Container>
-          <div className="flex flex-col items-center gap-6 lg:gap-[40px] pt-10 lg:pt-[80px]">
-
-            {/* Hero */}
-            <div
-              ref={heroRef}
-              className={cn(
-                'flex flex-col items-center gap-4 lg:gap-6 w-full transition-all duration-700',
-                heroVisible ? 'animate-fade-in-up' : 'opacity-0'
-              )}
-            >
-              <div className="flex justify-center items-center w-full gap-4 lg:gap-6 flex-wrap">
-                <span
-                  className="font-semibold bg-clip-text text-transparent"
-                  style={{
-                    fontSize: 'clamp(2.25rem, 4.17vw, 5rem)',
-                    lineHeight: '110%',
-                    fontFamily: 'Open Sans, sans-serif',
-                    backgroundImage:
-                      'linear-gradient(90deg, #EE334E 0%, #FCB131 33%, #00A651 67%, #0081C8 100%)',
-                  }}
-                >
-                  SDGs
-                </span>
-                <span
-                  className="font-semibold text-black"
-                  style={{ fontSize: 'clamp(2.25rem, 4.17vw, 5rem)', lineHeight: '110%', fontFamily: 'Open Sans, sans-serif' }}
-                >
-                  Projects
-                </span>
-              </div>
-              <p
-                className="text-black font-normal text-center mx-auto"
+        <div className="flex flex-col items-center gap-6 lg:gap-[40px] pt-10 lg:pt-[80px]">
+          {/* Hero */}
+          <div
+            ref={heroRef}
+            className={cn(
+              'flex flex-col items-center gap-4 lg:gap-6 w-full transition-all duration-700',
+              heroVisible ? 'animate-fade-in-up' : 'opacity-0'
+            )}
+          >
+            <div className="flex justify-center items-center w-full gap-4 lg:gap-6 flex-wrap">
+              <span
+                className="font-semibold bg-clip-text text-transparent"
                 style={{
-                  fontSize: 'clamp(0.9375rem, 1.35vw, 1.625rem)',
-                  lineHeight: '140%',
-                  maxWidth: '1056px',
+                  fontSize: 'clamp(2.25rem, 4.17vw, 5rem)',
+                  lineHeight: '110%',
                   fontFamily: 'Open Sans, sans-serif',
+                  backgroundImage:
+                    'linear-gradient(90deg, #EE334E 0%, #FCB131 33%, #00A651 67%, #0081C8 100%)',
                 }}
               >
-                Explore the initiatives our member organizations are running in alignment with the
-                United Nations&apos; 17 Sustainable Development Goals. Filter by goal to find
-                projects in your area of interest.
-              </p>
+                SDGs
+              </span>
+              <span
+                className="font-semibold text-black"
+                style={{ fontSize: 'clamp(2.25rem, 4.17vw, 5rem)', lineHeight: '110%', fontFamily: 'Open Sans, sans-serif' }}
+              >
+                Projects
+              </span>
             </div>
+            <p
+              className="text-black font-normal text-center mx-auto"
+              style={{
+                fontSize: 'clamp(0.9375rem, 1.35vw, 1.625rem)',
+                lineHeight: '140%',
+                maxWidth: '1056px',
+                fontFamily: 'Open Sans, sans-serif',
+              }}
+            >
+              Explore the initiatives our member organizations are running in alignment with the
+              United Nations&apos; 17 Sustainable Development Goals. Filter by goal to find
+              projects in your area of interest.
+            </p>
+          </div>
 
-            {/* Filter + Cards */}
-            <div className="flex flex-col w-full gap-8 lg:gap-[60px] pb-10 lg:pb-[80px]">
-
-              {/* Filter pills */}
-              <div className="flex flex-wrap justify-center items-center gap-[11px]">
-                {visibleFilters.map((item) =>
-                  item.sdgId === null ? (
-                    <Button
-                      key={item.key}
-                      shape="round"
-                      onClick={() => setActiveFilter(item.key)}
-                      className={cn(
-                        '!font-medium !transition-all !duration-200 !whitespace-nowrap hover:!scale-[1.03] active:!scale-[0.97] !h-auto',
-                        activeFilter === item.key ? '!text-white !shadow-md' : '!text-[#151515]'
-                      )}
-                      style={{
-                        fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
-                        backgroundColor: activeFilter === item.key ? '#005D9A' : '#E3F2FD',
-                        borderColor: activeFilter === item.key ? '#005D9A' : '#E3F2FD',
-                        fontFamily: 'Open Sans, sans-serif',
-                        lineHeight: '140%',
-                        padding: 'clamp(8px,0.8vw,10px) clamp(14px,1.25vw,24px)',
-                      }}
-                    >
-                      {item.label}
-                    </Button>
-                  ) : (
-                    <Tooltip key={item.key} title={item.title}>
-                      <button
-                        type="button"
-                        onClick={() => setActiveFilter(item.key)}
-                        className="cursor-pointer transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] rounded-full"
-                      >
-                        <SDGTag
-                          sdgId={item.sdgId}
-                          variant={activeFilter === item.key ? 'solid' : 'soft'}
-                          size="md"
-                          style={{
-                            fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
-                            padding: 'clamp(8px,0.8vw,10px) clamp(14px,1.25vw,24px)',
-                          }}
-                        />
-                      </button>
-                    </Tooltip>
-                  )
-                )}
-
-                {hasMore && (
+          {/* Filter + Cards */}
+          <div className="flex flex-col w-full gap-8 lg:gap-[60px] pb-10 lg:pb-[80px]">
+            {/* Filter pills */}
+            <div className="flex flex-wrap justify-center items-center gap-[11px]">
+              {visibleFilters.map((item) =>
+                item.sdgId === null ? (
                   <Button
+                    key={item.key}
                     shape="round"
-                    onClick={() => setShowAllFilters((prev) => !prev)}
-                    className="!font-medium !transition-all !duration-200 !whitespace-nowrap hover:!scale-[1.03] active:!scale-[0.97] !h-auto !text-[#151515]"
+                    onClick={() => updateParams({ sdg: item.key })}
+                    className={cn(
+                      '!font-medium !transition-all !duration-200 !whitespace-nowrap hover:!scale-[1.03] active:!scale-[0.97] !h-auto',
+                      activeFilter === item.key ? '!text-white !shadow-md' : '!text-[#151515]'
+                    )}
                     style={{
                       fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
-                      backgroundColor: '#E3F2FD',
-                      borderColor: '#E3F2FD',
+                      backgroundColor: activeFilter === item.key ? '#005D9A' : '#E3F2FD',
+                      borderColor: activeFilter === item.key ? '#005D9A' : '#E3F2FD',
                       fontFamily: 'Open Sans, sans-serif',
                       lineHeight: '140%',
                       padding: 'clamp(8px,0.8vw,10px) clamp(14px,1.25vw,24px)',
                     }}
                   >
-                    {showAllFilters ? 'Less' : 'More'}
+                    {item.label}
                   </Button>
-                )}
-              </div>
+                ) : (
+                  <Tooltip key={item.key} title={item.title}>
+                    <button
+                      type="button"
+                      onClick={() => updateParams({ sdg: item.key })}
+                      className="cursor-pointer transition-all duration-200 hover:scale-[1.03] active:scale-[0.97] rounded-full"
+                    >
+                      <SDGTag
+                        sdgId={item.sdgId}
+                        variant={activeFilter === item.key ? 'solid' : 'soft'}
+                        size="md"
+                        style={{
+                          fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
+                          padding: 'clamp(8px,0.8vw,10px) clamp(14px,1.25vw,24px)',
+                        }}
+                      />
+                    </button>
+                  </Tooltip>
+                )
+              )}
 
-              {/* Search + Sort row */}
-              <div className="flex flex-wrap justify-start items-center gap-5">
-                {/* Search input */}
-                <Input
-                  placeholder="Keyword"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  suffix={<Icon name={ICONS.search} size={20} color="#CDCED7" />}
+              {hasMore && (
+                <Button
+                  shape="round"
+                  onClick={() => setShowAllFilters((prev) => !prev)}
+                  className="!font-medium !transition-all !duration-200 !whitespace-nowrap hover:!scale-[1.03] active:!scale-[0.97] !h-auto !text-[#151515]"
                   style={{
-                    borderRadius: 100,
-                    borderColor: '#CDCED7',
-                    fontFamily: 'Inter, sans-serif',
-                    fontSize: 14,
-                    color: '#151515',
+                    fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
+                    backgroundColor: '#E3F2FD',
+                    borderColor: '#E3F2FD',
+                    fontFamily: 'Open Sans, sans-serif',
+                    lineHeight: '140%',
+                    padding: 'clamp(8px,0.8vw,10px) clamp(14px,1.25vw,24px)',
                   }}
-                  className="h-[50px] w-full max-w-[302px] [&_.ant-input]:text-[#151515] [&_.ant-input::placeholder]:text-[#CDCED7]"
-                />
-
-                {/* Sort dropdown */}
-                <Select
-                  value={sortOrder}
-                  onChange={(v) => setSortOrder(v)}
-                  options={[
-                    { value: 'newest', label: 'Newest - Oldest' },
-                    { value: 'oldest', label: 'Oldest - Newest' },
-                  ]}
-                  suffixIcon={<Icon name={ICONS.chevronDown} size={16} color="#000" />}
-                  style={{ fontFamily: 'Inter, sans-serif', fontSize: 14, borderRadius: 100, overflow: 'hidden' }}
-                  className="you-sort-select h-[50px] w-full max-w-[302px] [&_.ant-select-selector]:!rounded-[100px] [&_.ant-select-selector]:!h-[50px] [&_.ant-select-selector]:!border-[#CDCED7] [&_.ant-select-selection-item]:!flex [&_.ant-select-selection-item]:!items-center [&_.ant-select-selection-item]:!h-full"
-                />
-              </div>
-
-              {/* Cards grid — stagger fade on mount & filter change */}
-              {loading && projects.length === 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
-                  {Array.from({ length: 6 }, (_, index) => (
-                    <Skeleton key={index} active paragraph={{ rows: 3 }} />
-                  ))}
-                </div>
-              ) : error && projects.length === 0 ? (
-                <Alert
-                  type="error"
-                  showIcon
-                  message="Unable to load projects from the CMS."
-                  action={<button type="button" onClick={retry}>Retry</button>}
-                  className="my-12"
-                />
-              ) : (
-                <>
-                  <div
-                    ref={cardsRef}
-                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10"
-                  >
-                    {filteredProjects.map((project, index) => (
-                      <div
-                        key={`${activeFilter}-${project.id}`}
-                        className={cn(
-                          cardsVisible ? 'animate-fade-in-up' : 'opacity-0'
-                        )}
-                        style={{ animationDelay: `${index * 80}ms` }}
-                      >
-                        <ProjectCard project={project} ledBy={project.ledBy} />
-                      </div>
-                    ))}
-                  </div>
-
-                  {filteredProjects.length === 0 && (
-                    <Empty description="No projects found for this SDG." className="py-12" />
-                  )}
-                </>
+                >
+                  {showAllFilters ? 'Less' : 'More'}
+                </Button>
               )}
             </div>
+
+            {/* Search + Sort row */}
+            <div className="flex flex-wrap justify-start items-center gap-5">
+              <Input
+                placeholder="Keyword"
+                value={searchQuery}
+                onChange={(e) => updateParams({ q: e.target.value })}
+                suffix={<Icon name={ICONS.search} size={20} color="#CDCED7" />}
+                style={{
+                  borderRadius: 100,
+                  borderColor: '#CDCED7',
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: 14,
+                  color: '#151515',
+                }}
+                className="h-[50px] w-full max-w-[302px] [&_.ant-input]:text-[#151515] [&_.ant-input::placeholder]:text-[#CDCED7]"
+              />
+
+              <Select
+                value={sortOrder}
+                onChange={(v) => updateParams({ sort: v })}
+                options={[
+                  { value: 'newest', label: 'Newest - Oldest' },
+                  { value: 'oldest', label: 'Oldest - Newest' },
+                ]}
+                suffixIcon={<Icon name={ICONS.chevronDown} size={16} color="#000" />}
+                style={{ fontFamily: 'Inter, sans-serif', fontSize: 14, borderRadius: 100, overflow: 'hidden' }}
+                className="you-sort-select h-[50px] w-full max-w-[302px] [&_.ant-select-selector]:!rounded-[100px] [&_.ant-select-selector]:!h-[50px] [&_.ant-select-selector]:!border-[#CDCED7] [&_.ant-select-selection-item]:!flex [&_.ant-select-selection-item]:!items-center [&_.ant-select-selection-item]:!h-full"
+              />
+            </div>
+
+            {/* Cards grid */}
+            {loading && projects.length === 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10">
+                {Array.from({ length: 6 }, (_, index) => (
+                  <Skeleton key={index} active paragraph={{ rows: 3 }} />
+                ))}
+              </div>
+            ) : error && projects.length === 0 ? (
+              <Alert
+                type="error"
+                showIcon
+                message="Unable to load projects from the CMS."
+                action={<button type="button" onClick={retry}>Retry</button>}
+                className="my-12"
+              />
+            ) : (
+              <>
+                <div
+                  ref={cardsRef}
+                  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-10"
+                >
+                  {filteredProjects.map((project, index) => (
+                    <div
+                      key={`${activeFilter}-${project.id}`}
+                      className={cn(
+                        cardsVisible ? 'animate-fade-in-up' : 'opacity-0'
+                      )}
+                      style={{ animationDelay: `${index * 80}ms` }}
+                    >
+                      <ProjectCard project={project} ledBy={project.ledBy} />
+                    </div>
+                  ))}
+                </div>
+
+                {filteredProjects.length === 0 && (
+                  <Empty description="No projects found for this SDG." className="py-12" />
+                )}
+              </>
+            )}
           </div>
-        </Container>
+        </div>
+      </Container>
+
+      <CTABanner
+        title="Ready to Make an Impact?"
+        description="Join thousands of youth leaders across continents who are making a difference in their communities."
+        ctaLabel="Register Now"
+      />
     </div>
   );
 }

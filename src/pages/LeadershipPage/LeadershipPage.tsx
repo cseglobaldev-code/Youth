@@ -10,8 +10,6 @@ import { CONTINENT_REGIONS, fetchLeadership, type LeadershipRoster } from '@/api
 import { currentTermLabel, cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
-/* ─── constants ─────────────────────────────────────────────────────────── */
-
 const CONTINENTS: Continent[] = ['Asia', 'Africa', 'America', 'Australia', 'Europe'];
 
 const HERO_GRADIENT =
@@ -19,11 +17,9 @@ const HERO_GRADIENT =
 const SEPARATOR_GRADIENT =
   'linear-gradient(90deg, rgba(194,211,239,0) 0%, rgba(194,211,239,1) 20%, rgba(194,211,239,1) 80%, rgba(194,211,239,0) 100%)';
 
-/* ─── component ─────────────────────────────────────────────────────────── */
-
 export function LeadershipPage() {
   const [activeContinent, setActiveContinent] = useState<Continent>('Asia');
-  const [activeRegion, setActiveRegion] = useState<RegionGroup>('East Asia');
+  const [activeRegion, setActiveRegion] = useState<RegionGroup | 'All'>('All'); 
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
   const [showAllDirectors, setShowAllDirectors] = useState(false);
   const [leadership, setLeadership] = useState<LeadershipRoster>({ executives: [], directors: [] });
@@ -60,9 +56,11 @@ export function LeadershipPage() {
   const { ref: directorsRef, visible: directorsVisible } = useScrollReveal(0.05);
 
   const filteredMembers = useMemo(() => {
-    return leadership.directors.filter(
-      (m) => m.continent === activeContinent && m.regionGroup === activeRegion
-    );
+    return leadership.directors.filter((m) => {
+      if (m.continent !== activeContinent) return false;
+      if (activeRegion === 'All') return true;
+      return m.regionGroup === activeRegion;
+    });
   }, [activeContinent, activeRegion, leadership.directors]);
 
   const visibleDirectors = showAllDirectors ? filteredMembers : filteredMembers.slice(0, 5);
@@ -70,26 +68,22 @@ export function LeadershipPage() {
 
   const handleContinentChange = (continent: Continent) => {
     setActiveContinent(continent);
-    setActiveRegion(CONTINENT_REGIONS[continent][0]);
+    setActiveRegion('All');
     setShowAllDirectors(false);
   };
 
-  const handleRegionChange = (region: RegionGroup) => {
+  const handleRegionChange = (region: RegionGroup | 'All') => { 
     setActiveRegion(region);
     setShowAllDirectors(false);
   };
 
+  const subRegions: (RegionGroup | 'All')[] = ['All', ...(CONTINENT_REGIONS[activeContinent] || [])];
+
   return (
     <div>
-      {/* ══════════════════════════════════════════════════
-          HERO + EXECUTIVE LEADERSHIP + SEPARATOR inside Container
-      ══════════════════════════════════════════════════ */}
       <Container>
         <div className="flex flex-col items-center gap-[60px] lg:gap-[80px] pt-10 lg:pt-[80px] pb-10 lg:pb-[80px]">
-          {/* ══════════════════════════════════════════════════
-              1. HERO  (Frame 114 → Frame 117 → Frame 121)
-                 row, justifyContent:center, gap:24px
-          ══════════════════════════════════════════════════ */}
+          {/* Hero */}
           <div
             ref={heroRef}
             className={cn(
@@ -97,7 +91,6 @@ export function LeadershipPage() {
               heroVisible ? 'animate-fade-in-up' : 'opacity-0'
             )}
           >
-            {/* Title row — center, gap:24px */}
             <div className="flex flex-wrap justify-center items-center gap-[16px] lg:gap-[24px] text-center">
               <span
                 className="font-semibold text-black"
@@ -122,7 +115,6 @@ export function LeadershipPage() {
               </span>
             </div>
 
-            {/* Description — fixed width 1120px in Figma → max-w here */}
             <p
               className="text-center font-normal text-black"
               style={{
@@ -137,12 +129,7 @@ export function LeadershipPage() {
             </p>
           </div>
 
-          {/* ══════════════════════════════════════════════════
-              2. EXECUTIVE LEADERSHIP
-                 Frame 112: column, alignItems:center, gap:40px, width:1344
-                 Frame 2071857672 (badge): column, center, gap:4px
-                 Frame 41 (cards): row, space-between, center, width:828
-          ══════════════════════════════════════════════════ */}
+          {/* Executive Leadership */}
           <div
             ref={execRef}
             className={cn(
@@ -150,7 +137,6 @@ export function LeadershipPage() {
               execVisible ? 'animate-fade-in-up' : 'opacity-0'
             )}
           >
-            {/* Heading + term — column, center, gap:4px */}
             <div className="flex flex-col items-center gap-[4px]">
               <h2
                 className="font-semibold text-black"
@@ -174,7 +160,6 @@ export function LeadershipPage() {
               </span>
             </div>
 
-            {/* Cards — row, space-between, center, width:828px, centered via mx-auto */}
             {loading && leadership.executives.length === 0 ? (
               <Skeleton active paragraph={{ rows: 3 }} />
             ) : error && leadership.executives.length === 0 ? (
@@ -200,19 +185,11 @@ export function LeadershipPage() {
             )}
           </div>
 
-          {/* ══════════════════════════════════════════════════
-              3. SEPARATOR — gradient stroke line
-          ══════════════════════════════════════════════════ */}
           <div className="w-full" style={{ height: '1px', background: SEPARATOR_GRADIENT }} />
         </div>
       </Container>
 
-      {/* ══════════════════════════════════════════════════
-          4. CONTINENTAL DIRECTORS — full viewport width
-             Outer: column, center, gap:60px, alignSelf:stretch
-             Header area (Frame 2071857647): column, center, gap:40px, width:1114
-             Cards row (Frame 2071857648): row, center, gap:32px, alignSelf:stretch
-      ══════════════════════════════════════════════════ */}
+      {/* Continental Directors */}
       <div
         ref={directorsRef}
         className={cn(
@@ -220,9 +197,7 @@ export function LeadershipPage() {
           directorsVisible ? 'animate-fade-in-up' : 'opacity-0'
         )}
       >
-        {/* Header + tabs — column, center, gap:40px */}
         <Container className="flex flex-col items-center gap-[40px]">
-          {/* Heading + term */}
           <div className="flex flex-col items-center gap-[4px]">
             <h2
               className="font-semibold text-black text-center"
@@ -246,9 +221,8 @@ export function LeadershipPage() {
             </span>
           </div>
 
-          {/* Filter tabs — column, gap:24px */}
           <div className="flex flex-col items-stretch gap-[24px] w-full">
-            {/* Continent pills — row, center, gap:24px, padding:16px 32px each */}
+            {/* Continent pills */}
             <div className="flex flex-wrap justify-center gap-3 lg:gap-[24px]">
               {CONTINENTS.map((continent) => (
                 <button
@@ -272,9 +246,9 @@ export function LeadershipPage() {
               ))}
             </div>
 
-            {/* Sub-region tabs — one set per continent */}
+            {/* Sub-region tabs with All option */}
             <div className="flex flex-wrap justify-center gap-4 lg:gap-[40px]">
-              {CONTINENT_REGIONS[activeContinent].map((region) => (
+              {subRegions.map((region) => (
                 <button
                   key={region}
                   onClick={() => handleRegionChange(region)}
@@ -298,7 +272,6 @@ export function LeadershipPage() {
           </div>
         </Container>
 
-        {/* Cards row — grid-cols-5 when full, flex centered when sparse */}
         {visibleDirectors.length > 0 ? (
           <>
             <Container className={cn(
@@ -346,7 +319,7 @@ export function LeadershipPage() {
 
       <CTABanner
         title="Ready to Make an Impact?"
-        description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
+        description="Join thousands of youth leaders across continents who are making a difference in their communities."
         ctaLabel="Register Now"
       />
 

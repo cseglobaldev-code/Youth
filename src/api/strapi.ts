@@ -9,12 +9,9 @@ export interface StrapiRequestOptions {
 }
 
 export function resolveConfig(options: StrapiRequestOptions): { baseUrl: string; token?: string } {
-  // Empty string must fall through to the same-origin proxy, so `||` (not `??`).
   const configuredBaseUrl = import.meta.env.VITE_STRAPI_API_URL || undefined;
   const fallbackBaseUrl = typeof window === 'undefined' ? '' : window.location.origin;
   const baseUrl = (options.baseUrl ?? configuredBaseUrl ?? fallbackBaseUrl).replace(/\/$/, '');
-  // No token is read from import.meta.env: every VITE_* value ships to the
-  // browser. Production authenticates server-side in the Worker CMS proxy.
   const token = options.token;
   if (!baseUrl) throw new Error('VITE_STRAPI_API_URL is not configured');
   return { baseUrl, token };
@@ -57,12 +54,15 @@ export function parseSdgIds(value: unknown): number[] {
 
 export function parseStringArray(value: unknown): string[] {
   if (Array.isArray(value)) return value.map(String);
+  const str = text(value).trim();
+  if (!str) return [];
   try {
-    const parsed = JSON.parse(text(value));
-    return Array.isArray(parsed) ? parsed.map(String) : [];
+    const parsed = JSON.parse(str);
+    if (Array.isArray(parsed)) return parsed.map(String);
   } catch {
-    return [];
+    // If not JSON array, fall back to comma-separated splitting
   }
+  return str.split(',').map((s) => s.trim()).filter(Boolean);
 }
 
 const VALID_PROJECT_STATUSES = new Set<ProjectStatus>(['ongoing', 'completed', 'planned']);
@@ -95,7 +95,16 @@ export function mapSocialLinks(value: StrapiSocialLink[] | null | undefined): So
   if (!Array.isArray(value)) return [];
   return value
     .filter((link) => VALID_SOCIAL_PLATFORMS.has(text(link.platform)))
-    .map((link) => ({ platform: text(link.platform) as SocialLink['platform'], url: text(link.url) }))
+    .map((link) => {
+      let url = text(link.url).trim();
+      if (url && !/^https?:\/\//i.test(url)) {
+        url = `https://${url}`;
+      }
+      return {
+        platform: text(link.platform) as SocialLink['platform'],
+        url,
+      };
+    })
     .filter((link) => /^https?:\/\//i.test(link.url));
 }
 
@@ -110,10 +119,21 @@ export interface StrapiProject {
   focusSdgs?: unknown;
   projectStatus?: unknown;
   outstandingImage?: StrapiMedia | null;
+  gallery?: StrapiMedia[] | null;
   year?: unknown;
 }
 
 export function mapProject(project: StrapiProject, baseUrl: string, memberId: string = ''): Project {
+  const gallery = Array.isArray(project.gallery)
+    ? project.gallery
+        .map((img, idx) => ({
+          id: `project-gallery-${idx}`,
+          src: mediaUrl(img, baseUrl),
+          alt: text(img.alternativeText) || text(project.name),
+        }))
+        .filter((item) => Boolean(item.src))
+    : [];
+
   return {
     id: text(project.documentId) || String(project.id ?? ''),
     name: text(project.name),
@@ -124,7 +144,7 @@ export function mapProject(project: StrapiProject, baseUrl: string, memberId: st
     focusSdgs: parseSdgIds(project.focusSdgs),
     status: toProjectStatus(text(project.projectStatus)),
     outstandingImageUrl: mediaUrl(project.outstandingImage, baseUrl),
-    gallery: [],
+    gallery,
     memberId,
     year: typeof project.year === 'number' ? project.year : undefined,
   };

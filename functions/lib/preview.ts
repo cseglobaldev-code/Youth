@@ -1,4 +1,13 @@
-const STATIC_PREVIEW_PATHS = new Set(['/', '/leadership', '/policy-documents']);
+const STATIC_PREVIEW_PATHS = new Set([
+  '/',
+  '/about-us',
+  '/leadership',
+  '/members',
+  '/projects',
+  '/policy-documents',
+  '/contact',
+]);
+
 const DETAIL_PREVIEW_PATH = /^\/(projects|members|pages)\/[A-Za-z0-9_-]+$/;
 
 export function isAllowedPreviewPath(pathname: string): boolean {
