@@ -9,6 +9,7 @@ import { SDGTag } from '@/components/ui/SDGTag';
 import { Container } from '@/components/ui/Container';
 import { ImageGallery } from '@/components/shared/ImageGallery';
 import { SocialLinks } from '@/components/shared/SocialLinks';
+import { ShareButton } from '@/components/shared/ShareButton/ShareButton';
 import {
   fetchProjectById,
   fetchRelatedProjects,
@@ -119,6 +120,7 @@ export function ProjectDetailPage() {
 
   return (
     <div>
+      {/* ── Hero: title (left) + Support CTA & Share (right) ── */}
       <Container>
         <div className="pt-10 lg:pt-[120px] flex flex-col md:flex-row md:items-start md:justify-between gap-4 lg:gap-8 xl:gap-10">
           <div className="flex flex-col gap-4 lg:gap-6 min-w-0 flex-1 animate-fade-in-up">
@@ -158,46 +160,56 @@ export function ProjectDetailPage() {
                   project.ledBy
                 )}
               </p>
-              <div className="flex flex-wrap gap-2">
-                {project.focusSdgs.map((sdgId) => (
-                  <SDGTag
-                    key={sdgId}
-                    sdgId={sdgId}
-                    variant="solid"
-                    size="md"
-                    className="!rounded-[6px] transition-transform duration-200 hover:scale-105"
-                    style={{
-                      padding: 'clamp(6px,0.5vw,10px) clamp(12px,1.25vw,24px)',
-                      fontSize: 'clamp(0.75rem, 1.04vw, 1.25rem)',
-                    }}
-                  />
-                ))}
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap gap-2">
+                  {project.focusSdgs.map((sdgId) => (
+                    <SDGTag
+                      key={sdgId}
+                      sdgId={sdgId}
+                      variant="solid"
+                      size="md"
+                      className="!rounded-[6px] transition-transform duration-200 hover:scale-105"
+                      style={{
+                        padding: 'clamp(6px,0.5vw,10px) clamp(12px,1.25vw,24px)',
+                        fontSize: 'clamp(0.75rem, 1.04vw, 1.25rem)',
+                      }}
+                    />
+                  ))}
+                </div>
+                <ShareButton
+                  title={project.name}
+                  text={project.description}
+                  variant="outline"
+                />
               </div>
             </div>
           </div>
 
-          {project.status === 'completed' ? (
-            <Popover
-              trigger="click"
-              content={
-                <div style={{ maxWidth: 280, fontFamily: 'Open Sans, sans-serif' }}>
-                  This project has been completed / is no longer active. You can support this
-                  organization&apos;s other projects{' '}
-                  <Link to={ROUTES.MEMBER_DETAIL(project.memberId)} className="text-[#005D9A] underline">
-                    here
-                  </Link>
-                  .
-                </div>
-              }
-            >
-              <SupportCTA onClick={() => {}} disabled />
-            </Popover>
-          ) : (
-            <SupportCTA onClick={openSupport} />
-          )}
+          <div className="flex flex-col items-end gap-3">
+            {project.status === 'completed' ? (
+              <Popover
+                trigger="click"
+                content={
+                  <div style={{ maxWidth: 280, fontFamily: 'Open Sans, sans-serif' }}>
+                    This project has been completed / is no longer active. You can support this
+                    organization&apos;s other projects{' '}
+                    <Link to={ROUTES.MEMBER_DETAIL(project.memberId)} className="text-[#005D9A] underline">
+                      here
+                    </Link>
+                    .
+                  </div>
+                }
+              >
+                <SupportCTA onClick={() => {}} disabled />
+              </Popover>
+            ) : (
+              <SupportCTA onClick={openSupport} />
+            )}
+          </div>
         </div>
       </Container>
 
+      {/* ── Hero image ── */}
       <Container className="mt-6 lg:mt-[74px] mb-8 lg:mb-[120px]">
         <div
           className="rounded-[20px] lg:rounded-[40px] overflow-hidden"
@@ -214,8 +226,10 @@ export function ProjectDetailPage() {
         </div>
       </Container>
 
+      {/* ── Main content ── */}
       <Container className="pb-10 lg:pb-[175px]">
         <div className="flex flex-col gap-10 lg:gap-[80px]">
+          {/* Organization */}
           <div
             ref={orgRef}
             className={cn(
@@ -247,17 +261,25 @@ export function ProjectDetailPage() {
                   {project.memberDescription}
                 </p>
               )}
-              {project.memberSocialLinks.length > 0 && (
-                <div className="flex items-center gap-3">
-                  <span className="font-semibold text-black">Follow us:</span>
-                  <SocialLinks links={project.memberSocialLinks} size={24} />
-                </div>
-              )}
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                {project.memberSocialLinks.length > 0 && (
+                  <div className="flex items-center gap-3">
+                    <span className="font-semibold text-black">Follow us:</span>
+                    <SocialLinks links={project.memberSocialLinks} size={24} />
+                  </div>
+                )}
+                <ShareButton
+                  title={project.name}
+                  text={project.description}
+                  variant="outline"
+                />
+              </div>
             </div>
           </div>
 
           <Divider style={{ background: GRADIENT_DIVIDER, margin: 0 }} />
 
+          {/* Project detail rows */}
           <div
             ref={detailRef}
             className={cn(
@@ -306,6 +328,7 @@ export function ProjectDetailPage() {
             </DetailRow>
           </div>
 
+          {/* Project Activities Gallery */}
           {project.gallery && project.gallery.length > 0 && (
             <div>
               <h2
@@ -322,6 +345,7 @@ export function ProjectDetailPage() {
             </div>
           )}
 
+          {/* Other Projects */}
           {otherProjects.length > 0 && (
             <div
               ref={otherRef}

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Skeleton, Tag, Button, message } from 'antd';
+import { Skeleton, Tag, Button } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { BlocksRenderer } from '@/components/dynamic/BlocksRenderer';
 import { CTABanner } from '@/components/shared/CTABanner';
+import { ShareButton } from '@/components/shared/ShareButton/ShareButton';
 import { Icon } from '@/components/ui/Icon';
 import { fetchNewsById, fetchNews, type NewsItem } from '@/api/news';
 import { useLanguage } from '@/context/LanguageContext';
@@ -56,18 +57,6 @@ export function NewsDetailPage() {
       );
     }
   }, [article]);
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: article?.title,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      message.success('Article link copied to clipboard!');
-    }
-  };
 
   if (loading) {
     return (
@@ -138,18 +127,16 @@ export function NewsDetailPage() {
           )}
         </div>
 
-        {/* Share Button */}
+        {/* Share Button Section */}
         <div className="border-y border-neutral-200 py-6 mb-16 flex items-center justify-between">
-          <span className="font-semibold text-neutral-800">Share this story:</span>
-          <Button
-            type="primary"
-            shape="round"
-            icon={<Icon name="lucide:share-2" size={16} />}
-            onClick={handleShare}
-            className="!bg-[#005D9A]"
-          >
-            Share
-          </Button>
+          <span className="font-semibold text-neutral-800">
+            {language === 'vi' ? 'Chia sẻ câu chuyện này:' : 'Share this story:'}
+          </span>
+          <ShareButton
+            title={article.title}
+            text={article.excerpt}
+            variant="pill"
+          />
         </div>
 
         {/* Related News */}

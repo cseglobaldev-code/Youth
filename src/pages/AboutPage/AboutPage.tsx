@@ -9,7 +9,7 @@ import { BlockRenderer } from '@/components/dynamic';
 import { fetchPageBySlugOrId } from '@/api/pages';
 import { updatePageSEO } from '@/lib/utils/seo';
 import type { PageDetailItem } from '@/types';
-
+import { useLanguage } from '@/context/LanguageContext';
 const STATS = [
   { label: 'Member Organizations', value: 50 },
   { label: 'Continents', value: 6 },
@@ -73,6 +73,7 @@ const ABOUT_CONTAINER_CLASS = 'max-w-none lg:px-[90px]';
 const ABOUT_SECTION_TITLE_CLASS = 'font-heading text-[clamp(1.75rem,3vw,3rem)] font-semibold leading-tight text-black';
 
 function StaticAboutFallback() {
+  const { t } = useLanguage();
   return (
     <div className="relative z-10 bg-white">
       <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
@@ -211,9 +212,9 @@ function StaticAboutFallback() {
       </section>
 
       <CTABanner
-        title="Ready to Make an Impact?"
-        description="Join thousands of youth leaders across continents who are making a difference in their communities."
-        ctaLabel="Register Now"
+        title={t.home.ctaBannerTitle}
+        description={t.home.ctaBannerDesc}
+        ctaLabel={t.home.ctaBannerBtn}
       />
     </div>
   );

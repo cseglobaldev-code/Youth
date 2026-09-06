@@ -7,6 +7,7 @@ import { ICONS } from '@/config/icons';
 import { SOCIAL_LINKS } from '@/data';
 import { ROUTES } from '@/routes/paths';
 import { fetchGlobalSettings, DEFAULT_GLOBAL_SETTINGS } from '@/api/global';
+import { useLanguage } from '@/context/LanguageContext';
 import type { GlobalSetting } from '@/types';
 
 export interface FooterProps {
@@ -14,6 +15,7 @@ export interface FooterProps {
 }
 
 export function Footer({ className }: FooterProps) {
+  const { t } = useLanguage();
   const [settings, setSettings] = useState<GlobalSetting>(DEFAULT_GLOBAL_SETTINGS);
 
   useEffect(() => {
@@ -26,6 +28,15 @@ export function Footer({ className }: FooterProps) {
   }, []);
 
   const socialLinks = settings.socialLinks && settings.socialLinks.length > 0 ? settings.socialLinks : SOCIAL_LINKS;
+
+  const discoverLinks = [
+    { to: ROUTES.ABOUT, label: t.nav.about },
+    { to: ROUTES.LEADERSHIP, label: t.nav.leadership },
+    { to: ROUTES.MEMBERS, label: t.nav.members },
+    { to: ROUTES.PROJECTS, label: t.nav.projects },
+    { to: ROUTES.POLICY_DOCUMENTS, label: t.nav.documents },
+    { to: ROUTES.CONTACT, label: t.nav.contact },
+  ];
 
   return (
     <footer className={cn('bg-[#0B1A2B] text-white', className)}>
@@ -67,7 +78,7 @@ export function Footer({ className }: FooterProps) {
                 lineHeight: '140%',
               }}
             >
-              Information
+              {t.footer.infoTitle}
             </h4>
             <div className="flex flex-col gap-3 lg:gap-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               <div className="flex items-start gap-3 text-base font-normal text-neutral-300">
@@ -99,17 +110,10 @@ export function Footer({ className }: FooterProps) {
                 lineHeight: '140%',
               }}
             >
-              Discover
+              {t.footer.discoverTitle}
             </h4>
             <nav className="grid w-fit grid-cols-2 gap-x-10 gap-y-3">
-              {[
-                { to: ROUTES.ABOUT, label: 'About us' },
-                { to: ROUTES.LEADERSHIP, label: 'Leadership' },
-                { to: ROUTES.MEMBERS, label: 'Members' },
-                { to: ROUTES.PROJECTS, label: 'Projects' },
-                { to: ROUTES.POLICY_DOCUMENTS, label: 'Documents' },
-                { to: ROUTES.CONTACT, label: 'Contact' },
-              ].map(({ to, label }) => (
+              {discoverLinks.map(({ to, label }) => (
                 <Link
                   key={to}
                   to={to}
@@ -129,10 +133,10 @@ export function Footer({ className }: FooterProps) {
           </div>
         </div>
 
-        {/* Bottom bar with dynamic current year */}
+        {/* Bottom bar */}
         <div className="flex flex-col items-center justify-between gap-3 border-t border-neutral-700 py-5 text-center sm:flex-row sm:text-left">
           <p className="text-xs text-neutral-400">
-            © {new Date().getFullYear()} Youth Organization Union · All rights reserved
+            © {new Date().getFullYear()} Youth Organization Union · {t.footer.rights}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-end lg:gap-6">
             <a
@@ -141,7 +145,7 @@ export function Footer({ className }: FooterProps) {
               rel={settings.termsOfServiceUrl?.startsWith('http') ? 'noopener noreferrer' : undefined}
               className="text-xs text-white transition-colors hover:text-[#005D9A]"
             >
-              Terms of Service
+              {t.footer.terms}
             </a>
             <a
               href={settings.privacyPolicyUrl || '#'}
@@ -149,7 +153,7 @@ export function Footer({ className }: FooterProps) {
               rel={settings.privacyPolicyUrl?.startsWith('http') ? 'noopener noreferrer' : undefined}
               className="text-xs text-white transition-colors hover:text-[#005D9A]"
             >
-              Privacy Policy
+              {t.footer.privacy}
             </a>
           </div>
         </div>

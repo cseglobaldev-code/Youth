@@ -10,6 +10,7 @@ import { ImageGallery } from '@/components/shared/ImageGallery';
 import { SupportCTA } from '@/components/shared/SupportCTA';
 import { CTABanner } from '@/components/shared/CTABanner';
 import { SectionHeading } from '@/components/shared/SectionHeading';
+import { ShareButton } from '@/components/shared/ShareButton/ShareButton';
 import { useSupportModal } from '@/components/modals/SupportModal';
 import { fetchMemberById, type MemberDetailItem } from '@/api/members';
 import { cn, countryFlagEmoji, formatJoinDate } from '@/lib/utils';
@@ -93,16 +94,23 @@ export function MemberDetailPage() {
                 {cleanPeriodYear} &nbsp;|&nbsp; Join Union from:{' '}
                 {formatJoinDate(member.createdAt) ?? '—'}
               </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {member.focusSdgs.map((sdgId) => (
-                  <SDGTag
-                    key={sdgId}
-                    sdgId={sdgId}
-                    variant="solid"
-                    size="md"
-                    className="!rounded-[6px]"
-                  />
-                ))}
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap gap-2">
+                  {member.focusSdgs.map((sdgId) => (
+                    <SDGTag
+                      key={sdgId}
+                      sdgId={sdgId}
+                      variant="solid"
+                      size="md"
+                      className="!rounded-[6px]"
+                    />
+                  ))}
+                </div>
+                <ShareButton
+                  title={member.name}
+                  text={member.shortDescription || member.description}
+                  variant="outline"
+                />
               </div>
             </div>
 
@@ -123,12 +131,19 @@ export function MemberDetailPage() {
               About Organization
             </h2>
             <p className="leading-relaxed text-neutral-700">{member.description}</p>
-            {member.socialLinks.length > 0 && (
-              <div className="mt-4 flex items-center gap-3">
-                <span className="font-semibold text-black">Follow us</span>
-                <SocialLinks links={member.socialLinks} />
-              </div>
-            )}
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+              {member.socialLinks.length > 0 && (
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold text-black">Follow us</span>
+                  <SocialLinks links={member.socialLinks} />
+                </div>
+              )}
+              <ShareButton
+                title={member.name}
+                text={member.description}
+                variant="outline"
+              />
+            </div>
           </div>
 
           {hasRepresentative && (
