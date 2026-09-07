@@ -49,18 +49,27 @@ export async function handlePreview(request: Request, env: Env): Promise<Respons
  * The API token stays a runtime secret in Cloudflare and is never shipped to the browser.
  */
 export async function handleCms(request: Request, env: Env): Promise<Response> {
-  const allowedMethods = new Set(['GET', 'HEAD', 'POST', 'PUT']);
+  const allowedMethods = new Set(['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS']);
+  
   if (!allowedMethods.has(request.method)) {
     return new Response('Method not allowed', { status: 405 });
   }
 
-  const requestUrl = new URL(request.url);
-  if (!isAllowedCmsPath(requestUrl.pathname)) return new Response('Not found', { status: 404 });
-  if (!env.STRAPI_API_URL || !env.STRAPI_API_TOKEN) {
-    return new Response('CMS proxy is not configured', { status: 503 });
+  if (request.method === 'OPTIONS') {
+    return new Response(null, {
+      status: 204,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      },
+    });
   }
 
-  const upstreamUrl = new URL(requestUrl.pathname, env.STRAPI_API_URL.replace(/\/$/, ''));
+  const requestUrl = new URL(request.url);
+  if (!isAllowedCmsPath(requestUrl.pathname)) return new Response('Not found', { status: 404 });
+
+  const upstreamUrl = new URL(requestUrl.pathname, (env.STRAPI_API_URL || '').replace(/\/$/, ''));
   upstreamUrl.search = requestUrl.search;
 
   if (request.method === 'GET' || request.method === 'HEAD') {
@@ -68,8 +77,15 @@ export async function handleCms(request: Request, env: Env): Promise<Response> {
   }
 
   const headers = new Headers();
-  headers.set('Authorization', `Bearer ${env.STRAPI_API_TOKEN}`);
   
+  // 👈 THE FIX: Preserve the user's JWT if present; otherwise fallback to public API token
+  const clientAuth = request.headers.get('Authorization');
+  if (clientAuth) {
+    headers.set('Authorization', clientAuth);
+  } else if (env.STRAPI_API_TOKEN) {
+    headers.set('Authorization', `Bearer ${env.STRAPI_API_TOKEN}`);
+  }
+
   const accept = request.headers.get('Accept');
   if (accept) headers.set('Accept', accept);
 

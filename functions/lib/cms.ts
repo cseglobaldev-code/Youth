@@ -1,4 +1,5 @@
 const ALLOWED_PREFIXES = [
+  '/api/portal-auth',
   '/api/home-page',
   '/api/about-us',
   '/api/projects',
@@ -14,6 +15,9 @@ const ALLOWED_PREFIXES = [
   '/api/organization-applications',
   '/api/support-submissions',
   '/api/upload',
+  // Portal Auth & User Management Endpoints
+  '/api/auth',
+  '/api/users',
 ];
 
 export function isAllowedCmsPath(pathname: string): boolean {

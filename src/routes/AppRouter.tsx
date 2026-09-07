@@ -14,9 +14,15 @@ import { ContactPage } from '@/pages/ContactPage';
 import { DynamicPage } from '@/pages/DynamicPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 
+import { PortalRoutes } from '@/portal/routes/PortalRoutes';
+
 export function AppRouter() {
   return (
     <Routes>
+      {/* Isolated Management Portal Shell (No public header or footer) */}
+      <Route path="portal/*" element={<PortalRoutes />} />
+
+      {/* Public Visitor Application */}
       <Route element={<RootLayout />}>
         <Route index element={<HomePage />} />
         <Route path="about-us" element={<AboutPage />} />
