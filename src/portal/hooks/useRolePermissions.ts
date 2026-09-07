@@ -22,16 +22,18 @@ export function useRolePermissions(): RolePermissions {
   const rawType = (user?.role?.type || '').toLowerCase();
   const rawName = (user?.role?.name || '').toLowerCase();
 
-  let roleType: RoleType = 'viewer';
+  let roleType: RoleType = 'editor';
 
   if (rawType === 'admin' || rawName.includes('admin') || rawName.includes('super')) {
     roleType = 'admin';
+  } else if (rawType === 'viewer' || rawName.includes('viewer') || rawName.includes('audit')) {
+    //  ONLY locked down if explicitly assigned Viewer / Auditor
+    roleType = 'viewer';
   } else if (rawType === 'reviewer' || rawName.includes('hr') || rawName.includes('reviewer')) {
     roleType = 'reviewer';
-  } else if (rawType === 'editor' || rawName.includes('editor')) {
+  } else {
+    //  Authenticated / Staff Member accounts have active Content & Media Editing rights
     roleType = 'editor';
-  } else if (rawType === 'viewer' || rawName.includes('viewer') || rawName.includes('audit')) {
-    roleType = 'viewer';
   }
 
   const isAdmin = roleType === 'admin';
@@ -39,17 +41,15 @@ export function useRolePermissions(): RolePermissions {
   const isReviewer = roleType === 'reviewer';
   const isViewer = roleType === 'viewer';
 
+  // Format display name nicely
+  let displayRoleName = user?.role?.name || 'Staff Member';
+  if (displayRoleName.toLowerCase() === 'authenticated') {
+    displayRoleName = 'Staff Member';
+  }
+
   return {
     roleType,
-    roleName:
-      user?.role?.name ||
-      (isAdmin
-        ? 'Super Admin'
-        : isEditor
-        ? 'Content Editor'
-        : isReviewer
-        ? 'HR / Reviewer'
-        : 'Viewer / Auditor'),
+    roleName: displayRoleName,
     isAdmin,
     isEditor,
     isReviewer,
