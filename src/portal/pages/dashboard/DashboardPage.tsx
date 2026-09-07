@@ -36,18 +36,49 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner */}
-      <div className="rounded-3xl bg-gradient-to-r from-[#005D9A] via-[#125A94] to-[#0B1A2B] p-6 sm:p-8 text-white shadow-md">
-        <div className="flex flex-wrap items-center justify-between gap-4">
+      {/* Branded Top Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-[#0B1A2B] p-6 sm:p-8 text-white shadow-lg">
+        {/* Subtle Ambient Red/Blue Radial Highlights */}
+        <div
+          className="absolute -top-24 -left-24 w-72 h-72 rounded-full pointer-events-none"
+          style={{ background: '#005D9A', filter: 'blur(80px)', opacity: 0.4 }}
+        />
+        <div
+          className="absolute -bottom-24 -right-24 w-72 h-72 rounded-full pointer-events-none"
+          style={{ background: '#EE334E', filter: 'blur(80px)', opacity: 0.3 }}
+        />
+
+        <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold m-0" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-              Portal Dashboard
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs font-bold text-[#FCB131] uppercase tracking-widest">
+                Y.O.U Executive Workspace
+              </span>
+            </div>
+
+            <h1
+              className="text-2xl sm:text-3xl font-bold m-0"
+              style={{ fontFamily: 'Open Sans, sans-serif' }}
+            >
+              Where{' '}
+              <span className="bg-gradient-to-r from-[#EE334E] via-[#FCB131] to-[#00A651] bg-clip-text text-transparent">
+                Unity
+              </span>{' '}
+              Drives Change
             </h1>
-            <p className="mt-2 max-w-2xl text-sm sm:text-base text-blue-100 m-0">
-              Welcome to the Y.O.U Management Portal. Your active workspace role is <strong>{roleName}</strong>.
+
+            <p className="mt-2 max-w-2xl text-sm text-neutral-300 m-0 leading-relaxed">
+              Welcome to the unified management workspace. Your active account is signed in as{' '}
+              <strong className="text-white">{roleName}</strong>.
             </p>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur border border-white/20 text-xs font-semibold">
+
+          <span
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold text-white shadow-sm border border-white/20"
+            style={{
+              background: 'linear-gradient(90deg, rgba(238,51,78,0.8) 0%, rgba(0,93,154,0.8) 100%)',
+            }}
+          >
             {isAdmin ? '👑 Super Admin' : isEditor ? '✍️ Content Editor' : isReviewer ? '📋 HR / Reviewer' : '👁️ Viewer / Auditor'}
           </span>
         </div>

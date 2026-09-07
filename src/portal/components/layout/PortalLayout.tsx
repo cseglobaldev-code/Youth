@@ -82,7 +82,7 @@ export function PortalLayout() {
       onClick: () => navigate(ROUTES.PORTAL.DASHBOARD),
     },
 
-    // Content Studio: Admins, Editors & Viewers (Read-Only)
+    // Content Studio: Admins, Editors & Viewers (Inspect)
     ...(isAdmin || isEditor || isViewer
       ? [
           {
@@ -238,13 +238,29 @@ export function PortalLayout() {
           left: 0,
         }}
       >
+        {/* Official Brand Logo in Sidebar */}
         <div className="flex h-16 items-center justify-between px-4 border-b border-neutral-100">
-          {!collapsed && (
+          {!collapsed ? (
             <Link to={ROUTES.PORTAL.DASHBOARD} className="flex items-center gap-2">
-              <span className="font-extrabold text-lg text-[#005D9A]">Y.O.U</span>
-              <span className="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Portal</span>
+              <img
+                src="/images/common/brand/logo.svg"
+                alt="Youth Organization Union"
+                className="h-8 w-auto object-contain"
+              />
+              <span className="text-[10px] font-bold text-[#005D9A] bg-[#EBF4FA] px-1.5 py-0.5 rounded tracking-wider uppercase">
+                Portal
+              </span>
+            </Link>
+          ) : (
+            <Link to={ROUTES.PORTAL.DASHBOARD} className="mx-auto">
+              <img
+                src="/images/home/logo/logo.svg"
+                alt="Y.O.U"
+                className="h-7 w-auto object-contain"
+              />
             </Link>
           )}
+
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -263,7 +279,8 @@ export function PortalLayout() {
       </Sider>
 
       <Layout>
-        <Header className="flex h-16 items-center justify-between bg-white px-6 border-b border-neutral-200 shadow-sm">
+        {/* Header Bar */}
+        <Header className="relative flex h-16 items-center justify-between bg-white px-6 border-b border-neutral-200 shadow-sm">
           <div className="flex items-center gap-4">
             <span className="text-sm font-semibold text-neutral-600">
               Welcome back, <strong className="text-neutral-900">{user?.username || user?.email || 'User'}</strong>
@@ -275,7 +292,7 @@ export function PortalLayout() {
               href="/"
               target="_blank"
               rel="noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-neutral-200 px-3 py-1 text-xs font-semibold text-neutral-600 hover:border-[#005D9A] hover:text-[#005D9A] transition"
+              className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-neutral-200 px-3.5 py-1 text-xs font-semibold text-neutral-700 hover:border-[#005D9A] hover:text-[#005D9A] transition shadow-sm"
             >
               <GlobalOutlined /> View Live Website ↗
             </a>
@@ -288,6 +305,14 @@ export function PortalLayout() {
               </div>
             </Dropdown>
           </div>
+
+          {/* Signature Y.O.U 4-Color Accent Line */}
+          <div
+            className="absolute bottom-0 left-0 right-0 h-[2px]"
+            style={{
+              background: 'linear-gradient(90deg, #EE334E 0%, #FCB131 33%, #00A651 67%, #0081C8 100%)',
+            }}
+          />
         </Header>
 
         <Content className="m-6 min-h-[calc(100vh-112px)]">
