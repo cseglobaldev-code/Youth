@@ -25,13 +25,21 @@ export function PortalAuthProvider({ children }: { children: React.ReactNode }) 
   const [user, setUser] = useState<PortalUser | null>(() => {
     if (typeof window === 'undefined') return null;
     const cached = localStorage.getItem(USER_KEY);
-    return cached ? JSON.parse(cached) : null;
+    if (!cached) return null;
+    try {
+      return JSON.parse(cached) as PortalUser;
+    } catch {
+      return null;
+    }
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const getBaseUrl = (): string => {
-    return (import.meta.env.VITE_STRAPI_API_URL || (typeof window !== 'undefined' ? window.location.origin : '')).replace(/\/$/, '');
+    return (
+      import.meta.env.VITE_STRAPI_API_URL ||
+      (typeof window !== 'undefined' ? window.location.origin : '')
+    ).replace(/\/$/, '');
   };
 
   const refreshUser = useCallback(async () => {
@@ -43,46 +51,37 @@ export function PortalAuthProvider({ children }: { children: React.ReactNode }) 
       return;
     }
 
-    // Safety controller with 4-second timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
-
     try {
       const res = await fetch(`${getBaseUrl()}/api/portal-auth/me`, {
         headers: {
           Authorization: `Bearer ${currentToken}`,
         },
-        signal: controller.signal,
       });
 
-      clearTimeout(timeoutId);
-
       if (res.ok) {
-        const userData = await res.json();
+        const userData = (await res.json()) as PortalUser;
         setUser(userData);
         localStorage.setItem(USER_KEY, JSON.stringify(userData));
       } else {
-        // Bad/expired token: clear storage immediately
         localStorage.removeItem(TOKEN_KEY);
         localStorage.removeItem(USER_KEY);
         setUser(null);
         setToken(null);
       }
     } catch {
-      // Clear stale token on error/timeout so we never spin infinitely
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(USER_KEY);
-      setUser(null);
-      setToken(null);
+      // Keep cached user on offline/network hiccup
     } finally {
       setIsLoading(false);
     }
   }, []);
 
+  useEffect(() => {
+    refreshUser();
+  }, [refreshUser]);
+
   const login = async (identifier: string, password: string) => {
     setIsLoading(true);
     try {
-      //  Post to the admin auth bridge
       const res = await fetch(`${getBaseUrl()}/api/portal-auth/login`, {
         method: 'POST',
         headers: {
@@ -92,13 +91,18 @@ export function PortalAuthProvider({ children }: { children: React.ReactNode }) 
       });
 
       if (!res.ok) {
-        const errorData = await res.json().catch(() => ({}));
-        throw new Error(errorData?.error?.message || 'Invalid identifier or password');
+        const errorData = (await res.json().catch(() => ({}))) as { error?: { message?: string }; message?: string };
+        throw new Error(
+          errorData?.error?.message ||
+          errorData?.message ||
+          'Invalid credentials. Please check your email and password.'
+        );
       }
 
-      const data = await res.json();
+      const data = (await res.json()) as AuthResponse;
       setToken(data.jwt);
       setUser(data.user);
+
       localStorage.setItem(TOKEN_KEY, data.jwt);
       localStorage.setItem(USER_KEY, JSON.stringify(data.user));
     } finally {

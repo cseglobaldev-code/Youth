@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, Form, Input, Button, message, Divider } from 'antd';
+import { Card, Form, Input, Button, message, Divider, Spin } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { MediaPicker } from '../../components/shared/MediaPicker';
 import { fetchSingleType, updateSingleType } from '../../api/content';
@@ -68,64 +68,66 @@ export function GeneralSettingsPage() {
         </Button>
       </div>
 
-      <Card loading={loading} className="rounded-3xl border border-neutral-200 shadow-sm">
-        <Form form={form} layout="vertical" onFinish={handleFinish}>
-          <Divider>Contact &amp; Operations</Divider>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Form.Item label="Official Email" name="email" rules={[{ required: true, type: 'email' }]}>
-              <Input placeholder="info@youthorgunion.org" />
-            </Form.Item>
-            <Form.Item label="Hotline Phone" name="hotline">
-              <Input placeholder="(+84) 98.242.1109" />
-            </Form.Item>
-          </div>
+      <Spin spinning={loading}>
+        <Card className="rounded-3xl border border-neutral-200 shadow-sm">
+          <Form form={form} layout="vertical" onFinish={handleFinish}>
+            <Divider>Contact &amp; Operations</Divider>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Form.Item label="Official Email" name="email" rules={[{ required: true, type: 'email' }]}>
+                <Input placeholder="info@youthorgunion.org" />
+              </Form.Item>
+              <Form.Item label="Hotline Phone" name="hotline">
+                <Input placeholder="(+84) 98.242.1109" />
+              </Form.Item>
+            </div>
 
-          <Form.Item label="Office Address" name="address" rules={[{ required: true }]}>
-            <Input placeholder="e.g. Tầng 5, Tòa nhà Y.O.U Global, Hà Nội, Việt Nam" />
-          </Form.Item>
-
-          <Form.Item label="Operating Hours / Response Time" name="operatingTime">
-            <Input placeholder="e.g. Phản hồi trong vòng 24–48 giờ" />
-          </Form.Item>
-
-          <Divider>Donations &amp; Bank Account</Divider>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Form.Item label="Bank Name" name="bankName">
-              <Input placeholder="MB Bank - Ben Thanh Branch" />
+            <Form.Item label="Office Address" name="address" rules={[{ required: true }]}>
+              <Input placeholder="e.g. Tầng 5, Tòa nhà Y.O.U Global, Hà Nội, Việt Nam" />
             </Form.Item>
-            <Form.Item label="Account Number" name="accountNumber">
-              <Input placeholder="000999999999" />
-            </Form.Item>
-            <Form.Item label="Account Holder" name="accountHolder">
-              <Input placeholder="Youth Organization Union" />
-            </Form.Item>
-          </div>
 
-          <Form.Item label="Transfer Syntax Description" name="transferSyntaxNote">
-            <Input placeholder="YOUPRJ26 - [Project Names]" />
-          </Form.Item>
-
-          <Form.Item label="Payment QR Code Image">
-            <MediaPicker
-              previewUrl={qrPreviewUrl}
-              onChange={(id, url) => {
-                setQrCodeId(id);
-                setQrPreviewUrl(url || null);
-              }}
-            />
-          </Form.Item>
-
-          <Divider>Legal &amp; Policies</Divider>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Form.Item label="Terms of Service URL" name="termsOfServiceUrl">
-              <Input placeholder="https://... or /terms" />
+            <Form.Item label="Operating Hours / Response Time" name="operatingTime">
+              <Input placeholder="e.g. Phản hồi trong vòng 24–48 giờ" />
             </Form.Item>
-            <Form.Item label="Privacy Policy URL" name="privacyPolicyUrl">
-              <Input placeholder="https://... or /privacy" />
+
+            <Divider>Donations &amp; Bank Account</Divider>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <Form.Item label="Bank Name" name="bankName">
+                <Input placeholder="MB Bank - Ben Thanh Branch" />
+              </Form.Item>
+              <Form.Item label="Account Number" name="accountNumber">
+                <Input placeholder="000999999999" />
+              </Form.Item>
+              <Form.Item label="Account Holder" name="accountHolder">
+                <Input placeholder="Youth Organization Union" />
+              </Form.Item>
+            </div>
+
+            <Form.Item label="Transfer Syntax Description" name="transferSyntaxNote">
+              <Input placeholder="YOUPRJ26 - [Project Names]" />
             </Form.Item>
-          </div>
-        </Form>
-      </Card>
+
+            <Form.Item label="Payment QR Code Image">
+              <MediaPicker
+                previewUrl={qrPreviewUrl}
+                onChange={(id, url) => {
+                  setQrCodeId(id);
+                  setQrPreviewUrl(url || null);
+                }}
+              />
+            </Form.Item>
+
+            <Divider>Legal &amp; Policies</Divider>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Form.Item label="Terms of Service URL" name="termsOfServiceUrl">
+                <Input placeholder="https://... or /terms" />
+              </Form.Item>
+              <Form.Item label="Privacy Policy URL" name="privacyPolicyUrl">
+                <Input placeholder="https://... or /privacy" />
+              </Form.Item>
+            </div>
+          </Form>
+        </Card>
+      </Spin>
     </div>
   );
 }

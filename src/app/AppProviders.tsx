@@ -1,4 +1,4 @@
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, App as AntdApp } from 'antd';
 import { antdTheme } from '@/config/theme';
 import { LanguageProvider, useLanguage } from '@/context/LanguageContext';
 
@@ -11,7 +11,9 @@ function ThemedApp({ children }: AppProvidersProps) {
 
   return (
     <ConfigProvider theme={{ ...antdTheme, hashed: true }} locale={antdLocale}>
-      {children}
+      <AntdApp>
+        {children}
+      </AntdApp>
     </ConfigProvider>
   );
 }
