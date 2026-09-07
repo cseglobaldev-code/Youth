@@ -21,7 +21,6 @@ export function MediaStudioPage() {
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [uploading, setUploading] = useState(false);
   const [previewDoc, setPreviewDoc] = useState<any | null>(null);
 
   const loadData = useCallback(async () => {
@@ -58,16 +57,15 @@ export function MediaStudioPage() {
   const handleCustomUpload = async (options: any) => {
     const { file, onSuccess, onError } = options;
     try {
-      setUploading(true);
+      message.loading({ content: `Uploading ${file.name}...`, key: 'upload' });
       await uploadMediaFile(file, token);
-      message.success(`${file.name} uploaded`);
+      message.success({ content: `${file.name} uploaded`, key: 'upload' });
       onSuccess?.();
       loadData();
     } catch (err: any) {
-      message.error(err.message || 'Upload failed');
+      message.error({ content: err.message || 'Upload failed', key: 'upload' });
       onError?.(err);
     } finally {
-      setUploading(false);
       setIsUploadModalOpen(false);
     }
   };
@@ -93,15 +91,17 @@ export function MediaStudioPage() {
             className="w-56 rounded-xl"
             allowClear
           />
-          <Button icon={<ReloadOutlined />} onClick={loadData} className="rounded-xl" />
+          {/* 👇 Fix: Attached 'loading' state to Reload button */}
+          <Button icon={<ReloadOutlined />} onClick={loadData} loading={loading} className="rounded-xl" />
+          
           {!isReadOnly && canUploadMedia && (
-          <Button
-            type="primary"
-            icon={<UploadOutlined />}
-            onClick={() => setIsUploadModalOpen(true)}
-            className="rounded-xl !bg-[#005D9A] font-semibold"
+            <Button
+              type="primary"
+              icon={<UploadOutlined />}
+              onClick={() => setIsUploadModalOpen(true)}
+              className="rounded-xl !bg-[#005D9A] font-semibold"
             >
-            Upload Asset
+              Upload Asset
             </Button>
           )}
         </div>
@@ -148,28 +148,27 @@ export function MediaStudioPage() {
 
               <div className="mt-2 pt-2 border-t border-neutral-100 flex items-center justify-between">
                 <Space>
-                {!isImage && (
+                  {!isImage && (
                     <Tooltip title="View Document">
-                    <Button size="small" type="text" icon={<EyeOutlined />} onClick={() => setPreviewDoc(file)} />
+                      <Button size="small" type="text" icon={<EyeOutlined />} onClick={() => setPreviewDoc(file)} />
                     </Tooltip>
-                )}
-                <Tooltip title="Copy URL">
+                  )}
+                  <Tooltip title="Copy URL">
                     <Button size="small" type="text" icon={<CopyOutlined />} onClick={() => handleCopyLink(file.url)} />
-                </Tooltip>
+                  </Tooltip>
                 </Space>
 
                 {!isReadOnly && canUploadMedia && (
-                <Popconfirm title="Delete asset?" onConfirm={() => handleDelete(file.id)}>
+                  <Popconfirm title="Delete asset?" onConfirm={() => handleDelete(file.id)}>
                     <Button size="small" type="text" danger icon={<DeleteOutlined />} />
-                </Popconfirm>
+                  </Popconfirm>
                 )}
-            </div>
+              </div>
             </Card>
           );
         })}
       </div>
 
-      {/* Upload Modal */}
       <Modal
         title="Upload Assets to Cloudinary"
         open={isUploadModalOpen}
@@ -186,7 +185,6 @@ export function MediaStudioPage() {
         </Upload.Dragger>
       </Modal>
 
-      {/* Document / PDF In-Browser Viewer Modal */}
       <Modal
         title={
           <div className="flex items-center justify-between pr-8">
