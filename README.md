@@ -1,173 +1,146 @@
-# 📘 TÀI LIỆU KỸ THUẬT
+# TÀI LIỆU KỸ THUẬT 
 ## DỰ ÁN: Y.O.U (YOUTH ORGANIZATION UNION) PLATFORM
-*Phiên bản: 2.0 — Cập nhật lần cuối: Tháng 9/2026*
 
 ---
 
-## 📑 MỤC LỤC
-1. [Tổng quan Hệ thống & Triết lý Kiến trúc](#1-tổng-quan-hệ-thống--triết-lý-kiến-trúc)
-2. [Cấu trúc Thư mục Dự án (Frontend Repository)](#2-cấu-trúc-thư-mục-dự-án-frontend-repository)
-3. [Cơ chế Kết nối & Giao tiếp với Backend Strapi v5](#3-cơ-chế-kết-nối--giao-tiếp-với-backend-strapi-v5)
-4. [Data Layer: Parsers, Mappers & AST Renderers](#4-data-layer-parsers-mappers--ast-renderers)
-5. [Hệ thống Dynamic Zone & 13 Section Blocks](#5-hệ-thống-dynamic-zone--13-section-blocks)
-6. [Hệ thống Đa ngôn ngữ (English ⇄ Tiếng Việt)](#6-hệ-thống-đa-ngôn-ngữ-english--tiếng-việt)
-7. [Cơ chế Xem trước Nội dung CMS theo Thời gian thực (Live Preview)](#7-cơ-chế-xem-trước-nội-dung-cms-theo-thời-gian-thực-live-preview)
-8. [Management Portal (`/portal`) & Hệ thống Phân quyền 4 Roles](#8-management-portal-portal--hệ-thống-phân-quyền-4-roles)
-9. [Luồng Form Submissions & Email Tự động (LarkSuite SMTP)](#9-luồng-form-submissions--email-tự-động-larksuite-smtp)
-10. [Design System & Quy chuẩn Nhận diện Thương hiệu](#10-design-system--quy-chuẩn-nhận-diện-thương-hiệu)
-11. [Hướng dẫn Cài đặt, Kiểm thử & Quy trình Làm việc](#11-hướng-dẫn-cài-đặt-kiểm-thử--quy-trình-làm-việc)
 
----
+## 1. Tổng quan Hệ thống
 
-## 1. Tổng quan Hệ thống & Triết lý Kiến trúc
+Frontend của nền tảng **Y.O.U** được xây dựng trên nền **React 19.2 (Vite, TypeScript, Tailwind CSS, Ant Design v6)**, vận hành theo kiến trúc **Decoupled Headless SPA**. 
 
-Dự án **Y.O.U (Youth Organization Union)** là một nền tảng quy mô toàn cầu kết nối các tổ chức thanh niên trên 6 châu lục. Hệ thống được xây dựng theo mô hình **Decoupled Headless CMS**, tối ưu hóa hiệu năng tối đa trên **Edge Network** (Cloudflare Workers) và tính năng quản trị dễ dùng cho nhân sự phi kỹ thuật.
-
-### 🏛️ Sơ đồ Kiến trúc Tổng thể (System Topology)
+Hệ thống được đóng gói và phân phối toàn cầu qua **Cloudflare Workers** (`wrangler.jsonc`), hợp nhất hai ứng dụng độc lập trong cùng một repository:
+1. **Public Website:** Trải nghiệm công khai mượt mà, hỗ trợ song ngữ (EN/VI), thân thiện SEO, tối ưu tốc độ phản hồi trên mạng lưới Edge.
+2. **Management Portal (`/portal`):** Không gian quản trị nội bộ doanh nghiệp độc lập (dành cho Admin, Biên tập viên, HR, Kiểm toán viên), thay thế bảng điều khiển mặc định của Strapi với chi phí hạ tầng bổ sung bằng 0.
 
 ```
-                               ┌────────────────────────────────────────────────────────┐
-                               │                    NGƯỜI DÙNG TRUY CẬP                 │
-                               └───────────────────────────┬────────────────────────────┘
-                                                           │
-                                                           ▼
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                             CLOUDFLARE EDGE WORKER (SPA + PROXY)                                 │
-│                                                                                                                  │
-│   🌐 1. Public Visitor SPA (React 19)                           👑 2. Management Portal (/portal)               │
-│      • Trang chủ (/), Về chúng tôi (/about-us)                     • Dashboard tổng quan & chỉ số                │
-│      • Tổ chức thành viên (/members), Dự án (/projects)            • Content Studio (Projects, News, Members...) │
-│      • Tin tức & Báo chí (/news), Tài liệu (/policy-documents)     • Candidate ATS (Vetting ứng viên & xem CV)   │
-│      • Form ứng tuyển, Đăng ký, Quyên góp                          • Media Studio & Quản trị Settings/Users      │
-│            │                                                              │                                      │
-│            └──────────────────────────────┬───────────────────────────────┘                                      │
-│                                           │ Cùng gọi Same-Origin: /api/*                                         │
-│                                           ▼                                                                      │
-│                                ⚡ EDGE CMS PROXY HANDLER                                                         │
-│                                  • Bơm Bearer Token bảo mật                                                      │
-│                                  • Kiểm soát Method (GET, POST, PUT, DELETE, OPTIONS)                            │
-│                                  • Điều hướng Preview Status (draft/published)                                   │
-└───────────────────────────────────────────┬──────────────────────────────────────────────────────────────────────┘
-                                            │ Upstream HTTPS
+┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                       TRÌNH DUYỆT NGƯỜI DÙNG                                     │
+└─────────────────────────────────────────────┬────────────────────────────────────────────────────┘
+                                              │
+                                              ▼
+┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                              CLOUDFLARE EDGE WORKER (SPA + REVERSE PROXY)                        │
+│                                                                                                  │
+│   🌐 1. Public Visitor SPA (React 19)                       👑 2. Management Portal (/portal)   │
+│      • Trang chủ (/), Giới thiệu (/about-us)                   • Tổng quan & Thống kê Dashboard  │
+│      • Thành viên (/members), Dự án (/projects)                • Content Studio & Page Builder   │
+│      • Tin tức (/news), Tài liệu (/policy-documents)           • Tuyển dụng Lãnh đạo (ATS & CV)  │
+│      • Modals: Ứng tuyển, Đăng ký, Quyên góp                   • Media Studio & Quản trị Cài đặt │
+│            │                                                              │                      │
+│            └──────────────────────────────┬───────────────────────────────┘                      │
+│                                           │ Cùng gọi API Same-Origin: /api/*                     │
+│                                           ▼                                                      │
+│                           ⚡ CLOUDFLARE WORKER PROXY ENGINE                                     │
+│                             • CORS Preflight: OPTIONS ➔ 204 No Content                          │
+│                             • Cho phép: GET, HEAD, POST, PUT, DELETE                             │
+│                             • Bảo toàn Authorization Header (JWT của Staff)                      │
+│                             • Bơm Bearer Secret an toàn cho khách vãng lai                       │
+│                             • Điều phối Trạng thái Preview (draft/published cookie)              │
+└───────────────────────────────────────────┬──────────────────────────────────────────────────────┘
+                                            │ Upstream HTTPS Request
                                             ▼
-┌──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                       STRAPI v5 HEADLESS BACKEND (VPS / DOCKER)                                  │
-│                                                                                                                  │
-│   • Document Service API (Tự động hỗ trợ documentId, Draft & Publish)                                            │
-│   • Custom Portal Auth Controller (/api/portal-auth/login - bcrypt verification & Master Token)                  │
-│   • Asynchronous Email Dispatcher (Nodemailer + LarkSuite SMTP, non-blocking setImmediate)                       │
-│   • Cloudinary Media Storage Adapter                                                                             │
-│   • Database: SQLite (Dev) / PostgreSQL (Production)                                                             │
-└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                STRAPI v5 BACKEND CORE ENGINE (:1337)                             │
+│   • Document Service API (/api/projects, /api/members, /api/pages, /api/home-page...)            │
+│   • Custom Portal Auth Controller (/api/portal-auth/login - bcrypt verification & Master Token)  │
+│   • Asynchronous Email Dispatcher (Nodemailer + LarkSuite SMTP, non-blocking setImmediate)       │
+│   • Cloudinary Media Storage Adapter                                                             │
+└──────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2. Cấu trúc Thư mục Dự án (Frontend Repository)
+## 2. Cấu trúc Thư mục Dự án
 
 ```
 src/
-├── api/                   # Các module gọi API nghiệp vụ (Projects, Members, News, Pages, v.v.)
+├── api/                   # Tầng giao tiếp dữ liệu với Strapi v5
 │   ├── strapi.ts          # Core Client: resolveConfig, In-Memory TTL Cache, parseStringArray, mapSocialLinks
-│   ├── applications.ts    # API gửi Form: Leadership, Organization, Support
-│   ├── documents.ts       # API lấy Policy Documents từ CMS
-│   ├── faqs.ts            # API lấy FAQs kèm displayOrder
-│   ├── global.ts          # API cấu hình toàn cục (Hotline, Ngân hàng, QR Code)
-│   ├── inquiries.ts       # API gửi liên hệ Contact Us
-│   ├── leadership.ts      # API lấy danh sách Ban Lãnh đạo & Giám đốc Châu lục
-│   ├── members.ts         # API lấy danh sách & chi tiết Tổ chức Thành viên
-│   ├── news.ts            # API lấy tin tức & bài viết chi tiết
-│   └── pages.ts           # API lấy nội dung Dynamic Page & Homepage từ Strapi
+│   ├── applications.ts    # API gửi form ứng tuyển & đăng ký thành viên (hỗ trợ camelCase focusSdgs)
+│   ├── documents.ts       # API lấy Policy Documents (map chính xác thời gian updatedAt thực tế)
+│   ├── faqs.ts            # API lấy FAQs kèm displayOrder phục vụ sắp xếp ưu tiên
+│   ├── global.ts          # API lấy cấu hình toàn cục (Hotline, Ngân hàng, QR Code, Điều khoản)
+│   ├── inquiries.ts       # API gửi form liên hệ (Inquiries)
+│   ├── leadership.ts      # API lấy danh sách Ban Lãnh đạo & Giám đốc Châu lục (CONTINENT_REGIONS)
+│   ├── members.ts         # API lấy danh sách & chi tiết Thành viên (hỗ trợ bypassCache khi Preview)
+│   ├── news.ts            # API lấy danh sách tin tức & bài viết chi tiết từ collection news-items
+│   └── pages.ts           # API lấy Dynamic Pages & Home Page (hỗ trợ Wildcard Deep Populate)
 ├── app/                   # Root App Component & Providers bọc ngoài
-│   ├── App.tsx            # Entry Router
-│   └── AppProviders.tsx   # Tích hợp Ant Design Theme + Ant Design Locale (en_US / vi_VN)
-├── components/            # UI Components tái sử dụng cho Public Website
-│   ├── documents/         # DocumentRow hiển thị tệp tài liệu
-│   ├── dynamic/           # 🌟 BỘ RENDERER DYNAMIC BLOCKS CHO CMS
-│   │   ├── BlockRenderer.tsx    # Nhận mảng blocks từ CMS và render component tương ứng
-│   │   ├── BlocksRenderer.tsx   # Render Strapi v5 Rich Text Blocks (AST JSON)
-│   │   ├── SectionWrapper.tsx   # Wrapper quản lý nền, padding, độ rộng (Container Width)
-│   │   └── blocks/              # 13 Components của Dynamic Zone (Hero, CTA, Grid, Gallery...)
-│   ├── layout/            # Shell công khai: RootLayout, Header, Footer, Logo
+│   ├── App.tsx            # Entrypoint Router
+│   └── AppProviders.tsx   # Tích hợp Ant Design Theme + Ant Design Locale (en_US / vi_VN) + Antd App wrapper
+├── components/            # UI Components phục vụ Public Website
+│   ├── documents/         # DocumentRow hiển thị danh sách văn bản chính sách
+│   ├── dynamic/           # BỘ RENDERER DYNAMIC BLOCKS CHO CMS
+│   │   ├── BlockErrorBoundary.tsx # Bọc bắt lỗi riêng cho từng section, tránh sập toàn trang
+│   │   ├── BlockRenderer.tsx      # Bộ điều phối phân tích mảng blocks và ánh xạ component
+│   │   ├── BlocksRenderer.tsx     # Trình dựng Strapi v5 Rich Text Blocks (AST JSON, Table, ảnh)
+│   │   ├── SectionWrapper.tsx     # Bọc cấu hình nền, độ rộng (Container Width), đệm (Padding)
+│   │   └── blocks/                # 13 Khối Section động (Hero, MediaText, StatsGrid, CTABanner...)
+│   ├── layout/            # Layout công khai: RootLayout, Header (Desktop/Mobile), Footer, Logo
 │   ├── leadership/        # Card lãnh đạo (ExecutiveCard, TeamMemberCard, LeaderMemberModal)
 │   ├── members/           # Card thành viên (MemberCardLarge)
-│   ├── modals/            # Modals: JoinChoiceModal, ApplyRoleModal, RegisterOrgModal, SupportModal
+│   ├── modals/            # Modals: JoinChoiceModal, ApplyRoleModal, RegisterOrganizationModal, SupportModal
 │   ├── projects/          # Card dự án (ProjectCard)
 │   ├── shared/            # Components dùng chung: CTABanner, ImageGallery, ShareButton, StatsGrid...
-│   └── ui/                # Nguyên tử UI cơ bản: Button, PillButton, SDGTag, Icon, Container, ImageWithFallback
+│   └── ui/                # UI cơ sở: Button, PillButton, SDGTag, Icon, Container, ImageWithFallback
 ├── context/               # React Context Providers
-│   └── LanguageContext.tsx# Quản lý chuyển đổi ngôn ngữ EN ⇄ VI toàn ứng dụng
-├── data/                  # Dữ liệu tĩnh bổ trợ (DIAL_CODES cho 97 quốc gia, SDGS_DATA chuẩn UN)
+│   └── LanguageContext.tsx# Engine quản lý chuyển đổi ngôn ngữ EN ⇄ VI toàn diện (lưu localStorage)
+├── data/                  # Dữ liệu tĩnh bổ trợ (DIAL_CODES cho 97 quốc gia, SDGS_DATA màu chuẩn UN)
 ├── hooks/                 # Custom React Hooks: useDisclosure, usePagination, useRolePermissions...
 ├── lib/utils/             # Helpers tiện ích: format, cn (clsx+tailwind-merge), countryFlag, seo
 ├── locales/               # Từ điển đa ngôn ngữ (en.ts, vi.ts, types.ts)
-├── pages/                 # Các trang công khai (HomePage, AboutPage, ProjectsPage, NewsPage...)
-├── portal/                # 👑 SUB-APP MANAGEMENT PORTAL DÀNH CHO ADMIN & STAFF
-│   ├── api/               # API độc lập cho Portal (CRUD, File Upload, User Management, ATS)
-│   ├── components/        # Components chuyên dụng cho Portal (PortalDataTable, MediaPicker, SdgMultiSelect)
-│   ├── context/           # PortalAuthContext (Xác thực Admin JWT, phân quyền 4 roles)
+├── pages/                 # Các trang công khai: HomePage, AboutPage, ProjectsPage, NewsPage, NewsDetailPage...
+├── portal/                # SUB-APP MANAGEMENT PORTAL DÀNH CHO ADMIN & STAFF (/portal/*)
+│   ├── api/               # API độc lập cho Portal (CRUD, File Upload, User Management, ATS Status)
+│   ├── components/        # Components chuyên dụng: PortalDataTable, MediaPicker, SdgMultiSelect
+│   │   ├── auth/          # PortalAuthGuard (Bảo vệ đường dẫn & kiểm tra quyền theo vai trò)
+│   │   ├── builder/       # Trình dựng trang trực quan (DynamicZoneEditor, SectionCatalogModal, Drawer)
+│   │   ├── layout/        # PortalLayout (Ant Design Shell với Sider phân quyền, Header, User Menu)
+│   │   └── shared/        # Reusable Data Table, File Uploader, SDG Checklist
+│   ├── context/           # PortalAuthContext (Quản lý phiên đăng nhập JWT, giải quyết quyền hạn)
+│   ├── hooks/             # useRolePermissions (Xác thực 4 roles: Super Admin, Editor, Reviewer, Viewer)
 │   ├── pages/             # Dashboard, Content Studio, Page Builders, ATS Review Pipeline, Media Studio
-│   └── routes/            # PortalRoutes.tsx (Sub-router bảo vệ bởi PortalAuthGuard)
-├── routes/                # Cấu hình định tuyến chính của ứng dụng (AppRouter.tsx, paths.ts)
-├── styles/                # Global Styles & Typography (index.css, fonts.css)
+│   ├── routes/            # PortalRoutes.tsx (Sub-router gom nhóm theo nhóm quyền hạn)
+│   └── utils/             # csv.ts (Trình xuất dữ liệu ra Excel/CSV hỗ trợ tiếng Việt UTF-8 BOM)
+├── routes/                # Định tuyến tổng thể của ứng dụng (AppRouter.tsx, paths.ts)
+├── styles/                # Stylesheets toàn cục (index.css, fonts.css)
 └── worker/                # Code Cloudflare Worker Edge Proxy (index.ts, handlers.ts)
 ```
 
 ---
 
-## 3. Cơ chế Kết nối & Giao tiếp với Backend Strapi v5
+## 3. Tầng Mạng & Cloudflare Edge Worker Proxy
 
-### 3.1 Luồng Request: Môi trường Local vs Production
+### 3.1 Request Handling Protocol
 
-1. **Ở môi trường Local (`npm run dev`):**
-   - Frontend kết nối trực tiếp đến Strapi qua biến môi trường `VITE_STRAPI_API_URL=http://localhost:1337`.
+1. **Ở môi trường Phát triển Cục bộ (`npm run dev`):**
+   - Client gọi thẳng tới Strapi qua biến môi trường `VITE_STRAPI_API_URL=http://localhost:1337`.
 2. **Ở môi trường Production (Cloudflare Worker):**
-   - Không khai báo `VITE_STRAPI_API_URL` ở frontend bundle.
-   - Mọi request từ trình duyệt gọi relative path `/api/*` (cùng origin).
-   - Cloudflare Worker (`src/worker/handlers.ts`) chặn request `/api/*`, tự động gắn Authorization Header bí mật (`STRAPI_API_TOKEN` từ Cloudflare Secret) và chuyển tiếp an toàn đến máy chủ Strapi.
-   - **Tuyệt đối không bao giờ để lộ API Token vào mã nguồn JavaScript gửi về Client.**
-
-### 3.2 Chuẩn Request Helper: `resolveConfig()` (`src/api/strapi.ts`)
-
-Mọi hàm gọi API trong thư mục `src/api/` đều thông qua hàm chuẩn hóa cấu hình:
+   - Client không chứa bất kỳ URL hoặc API token nào của backend. Mọi cuộc gọi đều gửi về `/api/*` trên cùng domain (`same-origin`).
+   - File `src/worker/handlers.ts` chặn các request này trên Edge:
+     - **Xử lý CORS Preflight:** Trả về HTTP `204 No Content` ngay lập tức cho các request `OPTIONS`.
+     - **Bảo toàn Phiên Quản trị:** Nếu request có `Authorization: Bearer <jwt>`, proxy sẽ giữ nguyên token này để chuyển tiếp lên Strapi (đảm bảo phiên của Portal không bị hạ quyền).
+     - **Bảo vệ Khách vãng lai:** Nếu request không có header xác thực, proxy sẽ tự động bổ sung token đọc công khai (`STRAPI_API_TOKEN` lưu trong Cloudflare Secret) trước khi gửi tới backend.
+     - **Cho phép đầy đủ các phương thức:** Hỗ trợ `GET`, `HEAD`, `POST`, `PUT`, `DELETE`.
 
 ```typescript
-export interface StrapiRequestOptions {
-  baseUrl?: string;
-  token?: string;
-  signal?: AbortSignal;
-  bypassCache?: boolean;
-  locale?: string;
-}
-
-export function resolveConfig(options: StrapiRequestOptions): { baseUrl: string; token?: string } {
-  const configuredBaseUrl = import.meta.env.VITE_STRAPI_API_URL || undefined;
-  const fallbackBaseUrl = typeof window === 'undefined' ? '' : window.location.origin;
-  const baseUrl = (options.baseUrl ?? configuredBaseUrl ?? fallbackBaseUrl).replace(/\/$/, '');
-  const token = options.token;
-  return { baseUrl, token };
+// Trích đoạn logic chuyển tiếp thông minh tại src/worker/handlers.ts
+const clientAuth = request.headers.get('Authorization');
+if (clientAuth) {
+  headers.set('Authorization', clientAuth); // Giữ nguyên token quản trị của Portal
+} else if (env.STRAPI_API_TOKEN) {
+  headers.set('Authorization', `Bearer ${env.STRAPI_API_TOKEN}`); // Token đọc công khai
 }
 ```
-
-### 3.3 Cơ chế Cache Bộ nhớ & Bypass khi ở chế độ Preview
-
-Hệ thống có sẵn In-Memory TTL Cache (5 phút) để tối ưu hóa tốc độ tải trang:
-- Khi user bình thường duyệt web ➔ Trả dữ liệu từ Cache nếu còn hạn.
-- Khi biên tập viên đang ở chế độ **Preview** (`?preview=1` hoặc `bypassCache: true`) ➔ Tự động bỏ qua cache và yêu cầu dữ liệu mới nhất từ Strapi (kèm `status=draft`).
 
 ---
 
-## 4. Data Layer: Parsers, Mappers & AST Renderers
+## 4. Data Layer: Parsers, Mappers, AST Renderers & SEO
 
-Strapi v5 trả về cấu trúc dữ liệu thô dạng Flat Document. Frontend **không bao giờ sử dụng trực tiếp dữ liệu thô** này trên UI mà bắt buộc phải thông qua các hàm Mapper chuẩn hóa.
+Mọi dữ liệu trả về từ Strapi v5 đều bắt buộc phải đi qua tầng Data Mapping để đảm bảo tính an toàn kiểu dữ liệu và tránh lỗi giao diện.
 
-```
-Strapi v5 API Response (Raw)  ──►  Data Mapper (api/*.ts)  ──►  UI Component (Props sạch & an toàn)
-```
-
-### 4.1 Parser an toàn chuỗi danh sách quốc gia: `parseStringArray()`
-
-Tránh lỗi vỡ giao diện khi dữ liệu quốc gia được nhập dưới dạng mảng JSON `["Vietnam","Laos"]` hoặc chuỗi phân tách bằng dấu phẩy `"Vietnam, Cambodia, Laos"`:
+### 4.1 Parser An toàn Danh sách Quốc gia: `parseStringArray()`
+Khắc phục lỗi dữ liệu bị trống khi chuỗi quốc gia nhập bằng tay dạng phân tách bằng dấu phẩy `"Vietnam, Cambodia, Laos"` thay vì mảng JSON:
 
 ```typescript
 export function parseStringArray(value: unknown): string[] {
@@ -178,72 +151,47 @@ export function parseStringArray(value: unknown): string[] {
     const parsed = JSON.parse(str);
     if (Array.isArray(parsed)) return parsed.map(String);
   } catch {
-    // Không phải JSON hợp lệ -> chuyển sang split dấu phẩy
+    // Tự động phân tách dấu phẩy nếu không phải JSON
   }
   return str.split(',').map((s) => s.trim()).filter(Boolean);
 }
 ```
 
-### 4.2 Tự động Chuẩn hóa Link Mạng xã hội: `mapSocialLinks()`
+### 4.2 Chuẩn hóa Tự động Giao thức Mạng Xã hội: `mapSocialLinks()`
+Tự động thêm `https://` cho các đường link người dùng nhập thiếu giao thức (như `facebook.com/org`), giúp đường link không bị bộ lọc Regex vô tình loại bỏ.
 
-Tự động bổ sung `https://` nếu biên tập viên quên nhập giao thức, tránh việc link bị bộ lọc Regex vô tình loại bỏ:
+### 4.3 Trình dựng Blocks AST v5: `<BlocksRenderer />`
+Chuyển đổi cây JSON AST của Strapi v5 thành mã JSX:
+- Tự động gắn tiền tố `baseUrl` cho ảnh tải lên nội bộ (`/uploads/...`) tránh lỗi ảnh 404.
+- Hỗ trợ đầy đủ Heading 1–6, Paragraphs, Lists, Quotes, Code Blocks, và **Bảng dữ liệu (Table, TableRow, TableCell)**.
 
-```typescript
-export function mapSocialLinks(value: StrapiSocialLink[] | null | undefined): SocialLink[] {
-  if (!Array.isArray(value)) return [];
-  return value
-    .filter((link) => VALID_SOCIAL_PLATFORMS.has(text(link.platform)))
-    .map((link) => {
-      let url = text(link.url).trim();
-      if (url && !/^https?:\/\//i.test(url)) {
-        url = `https://${url}`;
-      }
-      return {
-        platform: text(link.platform) as SocialLink['platform'],
-        url,
-      };
-    })
-    .filter((link) => /^https?:\/\//i.test(link.url));
-}
-```
-
-### 4.3 Trình dựng Nội dung Rich Text: `<BlocksRenderer />`
-
-Strapi v5 sử dụng định dạng **Blocks JSON AST** (thay vì HTML thuần). File `src/components/dynamic/BlocksRenderer.tsx` chịu trách nhiệm chuyển đổi AST này thành giao diện:
-- Tự động gắn tiền tố `baseUrl` cho ảnh cục bộ (`/uploads/...`).
-- Hỗ trợ đầy đủ Heading 1–6, Paragraphs, Lists (đánh số & dấu đầu dòng), Quotes, Code Blocks, Inline formatting (Bold, Italic, Code, Underline, Strikethrough) và **Bảng dữ liệu (Table, TableRow, TableCell)**.
+### 4.4 Cập nhật SEO & OpenGraph Động: `updatePageSEO()` (`src/lib/utils/seo.ts`)
+Tự động cập nhật thẻ `<title>`, `<meta name="description">`, `<meta name="keywords">`, các thẻ mạng xã hội `og:title`, `og:description`, `og:image`, và xử lý cờ chặn lập chỉ mục `noindex` thời gian thực khi chuyển trang.
 
 ---
 
-## 5. Hệ thống Dynamic Zone & 13 Section Blocks
+## 5. Hệ thống Dynamic Zone & 13 Khối Section
 
-Nền tảng Y.O.U cho phép biên tập viên tùy biến 100% bố cục trang mà không cần lập trình viên sửa code.
+Giao diện các trang đơn (`home-page`, `about-us`) và các trang tùy biến (`/pages/:slug`) được lắp ghép từ 13 khối giao diện chuẩn hóa:
 
-```
-CMS Page Payload (contentBlocks)  ──►  <BlockRenderer blocks={data.contentBlocks} />  ──►  13 Blocks tương ứng
-```
+| Tên Component | Mục đích & Dữ liệu hiển thị |
+|---|---|
+| `sections.hero` | Banner mở đầu trang, chữ gradient cầu vồng, video/ảnh nền, nút CTA kép |
+| `sections.rich-text` | Bài viết văn bản dài, danh sách, bảng dữ liệu qua chuẩn Blocks AST |
+| `sections.media-text` | Bố cục 2 cột: Ảnh/Video một bên và nội dung câu chuyện một bên |
+| `sections.stats-grid` | Lưới đếm số liệu ấn tượng (hỗ trợ đơn vị động như `+`, `%`, `$`, `M`) |
+| `sections.cta-banner` | Banner kêu gọi hành động với dải màu cầu vồng và nút bấm bo tròn |
+| `sections.image-gallery` | Bộ sưu tập ảnh hoạt động hỗ trợ xem lưới hoặc giao diện Featured nổi bật |
+| `sections.faq-section` | Khối câu hỏi thường gặp dạng Accordion (lấy từ FAQ chung hoặc custom) |
+| `sections.featured-projects` | Danh sách dự án tiêu biểu (tự động lấy từ Collection `projects`) |
+| `sections.featured-members` | Danh sách tổ chức thành viên (tự động lấy từ Collection `members`) |
+| `sections.team-grid` | Lưới nhân sự Ban Lãnh đạo hoặc Giám đốc Châu lục |
+| `sections.embed` | Nhúng Iframe linh hoạt (tự động convert link YouTube thường sang link embed) |
+| `sections.feature-grid` | Lưới thẻ giới thiệu Sứ mệnh, Tầm nhìn, Giá trị cốt lõi (Mission Cards) |
+| `sections.image-text-grid` | Lưới hình tròn hoặc bo góc giới thiệu các lĩnh vực hoạt động trọng tâm |
 
-### 📋 Danh mục 13 Dynamic Section Blocks
-
-| Component UID | Tên Khối | Mục đích & Dữ liệu hiển thị |
-|---|---|---|
-| `sections.hero` | **Hero Section** | Tiêu đề lớn, chữ gradient nổi bật, nút CTA kép, video/ảnh nền |
-| `sections.rich-text` | **Rich Text Block** | Nội dung bài viết văn bản dài, trích dẫn, bảng biểu qua Blocks AST |
-| `sections.media-text` | **Media & Text (2 Cột)** | Bố cục câu chuyện: Ảnh/Video bên trái hoặc phải kèm chữ bên cạnh |
-| `sections.stats-grid` | **Stats Grid** | Bộ đếm số liệu ấn tượng (Tổ chức, Quốc gia, Tình nguyện viên, v.v.) |
-| `sections.cta-banner` | **CTA Banner** | Khối kêu gọi hành động với dải màu cầu vồng và nút đăng ký |
-| `sections.image-gallery`| **Image Gallery** | Bộ sưu tập ảnh hoạt động với chế độ xem lưới hoặc chế độ Featured |
-| `sections.faq-section` | **FAQ Section** | Khối câu hỏi thường gặp dạng Accordion (dùng FAQ chung hoặc custom) |
-| `sections.featured-projects` | **Featured Projects** | Nhúng danh sách dự án tiêu biểu theo thẻ Card chuẩn |
-| `sections.featured-members` | **Featured Members** | Nhúng danh sách tổ chức thành viên Y.O.U |
-| `sections.team-grid` | **Team Grid** | Nhúng danh sách Lãnh đạo điều hành hoặc Giám đốc châu lục |
-| `sections.embed` | **Embed Block** | Nhúng Video YouTube (tự convert sang link embed), Google Maps, Iframe |
-| `sections.feature-grid`| **Feature / Icon Grid**| Lưới thẻ biểu tượng giới thiệu Sứ mệnh, Giá trị cốt lõi |
-| `sections.image-text-grid`| **Activity Circles** | Lưới ảnh tròn/vuông kèm tiêu đề và mô tả hoạt động nổi bật |
-
-### ⚠️ Lưu ý Kỹ thuật Quan trọng (Deep Population trong Strapi v5)
-
-Trong Strapi v5, câu lệnh `populate=*` chỉ tải dữ liệu quan hệ **1 tầng**. Để các khối như `featured-projects` hay `featured-members` hiển thị đầy đủ ảnh con (`outstandingImage`, `logo`, `cover`), truy vấn trong `src/api/pages.ts` bắt buộc phải sử dụng **Wildcard Deep Populate**:
+### Lưu ý Kỹ thuật về Deep Populate trong Strapi v5
+Để các khối quan hệ như `featured-projects` hay `featured-members` lấy được cả ảnh đại diện bên trong, hàm gọi API tại `src/api/pages.ts` bắt buộc phải sử dụng **Wildcard Deep Populate**:
 
 ```typescript
 query.append('populate[contentBlocks][on][sections.featured-projects][populate][projects][populate]', '*');
@@ -253,210 +201,172 @@ query.append('populate[contentBlocks][on][sections.team-grid][populate][teamMemb
 
 ---
 
-## 6. Hệ thống Đa ngôn ngữ (English ⇄ Tiếng Việt)
+## 6. Hệ thống Đa ngôn ngữ (English ⇄ Tiếng Việt) & Ant Design Bridge
 
-Ứng dụng hỗ trợ chuyển đổi song ngữ tức thì 
+Ứng dụng tích hợp hệ thống chuyển đổi ngôn ngữ không phụ thuộc thư viện nặng bên ngoài, kết nối trực tiếp với hệ sinh thái Ant Design.
 
 ```
-                    ┌────────────────────────────────────────┐
-                    │      LanguageProvider (React Context)  │
-                    │   State: 'en' | 'vi' (Lưu localStorage)│
-                    └───────────────────┬────────────────────┘
-                                        │
-             ┌──────────────────────────┴──────────────────────────┐
-             ▼                                                     ▼
-┌─────────────────────────┐                               ┌─────────────────────────┐
-│ Từ điển tĩnh (locales/) │                               │ Ant Design Localization │
-│  t.nav.about, t.common  │                               │ DatePicker, Pagination  │
-└─────────────────────────┘                               └─────────────────────────┘
+                    ┌──────────────────────────────────────────────┐
+                    │       LanguageProvider (React Context)       │
+                    │   State: 'en' | 'vi' (Đồng bộ localStorage)  │
+                    └──────────────────────┬───────────────────────┘
+                                           │
+             ┌─────────────────────────────┴─────────────────────────────┐
+             ▼                                                           ▼
+┌───────────────────────────┐                               ┌───────────────────────────┐
+│     Từ điển Giao diện     │                               │    Ant Design Bridge      │
+│  src/locales/{en,vi}.ts   │                               │  ConfigProvider locale    │
+│  (Nav, Form, Modals, CTA) │                               │  (DatePicker, Pagination) │
+└───────────────────────────┘                               └───────────────────────────┘
 ```
 
-### 6.1 Cách sử dụng trong Component
-
-Bất kỳ component nào cần hiển thị chuỗi đa ngữ chỉ cần gọi hook `useLanguage()`:
-
-```tsx
-import { useLanguage } from '@/context/LanguageContext';
-
-export function MyComponent() {
-  const { language, setLanguage, t } = useLanguage();
-
-  return (
-    <div>
-      <h2>{t.home.ctaBannerTitle}</h2>
-      <p>{t.common.keyword}</p>
-      <button onClick={() => setLanguage(language === 'en' ? 'vi' : 'en')}>
-        Switch to {language === 'en' ? 'Tiếng Việt' : 'English'}
-      </button>
-    </div>
-  );
-}
-```
+- **Sử dụng trong Code:** Gọi `const { language, setLanguage, t } = useLanguage();`.
+- **Cầu nối Ant Design:** File `AppProviders.tsx` truyền thẳng đối tượng ngôn ngữ chuẩn (`antdLocale: enUS | viVN`) vào `<ConfigProvider>` bọc trong `<AntdApp>`, giúp các lịch chọn ngày (DatePicker), phân trang (Pagination) tự động đổi sang tiếng Việt (`Tháng 1`, `Thứ 2`...) mà không có lỗi cảnh báo console.
+- **Nút chuyển đổi trên Header:** Dropdown thông minh hiển thị cờ 🇬🇧 / 🇻🇳, đổi giao diện tức thì không cần tải lại trang.
 
 ---
 
-## 7. Cơ chế Xem trước Nội dung CMS theo Thời gian thực (Live Preview)
+## 7. Cơ chế Live Preview trên Edge
 
-1. Khi biên tập viên ấn **"Preview"** trong Strapi Admin:
-   - Strapi gửi request xác thực qua API Preview của Cloudflare Worker: `/api/preview?url=/projects/project-1&secret=...&status=draft`.
-   - Worker xác thực bí mật `PREVIEW_SECRET`, gắn Cookie `you_preview=draft` an toàn và chuyển hướng về frontend: `/projects/project-1?preview=1`.
-2. Trên giao diện Frontend:
-   - Tham số `?preview=1` được nhận diện.
-   - Frontend hiển thị thanh banner màu cam: `Preview Mode: You are viewing a draft version of this page.`
-   - Dữ liệu gọi về Strapi tự động bổ sung `&status=draft` và **bỏ qua bộ nhớ đệm (Cache Bypass)** để biên tập viên thấy ngay thay đổi mà không phải chờ 5 phút.
-
----
-
-## 8. Management Portal (`/portal`) & Hệ thống Phân quyền 4 Roles
-
-Nhằm tối ưu trải nghiệm cho nhân sự phi kỹ thuật (HR, Marketing, Ban đối tác), toàn bộ giao diện quản trị được xây dựng riêng biệt tại `/portal` bằng **Ant Design v6**, hoàn toàn độc lập với giao diện khách công khai.
-
-```
-                                  CÁC VAI TRÒ HỆ THỐNG
-   👑 Super Admin          ✍️ Content Editor       📋 HR / Reviewer        👁️ Viewer / Auditor
-         │                         │                       │                        │
-         ▼                         ▼                       ▼                        ▼
- ┌───────────────┐         ┌───────────────┐       ┌───────────────┐        ┌───────────────┐
- │ Full Quyền:   │         │ Quyền Quản trị│       │ Quyền Tuyển   │        │ Quyền Xem     │
- │  • Content    │         │ Nội dung:     │       │ dụng & Duyệt: │        │ Báo cáo:      │
- │  • Builder    │         │  • Projects   │       │  • ATS Tuyển  │        │  • Xem chỉ số │
- │  • ATS Tuyển  │         │  • Members    │       │    dụng (CV)  │        │  • Xem hồ sơ  │
- │    dụng (CV)  │         │  • News       │       │  • Duyệt Org  │        │    ứng viên   │
- │  • Cài đặt &  │         │  • Media      │       │  • Inquiries  │        │  • Xem Dự án  │
- │    Users      │         │  • Builder    │       │  • Postbox    │        │  🚫 KHÔNG CÓ  │
- │               │         │ 🚫 KHÔNG XEM  │      │ 🚫 KHÔNG SỬA  │        │    QUYỀN SỬA  │
- │               │         │    CV / ATS   │       │    NỘI DUNG   │        │    HAY XÓA    │
- └───────────────┘         └───────────────┘       └───────────────┘        └───────────────┘
-```
-
-### 8.1 Bộ phân quyền chi tiết (4-Role Matrix)
-
-1. **👑 Super Admin (`admin`):** Toàn quyền truy cập mọi tính năng, cài đặt tài khoản ngân hàng, mã QR, cấu hình nhân sự và duyệt bài.
-2. **✍️ Content Editor (`editor`):** Quản lý Dự án, Tổ chức thành viên, Tin tức, Banner trang chủ, Media Studio. Bị **chặn hoàn toàn** khỏi khu vực ATS và hồ sơ CV của ứng viên để bảo mật thông tin cá nhân.
-3. **📋 HR / Reviewer (`reviewer`):** Quản lý pipeline tuyển dụng Giám đốc châu lục (ATS), xem trực tiếp CV dạng PDF trên trình duyệt, chấm điểm 9 câu hỏi đánh giá, ghi chú nội bộ, duyệt tổ chức thành viên mới, xuất báo cáo quyên góp ra Excel/CSV. Bị **chặn hoàn toàn** khỏi khu vực sửa nội dung website và cài đặt hệ thống.
-4. **👁️ Viewer / Auditor (`viewer`):** Dành cho kiểm toán viên, cố vấn cấp cao. Được phép truy cập xem tất cả các mục nhưng **ở chế độ Chỉ đọc (Read-Only)**. Toàn bộ nút Thêm mới, Sửa, Xóa, Lưu ghi chú và Đổi trạng thái đều bị ẩn hoặc khóa chặt.
-
-### 8.2 Hook Phân quyền Frontend: `useRolePermissions()`
-
-Sử dụng hook này trong mọi trang quản trị để kiểm soát hiển thị các nút thao tác:
-
-```tsx
-import { useRolePermissions } from '@/portal/hooks/useRolePermissions';
-
-export function SomeManagerPage() {
-  const { canManageContent, isReadOnly } = useRolePermissions();
-
-  return (
-    <div>
-      {/* Nút thêm mới chỉ hiện với Admin/Editor, tự ẩn với Viewer */}
-      {canManageContent && <Button type="primary">Add New Project</Button>}
-      
-      {/* Khóa form ở chế độ Read-Only */}
-      <Input disabled={isReadOnly} />
-    </div>
-  );
-}
-```
+1. **Khởi tạo:** Biên tập viên bấm **Preview** trên Strapi hoặc Management Portal.
+2. **Ký duyệt Token:** Cloudflare Worker xác thực chữ ký bảo mật `PREVIEW_SECRET` và gắn cookie `you_preview=draft`.
+3. **Hiển thị Thời gian thực:**
+   - Trình duyệt điều hướng về URL frontend kèm tham số `?preview=1`.
+   - Một dải banner màu cam xuất hiện cố định: `Preview Mode: You are viewing a draft version of this page.`
+   - Các hàm gọi API tự động gắn cờ `bypassCache: true` và `status=draft`, cho phép biên tập viên xem ngay nội dung vừa chỉnh sửa mà không bị vướng bộ nhớ đệm 5 phút.
 
 ---
 
-## 9. Luồng Form Submissions & Email Tự động (LarkSuite SMTP)
+## 8. Custom Management Portal (`/portal`) & Phân quyền 4 Tầng (RBAC)
 
-Hệ thống có 4 biểu mẫu người dùng:
+Được xây dựng cách ly 100% trong thư mục `src/portal/`, sử dụng bộ UI doanh nghiệp **Ant Design v6**, đóng vai trò là bảng điều khiển thay thế hoàn toàn cho giao diện Strapi Admin đối với nhân sự phi kỹ thuật.
 
-1. **Liên hệ & Đối tác** (`/contact` ➔ `/api/inquiries`)
-2. **Ứng tuyển Giám đốc Châu lục** (`ApplyRoleModal` ➔ `/api/leadership-applications`)
-3. **Đăng ký Tổ chức Thành viên** (`RegisterOrganizationModal` ➔ `/api/organization-applications`)
-4. **Hòm thư Động viên & Quyên góp** (`SupportModal` ➔ `/api/support-submissions`)
+### 8.1 Ma trận Phân quyền Tuyệt đối (Strict 4-Role Matrix)
 
-### Luồng Gửi Email Hai Chiều Tự Động (Dual-Email Protocol)
+```
+┌───────────────────────────┬─────────────────────────────────────┬────────────────────────────────────┐
+│ Vai trò (Role)            │ Phạm vi Được phép (Allowed Scope)   │ Ràng buộc Chặn (Strictly Blocked)  │
+├───────────────────────────┼─────────────────────────────────────┼────────────────────────────────────┤
+│ 👑 Super Admin            │ • Toàn quyền Content Studios        │ • Không có (Toàn quyền hệ thống)   │
+│   (admin / super admin)   │ • Toàn quyền Page Builders          │                                    │
+│                           │ • Quản lý ATS Tuyển dụng & Ứng viên │                                    │
+│                           │ • Quản lý Media Studio (Tải, Xóa)   │                                    │
+│                           │ • Sửa Cài đặt Website (Ngân hàng, QR)│                                   │
+│                           │ • Quản lý Tài khoản Staff & Roles   │                                    │
+├───────────────────────────┼─────────────────────────────────────┼────────────────────────────────────┤
+│ ✍️ Content Editor         │ • Dự án (Tạo, Sửa, Xuất bản, Xóa)  │ 🚫 BỊ CHẶN khỏi ATS Tuyển dụng (CV)│
+│   (editor)                │ • Tổ chức Thành viên (Tạo, Sửa)     │ 🚫 BỊ CHẶN khỏi Sổ quỹ Quyên góp   │
+│                           │ • Tin tức & Bài viết (Viết, Đăng)   │ 🚫 BỊ CHẶN khỏi Cài đặt Ngân hàng  │
+│                           │ • Đội ngũ Lãnh đạo, Tài liệu, FAQs  │ 🚫 BỊ CHẶN khỏi Quản lý Nhân sự    │
+│                           │ • Bố cục Trang (Home, About Us)     │                                    │
+│                           │ • Media Studio (Tải ảnh lên)        │                                    │
+├───────────────────────────┼─────────────────────────────────────┼────────────────────────────────────┤
+│ 📋 HR / Reviewer          │ • Tuyển dụng Lãnh đạo (Xem CV, ATS) │ 🚫 BỊ CHẶN khỏi Content Studios   │
+│   (reviewer / hr)         │ • Đọc 9 câu hỏi đánh giá ứng viên   │ 🚫 BỊ CHẶN khỏi Page Builder       │
+│                           │ • Đổi trạng thái ứng viên (Pipeline)│ 🚫 BỊ CHẶN khỏi Cài đặt Website    │
+│                           │ • Lưu Ghi chú & Đánh giá nội bộ     │ 🚫 BỊ CHẶN khỏi Quản lý Nhân sự    │
+│                           │ • Duyệt hồ sơ Đăng ký Tổ chức       │ 🚫 BỊ CHẶN khỏi Xóa tệp Media      │
+│                           │ • Hòm thư Tin nhắn & Phản hồi       │                                    │
+│                           │ • Xuất file Excel/CSV Nhà hảo tâm   │                                    │
+├───────────────────────────┼─────────────────────────────────────┼────────────────────────────────────┤
+│ 👁️ Viewer / Auditor      │ • Xem Tổng quan & Số liệu Báo cáo   │ 🚫 KHÔNG CÓ QUYỀN GHI / SỬA / XÓA  │
+│   (viewer / auditor)      │ • Đọc nội dung & Bố cục (Chỉ xem)   │ 🚫 KHÔNG đổi trạng thái ứng viên   │
+│                           │ • Đọc hồ sơ ứng viên (Thanh tra)    │ 🚫 KHÔNG viết ghi chú nội bộ       │
+│                           │ • Xem kho tệp Media                 │ 🚫 KHÔNG tạo/sửa/xóa bài viết      │
+│                           │                                     │ 🚫 BỊ CHẶN khỏi Settings & Staff   │
+└───────────────────────────┴─────────────────────────────────────┴────────────────────────────────────┘
+```
 
-Khi người dùng submit biểu mẫu:
-1. Dữ liệu được lưu an toàn vào Database Strapi.
-2. Hook `afterCreate` tại backend chạy **bất đồng bộ ngầm** (`setImmediate`) để gọi Nodemailer (LarkSuite SMTP / Gmail):
-   - 📩 **Email 1 (Staff Alert):** Gửi về hòm thư Admin `info@youthorgunion.org` kèm bảng tóm tắt chi tiết thông tin hồ sơ.
-   - 📨 **Email 2 (User Receipt):** Gửi email xác nhận kèm lời cảm ơn và trích dẫn lại nội dung đơn về hòm thư của người nộp.
-3. Nếu máy chủ SMTP gặp sự cố hoặc timeout, tiến trình lưu Database **vẫn thành công 100%**, frontend nhận `200 OK` ngay lập tức và người dùng không bao giờ bị đứng màn hình.
+### 8.2 Cơ chế Khóa 3 Lớp
+
+1. **Lớp 1: Khóa Đường dẫn URL (`PortalAuthGuard.tsx`):**
+   - Nếu tài khoản HR cố tình nhập URL của Biên tập viên như `/portal/projects` hoặc tài khoản Biên tập viên vào `/portal/settings`, Guard chặn ngay lập tức và hiển thị màn hình **Ant Design `403 — Access Restricted`**.
+2. **Lớp 2: Khóa Nút Thao tác trên Giao diện (`useRolePermissions.ts`):**
+   - Khi tài khoản **Viewer / Auditor** đăng nhập, hệ thống tự động ẩn hoặc vô hiệu hóa (`disabled`) toàn bộ các nút *"Add New"*, *"Edit"*, *"Delete"*, *"Save Draft"*, *"Publish Live"*.
+   - Trong ATS: Dropdown chuyển trạng thái biến thành thẻ Tag tĩnh; ô nhập Ghi chú nội bộ chuyển sang chế độ `readOnly` và nút *"Save Notes"* biến mất.
+3. **Lớp 3: Điều hướng Tuyệt đối Chống Lặp vô tận (`PortalRoutes.tsx`):**
+   - Mọi điều hướng fallback đều sử dụng đường dẫn tuyệt đối `ROUTES.PORTAL.DASHBOARD` (`/portal/dashboard`), loại bỏ hoàn toàn lỗi đệ quy lặp vô hạn `dashboard/dashboard/dashboard...` của React Router.
 
 ---
 
-## 10. Design System & Quy chuẩn Nhận diện Thương hiệu
+### 8.3 Các Tính năng Nổi bật trong Management Portal
 
-Khi phát triển component mới, nên tuân thủ một số quy chuẩn nhận diện thương hiệu sau:
+- **Candidate ATS (Tuyển dụng Lãnh đạo):** Chuyển đổi linh hoạt giữa giao diện **Bảng Pipeline (Kanban Board)** và **Bảng Dữ liệu (Data Table)**. Cho phép xem trực tiếp hồ sơ CV/Resume định dạng PDF ngay trong Drawer mà không cần tải file về máy.
+- **Sắp xếp FAQ bằng Kéo thả (`/portal/faqs`):** Giao diện bảng cho phép đổi thứ tự câu hỏi và bấm *"Save Reordered Priority"* để lưu trực tiếp vào cơ sở dữ liệu.
+- **Xem trước Văn bản & Media In-Browser:** Xem trực tiếp PDF của các tài liệu chính sách hoặc ảnh trên Cloudinary trong popup tiện lợi.
+- **Xuất Báo cáo Excel/CSV Chuẩn UTF-8:** Hỗ trợ xuất danh sách nhà hảo tâm và ứng viên kèm dấu tiếng Việt chuẩn xác cho Microsoft Excel qua `src/portal/utils/csv.ts`.
 
-### 10.1 Brand Colors
-- **Deep Navy (Chủ đạo Footer/Header):** `#0B1A2B`
-- **Royal Brand Blue (Nút chính/Link):** `#005D9A` (`#1771B9`)
-- **Vibrant Accent Red (Nút CTA/Điểm nhấn):** `#EE334E`
-- **Soft Background Light Blue (Nền Card):** `#F2F7FF`
-- **Viền chia Gradient Divider:** `linear-gradient(90deg, rgba(194,211,239,0) 0%, rgba(194,211,239,1) 20%, rgba(194,211,239,1) 80%, rgba(194,211,239,0) 100%)`
-- **Dải màu Cầu vồng Đặc trưng (Signature Rainbow Gradient):**
+---
+
+## 9. Biểu mẫu Người dùng & Xử lý Dữ liệu An toàn
+
+Hệ thống cung cấp 4 biểu mẫu người dùng, được bảo vệ với cơ chế an toàn:
+
+1. **Liên hệ & Đối tác (`/contact`)**
+2. **Ứng tuyển Lãnh đạo / Giám đốc Châu lục (`ApplyRoleModal`)**
+3. **Đăng ký Thành viên Tổ chức (`RegisterOrganizationModal`)**
+4. **Hộp thư Động viên & Quyên góp (`SupportModal`)**
+
+### Các Cải tiến Bảo vệ Dữ liệu Biểu mẫu:
+- **Bảo toàn Dữ liệu Form Nhiều Bước:** Sử dụng `preserve={true}` và giữ các bước luôn tồn tại trong DOM (`style={{ display: step === '...' ? 'block' : 'none' }}`), giúp dữ liệu không bị xóa mất khi người dùng chuyển bước (khắc phục triệt để lỗi thiếu `fullName`, `email`, `projects`, `letter`).
+- **Tự động Nhận diện Dự án Đang xem:** Khi người dùng bấm nút ủng hộ trên trang chi tiết một dự án (`/projects/:id`), form quyên góp sẽ tự động tích chọn sẵn dự án đó.
+- **Chuẩn hóa Tên Dự án Thay vì Mã Hash:** Lưu trữ tên dự án thực tế (`p.name`) thay vì mã hash database (`kejykakupvhr4...`), giúp email gửi đi và bảng quản trị hiển thị tên dự án rõ ràng, chuyên nghiệp.
+- **Xử lý Lỗi Tường minh (No Fake Success):** Nếu có lỗi mạng hoặc lỗi API (mã 400/500), form hiển thị thanh thông báo lỗi màu đỏ (`<Alert type="error" />`) và giữ nguyên dữ liệu đã nhập để người dùng gửi lại, tuyệt đối không chuyển sang màn hình cảm ơn giả lập.
+
+---
+
+## 10. Design System, Nhận diện Thương hiệu & Native Web Share
+
+### 10.1 Bảng màu Chuẩn Thương hiệu Y.O.U
+- **Màu Xanh Đậm (Deep Navy - Footer/Banners):** `#0B1A2B`
+- **Màu Xanh Hoàng gia (Royal Blue - Nút bấm chính/Link):** `#005D9A` (hoặc `#1771B9`)
+- **Màu Đỏ Năng động (Vibrant Red - Điểm nhấn/Nút CTA):** `#EE334E`
+- **Màu Nền Xanh Nhạt (Soft Background):** `#F2F7FF`
+- **Dải màu Cầu vồng Đặc trưng (Signature 4-Color Rainbow Gradient):**
   ```css
   background: linear-gradient(90deg, #EE334E 0%, #FCB131 33%, #00A651 67%, #0081C8 100%);
   ```
+- **Bộ màu 17 Mục tiêu SDG:** Đồng bộ 100% mã màu chuẩn của Liên Hợp Quốc giữa `src/config/theme/tokens.ts` và `src/data/sdgs.ts`.
 
-### 10.2 Kiểu dáng & Typography
-- **Font chữ Tiêu đề & Giao diện:** `Open Sans, sans-serif`
-- **Font chữ Nội dung đọc dài:** `Inter, sans-serif`
-- **Nút bấm Hành động:** Bo tròn dạng viên thuốc `rounded-full` (hoặc `rounded-btn` cho form nhỏ).
-- **Thẻ Card & Container:** Bo góc mềm `rounded-2xl` (16px) hoặc `rounded-3xl` (24px/40px).
+### 10.2 Nút Chia sẻ Đa nền tảng: `<ShareButton />` (`src/components/shared/ShareButton/`)
+Được tích hợp đồng bộ trên trang Chi tiết Dự án, Chi tiết Thành viên và Chi tiết Bài viết Tin tức:
+- **Trên Thiết bị Di động / Trình duyệt Hỗ trợ:** Kích hoạt bảng chia sẻ gốc của hệ điều hành (**Native Web Share API**) để gửi qua WhatsApp, Zalo, Messenger, LinkedIn, X, AirDrop.
+- **Trên Máy tính bàn:** Tự động sao chép liên kết vào bộ nhớ tạm (Clipboard), hiển thị thông báo song ngữ mượt mà (*"Link copied to clipboard!"* hoặc *"Đã sao chép liên kết vào bộ nhớ tạm!"*), đồng thời icon chuyển thành dấu tích xanh (`check`) trong 2 giây.
+- **An toàn khi Hủy:** Bắt lỗi `AbortError` mượt mà khi người dùng đóng bảng chia sẻ mà không báo lỗi đỏ trên màn hình.
 
 ---
 
-## 11. Hướng dẫn Cài đặt, Kiểm thử & Quy trình Làm việc
+## 11. Hướng dẫn Cài đặt, Kiểm thử & Quy tắc Phát triển
 
-### 11.1 Cài đặt Môi trường Phát triển (Local Setup)
+### 11.1 Khởi chạy Môi trường Phát triển (Local Development)
 
-#### Bước 1: Khởi động Backend Strapi
 ```bash
-cd alberttrann-youth-cms
-
-# 1. Cài đặt dependencies
-npm install
-
-# 2. Tạo dữ liệu mẫu đầy đủ (Dự án, Tổ chức, Tin tức, Lãnh đạo, FAQs, Settings)
-npm run seed
-
-# 3. Khởi chạy máy chủ Strapi (chạy tại http://localhost:1337)
-npm run develop
-```
-
-#### Bước 2: Khởi động Frontend Client
-```bash
+# Bước 1: Di chuyển vào thư mục frontend
 cd cseglobaldev-code-youth
 
-# 1. Cài đặt dependencies
+# Bước 2: Cài đặt dependencies (React 19, Ant Design v6)
 npm install
 
-# 2. Tạo file .env.local
+# Bước 3: Chuẩn bị file cấu hình môi trường
 cp .env.example .env.local
 
-# 3. Khởi chạy máy chủ phát triển Vite (chạy tại http://localhost:5173)
+# Bước 4: Khởi chạy ứng dụng với Vite
 npm run dev
 ```
+- **Website công khai:** `http://localhost:5173/`
+- **Management Portal:** `http://localhost:5173/portal/login`
 
-### 11.2 Chạy Bộ Kiểm thử Tự động (Unit Tests)
+### 11.2 Chạy Bộ Kiểm thử 
 ```bash
-cd cseglobaldev-code-youth
 npm run test:run
 ```
-*Tất cả các bài test kiểm tra API Mappers, Helper chuyển đổi ngày tháng, Quy tắc Proxy Cloudflare và Preview Policy nên đạt 100% trạng thái Pass.*
-
-### 11.3 Tài khoản Quản trị Mặc định trên Môi trường Local
-- **Trang đăng nhập Portal:** `http://localhost:5173/portal/login`
-- **Email:** `<email>@gmail.com`
-- **Mật khẩu:** Mật khẩu Admin bạn thiết lập khi khởi tạo Strapi.
+*Nên đảm bảo các bài kiểm tra API Mappers, Logic Phân quyền, Định dạng Thời gian, và Quy tắc Proxy Cloudflare đều đạt kết quả xanh (PASS).*
 
 ---
 
-###  QUY TẮC 
+### QUY TẮC PHÁT TRIỂN
 
-1. **DO:**
-   - Luôn sử dụng component `<ImageWithFallback />` thay vì thẻ `<img>` trần để tránh lỗi ảnh vỡ khi link hỏng.
-   - Luôn sử dụng hook `useLanguage()` để lấy chuỗi chữ hiển thị thay vì viết cứng tiếng Anh hoặc tiếng Việt vào JSX.
-   - Mọi form submit lên Strapi phải xử lý lỗi trong khối `catch` bằng cách hiện thông báo lỗi (`Alert` / `message.error`), tuyệt đối không được chuyển sang màn hình thành công giả lập khi request thất bại.
-
-2. **DON'T:**
-   - **Không bao giờ** đặt token bí mật vào biến `VITE_*` vì biến này sẽ bị đóng gói công khai vào file Javascript gửi về trình duyệt người dùng.
-   - **Không bao giờ** sửa trực tiếp code hiển thị của khách công khai khi đang làm tính năng cho `/portal`. Toàn bộ code admin phải được cô lập hoàn toàn bên trong thư mục `src/portal/`.
-   - **Không bao giờ** dùng `JSON.parse()` trực tiếp trên dữ liệu CMS mà không bọc `try...catch` hoặc không qua hàm `parseStringArray()`.
+1. **Quy tắc Cách ly Portal:** Mọi tính năng, trang và thành phần của khu vực quản trị phải được đặt trọn vẹn trong thư mục `src/portal/`. Không bao giờ chỉnh sửa các component của Public Website để phục vụ riêng cho Portal.
+2. **Quy tắc An toàn Dữ liệu Hình ảnh:** Luôn sử dụng component `<ImageWithFallback />` thay vì thẻ `<img>` truyền thống để tự động hiển thị biểu tượng placeholder trung tính khi đường link ảnh bị hỏng hoặc chưa kịp tải.
+3. **Quy tắc Ngôn ngữ Toàn diện:** Mọi chuỗi ký tự hiển thị trên giao diện đều phải được khai báo trong `src/locales/en.ts` và `src/locales/vi.ts`, sau đó gọi qua hook `useLanguage()`. Tuyệt đối không viết cứng chuỗi tiếng Anh hoặc tiếng Việt vào mã nguồn JSX.
+4. **Quy tắc Least Privilege (Quyền Tối thiểu):** Các tài khoản nhân sự mới hoặc chưa phân loại vai trò rõ ràng bắt buộc phải rơi vào trạng thái mặc định an toàn là **`Viewer / Auditor` (Chỉ đọc)**. Quyền chỉnh sửa nội dung hoặc duyệt tuyển dụng chỉ được mở khi có chỉ định cụ thể từ Super Admin.
