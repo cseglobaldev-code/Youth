@@ -20,7 +20,7 @@ export interface RegisterOrganizationFormValues {
   email: string;
   website?: string;
   focusArea: string;
-  focusSDGs: number[];
+  focusSdgs: number[];              
   facebookUrl?: string;
   instagramUrl?: string;
   linkedinUrl?: string;
@@ -34,7 +34,7 @@ export interface RegisterOrganizationFormValues {
   socialImpactMetrics: string;
   region: string;
   countriesCovered: string;
-  projectFocusSDGs: number[];
+  projectFocusSdgs: number[];        
   projectStatus: 'ongoing' | 'completed' | 'planned';
   projectImages?: unknown[];
   projectSocialProfile: string;
@@ -99,7 +99,7 @@ const STEP_FIELDS: Record<1 | 2, (keyof RegisterOrganizationFormValues)[]> = {
     'instagramUrl',
     'linkedinUrl',
     'focusArea',
-    'focusSDGs',
+    'focusSdgs',                    
     'organizationImage',
     'organizationLogo',
   ],
@@ -111,7 +111,7 @@ const STEP_FIELDS: Record<1 | 2, (keyof RegisterOrganizationFormValues)[]> = {
     'socialImpactMetrics',
     'region',
     'countriesCovered',
-    'projectFocusSDGs',
+    'projectFocusSdgs',              
     'projectStatus',
     'projectImages',
     'projectSocialProfile',

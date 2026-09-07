@@ -11,10 +11,9 @@ import {
   Badge,
   Card,
   message,
-  Space,
   Avatar,
   Empty,
-  Tooltip,
+  Alert,
 } from 'antd';
 import {
   WhatsAppOutlined,
@@ -23,11 +22,13 @@ import {
   FilePdfOutlined,
   SaveOutlined,
   DownloadOutlined,
+  LockOutlined,
 } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
 import { PortalDataTable } from '../../components/shared/PortalDataTable';
 import { fetchCollection, updateEntry } from '../../api/content';
 import { usePortalAuth } from '../../context/PortalAuthContext';
+import { useRolePermissions } from '../../hooks/useRolePermissions';
 
 const PIPELINE_STATUSES: { key: string; label: string; color: string }[] = [
   { key: 'pending', label: 'Pending', color: 'default' },
@@ -51,11 +52,11 @@ const ASSESSMENT_LABELS: Record<string, string> = {
 
 export function LeadershipAtsPage() {
   const { token } = usePortalAuth();
+  const { canManageAts, isReadOnly } = useRolePermissions();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [viewMode, setViewMode] = useState<'kanban' | 'table'>('kanban');
 
-  // Candidate Profile Drawer state
   const [selectedCandidate, setSelectedCandidate] = useState<any | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [adminNotes, setAdminNotes] = useState('');
@@ -74,7 +75,7 @@ export function LeadershipAtsPage() {
         },
         token
       );
-      setData(res.data);
+      setData(res.data || []);
     } catch (err: any) {
       message.error(err.message || 'Failed to load candidates');
     } finally {
@@ -93,6 +94,10 @@ export function LeadershipAtsPage() {
   };
 
   const handleUpdateStatus = async (id: string | number, newStatus: string) => {
+    if (isReadOnly || !canManageAts) {
+      message.warning('Read-Only Mode: Auditors cannot change candidate status.');
+      return;
+    }
     try {
       setUpdatingStatus(true);
       await updateEntry(
@@ -117,7 +122,7 @@ export function LeadershipAtsPage() {
         setSelectedCandidate((prev: any) => ({ ...prev, status: newStatus }));
       }
 
-      message.success(`Status updated to ${newStatus.toUpperCase()}`);
+      message.success(`Candidate moved to ${newStatus.toUpperCase()}`);
     } catch (err: any) {
       message.error(err.message || 'Status update failed');
     } finally {
@@ -126,7 +131,7 @@ export function LeadershipAtsPage() {
   };
 
   const handleSaveNotes = async () => {
-    if (!selectedCandidate) return;
+    if (!selectedCandidate || isReadOnly || !canManageAts) return;
     try {
       setSavingNotes(true);
       const id = selectedCandidate.documentId || selectedCandidate.id;
@@ -193,6 +198,12 @@ export function LeadershipAtsPage() {
       key: 'status',
       render: (status: string, record: any) => {
         const conf = PIPELINE_STATUSES.find((s) => s.key === status) || PIPELINE_STATUSES[0];
+        
+        // 👈 Read-only for Viewers
+        if (isReadOnly || !canManageAts) {
+          return <Tag color={conf.color}>{conf.label}</Tag>;
+        }
+
         return (
           <Select
             size="small"
@@ -219,7 +230,7 @@ export function LeadershipAtsPage() {
           onClick={() => handleOpenCandidate(record)}
           className="rounded-lg"
         >
-          Review
+          {isReadOnly ? 'Inspect' : 'Review'}
         </Button>
       ),
     },
@@ -231,6 +242,17 @@ export function LeadershipAtsPage() {
 
   return (
     <div className="space-y-6">
+      {isReadOnly && (
+        <Alert
+          type="info"
+          showIcon
+          icon={<LockOutlined />}
+          message="Auditor / Read-Only Access"
+          description="You are currently viewing the candidate pipeline in read-only mode. Candidate status changes and staff note modifications are restricted."
+          className="rounded-2xl"
+        />
+      )}
+
       {/* Top Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -238,7 +260,7 @@ export function LeadershipAtsPage() {
             Leadership Recruitment ATS
           </h1>
           <p className="text-xs text-neutral-500 mt-1 m-0">
-            Review and advance Continental Director & Leadership role candidates.
+            {isReadOnly ? 'Inspect candidate applications and assessment submissions.' : 'Review and advance Continental Director & Leadership role candidates.'}
           </p>
         </div>
 
@@ -268,7 +290,6 @@ export function LeadershipAtsPage() {
                 key={statusObj.key}
                 className="flex-1 min-w-[280px] max-w-[320px] rounded-2xl bg-[#F8FAFC] border border-neutral-200 p-3"
               >
-                {/* Column Header */}
                 <div className="flex items-center justify-between px-2 py-2 mb-3 border-b border-neutral-200">
                   <div className="flex items-center gap-2">
                     <span className="font-bold text-sm text-neutral-800">{statusObj.label}</span>
@@ -276,7 +297,6 @@ export function LeadershipAtsPage() {
                   </div>
                 </div>
 
-                {/* Candidate Cards */}
                 <div className="space-y-3 min-h-[400px]">
                   {columnCandidates.length === 0 ? (
                     <div className="text-center py-10 text-xs text-neutral-400">No candidates</div>
@@ -359,27 +379,32 @@ export function LeadershipAtsPage() {
               </div>
             </div>
 
-            {/* Quick Actions */}
+            {/* Quick Actions (Disabled for Viewers) */}
             <div className="flex items-center gap-2">
-              <Select
-                value={selectedCandidate?.status || 'pending'}
-                onChange={(val) =>
-                  handleUpdateStatus(selectedCandidate.documentId || selectedCandidate.id, val)
-                }
-                loading={updatingStatus}
-                style={{ width: 140 }}
-                options={PIPELINE_STATUSES.map((s) => ({
-                  value: s.key,
-                  label: <Tag color={s.color}>{s.label}</Tag>,
-                }))}
-              />
+              {isReadOnly || !canManageAts ? (
+                <Tag color={PIPELINE_STATUSES.find((s) => s.key === (selectedCandidate?.status || 'pending'))?.color}>
+                  {PIPELINE_STATUSES.find((s) => s.key === (selectedCandidate?.status || 'pending'))?.label}
+                </Tag>
+              ) : (
+                <Select
+                  value={selectedCandidate?.status || 'pending'}
+                  onChange={(val) =>
+                    handleUpdateStatus(selectedCandidate.documentId || selectedCandidate.id, val)
+                  }
+                  loading={updatingStatus}
+                  style={{ width: 140 }}
+                  options={PIPELINE_STATUSES.map((s) => ({
+                    value: s.key,
+                    label: <Tag color={s.color}>{s.label}</Tag>,
+                  }))}
+                />
+              )}
             </div>
           </div>
         }
       >
         {selectedCandidate && (
           <div className="space-y-6">
-            {/* Contact Strip */}
             <div className="flex flex-wrap gap-4 rounded-xl bg-neutral-50 p-4 border border-neutral-200 text-sm">
               <div className="flex items-center gap-2 text-neutral-700">
                 <MailOutlined className="text-[#005D9A]" />
@@ -400,7 +425,6 @@ export function LeadershipAtsPage() {
               </div>
             </div>
 
-            {/* General Profile */}
             <Descriptions bordered size="small" column={{ xs: 1, sm: 2, md: 3 }}>
               <Descriptions.Item label="Sex">{selectedCandidate.sex}</Descriptions.Item>
               <Descriptions.Item label="Date of Birth">{selectedCandidate.dateOfBirth}</Descriptions.Item>
@@ -410,31 +434,43 @@ export function LeadershipAtsPage() {
               <Descriptions.Item label="Continent">{selectedCandidate.continent}</Descriptions.Item>
             </Descriptions>
 
-            {/* Internal Staff Notes */}
-            <Card size="small" title="Internal Reviewer Notes & Score" className="rounded-xl border-amber-200 bg-amber-50/40">
+            {/* Internal Staff Notes (Locked for Viewers) */}
+            <Card
+              size="small"
+              title={
+                <div className="flex items-center justify-between">
+                  <span>Internal Reviewer Notes &amp; Score</span>
+                  {isReadOnly && <Tag color="default"><LockOutlined /> Read-Only</Tag>}
+                </div>
+              }
+              className="rounded-xl border-amber-200 bg-amber-50/40"
+            >
               <Input.TextArea
                 rows={3}
                 value={adminNotes}
+                disabled={isReadOnly || !canManageAts}
                 onChange={(e) => setAdminNotes(e.target.value)}
-                placeholder="Write interview notes, candidate rating, or committee feedback here..."
+                placeholder={isReadOnly ? 'No review notes entered.' : 'Write interview notes, candidate rating, or committee feedback here...'}
                 className="rounded-lg mb-2"
               />
               <div className="flex justify-between items-center text-xs text-neutral-400">
                 <span>Last reviewed: {selectedCandidate.reviewedAt ? new Date(selectedCandidate.reviewedAt).toLocaleString() : 'Not reviewed yet'}</span>
-                <Button
-                  size="small"
-                  type="primary"
-                  icon={<SaveOutlined />}
-                  onClick={handleSaveNotes}
-                  loading={savingNotes}
-                  className="!bg-[#005D9A]"
-                >
-                  Save Notes
-                </Button>
+                {!isReadOnly && canManageAts && (
+                  <Button
+                    size="small"
+                    type="primary"
+                    icon={<SaveOutlined />}
+                    onClick={handleSaveNotes}
+                    loading={savingNotes}
+                    className="!bg-[#005D9A]"
+                  >
+                    Save Notes
+                  </Button>
+                )}
               </div>
             </Card>
 
-            {/* Tabs: Assessment Answers & Resume/CV */}
+            {/* Assessment Answers & Resume Document */}
             <Tabs
               defaultActiveKey="assessment"
               items={[
@@ -479,7 +515,6 @@ export function LeadershipAtsPage() {
                               Download File
                             </Button>
                           </div>
-                          {/* Embedded In-Browser Viewer */}
                           <div className="w-full h-[600px] border border-neutral-300 rounded-2xl overflow-hidden bg-neutral-100">
                             <iframe
                               src={resumeFile.url}

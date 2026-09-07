@@ -17,7 +17,7 @@ import { SdgMultiSelect } from '../../components/shared/SdgMultiSelect';
 import { MediaPicker } from '../../components/shared/MediaPicker';
 import { fetchCollection, createEntry, updateEntry, deleteEntry } from '../../api/content';
 import { usePortalAuth } from '../../context/PortalAuthContext';
-
+import { useRolePermissions } from '../../hooks/useRolePermissions';
 const STATUS_TAG_COLORS = {
   ongoing: 'processing',
   completed: 'success',
@@ -42,6 +42,7 @@ const REGIONS = [
 
 export function ProjectsManagerPage() {
   const { token } = usePortalAuth();
+  const { canManageContent, isReadOnly } = useRolePermissions(); 
   const [data, setData] = useState<any[]>([]);
   const [members, setMembers] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
@@ -195,16 +196,19 @@ export function ProjectsManagerPage() {
             type="text"
             icon={<EditOutlined />}
             onClick={() => handleOpenEdit(record)}
+            disabled={isReadOnly || !canManageContent}
           />
-          <Popconfirm
-            title="Delete project"
-            description="Are you sure you want to delete this project?"
-            onConfirm={() => handleDelete(record)}
-            okText="Delete"
-            okType="danger"
-          >
-            <Button type="text" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
+          {!isReadOnly && canManageContent && (
+            <Popconfirm
+              title="Delete record"
+              description="Are you sure you want to delete this record?"
+              onConfirm={() => handleDelete(record)}
+              okText="Delete"
+              okType="danger"
+            >
+              <Button type="text" danger icon={<DeleteOutlined />} />
+            </Popconfirm>
+          )}
         </Space>
       ),
     },
@@ -225,7 +229,7 @@ export function ProjectsManagerPage() {
           setPageSize(ps);
         }}
         onSearch={setSearch}
-        onAddNew={handleOpenCreate}
+        onAddNew={canManageContent ? handleOpenCreate : undefined} 
         onRefresh={loadData}
         searchPlaceholder="Search projects by name…"
       />

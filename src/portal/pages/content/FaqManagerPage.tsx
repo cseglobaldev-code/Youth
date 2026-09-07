@@ -11,9 +11,11 @@ import type { TableColumnsType } from 'antd';
 import { PortalDataTable } from '../../components/shared/PortalDataTable';
 import { fetchCollection, createEntry, updateEntry, deleteEntry } from '../../api/content';
 import { usePortalAuth } from '../../context/PortalAuthContext';
+import { useRolePermissions } from '../../hooks/useRolePermissions';
 
 export function FaqManagerPage() {
   const { token } = usePortalAuth();
+  const { canManageContent, isReadOnly } = useRolePermissions();
   const [faqs, setFaqs] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [savingOrder, setSavingOrder] = useState(false);
@@ -47,6 +49,7 @@ export function FaqManagerPage() {
   }, [loadData]);
 
   const handleMove = (index: number, direction: 'up' | 'down') => {
+    if (isReadOnly || !canManageContent) return;
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
     if (targetIndex < 0 || targetIndex >= faqs.length) return;
     const next = [...faqs];
@@ -56,6 +59,7 @@ export function FaqManagerPage() {
   };
 
   const handleSaveOrder = async () => {
+    if (isReadOnly || !canManageContent) return;
     try {
       setSavingOrder(true);
       await Promise.all(
@@ -90,6 +94,7 @@ export function FaqManagerPage() {
   };
 
   const handleDelete = async (item: any) => {
+    if (isReadOnly || !canManageContent) return;
     try {
       const id = item.documentId || item.id;
       await deleteEntry('faqs', id, token);
@@ -128,18 +133,22 @@ export function FaqManagerPage() {
       render: (_: any, __: any, index: number) => (
         <Space>
           <span className="font-bold text-neutral-400 w-6">#{index + 1}</span>
-          <Button
-            size="small"
-            icon={<ArrowUpOutlined />}
-            disabled={index === 0}
-            onClick={() => handleMove(index, 'up')}
-          />
-          <Button
-            size="small"
-            icon={<ArrowDownOutlined />}
-            disabled={index === faqs.length - 1}
-            onClick={() => handleMove(index, 'down')}
-          />
+          {!isReadOnly && canManageContent && (
+            <>
+              <Button
+                size="small"
+                icon={<ArrowUpOutlined />}
+                disabled={index === 0}
+                onClick={() => handleMove(index, 'up')}
+              />
+              <Button
+                size="small"
+                icon={<ArrowDownOutlined />}
+                disabled={index === faqs.length - 1}
+                onClick={() => handleMove(index, 'down')}
+              />
+            </>
+          )}
         </Space>
       ),
     },
@@ -165,10 +174,17 @@ export function FaqManagerPage() {
       width: 120,
       render: (_: any, record: any) => (
         <Space>
-          <Button type="text" icon={<EditOutlined />} onClick={() => handleOpenEdit(record)} />
-          <Popconfirm title="Delete FAQ?" onConfirm={() => handleDelete(record)}>
-            <Button type="text" danger icon={<DeleteOutlined />} />
-          </Popconfirm>
+          <Button
+            type="text"
+            icon={<EditOutlined />}
+            onClick={() => handleOpenEdit(record)}
+            disabled={isReadOnly || !canManageContent}
+          />
+          {!isReadOnly && canManageContent && (
+            <Popconfirm title="Delete FAQ?" onConfirm={() => handleDelete(record)}>
+              <Button type="text" danger icon={<DeleteOutlined />} />
+            </Popconfirm>
+          )}
         </Space>
       ),
     },
@@ -182,18 +198,20 @@ export function FaqManagerPage() {
         dataSource={faqs}
         loading={loading}
         total={faqs.length}
-        onAddNew={handleOpenCreate}
+        onAddNew={canManageContent ? handleOpenCreate : undefined}
         onRefresh={loadData}
         extraActions={
-          <Button
-            type="primary"
-            icon={<SaveOutlined />}
-            loading={savingOrder}
-            onClick={handleSaveOrder}
-            className="rounded-xl !bg-emerald-600 font-semibold"
-          >
-            Save Reordered Priority
-          </Button>
+          !isReadOnly && canManageContent ? (
+            <Button
+              type="primary"
+              icon={<SaveOutlined />}
+              loading={savingOrder}
+              onClick={handleSaveOrder}
+              className="rounded-xl !bg-emerald-600 font-semibold"
+            >
+              Save Reordered Priority
+            </Button>
+          ) : undefined
         }
       />
 
@@ -207,10 +225,10 @@ export function FaqManagerPage() {
       >
         <Form form={form} layout="vertical" onFinish={handleFormFinish}>
           <Form.Item label="Question" name="question" rules={[{ required: true }]}>
-            <Input placeholder="e.g. What is the mission of Y.O.U?" />
+            <Input placeholder="e.g. What is the mission of Y.O.U?" disabled={isReadOnly} />
           </Form.Item>
           <Form.Item label="Answer" name="answer" rules={[{ required: true }]}>
-            <Input.TextArea rows={4} placeholder="Answer text..." />
+            <Input.TextArea rows={4} placeholder="Answer text..." disabled={isReadOnly} />
           </Form.Item>
         </Form>
       </Modal>

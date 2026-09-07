@@ -16,9 +16,11 @@ import { PortalDataTable } from '../../components/shared/PortalDataTable';
 import { MediaPicker } from '../../components/shared/MediaPicker';
 import { fetchCollection, createEntry, updateEntry, deleteEntry } from '../../api/content';
 import { usePortalAuth } from '../../context/PortalAuthContext';
+import { useRolePermissions } from '../../hooks/useRolePermissions';
 
 export function NewsManagerPage() {
   const { token } = usePortalAuth();
+  const { canManageContent, isReadOnly } = useRolePermissions();
   const [data, setData] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -149,7 +151,9 @@ export function NewsManagerPage() {
             type="text"
             icon={<EditOutlined />}
             onClick={() => handleOpenEdit(record)}
+            disabled={isReadOnly || !canManageContent}
           />
+          {!isReadOnly && canManageContent && (
           <Popconfirm
             title="Delete story"
             description="Are you sure you want to delete this news story?"
@@ -159,6 +163,7 @@ export function NewsManagerPage() {
           >
             <Button type="text" danger icon={<DeleteOutlined />} />
           </Popconfirm>
+          )}
         </Space>
       ),
     },
@@ -179,7 +184,7 @@ export function NewsManagerPage() {
           setPageSize(ps);
         }}
         onSearch={setSearch}
-        onAddNew={handleOpenCreate}
+        onAddNew={canManageContent ? handleOpenCreate : undefined}
         onRefresh={loadData}
         searchPlaceholder="Search news articles…"
       />

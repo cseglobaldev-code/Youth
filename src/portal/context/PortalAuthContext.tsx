@@ -42,11 +42,19 @@ export function PortalAuthProvider({ children }: { children: React.ReactNode }) 
     ).replace(/\/$/, '');
   };
 
+  const logout = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+    }
+    setToken(null);
+    setUser(null);
+  }, []);
+
   const refreshUser = useCallback(async () => {
     const currentToken = localStorage.getItem(TOKEN_KEY);
     if (!currentToken) {
-      setUser(null);
-      setToken(null);
+      logout();
       setIsLoading(false);
       return;
     }
@@ -63,17 +71,16 @@ export function PortalAuthProvider({ children }: { children: React.ReactNode }) 
         setUser(userData);
         localStorage.setItem(USER_KEY, JSON.stringify(userData));
       } else {
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem(USER_KEY);
-        setUser(null);
-        setToken(null);
+        // Token rejected by server -> immediately wipe session
+        logout();
       }
     } catch {
-      // Keep cached user on offline/network hiccup
+      // Offline / network hiccup: only keep user if valid token exists
+      if (!currentToken) logout();
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [logout]);
 
   useEffect(() => {
     refreshUser();
@@ -91,11 +98,14 @@ export function PortalAuthProvider({ children }: { children: React.ReactNode }) 
       });
 
       if (!res.ok) {
-        const errorData = (await res.json().catch(() => ({}))) as { error?: { message?: string }; message?: string };
+        const errorData = (await res.json().catch(() => ({}))) as {
+          error?: { message?: string };
+          message?: string;
+        };
         throw new Error(
           errorData?.error?.message ||
-          errorData?.message ||
-          'Invalid credentials. Please check your email and password.'
+            errorData?.message ||
+            'Invalid credentials. Please check your email and password.'
         );
       }
 
@@ -110,19 +120,12 @@ export function PortalAuthProvider({ children }: { children: React.ReactNode }) 
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-    setToken(null);
-    setUser(null);
-  };
-
   return (
     <PortalAuthContext.Provider
       value={{
         user,
         token,
-        isAuthenticated: Boolean(token && user),
+        isAuthenticated: Boolean(token && user && user.email),
         isLoading,
         login,
         logout,

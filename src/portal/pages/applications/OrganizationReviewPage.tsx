@@ -7,9 +7,7 @@ import {
   Input,
   Descriptions,
   message,
-  Space,
   Card,
-  Image,
 } from 'antd';
 import { EyeOutlined, SaveOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
@@ -17,6 +15,7 @@ import { PortalDataTable } from '../../components/shared/PortalDataTable';
 import { fetchCollection, updateEntry } from '../../api/content';
 import { usePortalAuth } from '../../context/PortalAuthContext';
 import { SDGTag } from '@/components/ui/SDGTag';
+import { useRolePermissions } from '../../hooks/useRolePermissions';
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   pending: { label: 'Pending', color: 'default' },
@@ -28,6 +27,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
 
 export function OrganizationReviewPage() {
   const { token } = usePortalAuth();
+  const { canManageAts, isReadOnly } = useRolePermissions();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -150,36 +150,44 @@ export function OrganizationReviewPage() {
         width="min(800px, 92vw)"
         destroyOnHidden
         title={
-          <div className="flex items-center justify-between pr-8">
-            <h3 className="text-lg font-bold text-neutral-900 m-0">
-              {selectedOrg?.organizationName}
-            </h3>
-            <Select
-              value={selectedOrg?.status || 'pending'}
-              onChange={handleStatusChange}
-              style={{ width: 140 }}
-              options={Object.entries(STATUS_CONFIG).map(([val, conf]) => ({
-                value: val,
-                label: <Tag color={conf.color}>{conf.label}</Tag>,
-              }))}
-            />
-          </div>
+            <div className="flex items-center justify-between pr-8">
+                <h3 className="text-lg font-bold text-neutral-900 m-0">
+                {selectedOrg?.organizationName}
+                </h3>
+                {isReadOnly || !canManageAts ? (
+                <Tag color={STATUS_CONFIG[selectedOrg?.status || 'pending']?.color}>
+                    {STATUS_CONFIG[selectedOrg?.status || 'pending']?.label}
+                </Tag>
+                ) : (
+                <Select
+                    value={selectedOrg?.status || 'pending'}
+                    onChange={handleStatusChange}
+                    style={{ width: 140 }}
+                    options={Object.entries(STATUS_CONFIG).map(([val, conf]) => ({
+                    value: val,
+                    label: <Tag color={conf.color}>{conf.label}</Tag>,
+                    }))}
+                />
+                )}
+            </div>
         }
-      >
-        {selectedOrg && (
-          <div className="space-y-6">
-            {/* Staff Review Notes */}
-            <Card size="small" title="Committee Review Notes" className="rounded-xl border-amber-200 bg-amber-50/40">
-              <Input.TextArea
-                rows={2}
-                value={adminNotes}
-                onChange={(e) => setAdminNotes(e.target.value)}
-                placeholder="Add committee vetting notes or screening decisions..."
-                className="rounded-lg mb-2"
-              />
-              <Button size="small" type="primary" icon={<SaveOutlined />} onClick={handleSaveNotes} loading={savingNotes} className="!bg-[#005D9A]">
-                Save Notes
-              </Button>
+        >
+            {selectedOrg && (
+            <div className="space-y-6">
+                <Card size="small" title="Committee Review Notes" className="rounded-xl border-amber-200 bg-amber-50/40">
+                <Input.TextArea
+                    rows={2}
+                    value={adminNotes}
+                    disabled={isReadOnly || !canManageAts}
+                    onChange={(e) => setAdminNotes(e.target.value)}
+                    placeholder="Add committee vetting notes or screening decisions..."
+                    className="rounded-lg mb-2"
+                />
+                {!isReadOnly && canManageAts && (
+                    <Button size="small" type="primary" icon={<SaveOutlined />} onClick={handleSaveNotes} loading={savingNotes} className="!bg-[#005D9A]">
+                    Save Notes
+                    </Button>
+                )}
             </Card>
 
             {/* Organization Overview */}

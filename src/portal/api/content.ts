@@ -50,9 +50,12 @@ export async function fetchCollection<T = any>(
     query.append('populate', '*');
   }
 
+  // 👈 Use token parameter or fallback to localStorage
+  const authToken = token || (typeof window !== 'undefined' ? localStorage.getItem('you_portal_jwt') : null);
+
   const res = await fetch(`${getBaseUrl()}/api/${endpoint}?${query.toString()}`, {
     headers: {
-      ...(token && { Authorization: `Bearer ${token}` }),
+      ...(authToken && { Authorization: `Bearer ${authToken}` }),
     },
   });
 
@@ -62,7 +65,6 @@ export async function fetchCollection<T = any>(
 
   return (await res.json()) as { data: T[]; meta: { pagination: { total: number; page: number; pageSize: number } } };
 }
-
 export async function createEntry<T = any>(
   endpoint: string,
   data: Record<string, any>,
@@ -92,11 +94,14 @@ export async function updateEntry<T = any>(
   data: Record<string, any>,
   token?: string | null
 ): Promise<T> {
+  const authToken =
+    token || (typeof window !== 'undefined' ? localStorage.getItem('you_portal_jwt') : null);
+
   const res = await fetch(`${getBaseUrl()}/api/${endpoint}/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
+      ...(authToken && { Authorization: `Bearer ${authToken}` }),
     },
     body: JSON.stringify({ data }),
   });
@@ -161,7 +166,7 @@ export async function fetchSingleType<T = any>(
   if (options.locale) query.append('locale', options.locale);
   if (options.status) query.append('status', options.status);
 
-  // 👈 Only request contentBlocks on pages that have dynamic zones
+  //  Only request contentBlocks on pages that have dynamic zones
   if (endpoint === 'home-page' || endpoint === 'about-us' || endpoint === 'pages') {
     query.append('populate[seo][populate]', '*');
     query.append('populate[contentBlocks][populate]', '*');
@@ -236,9 +241,11 @@ export async function fetchMediaFiles(
   query.append('sort', 'createdAt:desc');
   query.append('pageSize', '100');
 
+  const authToken = token || (typeof window !== 'undefined' ? localStorage.getItem('you_portal_jwt') : null);
+
   const res = await fetch(`${getBaseUrl()}/api/upload/files?${query.toString()}`, {
     headers: {
-      ...(token && { Authorization: `Bearer ${token}` }),
+      ...(authToken && { Authorization: `Bearer ${authToken}` }),
     },
   });
 
@@ -310,4 +317,66 @@ export async function createStaffUser(
   }
 
   return (await res.json()) as any;
+}
+
+export async function fetchRoles(token?: string | null): Promise<any[]> {
+  try {
+    const res = await fetch(`${getBaseUrl()}/api/users-permissions/roles`, {
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+    });
+
+    if (res.ok) {
+      const data: any = await res.json(); 
+      return Array.isArray(data?.roles) ? data.roles : Array.isArray(data) ? data : [];
+    }
+  } catch {
+    // Fallback to standard Y.O.U role presets
+  }
+
+  return [
+    { id: 1, name: 'Super Admin', type: 'admin', description: 'Full access to all portal settings, staff users, and content.' },
+    { id: 2, name: 'Content Editor', type: 'editor', description: 'Can create, edit, and publish Projects, Members, News, and FAQs.' },
+    { id: 3, name: 'HR / Reviewer', type: 'reviewer', description: 'Review leadership candidates, organization applications, and support letters.' },
+    { id: 4, name: 'Viewer / Auditor', type: 'viewer', description: 'Read-only access to view metrics and tables without edit/delete rights.' },
+  ];
+}
+
+export async function updateStaffUser(
+  id: number | string,
+  data: Record<string, any>,
+  token?: string | null
+): Promise<any> {
+  const res = await fetch(`${getBaseUrl()}/api/users/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    const errorJson: any = await res.json().catch(() => ({}));
+    throw new Error(errorJson?.error?.message || 'Failed to update user');
+  }
+
+  return (await res.json()) as any;
+}
+
+export async function deleteStaffUser(
+  id: number | string,
+  token?: string | null
+): Promise<void> {
+  const res = await fetch(`${getBaseUrl()}/api/users/${id}`, {
+    method: 'DELETE',
+    headers: {
+      ...(token && { Authorization: `Bearer ${token}` }),
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Failed to delete user (${res.status})`);
+  }
 }

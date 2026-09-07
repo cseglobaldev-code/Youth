@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Tag, Button, Modal, Form, Input, Select, Popconfirm, message, Space, Avatar, Radio } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, EyeOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
 import { PortalDataTable } from '../../components/shared/PortalDataTable';
 import { MediaPicker } from '../../components/shared/MediaPicker';
@@ -9,11 +9,13 @@ import { fetchCollection, createEntry, updateEntry, deleteEntry } from '../../ap
 import { usePortalAuth } from '../../context/PortalAuthContext';
 import { CONTINENT_REGIONS } from '@/api/leadership';
 import type { Continent } from '@/types';
+import { useRolePermissions } from '../../hooks/useRolePermissions';
 
 const CONTINENTS: Continent[] = ['Asia', 'Africa', 'America', 'Australia', 'Europe'];
 
 export function LeadershipManagerPage() {
   const { token } = usePortalAuth();
+  const { canManageContent, isReadOnly } = useRolePermissions();
   const [members, setMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [filterType, setFilterType] = useState<string>('all');
@@ -154,20 +156,22 @@ export function LeadershipManagerPage() {
       title: 'Term',
       dataIndex: 'year',
       key: 'year',
-      render: (y: string) => y || '—',
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
       render: (_: any, record: any) => (
-        <Space>
-          <Button type="text" icon={<EditOutlined />} onClick={() => handleOpenEdit(record)} />
+      <Space>
+        <Button
+          type="text"
+          icon={isReadOnly ? <EyeOutlined /> : <EditOutlined />}
+          onClick={() => handleOpenEdit(record)}
+          title={isReadOnly ? 'Inspect Profile' : 'Edit Profile'}
+        />
+        {!isReadOnly && canManageContent && (
           <Popconfirm title="Delete profile?" onConfirm={() => handleDelete(record)}>
             <Button type="text" danger icon={<DeleteOutlined />} />
           </Popconfirm>
-        </Space>
-      ),
-    },
+        )}
+      </Space>
+    ),
+  },
   ];
 
   return (
@@ -178,7 +182,7 @@ export function LeadershipManagerPage() {
         dataSource={filteredMembers}
         loading={loading}
         total={filteredMembers.length}
-        onAddNew={handleOpenCreate}
+        onAddNew={canManageContent ? handleOpenCreate : undefined}
         onRefresh={loadData}
         extraActions={
           <Radio.Group value={filterType} onChange={(e) => setFilterType(e.target.value)}>

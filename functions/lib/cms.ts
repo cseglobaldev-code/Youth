@@ -18,6 +18,7 @@ const ALLOWED_PREFIXES = [
   // Portal Auth & User Management Endpoints
   '/api/auth',
   '/api/users',
+  '/api/users-permissions',
 ];
 
 export function isAllowedCmsPath(pathname: string): boolean {

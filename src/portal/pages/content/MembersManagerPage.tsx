@@ -17,11 +17,12 @@ import { MediaPicker } from '../../components/shared/MediaPicker';
 import { fetchCollection, createEntry, updateEntry, deleteEntry } from '../../api/content';
 import { usePortalAuth } from '../../context/PortalAuthContext';
 import { DIAL_CODES } from '@/data/dialCodes';
-
+import { useRolePermissions } from '../../hooks/useRolePermissions';
 const CONTINENTS = ['Asia', 'Africa', 'America', 'Australia', 'Europe'];
 
 export function MembersManagerPage() {
   const { token } = usePortalAuth();
+  const { canManageContent, isReadOnly } = useRolePermissions();
   const [data, setData] = useState<any[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -159,7 +160,9 @@ export function MembersManagerPage() {
             type="text"
             icon={<EditOutlined />}
             onClick={() => handleOpenEdit(record)}
+            disabled={isReadOnly || !canManageContent}
           />
+          {!isReadOnly && canManageContent && (
           <Popconfirm
             title="Delete Member"
             description="Delete this organization record?"
@@ -169,6 +172,7 @@ export function MembersManagerPage() {
           >
             <Button type="text" danger icon={<DeleteOutlined />} />
           </Popconfirm>
+        )}  
         </Space>
       ),
     },
@@ -189,7 +193,7 @@ export function MembersManagerPage() {
           setPageSize(ps);
         }}
         onSearch={setSearch}
-        onAddNew={handleOpenCreate}
+        onAddNew={canManageContent ? handleOpenCreate : undefined}
         onRefresh={loadData}
         searchPlaceholder="Search member orgs…"
       />

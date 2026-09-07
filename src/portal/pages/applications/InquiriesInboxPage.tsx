@@ -1,13 +1,15 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Tag, Button, Drawer, Select, message, Descriptions } from 'antd';
-import { MailOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { MailOutlined } from '@ant-design/icons';
 import type { TableColumnsType } from 'antd';
 import { PortalDataTable } from '../../components/shared/PortalDataTable';
 import { fetchCollection, updateEntry } from '../../api/content';
 import { usePortalAuth } from '../../context/PortalAuthContext';
+import { useRolePermissions } from '../../hooks/useRolePermissions';
 
 export function InquiriesInboxPage() {
   const { token } = usePortalAuth();
+  const { canManageAts, isReadOnly } = useRolePermissions();
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedInquiry, setSelectedInquiry] = useState<any | null>(null);
@@ -95,27 +97,28 @@ export function InquiriesInboxPage() {
         onRefresh={loadData}
       />
 
-      <Drawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        width={600}
-        title="Inquiry Details"
-      >
-        {selectedInquiry && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold">Change Status:</span>
-              <Select
-                value={selectedInquiry.status || 'unread'}
-                onChange={handleStatusChange}
-                style={{ width: 140 }}
-                options={[
-                  { value: 'unread', label: 'Unread' },
-                  { value: 'in_progress', label: 'In Progress' },
-                  { value: 'resolved', label: 'Resolved' },
-                ]}
-              />
-            </div>
+      <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} width={600} title="Inquiry Details">
+    {selectedInquiry && (
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-semibold">Status:</span>
+          {isReadOnly || !canManageAts ? (
+            <Tag color={selectedInquiry.status === 'resolved' ? 'success' : selectedInquiry.status === 'in_progress' ? 'processing' : 'default'}>
+              {selectedInquiry.status?.toUpperCase() || 'UNREAD'}
+            </Tag>
+          ) : (
+            <Select
+              value={selectedInquiry.status || 'unread'}
+              onChange={handleStatusChange}
+              style={{ width: 140 }}
+              options={[
+                { value: 'unread', label: 'Unread' },
+                { value: 'in_progress', label: 'In Progress' },
+                { value: 'resolved', label: 'Resolved' },
+              ]}
+            />
+          )}
+        </div>
 
             <Descriptions bordered size="small" column={1}>
               <Descriptions.Item label="Sender">{selectedInquiry.name}</Descriptions.Item>
