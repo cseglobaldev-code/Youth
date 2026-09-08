@@ -25,6 +25,8 @@ interface StrapiGlobalSetting {
   transferSyntaxNote?: unknown;
   qrCodeImage?: StrapiMedia | null;
   socialLinks?: StrapiSocialLink[] | null;
+  termsOfServiceUrl?: unknown;
+  privacyPolicyUrl?: unknown;
 }
 
 interface StrapiGlobalSettingResponse {
@@ -40,6 +42,8 @@ export const DEFAULT_GLOBAL_SETTINGS: GlobalSetting = {
   accountNumber: '000999999999',
   accountHolder: 'Youth Organization Union',
   transferSyntaxNote: 'YOUPRJ26 - [Project Names].',
+  termsOfServiceUrl: '#',
+  privacyPolicyUrl: '#',
 };
 
 export async function fetchGlobalSettings(
@@ -69,7 +73,7 @@ export async function fetchGlobalSettings(
         cacheSet(url, payload, isPreview);
       }
     } catch {
-      // Bỏ qua lỗi mạng để sử dụng fallback tĩnh
+      // Fall back gracefully to defaults
     }
   }
 
@@ -91,10 +95,11 @@ export async function fetchGlobalSettings(
     accountHolder: text(raw.accountHolder) || DEFAULT_GLOBAL_SETTINGS.accountHolder,
     transferSyntaxNote: text(raw.transferSyntaxNote) || DEFAULT_GLOBAL_SETTINGS.transferSyntaxNote,
     qrCodeImageUrl: mediaUrl(raw.qrCodeImage, baseUrl) || undefined,
+    termsOfServiceUrl: text(raw.termsOfServiceUrl) || DEFAULT_GLOBAL_SETTINGS.termsOfServiceUrl,
+    privacyPolicyUrl: text(raw.privacyPolicyUrl) || DEFAULT_GLOBAL_SETTINGS.privacyPolicyUrl,
   };
 }
 
-// ── Unit Tests ──────────────────────────────────────────────────────────────
 if (import.meta.vitest) {
   const { afterEach, beforeEach, describe, expect, it, vi } = import.meta.vitest;
 

@@ -1,6 +1,7 @@
 import { Modal } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { SDGTag } from '@/components/ui/SDGTag';
+import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { ICONS, SOCIAL_COLORS } from '@/config/icons';
 import type { TeamMember } from '@/types';
 
@@ -32,7 +33,7 @@ export function LeaderMemberModal({ member, open, onClose }: LeaderMemberModalPr
     >
       {/* ── HEADER: responsive gradient + wave + photo + text ── */}
       <div className="relative overflow-hidden rounded-t-[20px] bg-white px-5 py-8 sm:px-7 sm:py-9">
-        {/* Layer 1: rainbow gradient at 50% opacity (Figma: Rectangle 3829) */}
+        {/* Layer 1: rainbow gradient at 50% opacity */}
         <div className="absolute inset-0" style={{ background: RAINBOW, opacity: 0.5 }} />
 
         {/* Layer 2: wave vector SVG at 10% opacity */}
@@ -43,7 +44,7 @@ export function LeaderMemberModal({ member, open, onClose }: LeaderMemberModalPr
           className="absolute inset-0 h-full w-full object-cover opacity-10 pointer-events-none select-none"
         />
 
-        {/* Close button — white X, no border */}
+        {/* Close button */}
         <button
           type="button"
           onClick={onClose}
@@ -56,7 +57,6 @@ export function LeaderMemberModal({ member, open, onClose }: LeaderMemberModalPr
         <div className="relative z-10 grid items-end gap-6 sm:grid-cols-[minmax(0,1fr)_minmax(180px,268px)]">
           {/* Text info block */}
           <div className="order-2 flex min-w-0 flex-col gap-1 sm:order-1">
-            {/* Name + all social icons (dynamic — same set as card hover) */}
             <div className="flex flex-wrap items-center gap-1">
               <span
                 style={{
@@ -88,7 +88,6 @@ export function LeaderMemberModal({ member, open, onClose }: LeaderMemberModalPr
               ))}
             </div>
 
-            {/* Role — white */}
             <span
               style={{
                 fontFamily: 'Be Vietnam Pro, Be Vietnam, sans-serif',
@@ -101,7 +100,6 @@ export function LeaderMemberModal({ member, open, onClose }: LeaderMemberModalPr
               {member.role}
             </span>
 
-            {/* SDG tags — colored pill badges */}
             {member.focusSdgs && member.focusSdgs.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {member.focusSdgs.map((sdgId) => (
@@ -110,7 +108,6 @@ export function LeaderMemberModal({ member, open, onClose }: LeaderMemberModalPr
               </div>
             )}
 
-            {/* Year — black */}
             {member.year && (
               <span
                 style={{
@@ -128,26 +125,28 @@ export function LeaderMemberModal({ member, open, onClose }: LeaderMemberModalPr
 
           {/* Profile photo */}
           <div className="order-1 mx-auto aspect-square w-[min(58vw,268px)] overflow-hidden rounded-full sm:order-2 sm:w-full">
-            {member.avatarUrl && (
-              <img src={member.avatarUrl} alt={member.name} className="h-full w-full object-cover" />
-            )}
+            <ImageWithFallback src={member.avatarUrl} alt={member.name} className="h-full w-full object-cover" />
           </div>
         </div>
       </div>
 
-      {/* ── BODY ── */}
+      {/* ── BODY: Bio & Activity Photos ── */}
       <div
         className="flex flex-col bg-white"
-        style={{ gap: 20, padding: '32px 28px', maxHeight: '55vh', overflowY: 'auto' }}
+        style={{ gap: 24, padding: '32px 28px', maxHeight: '55vh', overflowY: 'auto' }}
       >
         {member.bio && member.bio.length > 0 && (
-          <div className="flex flex-col" style={{ gap: 20 }}>
+          <div className="flex flex-col" style={{ gap: 16 }}>
             {member.bio.map((para, i) => (
               <p
                 key={i}
                 style={{
-                  fontFamily: 'Inter, sans-serif', fontWeight: 300, fontSize: 18,
-                  lineHeight: '150%', color: '#1A1919', margin: 0,
+                  fontFamily: 'Inter, sans-serif',
+                  fontWeight: 300,
+                  fontSize: 18,
+                  lineHeight: '150%',
+                  color: '#1A1919',
+                  margin: 0,
                 }}
               >
                 {para}
@@ -156,6 +155,28 @@ export function LeaderMemberModal({ member, open, onClose }: LeaderMemberModalPr
           </div>
         )}
 
+        {/* Activity Photos Gallery */}
+        {member.activityImages && member.activityImages.length > 0 && (
+          <div className="flex flex-col gap-3 pt-2">
+            <h4
+              className="font-semibold text-lg text-[#111111]"
+              style={{ fontFamily: 'Open Sans, sans-serif' }}
+            >
+              Activity Photos
+            </h4>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {member.activityImages.map((src, idx) => (
+                <div key={idx} className="aspect-video rounded-xl overflow-hidden bg-neutral-100">
+                  <ImageWithFallback
+                    src={src}
+                    alt={`${member.name} activity ${idx + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </Modal>
   );

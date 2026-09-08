@@ -112,7 +112,7 @@ export async function submitLeadershipApplication(
 }
 
 /**
- * 2. Gửi form đăng ký Tổ chức thành viên (Upload tuần tự)
+ * 2. Gửi form đăng ký Tổ chức thành viên
  */
 export async function submitOrganizationApplication(
   values: RegisterOrganizationFormValues,
@@ -124,6 +124,10 @@ export async function submitOrganizationApplication(
   const orgLogoIds = await uploadAntdFiles(values.organizationLogo, baseUrl, token, options.signal);
   const projectImageIds = await uploadAntdFiles(values.projectImages, baseUrl, token, options.signal);
 
+  // Normalize SDG array values to numbers or string arrays
+  const rawFocusSdgs = (values as any).focusSdgs || (values as any).focusSDGs || [];
+  const rawProjectSdgs = (values as any).projectFocusSdgs || (values as any).projectFocusSDGs || [];
+
   const payload = {
     data: {
       organizationName: values.organizationName,
@@ -131,7 +135,7 @@ export async function submitOrganizationApplication(
       representativeFullName: values.representativeFullName,
       representativePhone: values.representativePhone,
       representativePhoneCode: values.representativePhoneCode || '+84',
-      yearOfEstablishment: values.yearOfEstablishment,
+      yearOfEstablishment: Number(values.yearOfEstablishment),
       country: values.country,
       address: values.address,
       email: values.email,
@@ -140,7 +144,7 @@ export async function submitOrganizationApplication(
       instagramUrl: values.instagramUrl || undefined,
       linkedinUrl: values.linkedinUrl || undefined,
       focusArea: values.focusArea,
-      focusSDGs: values.focusSDGs,
+      focusSdgs: rawFocusSdgs.map(String),               
       projectName: values.projectName,
       projectOrganizationName: values.projectOrganizationName,
       projectDescription: values.projectDescription,
@@ -148,8 +152,8 @@ export async function submitOrganizationApplication(
       socialImpactMetrics: values.socialImpactMetrics,
       region: values.region,
       countriesCovered: values.countriesCovered,
-      projectFocusSDGs: values.projectFocusSDGs,
-      projectStatus: values.projectStatus,
+      projectFocusSdgs: rawProjectSdgs.map(String),       
+      projectStatus: values.projectStatus || 'ongoing',
       projectSocialProfile: values.projectSocialProfile,
       ...(orgImageIds.length > 0 ? { organizationImage: orgImageIds } : {}),
       ...(orgLogoIds.length > 0 ? { organizationLogo: orgLogoIds } : {}),

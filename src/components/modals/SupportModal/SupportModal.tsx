@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Modal, Form, Input, Checkbox, ConfigProvider, Radio } from 'antd';
+import { Modal, Form, Input, Checkbox, ConfigProvider, Radio, Alert } from 'antd';
 import { PillButton } from '@/components/ui/PillButton';
 import { maxWordsRule } from '@/lib/utils';
 import { submitSupportSubmission } from '@/api/applications';
 import { fetchGlobalSettings, DEFAULT_GLOBAL_SETTINGS } from '@/api/global';
+import { fetchProjects } from '@/api/projects';
 import type { GlobalSetting } from '@/types';
 import financialGiftQrCodeUrl from './financial-gift-qrcode.png';
 
@@ -12,26 +13,18 @@ export interface SupportFormValues {
   email: string;
   projects: string[];
   letter: string;
-  financialGiftDetails: string;
-  donationFrequency: 'monthly' | 'quarterly' | 'other' | 'once';
+  financialGiftDetails?: string;
+  donationFrequency?: 'monthly' | 'quarterly' | 'other' | 'once';
 }
 
 export interface SupportModalProps {
   open: boolean;
   onClose: () => void;
-  /** Optional list of projects the supporter can pick from. */
   projects?: { value: string; label: string }[];
-  /** Optional callback when the user submits a valid form. */
   onSubmit?: (values: SupportFormValues) => void | Promise<void>;
 }
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
-
-const DEFAULT_PROJECTS = [
-  { value: 'hmong-vietnam', label: "H'Mong - Vietnam" },
-  { value: 'cse-global-vietnam', label: 'CSE Global - Vietnam' },
-  { value: 'tale-nigeria', label: 'TALE - Nigeria' },
-];
 
 const requiredMark = (text: string) => (
   <span style={FONT}>
@@ -42,27 +35,68 @@ const requiredMark = (text: string) => (
 export function SupportModal({
   open,
   onClose,
-  projects = DEFAULT_PROJECTS,
+  projects: customProjects,
   onSubmit,
 }: SupportModalProps) {
   const [form] = Form.useForm<SupportFormValues>();
   const [step, setStep] = useState<'letter' | 'financial'>('letter');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [settings, setSettings] = useState<GlobalSetting>(DEFAULT_GLOBAL_SETTINGS);
+  const [projectOptions, setProjectOptions] = useState<{ value: string; label: string }[]>([]);
 
   useEffect(() => {
     if (open) {
       fetchGlobalSettings()
         .then(setSettings)
         .catch(() => setSettings(DEFAULT_GLOBAL_SETTINGS));
+
+      if (customProjects && customProjects.length > 0) {
+        setProjectOptions(customProjects);
+      } else {
+        fetchProjects()
+          .then((projects) => {
+            if (projects.length > 0) {
+              //  Use human-readable project name as value
+              const options = projects.map((p) => ({
+                value: p.name,
+                label: p.name,
+                id: p.id,
+              }));
+              setProjectOptions(options);
+
+              //  Auto-preselect project if currently on /projects/:projectId
+              if (typeof window !== 'undefined') {
+                const path = window.location.pathname;
+                const match = path.match(/\/projects\/([A-Za-z0-9_-]+)/);
+                if (match && match[1]) {
+                  const currentId = match[1];
+                  const matchedProject = projects.find(
+                    (p) => p.id === currentId || (p as any).documentId === currentId
+                  );
+                  if (matchedProject) {
+                    form.setFieldValue('projects', [matchedProject.name]);
+                  }
+                }
+              }
+            }
+          })
+          .catch(() => {
+            setProjectOptions([
+              { value: 'Education for All Initiative', label: 'Education for All Initiative' },
+              { value: 'Green Belt Movement', label: 'Green Belt Movement' },
+            ]);
+          });
+      }
     }
-  }, [open]);
+  }, [open, customProjects, form]);
 
   const reset = () => {
     form.resetFields();
     setStep('letter');
     setSubmitted(false);
+    setErrorMessage(null);
   };
 
   const close = () => {
@@ -76,19 +110,58 @@ export function SupportModal({
       await form.validateFields(['fullName', 'email', 'projects', 'letter']);
       setStep('financial');
     } catch {
-      /* validation errors are shown inline by antd */
+      /* validation errors shown inline by antd */
+    }
+  };
+
+  const handleSendLetterOnly = async () => {
+    try {
+      const step1Values = await form.validateFields(['fullName', 'email', 'projects', 'letter']);
+      setSubmitting(true);
+      setErrorMessage(null);
+
+      const payload: SupportFormValues = {
+        fullName: step1Values.fullName,
+        email: step1Values.email,
+        projects: step1Values.projects,
+        letter: step1Values.letter,
+        financialGiftDetails: undefined,
+        donationFrequency: 'once',
+      };
+
+      await submitSupportSubmission(payload);
+      await onSubmit?.(payload);
+      setSubmitted(true);
+    } catch (error: any) {
+      if (error?.errorFields) return;
+      console.error('Failed to submit support letter:', error);
+      setErrorMessage(error?.message || 'Failed to submit your message. Please try again.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleFinish = async (values: SupportFormValues) => {
     try {
       setSubmitting(true);
-      await submitSupportSubmission(values);
-      await onSubmit?.(values);
+      setErrorMessage(null);
+
+      const allFormValues = form.getFieldsValue(true);
+      const payload: SupportFormValues = {
+        fullName: allFormValues.fullName || values.fullName,
+        email: allFormValues.email || values.email,
+        projects: allFormValues.projects || values.projects,
+        letter: allFormValues.letter || values.letter,
+        financialGiftDetails: values.financialGiftDetails || allFormValues.financialGiftDetails,
+        donationFrequency: values.donationFrequency || allFormValues.donationFrequency || 'monthly',
+      };
+
+      await submitSupportSubmission(payload);
+      await onSubmit?.(payload);
       setSubmitted(true);
-    } catch (error) {
-      console.error('Failed to submit support letter to Strapi:', error);
-      setSubmitted(true);
+    } catch (error: any) {
+      console.error('Failed to submit support gift to Strapi:', error);
+      setErrorMessage(error?.message || 'Failed to submit your contribution. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -113,6 +186,18 @@ export function SupportModal({
       }}
       destroyOnHidden
     >
+      {errorMessage && (
+        <Alert
+          type="error"
+          showIcon
+          title="Submission Error"
+          description={errorMessage}
+          closable
+          onClose={() => setErrorMessage(null)}
+          className="mb-4"
+        />
+      )}
+
       {submitted ? (
         <div className="py-4 sm:py-6">
           <h2 className="font-bold text-[26px] sm:text-[34px] text-[#111111] mb-4" style={FONT}>
@@ -140,175 +225,178 @@ export function SupportModal({
               form={form}
               layout="vertical"
               onFinish={handleFinish}
+              preserve={true}
               requiredMark={false}
               scrollToFirstError
             >
-              {step === 'letter' ? (
-                <>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5">
-                    <Form.Item
-                      label={requiredMark('Full Name')}
-                      name="fullName"
-                      rules={[{ required: true, message: 'Please enter your full name' }]}
-                    >
-                      <Input placeholder="Enter your full name" style={FONT} />
-                    </Form.Item>
-                    <Form.Item
-                      label={requiredMark('Email')}
-                      name="email"
-                      rules={[
-                        { required: true, message: 'Please enter your email' },
-                        { type: 'email', message: 'Please enter a valid email' },
-                      ]}
-                    >
-                      <Input placeholder="Enter your email address" style={FONT} />
-                    </Form.Item>
-                  </div>
-
+              {/* STEP 1: Letter of Well-Wishes */}
+              <div style={{ display: step === 'letter' ? 'block' : 'none' }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5">
                   <Form.Item
-                    label={requiredMark('Which projects would you like to support?')}
-                    name="projects"
-                    rules={[
-                      { required: true, message: 'Please select at least one project' },
-                      {
-                        validator: (_, value: string[]) =>
-                          value && value.length > 0
-                            ? Promise.resolve()
-                            : Promise.reject(new Error('Please select at least one project')),
-                      },
-                    ]}
-                    extra={
-                      <span className="italic text-[13px]" style={FONT}>
-                        You can select multiple options.
-                      </span>
-                    }
+                    label={requiredMark('Full Name')}
+                    name="fullName"
+                    rules={[{ required: true, message: 'Please enter your full name' }]}
                   >
-                    <Checkbox.Group>
-                      <div className="flex flex-col gap-2">
-                        {projects.map((project) => (
-                          <Checkbox key={project.value} value={project.value} style={FONT}>
-                            {project.label}
-                          </Checkbox>
-                        ))}
-                      </div>
-                    </Checkbox.Group>
+                    <Input placeholder="Enter your full name" style={FONT} />
                   </Form.Item>
-
                   <Form.Item
-                    label={requiredMark('Letter/Message of Well-Wishes and Support')}
-                    name="letter"
+                    label={requiredMark('Email')}
+                    name="email"
                     rules={[
-                      { required: true, message: 'Please write your letter of support' },
-                      maxWordsRule(400, 'Please keep your letter within 400 words'),
+                      { required: true, message: 'Please enter your email' },
+                      { type: 'email', message: 'Please enter a valid email' },
                     ]}
-                    extra={
-                      <span className="italic text-[13px]" style={FONT}>
-                        Maximum 400 words
-                      </span>
-                    }
                   >
-                    <Input.TextArea
-                      rows={4}
-                      placeholder="Share your well-wishes and words of encouragement…"
-                      style={FONT}
-                    />
+                    <Input placeholder="Enter your email address" style={FONT} />
                   </Form.Item>
+                </div>
 
+                <Form.Item
+                  label={requiredMark('Which projects would you like to support?')}
+                  name="projects"
+                  rules={[
+                    { required: true, message: 'Please select at least one project' },
+                    {
+                      validator: (_, value: string[]) =>
+                        value && value.length > 0
+                          ? Promise.resolve()
+                          : Promise.reject(new Error('Please select at least one project')),
+                    },
+                  ]}
+                  extra={
+                    <span className="italic text-[13px]" style={FONT}>
+                      You can select multiple options.
+                    </span>
+                  }
+                >
+                  <Checkbox.Group className="w-full">
+                    <div className="flex flex-col gap-2">
+                      {projectOptions.map((project) => (
+                        <Checkbox key={project.value} value={project.value} style={FONT}>
+                          {project.label}
+                        </Checkbox>
+                      ))}
+                    </div>
+                  </Checkbox.Group>
+                </Form.Item>
+
+                <Form.Item
+                  label={requiredMark('Letter/Message of Well-Wishes and Support')}
+                  name="letter"
+                  rules={[
+                    { required: true, message: 'Please write your letter of support' },
+                    maxWordsRule(400, 'Please keep your letter within 400 words'),
+                  ]}
+                  extra={
+                    <span className="italic text-[13px]" style={FONT}>
+                      Maximum 400 words
+                    </span>
+                  }
+                >
+                  <Input.TextArea
+                    rows={4}
+                    placeholder="Share your well-wishes and words of encouragement…"
+                    style={FONT}
+                  />
+                </Form.Item>
+
+                <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                  <PillButton
+                    as="button"
+                    variant="outline"
+                    size="lg"
+                    fullWidth
+                    disabled={submitting}
+                    onClick={handleSendLetterOnly}
+                  >
+                    Send Letter of Support Only
+                  </PillButton>
                   <PillButton
                     as="button"
                     variant="solid"
                     size="lg"
                     fullWidth
                     disabled={submitting}
-                    className="mt-2"
                     onClick={goToFinancialGift}
                   >
-                    Fuel the project with Financial support
+                    Fuel with Financial Gift
                   </PillButton>
-                </>
-              ) : (
-                <>
-                  <h3 className="mb-6 text-[24px] font-bold text-[#111111] sm:text-[26px]" style={FONT}>
-                    A Financial Gift
-                  </h3>
+                </div>
+              </div>
 
-                  <Form.Item
-                    label={requiredMark('Financial Gift Details')}
-                    name="financialGiftDetails"
-                    rules={[{ required: true, message: 'Please enter financial gift details' }]}
-                  >
-                    <div className="flex flex-col gap-2">
-                      <div className="italic text-[#111111]" style={FONT}>
-                        <div>Currency: USD</div>
-                        <div>Amount: $19,00 USD</div>
-                      </div>
-                      <Input style={FONT} />
+              {/* STEP 2: Financial Gift */}
+              <div style={{ display: step === 'financial' ? 'block' : 'none' }}>
+                <h3 className="mb-6 text-[24px] font-bold text-[#111111] sm:text-[26px]" style={FONT}>
+                  A Financial Gift
+                </h3>
+
+                <Form.Item
+                  label={requiredMark('Financial Gift Details')}
+                  name="financialGiftDetails"
+                  rules={[{ required: true, message: 'Please enter financial gift details or amount' }]}
+                >
+                  <Input placeholder="e.g. 50 USD / Bank transfer pledge" style={FONT} />
+                </Form.Item>
+
+                <div className="mb-6 text-[16px] leading-relaxed text-[#111111]" style={FONT}>
+                  <p className="mb-2 text-[18px] font-bold">QR Code</p>
+                  <p className="mb-2 font-bold italic text-neutral-600">
+                    Note: Press and hold the QR code to save it to your phone
+                  </p>
+                  <p className="font-bold">Bank Account Information</p>
+                  <p className="italic">- Account Number: {settings.accountNumber}</p>
+                  <p className="italic">- Account Holder: {settings.accountHolder}</p>
+                  <p className="italic">- Bank: {settings.bankName}</p>
+                  <p className="italic">- Transfer Description: {settings.transferSyntaxNote}</p>
+                </div>
+
+                <div className="mb-8 flex justify-center">
+                  <img
+                    src={settings.qrCodeImageUrl || financialGiftQrCodeUrl}
+                    alt="Payment QR code"
+                    className="max-h-[260px] w-auto max-w-[310px] object-contain rounded-2xl shadow-sm border border-neutral-100"
+                  />
+                </div>
+
+                <Form.Item
+                  label={requiredMark('How often would you like to repeat your donation?')}
+                  name="donationFrequency"
+                  initialValue="monthly"
+                  rules={[{ required: true, message: 'Please select donation frequency' }]}
+                >
+                  <Radio.Group className="w-full">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
+                      <Radio value="monthly" style={FONT}>Monthly</Radio>
+                      <Radio value="quarterly" style={FONT}>Quarterly</Radio>
+                      <Radio value="other" style={FONT}>Other frequencies</Radio>
+                      <Radio value="once" style={FONT}>Just one</Radio>
                     </div>
-                  </Form.Item>
+                  </Radio.Group>
+                </Form.Item>
 
-                  <div className="mb-6 text-[16px] leading-relaxed text-[#111111]" style={FONT}>
-                    <p className="mb-2 text-[18px]">QR Code</p>
-                    <p className="mb-2 font-bold italic">
-                      Note: Press and hold the QR code to save it to your phone
-                    </p>
-                    <p className="font-bold">Bank Account Information</p>
-                    <p className="italic">- Account Number: {settings.accountNumber}</p>
-                    <p className="italic">- Account Holder: {settings.accountHolder}</p>
-                    <p className="italic">- Bank: {settings.bankName}</p>
-                    <p className="italic">- Transfer Description: {settings.transferSyntaxNote}</p>
-
-                    <p className="mt-3 font-bold">Important Notes</p>
-                    <p className="italic">
-                      - Case 1 (Equal Split): To split one transfer equally among multiple projects,{' '}
-                      <strong>list all project names</strong> in the transfer description.
-                    </p>
-                    <p className="italic">
-                      - Case 2 (Specific Amounts): To give <strong>different amounts</strong> to
-                      different projects, please make <strong>separate transfers</strong> for each
-                      project.
-                    </p>
-                    <p className="italic">
-                      E.g. Supporting 3 projects with different amounts = 3 separate transfers.
-                    </p>
-                  </div>
-
-                  <div className="mb-8 flex justify-center">
-                    <img
-                      src={settings.qrCodeImageUrl || financialGiftQrCodeUrl}
-                      alt="Payment QR code"
-                      className="h-auto w-[250px] sm:w-[310px] object-contain rounded-2xl"
-                    />
-                  </div>
-
-                  <Form.Item
-                    label={requiredMark('How often would you like to repeat your donation?')}
-                    name="donationFrequency"
-                    initialValue="monthly"
-                    rules={[{ required: true, message: 'Please select donation frequency' }]}
+                <div className="flex gap-3 mt-4">
+                  <PillButton
+                    as="button"
+                    variant="outline"
+                    size="lg"
+                    fullWidth
+                    disabled={submitting}
+                    onClick={() => setStep('letter')}
                   >
-                    <Radio.Group className="w-full">
-                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
-                        <Radio value="monthly" style={FONT}>Monthly</Radio>
-                        <Radio value="quarterly" style={FONT}>Quarterly</Radio>
-                        <Radio value="other" style={FONT}>Other frequencies</Radio>
-                        <Radio value="once" style={FONT}>Just one</Radio>
-                      </div>
-                    </Radio.Group>
-                  </Form.Item>
-
+                    Back
+                  </PillButton>
                   <PillButton
                     as="button"
                     variant="solid"
                     size="lg"
                     fullWidth
                     disabled={submitting}
-                    className="mt-2"
                     onClick={() => form.submit()}
                   >
                     {submitting ? 'Sending…' : 'Send'}
                   </PillButton>
-                </>
-              )}
+                </div>
+              </div>
             </Form>
           </ConfigProvider>
         </>

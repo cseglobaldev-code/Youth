@@ -9,13 +9,15 @@ const THEME_MAP: Record<string, string> = {
 };
 
 export function CTABannerBlock({ data }: { data: CTABannerBlockData }) {
+  const isExt = Boolean(data.ctaUrl?.startsWith('http'));
+
   return (
     <CTABanner
       title={data.title}
       description={data.description}
       ctaLabel={data.ctaLabel}
-      ctaTo={data.ctaUrl && !data.ctaUrl.startsWith('http') ? data.ctaUrl : undefined}
-      ctaHref={data.ctaUrl && data.ctaUrl.startsWith('http') ? data.ctaUrl : undefined}
+      ctaTo={data.ctaUrl && !isExt ? data.ctaUrl : undefined}
+      ctaHref={data.ctaUrl && isExt ? data.ctaUrl : undefined}
       gradient={THEME_MAP[data.theme || 'rainbow-gradient']}
       hideStar={data.hideStar}
       className="my-0"

@@ -10,6 +10,7 @@ import { ImageGallery } from '@/components/shared/ImageGallery';
 import { SupportCTA } from '@/components/shared/SupportCTA';
 import { CTABanner } from '@/components/shared/CTABanner';
 import { SectionHeading } from '@/components/shared/SectionHeading';
+import { ShareButton } from '@/components/shared/ShareButton/ShareButton';
 import { useSupportModal } from '@/components/modals/SupportModal';
 import { fetchMemberById, type MemberDetailItem } from '@/api/members';
 import { cn, countryFlagEmoji, formatJoinDate } from '@/lib/utils';
@@ -61,6 +62,10 @@ export function MemberDetailPage() {
     member.leader || member.leaderRole || member.leaderEmail || member.leaderPhone
   );
 
+  const cleanPeriodYear = member.period
+    ? member.period.replace(/^since\s+/i, '').split(' ')[0]
+    : '2021';
+
   return (
     <div className="py-section-sm lg:py-section">
       <Container>
@@ -86,19 +91,26 @@ export function MemberDetailPage() {
                 }}
               >
                 Originated in {countryFlagEmoji(member.country)} {member.country} &nbsp;|&nbsp; Since{' '}
-                {member.period?.split(' ')[0] ?? '2021'} &nbsp;|&nbsp; Join Union from:{' '}
+                {cleanPeriodYear} &nbsp;|&nbsp; Join Union from:{' '}
                 {formatJoinDate(member.createdAt) ?? '—'}
               </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {member.focusSdgs.map((sdgId) => (
-                  <SDGTag
-                    key={sdgId}
-                    sdgId={sdgId}
-                    variant="solid"
-                    size="md"
-                    className="!rounded-[6px]"
-                  />
-                ))}
+              <div className="mt-4 flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap gap-2">
+                  {member.focusSdgs.map((sdgId) => (
+                    <SDGTag
+                      key={sdgId}
+                      sdgId={sdgId}
+                      variant="solid"
+                      size="md"
+                      className="!rounded-[6px]"
+                    />
+                  ))}
+                </div>
+                <ShareButton
+                  title={member.name}
+                  text={member.shortDescription || member.description}
+                  variant="outline"
+                />
               </div>
             </div>
 
@@ -119,12 +131,19 @@ export function MemberDetailPage() {
               About Organization
             </h2>
             <p className="leading-relaxed text-neutral-700">{member.description}</p>
-            {member.socialLinks.length > 0 && (
-              <div className="mt-4 flex items-center gap-3">
-                <span className="font-semibold text-black">Follow us</span>
-                <SocialLinks links={member.socialLinks} />
-              </div>
-            )}
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+              {member.socialLinks.length > 0 && (
+                <div className="flex items-center gap-3">
+                  <span className="font-semibold text-black">Follow us</span>
+                  <SocialLinks links={member.socialLinks} />
+                </div>
+              )}
+              <ShareButton
+                title={member.name}
+                text={member.description}
+                variant="outline"
+              />
+            </div>
           </div>
 
           {hasRepresentative && (
@@ -178,7 +197,7 @@ export function MemberDetailPage() {
 
       <CTABanner
         title="Ready to Make an Impact?"
-        description="Join thousands of youth leaders across ASEAN who are making a difference in their communities."
+        description="Join thousands of youth leaders across continents who are making a difference in their communities."
         ctaLabel="Register Now"
       />
     </div>

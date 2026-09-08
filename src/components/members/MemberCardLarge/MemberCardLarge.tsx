@@ -25,7 +25,7 @@ export function MemberCardLarge({
   const {
     name,
     country,
-    period = '2020 → nay',
+    period = '2020 → present',
     leader = 'TBD',
     focusSdgs,
     coverUrl = '',
@@ -40,22 +40,17 @@ export function MemberCardLarge({
       )}
       onClick={onClick}
     >
-      {/* Container with Logo positioned absolutely */}
       <div className="relative">
-        {/* Cover Image */}
         <div className="w-full h-[200px] flex-shrink-0 bg-gray-100 overflow-hidden rounded-t-[16px]">
           <ImageWithFallback src={coverUrl} alt={name} className="w-full h-full object-cover" />
         </div>
 
-        {/* Logo - Positioned on bottom-left, overlaying between cover and content */}
         <div className="absolute bottom-[-32px] left-4 w-16 h-16 rounded-full border-4 border-white overflow-hidden bg-white shadow-lg flex-shrink-0">
           <ImageWithFallback src={logoUrl} alt={`${name} logo`} className="w-full h-full object-cover" />
         </div>
       </div>
 
-      {/* Content */}
       <div className="flex-1 px-5 pt-12 pb-5 flex flex-col gap-3">
-        {/* Title */}
         <h3
           className="font-bold text-[18px] text-[#111111] line-clamp-2 leading-tight transition-colors duration-200 group-hover:text-[#EE334E]"
           style={{ fontFamily: 'Open Sans, sans-serif' }}
@@ -63,7 +58,6 @@ export function MemberCardLarge({
           {name}
         </h3>
 
-        {/* Info Section */}
         <div className="space-y-2 text-[13px] text-[#666666]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
           <div className="flex items-center gap-2">
             <Icon name="mynaui:map-pin" size={16} className="flex-shrink-0" />
@@ -79,7 +73,6 @@ export function MemberCardLarge({
           </div>
         </div>
 
-        {/* SDG Tags */}
         <div className="flex flex-wrap gap-2 pt-2 mt-auto">
           {focusSdgs.slice(0, 3).map((sdgId) => (
             <SDGTag

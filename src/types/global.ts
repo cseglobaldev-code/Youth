@@ -11,4 +11,6 @@ export interface GlobalSetting {
   accountHolder?: string;
   transferSyntaxNote?: string;
   qrCodeImageUrl?: string;
+  termsOfServiceUrl?: string;
+  privacyPolicyUrl?: string;
 }

@@ -5,8 +5,12 @@ import { isAllowedPreviewPath, isPreviewStatus, sameSecret } from './preview';
 describe('preview helpers', () => {
   it('allows configured frontend preview paths only', () => {
     expect(isAllowedPreviewPath('/')).toBe(true);
+    expect(isAllowedPreviewPath('/about-us')).toBe(true);
     expect(isAllowedPreviewPath('/leadership')).toBe(true);
+    expect(isAllowedPreviewPath('/members')).toBe(true);
+    expect(isAllowedPreviewPath('/projects')).toBe(true);
     expect(isAllowedPreviewPath('/policy-documents')).toBe(true);
+    expect(isAllowedPreviewPath('/contact')).toBe(true);
     expect(isAllowedPreviewPath('/projects/project-1')).toBe(true);
     expect(isAllowedPreviewPath('/members/member-1')).toBe(true);
     expect(isAllowedPreviewPath('/pages/page-1')).toBe(true);

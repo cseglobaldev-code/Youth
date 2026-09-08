@@ -4,6 +4,8 @@ import { cn } from '@/lib/utils';
 export interface StatsGridItem {
   label: string;
   value: number;
+  prefix?: string;
+  suffix?: string;
 }
 
 export interface StatsGridProps {
@@ -13,8 +15,9 @@ export interface StatsGridProps {
   className?: string;
 }
 
-function formatStatValue(value: number) {
-  return `+${value.toLocaleString('en-US').replace(/,/g, ' ')}`;
+function formatStatValue(value: number, prefix = '+', suffix = '') {
+  const formatted = value.toLocaleString('en-US').replace(/,/g, ' ');
+  return `${prefix}${formatted}${suffix}`;
 }
 
 export function StatsGrid({ stats, variant = 'home', animated = false, className }: StatsGridProps) {
@@ -65,8 +68,7 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
 
     frameId = window.requestAnimationFrame(animate);
     return () => window.cancelAnimationFrame(frameId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [animated, hasStarted]);
+  }, [animated, hasStarted, stats]);
 
   if (variant === 'about') {
     return (
@@ -77,7 +79,7 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
               <div className="flex w-full flex-col items-center text-center">
                 <span className="text-[clamp(0.875rem,1.2vw,1.125rem)] text-neutral-700">{stat.label}</span>
                 <span className="mt-2 text-[clamp(1.875rem,2.5vw,2.25rem)] font-semibold text-black">
-                  {formatStatValue(values[index])}
+                  {formatStatValue(values[index], stat.prefix ?? '+', stat.suffix ?? '')}
                 </span>
               </div>
               {index < stats.length - 1 && (
@@ -116,7 +118,7 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
                 aria-label={`${stat.value} ${stat.label}`}
                 style={{ fontFamily: 'Open Sans, sans-serif' }}
               >
-                {formatStatValue(values[index])}
+                {formatStatValue(values[index], stat.prefix ?? '+', stat.suffix ?? '')}
               </span>
             </div>
             {index < stats.length - 1 && (

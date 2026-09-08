@@ -36,18 +36,21 @@ export function HeroBlock({ data }: { data: HeroBlockData }) {
 
         {data.buttons && data.buttons.length > 0 && (
           <div className={`mt-4 flex flex-wrap gap-4 ${isSplit ? 'justify-start' : 'justify-center'}`}>
-            {data.buttons.map((btn, idx) => (
-              <PillButton
-                key={idx}
-                variant={toPillVariant(btn.variant)}
-                size={btn.size || 'md'}
-                as={btn.isExternal || btn.url.startsWith('http') ? 'a' : 'router-link'}
-                to={!btn.isExternal && !btn.url.startsWith('http') ? btn.url : undefined}
-                href={btn.isExternal || btn.url.startsWith('http') ? btn.url : undefined}
-              >
-                {btn.label}
-              </PillButton>
-            ))}
+            {data.buttons.map((btn, idx) => {
+              const isExt = btn.isExternal || btn.url?.startsWith('http');
+              return (
+                <PillButton
+                  key={idx}
+                  variant={toPillVariant(btn.variant)}
+                  size={btn.size || 'md'}
+                  as={isExt ? 'a' : 'router-link'}
+                  to={!isExt && btn.url ? btn.url : undefined}
+                  href={isExt && btn.url ? btn.url : undefined}
+                >
+                  {btn.label}
+                </PillButton>
+              );
+            })}
           </div>
         )}
       </div>

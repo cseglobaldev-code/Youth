@@ -25,6 +25,13 @@ interface BlocksRendererProps {
   className?: string;
 }
 
+function resolveImageUrl(url?: string): string {
+  if (!url) return '';
+  if (/^https?:\/\//i.test(url)) return url;
+  const baseUrl = (import.meta.env.VITE_STRAPI_API_URL || (typeof window !== 'undefined' ? window.location.origin : '')).replace(/\/$/, '');
+  return `${baseUrl}${url.startsWith('/') ? url : `/${url}`}`;
+}
+
 function renderTextNode(node: TextNode, key: number) {
   let element: React.ReactNode = node.text;
 
@@ -116,8 +123,35 @@ function renderBlockNode(node: BlockNode, key: number): React.ReactNode {
       if (!node.image?.url) return null;
       return (
         <div key={key} className="my-6 overflow-hidden rounded-2xl">
-          <ImageWithFallback src={node.image.url} alt={node.image.alternativeText || ''} className="h-auto max-h-[550px] w-full object-cover" />
+          <ImageWithFallback
+            src={resolveImageUrl(node.image.url)}
+            alt={node.image.alternativeText || ''}
+            className="h-auto max-h-[550px] w-full object-cover"
+          />
         </div>
+      );
+
+    case 'table':
+      return (
+        <div key={key} className="my-6 overflow-x-auto rounded-xl border border-neutral-200">
+          <table className="w-full text-left border-collapse text-sm md:text-base">
+            <tbody>{children}</tbody>
+          </table>
+        </div>
+      );
+
+    case 'table-row':
+      return (
+        <tr key={key} className="border-b border-neutral-200 last:border-0 hover:bg-neutral-50/50">
+          {children}
+        </tr>
+      );
+
+    case 'table-cell':
+      return (
+        <td key={key} className="px-4 py-3 text-neutral-700">
+          {children}
+        </td>
       );
 
     default:

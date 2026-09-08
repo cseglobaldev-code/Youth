@@ -50,8 +50,6 @@ coverage/
 Thumbs.db
 
 # ===== Markdown files =====
-*.md
-**/*.md
 !README.md
 
 # ===== Agent / skill / spec tooling =====

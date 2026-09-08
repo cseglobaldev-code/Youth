@@ -27,7 +27,7 @@ export function FeaturedMembersBlock({ data }: { data: FeaturedMembersBlockData 
             member={{
               name: member.name,
               country: member.country,
-              period: member.period || '2020 → nay',
+              period: member.period || '2020 → present',
               leader: member.leader || 'TBD',
               focusSdgs: member.focusSdgs,
               coverUrl: member.coverUrl || '',

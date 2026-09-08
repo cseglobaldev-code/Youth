@@ -40,7 +40,6 @@ export function MembersSection() {
   return (
     <section className="bg-[#F2F7FF] rounded-t-3xl py-12 md:py-16 lg:rounded-t-[40px] lg:py-[7.5rem]">
       <Container className="max-w-[95%] sm:max-w-[85%]">
-        {/* Header */}
         <div className="flex items-center justify-between gap-3 mb-8 lg:mb-[40px]">
           <h2 className="font-semibold text-[clamp(2rem,3.13vw,3rem)] leading-tight" style={{ fontFamily: 'Open Sans, sans-serif' }}>
             Member of <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">Y.O.U</span>
@@ -48,7 +47,6 @@ export function MembersSection() {
           <ViewAllButton to={ROUTES.MEMBERS} className="flex-shrink-0 !px-4 !py-1.5 !text-sm sm:!px-6 sm:!py-2.5 sm:!text-[16px]" />
         </div>
 
-        {/* Grid: mobile 1 column, tablet 2 columns, desktop 3 columns; max 3 rows per page */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
           {loading ? (
             Array.from({ length: pageSize }, (_, i) => (
@@ -61,7 +59,7 @@ export function MembersSection() {
                 member={{
                   name: member.name,
                   country: member.country,
-                  period: member.period || '2020 → nay',
+                  period: member.period || '2020 → present',
                   leader: member.leader || 'TBD',
                   focusSdgs: member.focusSdgs,
                   coverUrl: member.coverUrl || '',
@@ -73,8 +71,7 @@ export function MembersSection() {
           )}
         </div>
 
-        {/* Pagination: arrows + page number */}
-        {!loading && (
+        {!loading && totalPages > 1 && (
           <div className="flex justify-center items-center gap-4 mt-8 lg:mt-[40px]">
             <Button
               type="text"
