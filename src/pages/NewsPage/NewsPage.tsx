@@ -92,7 +92,7 @@ export function NewsPage() {
             className="font-semibold text-black text-[clamp(2.5rem,4.17vw,80px)] leading-[110%]"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
           >
-            News &amp;{' '}
+            News &{' '}
             <span
               className="bg-clip-text text-transparent"
               style={{

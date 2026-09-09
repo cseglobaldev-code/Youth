@@ -108,7 +108,7 @@ export function HeaderMobile() {
       >
         <nav className="flex flex-col gap-1">
           {navItems.map((item) => {
-            const active = pathname.startsWith(item.path);
+            const active = pathname === item.path || pathname.startsWith(item.path + '/');
             return (
               <Link
                 key={item.path}

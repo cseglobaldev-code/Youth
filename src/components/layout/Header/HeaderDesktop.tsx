@@ -80,7 +80,7 @@ export function HeaderDesktop() {
             aria-label="Primary"
           >
             {navItems.map((item) => {
-              const active = pathname.startsWith(item.path);
+              const active = pathname === item.path || pathname.startsWith(item.path + '/');
               return (
                 <Link
                   key={item.path}

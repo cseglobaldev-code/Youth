@@ -190,7 +190,7 @@ export function SupportModal({
         <Alert
           type="error"
           showIcon
-          title="Submission Error"
+          message="Submission Error"
           description={errorMessage}
           closable
           onClose={() => setErrorMessage(null)}

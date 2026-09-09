@@ -44,7 +44,7 @@ export function PortalRoutes() {
           }
         >
           {/* Default redirect to Dashboard */}
-          <Route index element={<Navigate to={ROUTES.PORTAL.DASHBOARD} replace />} />
+          <Route index element={<Navigate to="dashboard" replace />} />
           
           {/* 1. Universal Overview (Accessible to all authenticated staff) */}
           <Route path="dashboard" element={<DashboardPage />} />

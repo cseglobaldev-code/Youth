@@ -324,6 +324,7 @@ export async function fetchPageBySlugOrId(
   query.append('filters[slug][$eq]', slugOrId);
   appendDeepPopulateParams(query);
   query.append('pagination[pageSize]', '1');
+  if (options.locale) query.append('locale', options.locale);
   if (isPreview) query.append('status', 'draft');
 
   const slugUrl = `${baseUrl}/api/pages?${query.toString()}`;
@@ -354,6 +355,7 @@ export async function fetchPageBySlugOrId(
   if (slugOrId === 'about-us') {
     const aboutQuery = new URLSearchParams();
     appendDeepPopulateParams(aboutQuery);
+    if (options.locale) aboutQuery.append('locale', options.locale);
     if (isPreview) aboutQuery.append('status', 'draft');
 
     const aboutUrl = `${baseUrl}/api/about-us?${aboutQuery.toString()}`;
@@ -384,6 +386,7 @@ export async function fetchPageBySlugOrId(
   // 3. Fallback: Search by Document ID (Direct Preview links)
   const docQuery = new URLSearchParams();
   appendDeepPopulateParams(docQuery);
+  if (options.locale) docQuery.append('locale', options.locale);
   if (isPreview) docQuery.append('status', 'draft');
 
   const docUrl = `${baseUrl}/api/pages/${encodeURIComponent(slugOrId)}?${docQuery.toString()}`;

@@ -223,6 +223,7 @@ function StaticAboutFallback() {
 export function AboutPage() {
   const [searchParams] = useSearchParams();
   const isPreview = searchParams.get('preview') === '1';
+  const { language } = useLanguage();
   const [page, setPage] = useState<PageDetailItem | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -232,6 +233,7 @@ export function AboutPage() {
     fetchPageBySlugOrId('about-us', {
       signal: controller.signal,
       bypassCache: isPreview,
+      locale: language,
     })
       .then((data) => {
         setPage(data);
@@ -246,7 +248,7 @@ export function AboutPage() {
       });
 
     return () => controller.abort();
-  }, [isPreview]);
+  }, [isPreview, language]);
 
   useEffect(() => {
     if (page) {

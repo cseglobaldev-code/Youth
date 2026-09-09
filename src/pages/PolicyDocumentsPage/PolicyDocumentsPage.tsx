@@ -21,10 +21,30 @@ export function PolicyDocumentsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchDocuments()
-      .then(setDocs)
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+    let ignore = false;
+    const controller = new AbortController();
+
+    fetchDocuments({ signal: controller.signal })
+      .then((data) => {
+        if (!ignore) {
+          setDocs(data);
+        }
+      })
+      .catch((err) => {
+        if (!ignore && err.name !== 'AbortError') {
+          setError(err.message);
+        }
+      })
+      .finally(() => {
+        if (!ignore) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      ignore = true;
+      controller.abort();
+    };
   }, []);
 
   const filteredDocs = useMemo(

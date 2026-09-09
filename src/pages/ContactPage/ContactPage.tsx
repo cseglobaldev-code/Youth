@@ -49,6 +49,7 @@ export function ContactPage() {
       await submitInquiry(inquiry);
       message.success('Thank you! Your inquiry has been submitted.');
       formRef.current?.reset();
+      setDialCode(DIAL_CODES[0].code);
     } catch (error) {
       message.error('Failed to submit inquiry. Please try again.');
       console.error(error);
