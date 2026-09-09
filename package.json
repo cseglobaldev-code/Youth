@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "//dev_comment": "Fix Request.cf timeout: tat CF fetch tren Miniflare khi chay dev local",
+    "dev": "npx -y cross-env CLOUDFLARE_CF_FETCH_ENABLED=false vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "npm run build && wrangler dev",

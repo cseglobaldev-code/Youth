@@ -24,6 +24,10 @@ lerna-debug.log*
 # ===== Environment & secrets =====
 .env
 .env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 !.env.example
 *.pem
 *.key
@@ -49,8 +53,11 @@ coverage/
 .DS_Store
 Thumbs.db
 
-# ===== Markdown files =====
+# ===== Markdown & Documentation (không push tài liệu local) =====
 !README.md
+HUONG_DAN_DEPLOY_LOCAL.md
+DOC_DEPLOY_THAM_KHAO.md
+BAO_CAO_*.md
 
 # ===== Agent / skill / spec tooling =====
 .kiro/
@@ -63,6 +70,8 @@ _bmad-output/
 # ===== Vendored / experimental (không push) =====
 .vendor/
 .playwright-mcp/
+# Chặn thư mục runtime/CMS cục bộ để tránh bị lẫn code Backend vào repo Frontend
+.local-runtime/
 
 # wrangler files
 .wrangler
