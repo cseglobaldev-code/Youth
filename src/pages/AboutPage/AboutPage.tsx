@@ -109,10 +109,10 @@ function StaticAboutFallback() {
       <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container size="narrow" className="lg:max-w-[1080px]">
           <div className="grid items-center gap-8 lg:grid-cols-[400px_1fr] lg:gap-20">
-            <div className="relative aspect-[702/513] w-full overflow-hidden rounded-3xl lg:h-[300px] lg:aspect-auto bg-neutral-100">
+            <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-neutral-100 shadow-sm">
               <img
-                src="/images/about/banner.png"
-                alt="A global alliance for youth-led impact"
+                src="/images/about/open-letter.jpg"
+                alt="Opening letter from Y.O.U President - Mr. Safin H Mohammed"
                 className="h-full w-full object-cover"
               />
             </div>
