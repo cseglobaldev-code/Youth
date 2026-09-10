@@ -3,17 +3,33 @@ import { useJoinModal } from '@/components/modals/JoinModal';
 import { Container } from '@/components/ui/Container';
 
 const ORG_BENEFITS = [
-  'Official Y.O.U member status & certification',
+  'Official Y.O.U membership status & certification',
   'Access to global partnership network',
   'Joint project opportunities',
   'Invitation to Annual Summit & events',
 ];
 
-const INDIVIDUAL_BENEFITS = [
-  'Continental Director (one per continent)',
-  'Country Director (one per country)',
-  'Formal leadership title & credentials',
-  'Access to leadership training programs',
+const INDIVIDUAL_ROLES = [
+  {
+    title: 'Continent Director',
+    jdUrl: 'https://docs.google.com/document/d/1pyn77tCjnGVH7xVnMfh6VxrdT3S3dU0YSRqUPGjN-fo/edit?usp=sharing',
+  },
+  {
+    title: 'Sub-Representative',
+    jdUrl: '#',
+  },
+  {
+    title: 'General Member',
+    jdUrl: '#',
+  },
+  {
+    title: 'Marketing & Communication Member',
+    jdUrl: '#',
+  },
+  {
+    title: 'Secretary & Assistant',
+    jdUrl: '#',
+  },
 ];
 
 export function JoinSection() {
@@ -43,10 +59,10 @@ export function JoinSection() {
               For Organizations
             </span>
             <h3 className="font-semibold text-[clamp(1.5rem,1.82vw,1.75rem)] text-[#111111] my-[16px]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-              Organization Membership
+              Join as Organizational Member
             </h3>
             <p className="text-neutral-600 text-[clamp(1rem,1.30vw,1.25rem)] font-normal leading-relaxed mb-6" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-              Register your youth-led organization as an official Y.O.U member and gain access to a global network, joint programs, and shared resources.
+              Register your youth-led organization as an official Y.O.U membership and gain access to a global network, joint programs, and shared resources.
             </p>
 
             <ul className="space-y-3 mb-8 flex-1">
@@ -59,7 +75,7 @@ export function JoinSection() {
             </ul>
 
             <Button danger type="primary" shape="round" block className="!h-auto !font-semibold !text-[clamp(1rem,1.30vw,1.25rem)] !transition-all hover:!opacity-90 active:!scale-[0.98]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={openOrganization}>
-              Register Your Organization
+              Apply now
             </Button>
           </div>
 
@@ -69,23 +85,38 @@ export function JoinSection() {
               For Individuals
             </span>
             <h3 className="font-semibold text-[clamp(1.5rem,1.82vw,1.75rem)] text-[#111111] my-[16px]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-              Leadership Roles
+              Join as Individual Member
             </h3>
             <p className="text-neutral-600 text-[clamp(1rem,1.30vw,1.25rem)] font-normal leading-relaxed mb-6" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-              Apply to serve as a Continental Director or Country Director and take on a formal leadership role within the alliance's global structure.
+              Become an official individual member of the Union and take an active role in fostering unity, building strategic partnerships, and advancing the Union’s mission.
             </p>
 
             <ul className="space-y-3 mb-8 flex-1">
-              {INDIVIDUAL_BENEFITS.map((benefit) => (
-                <li key={benefit} className="flex items-start gap-3 text-[clamp(1rem,1.30vw,1.25rem)] font-medium text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                  <img src="/images/common/decor/group.svg" alt="" className="w-5 h-5 mt-0.5 flex-shrink-0" aria-hidden="true" />
-                  <span>{benefit}</span>
+              {INDIVIDUAL_ROLES.map((role) => (
+                <li key={role.title} className="flex items-center gap-3 text-[clamp(1rem,1.30vw,1.25rem)] font-medium text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                  <img src="/images/common/decor/group.svg" alt="" className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span>{role.title}</span>
+                    <a
+                      href={role.jdUrl}
+                      target={role.jdUrl !== '#' ? '_blank' : undefined}
+                      rel={role.jdUrl !== '#' ? 'noopener noreferrer' : undefined}
+                      className="text-sm font-semibold text-[#005D9A] hover:underline"
+                      onClick={(e) => {
+                        if (role.jdUrl === '#') {
+                          e.preventDefault();
+                        }
+                      }}
+                    >
+                      [Link JD]
+                    </a>
+                  </div>
                 </li>
               ))}
             </ul>
 
             <Button type="primary" shape="round" block className="!h-auto !font-semibold !text-[clamp(1rem,1.30vw,1.25rem)] !bg-[#005D9A] !border-[#005D9A] !transition-all hover:!opacity-90 active:!scale-[0.98]" style={{ padding: '16px 24px', fontFamily: 'Open Sans, sans-serif' }} onClick={openIndividual}>
-              Apply for a Role
+              Apply now
             </Button>
           </div>
         </div>
