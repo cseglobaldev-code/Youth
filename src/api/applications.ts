@@ -73,6 +73,7 @@ export async function submitLeadershipApplication(
 
   const payload = {
     data: {
+      ...(values.position ? { position: values.position } : {}),
       fullName: values.fullName,
       sex: values.sex,
       sexOther: values.sexOther || undefined,
