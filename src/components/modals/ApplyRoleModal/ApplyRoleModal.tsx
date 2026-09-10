@@ -13,6 +13,7 @@ import { DIAL_CODES } from '@/data/dialCodes';
 import type { Continent } from '@/types';
 
 export interface ApplyRoleFormValues {
+  position?: string;
   fullName: string;
   sex: 'male' | 'female' | 'prefer_not' | 'other';
   sexOther?: string;
@@ -140,6 +141,15 @@ const CONTINENTS: { value: Continent; label: string }[] = [
   { value: 'Asia', label: 'Asia' },
   { value: 'Australia', label: 'Australia' },
   { value: 'Europe', label: 'Europe' },
+];
+
+const RECRUITING_POSITIONS = [
+  { label: 'Continental Director', value: 'Continental Director' },
+  { label: 'Sub-Representative', value: 'Sub-Representative' },
+  { label: 'General Member', value: 'General Member' },
+  { label: 'Marketing & Communication Member', value: 'Marketing & Communication Member' },
+  { label: 'Secretary & Assistant', value: 'Secretary & Assistant' },
+  { label: 'Undefined', value: 'Undefined' },
 ];
 
 export interface ApplyRoleModalProps {
@@ -284,37 +294,8 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
 
       {step !== 5 && (
         <h2 className="font-bold text-[28px] sm:text-[36px] text-[#111111] mb-3 sm:mb-4" style={FONT}>
-          Leadership Roles
+          Join as Individual Members
         </h2>
-      )}
-
-      {step === 1 && (
-        <>
-          <h3 className="font-bold text-[20px] sm:text-[24px] text-[#111111] mb-2 sm:mb-3" style={FONT}>
-            Continental Director
-          </h3>
-          <p className="text-neutral-600 text-[15px] sm:text-[16px] leading-relaxed mb-4" style={FONT}>
-            Thank you for your interest in serving as a Continental Director for the Youth Organization
-            Union (YOU). This role is designed for experienced youth leaders who share our vision of
-            empowering young people, strengthening youth organizations, and fostering global
-            collaboration.
-          </p>
-
-          <div className="flex flex-wrap items-center gap-3 mb-6">
-            <span className="font-semibold text-[15px] sm:text-[16px] text-[#111111]" style={FONT}>
-              Criteria For Recruiting Continental Directors
-            </span>
-            <a
-              href="https://docs.google.com/document/d/1pyn77tCjnGVH7xVnMfh6VxrdT3S3dU0YSRqUPGjN-fo/edit?usp=sharing"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full border border-[#EE334E] px-5 py-1 text-[14px] font-semibold text-[#EE334E] transition-colors hover:bg-[#EE334E]/5"
-              style={FONT}
-            >
-              Link
-            </a>
-          </div>
-        </>
       )}
 
       {step === 2 && (
@@ -364,6 +345,20 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
       <ConfigProvider theme={{ token: { controlHeight: 48, borderRadius: 8, colorPrimary: '#005D9A' } }}>
         <Form form={form} layout="vertical" onFinish={handleFinish} requiredMark={false}>
           <div className={step === 1 ? 'block' : 'hidden'}>
+          <Form.Item
+            label={<FieldLabel text="Position" required />}
+            name="position"
+            rules={[{ required: true, message: 'Please select a position' }]}
+            initialValue="Continental Director"
+          >
+            <Select
+              placeholder="Select a position"
+              options={RECRUITING_POSITIONS}
+              style={FONT}
+              className="w-full"
+            />
+          </Form.Item>
+
           <Form.Item
             label={<FieldLabel text="Full name" required />}
             name="fullName"

@@ -250,7 +250,7 @@ export function MembersPage() {
               fontFamily: 'Open Sans, sans-serif',
             }}
           >
-            Member of{' '}
+            Organizational{' '}
             <span
               className="bg-clip-text text-transparent"
               style={{
@@ -258,7 +258,7 @@ export function MembersPage() {
                   'linear-gradient(90deg, #EE334E 0%, #FCB131 33%, #00A651 67%, #0081C8 100%)',
               }}
             >
-              Organizations
+              Members
             </span>
           </h1>
           <p className="text-center text-[clamp(0.9375rem,1.35vw,1.625rem)] leading-[140%] text-black">
