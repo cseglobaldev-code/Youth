@@ -92,13 +92,7 @@ function StaticAboutFallback() {
               </span>
             </h1>
             <p className="max-w-[1314px] font-normal text-[clamp(1rem,1.2vw,1.375rem)] leading-[140%] tracking-[0px] text-neutral-900 2xl:text-[24px]">
-              The Youth Organization Union (Y.O.U) is an international entity dedicated to driving global youth
-              initiatives. Operating under a NGO model, Y.O.U maintains a strict commitment to a non-profit missions.
-              <br />
-              We aim to create equal opportunities for everyone to learn, develop, and contribute to society.
-              <br />
-              The platform brings together capable youth leaders and global networks to constantly innovate and act
-              for a sustainable future, where no one is left behind.
+              The Youth Organization Union (Y.O.U) brings together dynamic youth leaders and global networks to drive innovation and action for a sustainable future where no one is left behind.
             </p>
           </div>
 
@@ -115,10 +109,10 @@ function StaticAboutFallback() {
       <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container size="narrow" className="lg:max-w-[1080px]">
           <div className="grid items-center gap-8 lg:grid-cols-[400px_1fr] lg:gap-20">
-            <div className="relative aspect-[702/513] w-full overflow-hidden rounded-3xl lg:h-[300px] lg:aspect-auto bg-neutral-100">
+            <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-neutral-100 shadow-sm">
               <img
-                src="/images/about/banner.png"
-                alt="A global alliance for youth-led impact"
+                src="/images/about/open-letter.jpg"
+                alt="Opening letter from Y.O.U President - Mr. Safin H Mohammed"
                 className="h-full w-full object-cover"
               />
             </div>
@@ -158,7 +152,7 @@ function StaticAboutFallback() {
       <section className="pb-0 pt-12 text-center md:pt-16 lg:pt-[7.5rem]">
         <Container size="narrow" className="lg:max-w-[1080px]">
           <h2 className={ABOUT_SECTION_TITLE_CLASS}>
-            Mission{' '}
+            Mission of{' '}
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Y.O.U
             </span>
@@ -192,7 +186,7 @@ function StaticAboutFallback() {
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Y.O.U
             </span>
-            's activities should focus on
+            's activities focus on
           </h2>
 
           <div className="mt-10 grid gap-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 xl:gap-7">
