@@ -145,7 +145,7 @@ function StaticAboutFallback() {
 
       <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container size="narrow" className="lg:max-w-[1080px]">
-          <StatsGrid stats={STATS} variant="about" animated />
+          <StatsGrid stats={STATS} variant="home" animated className="mt-0" />
         </Container>
       </section>
 
