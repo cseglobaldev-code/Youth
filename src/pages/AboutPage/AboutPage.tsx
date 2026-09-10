@@ -92,13 +92,7 @@ function StaticAboutFallback() {
               </span>
             </h1>
             <p className="max-w-[1314px] font-normal text-[clamp(1rem,1.2vw,1.375rem)] leading-[140%] tracking-[0px] text-neutral-900 2xl:text-[24px]">
-              The Youth Organization Union (Y.O.U) is an international entity dedicated to driving global youth
-              initiatives. Operating under a NGO model, Y.O.U maintains a strict commitment to a non-profit missions.
-              <br />
-              We aim to create equal opportunities for everyone to learn, develop, and contribute to society.
-              <br />
-              The platform brings together capable youth leaders and global networks to constantly innovate and act
-              for a sustainable future, where no one is left behind.
+              The Youth Organization Union (Y.O.U) brings together dynamic youth leaders and global networks to drive innovation and action for a sustainable future where no one is left behind
             </p>
           </div>
 
