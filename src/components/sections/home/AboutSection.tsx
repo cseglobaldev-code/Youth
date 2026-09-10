@@ -7,6 +7,7 @@ import { Icon } from '@/components/ui/Icon';
 import { ROUTES } from '@/routes/paths';
 import { StatsGrid } from '@/components/shared/StatsGrid';
 import { VideoCarousel } from './VideoCarousel';
+import { useLanguage } from '@/context/LanguageContext';
 
 type AboutItem = {
   id: 'vision' | 'mission' | 'approach' | 'why';
@@ -30,6 +31,7 @@ const STATS = [
 ];
 
 export function AboutSection() {
+  const { t } = useLanguage();
   const [activeId, setActiveId] = useState<AboutItem['id']>('vision');
 
   return (
@@ -57,7 +59,7 @@ export function AboutSection() {
                 generations.
               </p>
               <Button as="router-link" to={ROUTES.MEMBERS} variant="primary" size="lg" className="w-full justify-center rounded-full bg-[#EE334E] px-6 transition-all duration-200 hover:bg-[#EE334E] hover:opacity-90 active:scale-[0.98] sm:w-auto sm:px-8 lg:mb-[120px]">
-                Join 1,500+ Youth Leaders
+                {t.home.joinLeadersCta}
               </Button>
             </div>
           </div>
