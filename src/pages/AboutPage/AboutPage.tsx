@@ -92,7 +92,7 @@ function StaticAboutFallback() {
               </span>
             </h1>
             <p className="max-w-[1314px] font-normal text-[clamp(1rem,1.2vw,1.375rem)] leading-[140%] tracking-[0px] text-neutral-900 2xl:text-[24px]">
-              The Youth Organization Union (Y.O.U) brings together dynamic youth leaders and global networks to drive innovation and action for a sustainable future where no one is left behind
+              The Youth Organization Union (Y.O.U) brings together dynamic youth leaders and global networks to drive innovation and action for a sustainable future where no one is left behind.
             </p>
           </div>
 
