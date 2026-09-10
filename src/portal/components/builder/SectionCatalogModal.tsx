@@ -171,7 +171,7 @@ export const SECTION_CATALOG: CatalogSection[] = [
     description: 'Grid of icon cards with titles and descriptions (e.g. Mission / Values).',
     icon: <AppstoreOutlined className="text-lime-600 text-2xl" />,
     defaultData: {
-      title: 'Mission Y.O.U',
+      title: 'Mission of Y.O.U',
       highlightTitle: 'Y.O.U',
       subtitle: 'Connect – Share – Create opportunities – Develop sustainably',
       columns: 4,
@@ -190,7 +190,7 @@ export const SECTION_CATALOG: CatalogSection[] = [
     description: 'Circular or rounded images with titles and descriptive text.',
     icon: <LayoutOutlined className="text-pink-500 text-2xl" />,
     defaultData: {
-      title: "'s activities should focus on",
+      title: "'s activities focus on",
       highlightTitle: 'Y.O.U',
       columns: 5,
       imageShape: 'circle',

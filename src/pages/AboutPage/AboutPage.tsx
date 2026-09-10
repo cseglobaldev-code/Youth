@@ -152,7 +152,7 @@ function StaticAboutFallback() {
       <section className="pb-0 pt-12 text-center md:pt-16 lg:pt-[7.5rem]">
         <Container size="narrow" className="lg:max-w-[1080px]">
           <h2 className={ABOUT_SECTION_TITLE_CLASS}>
-            Mission{' '}
+            Mission of{' '}
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Y.O.U
             </span>
@@ -186,7 +186,7 @@ function StaticAboutFallback() {
             <span className="bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] bg-clip-text text-transparent">
               Y.O.U
             </span>
-            's activities should focus on
+            's activities focus on
           </h2>
 
           <div className="mt-10 grid gap-8 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 xl:gap-7">
