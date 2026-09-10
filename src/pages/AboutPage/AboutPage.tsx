@@ -65,7 +65,7 @@ const ACTIVITIES = [
   {
     title: 'Communication & Dissemination',
     description: 'Sharing positive stories and spreading good values.',
-    image: '/images/activity/activity5.jpeg',
+    image: '/images/about/activities/communication-dissemination.png',
   },
 ];
 
