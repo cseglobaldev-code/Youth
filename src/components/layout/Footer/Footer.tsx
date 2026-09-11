@@ -52,18 +52,20 @@ export function Footer({ className }: FooterProps) {
               />
             </Link>
             <div className="mt-5 flex w-[168px] items-center justify-center gap-4 sm:mt-6 sm:w-[190px] lg:w-[225px]">
-              {socialLinks.map((link) => (
-                <a
-                  key={link.platform}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white transition-opacity hover:opacity-75"
-                  aria-label={link.platform === 'twitter' ? 'X' : link.platform}
-                >
-                  <Icon name={link.platform === 'twitter' ? 'fa6-brands:x-twitter' : ICONS[link.platform]} size={18} />
-                </a>
-              ))}
+              {socialLinks
+                .filter((link) => link.platform !== 'twitter' && ['facebook', 'instagram', 'linkedin', 'youtube'].includes(link.platform))
+                .map((link) => (
+                  <a
+                    key={link.platform}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white transition-opacity hover:opacity-75"
+                    aria-label={link.platform}
+                  >
+                    <Icon name={ICONS[link.platform]} size={18} />
+                  </a>
+                ))}
             </div>
           </div>
 
@@ -83,14 +85,14 @@ export function Footer({ className }: FooterProps) {
             <div className="flex flex-col gap-3 lg:gap-4" style={{ fontFamily: 'Open Sans, sans-serif' }}>
               <div className="flex items-start gap-3 text-base font-normal text-neutral-300">
                 <Icon name="lucide:map-pin" size={18} className="mt-0.5 shrink-0 text-blue-400" />
-                <span>{settings.address}</span>
+                <span>Headquarters Address: {settings.address ? settings.address.replace(/^Headquarters(\s*Address)?:\s*/i, '') : 'Global'}</span>
               </div>
               <a
-                href={`mailto:${settings.email}`}
+                href={`mailto:${settings.email || 'youthorgunion@gmail.com'}`}
                 className="flex items-start gap-3 text-base font-normal text-neutral-300 transition-colors hover:text-[#005D9A]"
               >
                 <Icon name="lucide:mail" size={18} className="mt-0.5 shrink-0 text-blue-400" />
-                <span className="break-all sm:break-normal">{settings.email}</span>
+                <span className="break-all sm:break-normal">{settings.email || 'youthorgunion@gmail.com'}</span>
               </a>
               <div className="flex items-start gap-3 text-base font-normal text-neutral-300">
                 <Icon name="lucide:calendar" size={18} className="mt-0.5 shrink-0 text-blue-400" />

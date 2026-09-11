@@ -48,7 +48,7 @@ export const MEMBERS_DATA: Member[] = [
     continent: 'Africa',
     focusSdgs: [13, 15, 7],
     socialLinks: [
-      { platform: 'twitter', url: 'https://twitter.com/greenfuture' },
+      { platform: 'youtube', url: 'https://youtube.com/@greenfuture' },
       { platform: 'linkedin', url: 'https://linkedin.com/company/greenfuture' },
     ],
     projectIds: ['project-2'],
@@ -122,7 +122,7 @@ export const MEMBERS_DATA: Member[] = [
     continent: 'Asia',
     focusSdgs: [3, 1, 5],
     socialLinks: [
-      { platform: 'twitter', url: 'https://twitter.com/healthyouth' },
+      { platform: 'youtube', url: 'https://youtube.com/@healthyouth' },
     ],
     projectIds: [],
     gallery: getActivityGallery(5),

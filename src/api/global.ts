@@ -34,10 +34,16 @@ interface StrapiGlobalSettingResponse {
 }
 
 export const DEFAULT_GLOBAL_SETTINGS: GlobalSetting = {
-  address: 'Global - Operating across 6 continents',
-  email: 'info@youthorgunion.org',
+  address: 'Global',
+  email: 'youthorgunion@gmail.com',
   hotline: '(+84) 98.242.1109',
   operatingTime: 'Within 5-7 business days',
+  socialLinks: [
+    { platform: 'facebook', url: 'https://www.facebook.com/UnionofYouth' },
+    { platform: 'instagram', url: 'https://www.instagram.com/youthorgunion/' },
+    { platform: 'linkedin', url: 'https://www.linkedin.com/company/unionofyouth/posts/?feedView=all' },
+    { platform: 'youtube', url: 'https://www.youtube.com/channel/UCddzJhzZYX8A30H_dDYrYog' },
+  ],
   bankName: 'MB Bank - Ben Thanh Branch',
   accountNumber: '000999999999',
   accountHolder: 'Youth Organization Union',
