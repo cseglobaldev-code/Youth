@@ -164,19 +164,17 @@ export function ContactPage() {
             </div>
 
             <div>
-              <label htmlFor="contact-message" className="mb-1 block text-[16px] font-normal leading-[140%] text-[#151515]">
+              <label htmlFor="contact-message" className={labelClasses}>
                 Your message <span className="text-[#EE334E]">*</span>
               </label>
-              <p className="mb-3 text-[13px] italic font-normal text-neutral-500">
-                Maximum 1000 words
-              </p>
               <textarea
                 id="contact-message"
                 name="message"
                 autoComplete="off"
                 required
                 rows={5}
-                className="min-h-[124px] w-full rounded-[16px] border border-[#D9D9D9] bg-white px-4 py-4 text-base text-[#151515] outline-none transition focus:border-[#EE334E] focus:ring-2 focus:ring-[#EE334E]/10"
+                placeholder="Maximum 1000 words"
+                className="min-h-[124px] w-full rounded-[16px] border border-[#D9D9D9] bg-white px-4 py-4 text-base text-[#151515] outline-none transition focus:border-[#EE334E] focus:ring-2 focus:ring-[#EE334E]/10 placeholder:text-neutral-400"
               />
             </div>
 
