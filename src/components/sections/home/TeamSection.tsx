@@ -36,8 +36,6 @@ const FALLBACK_EXECUTIVES: TeamMember[] = [
   },
 ];
 
-const FALLBACK_DIRECTORS: TeamMember[] = [];
-
 export function TeamSection() {
   const [leadership, setLeadership] = useState<LeadershipRoster>({
     executives: FALLBACK_EXECUTIVES,
