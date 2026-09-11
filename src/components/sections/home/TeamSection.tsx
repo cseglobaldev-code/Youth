@@ -36,41 +36,18 @@ const FALLBACK_EXECUTIVES: TeamMember[] = [
   },
 ];
 
-const FALLBACK_DIRECTORS: TeamMember[] = [
-  {
-    id: 'dir-1',
-    name: 'Trần Nguyễn Mai Trinh',
-    role: 'Regional Director - HCMC',
-    avatarUrl: '/images/home/about/ambassador-2.jpg',
-    continent: 'Asia',
-    socialLinks: [{ platform: 'linkedin', url: 'https://linkedin.com' }],
-  },
-  {
-    id: 'dir-2',
-    name: 'Lê Mạnh Linh (Henry)',
-    role: 'Regional Director - Hanoi',
-    avatarUrl: '/images/home/about/ambassador-5.jpg',
-    continent: 'Asia',
-  },
-  {
-    id: 'dir-3',
-    name: 'Nguyễn Thanh Hải (Hai)',
-    role: 'Regional Director - HCMC',
-    avatarUrl: '/images/home/about/ambassador-6.jpg',
-    continent: 'Asia',
-  },
-];
+const FALLBACK_DIRECTORS: TeamMember[] = [];
 
 export function TeamSection() {
   const [leadership, setLeadership] = useState<LeadershipRoster>({
     executives: FALLBACK_EXECUTIVES,
-    directors: FALLBACK_DIRECTORS,
+    directors: [],
   });
   const [directorIndex, setDirectorIndex] = useState(0);
 
   const leaders = leadership.executives.length > 0 ? leadership.executives : FALLBACK_EXECUTIVES;
-  const directors = leadership.directors.length > 0 ? leadership.directors : FALLBACK_DIRECTORS;
-  const activeDirector = directors[directorIndex % directors.length];
+  const directors = leadership.directors;
+  const activeDirector = directors.length > 0 ? directors[directorIndex % directors.length] : null;
   const previewDirectors = directors.slice(0, 5);
 
   useEffect(() => {
@@ -175,83 +152,87 @@ export function TeamSection() {
           })}
         </div>
 
-        <hr className="border-neutral-200 my-10 lg:my-[60px]" />
+        {directors.length > 0 && (
+          <>
+            <hr className="border-neutral-200 my-10 lg:my-[60px]" />
 
-        {/* Continental Directors */}
-        <div className="flex flex-col items-center gap-1 mb-8 lg:mb-[40px]">
-          <h3 className="text-center font-semibold text-[clamp(1.5rem,1.82vw,1.75rem)] text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-            Continental Directors
-          </h3>
-          <span className="text-center text-neutral-500" style={{ fontSize: 'clamp(0.875rem, 1.04vw, 1rem)', fontFamily: 'Open Sans, sans-serif' }}>
-            Term {currentTermLabel()}
-          </span>
-        </div>
+            {/* Continental Directors */}
+            <div className="flex flex-col items-center gap-1 mb-8 lg:mb-[40px]">
+              <h3 className="text-center font-semibold text-[clamp(1.5rem,1.82vw,1.75rem)] text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                Continental Directors
+              </h3>
+              <span className="text-center text-neutral-500" style={{ fontSize: 'clamp(0.875rem, 1.04vw, 1rem)', fontFamily: 'Open Sans, sans-serif' }}>
+                Term {currentTermLabel()}
+              </span>
+            </div>
 
-        {/* Mobile View */}
-        {activeDirector && (
-          <div className="flex flex-col items-center mb-10 lg:hidden">
-            <div className="flex items-center justify-center gap-4 sm:gap-6">
-              <button
-                type="button"
-                onClick={showPreviousDirector}
-                aria-label="Previous director"
-                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-[#EE334E] text-[#EE334E] transition-colors hover:bg-[#EE334E] hover:text-white sm:h-10 sm:w-10 cursor-pointer"
-              >
-                <Icon name="lucide:chevron-left" size={20} />
-              </button>
-              <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden relative group cursor-pointer transition-all duration-300">
-                <Image
-                  src={activeDirector.avatarUrl || '/images/home/about/ambassador-2.jpg'}
-                  alt={activeDirector.name}
-                  preview={false}
-                  className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50"
-                />
+            {/* Mobile View */}
+            {activeDirector && (
+              <div className="flex flex-col items-center mb-10 lg:hidden">
+                <div className="flex items-center justify-center gap-4 sm:gap-6">
+                  <button
+                    type="button"
+                    onClick={showPreviousDirector}
+                    aria-label="Previous director"
+                    className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-[#EE334E] text-[#EE334E] transition-colors hover:bg-[#EE334E] hover:text-white sm:h-10 sm:w-10 cursor-pointer"
+                  >
+                    <Icon name="lucide:chevron-left" size={20} />
+                  </button>
+                  <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden relative group cursor-pointer transition-all duration-300">
+                    <Image
+                      src={activeDirector.avatarUrl || '/images/home/about/ambassador-2.jpg'}
+                      alt={activeDirector.name}
+                      preview={false}
+                      className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={showNextDirector}
+                    aria-label="Next director"
+                    className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-[#EE334E] text-[#EE334E] transition-colors hover:bg-[#EE334E] hover:text-white sm:h-10 sm:w-10 cursor-pointer"
+                  >
+                    <Icon name="lucide:chevron-right" size={20} />
+                  </button>
+                </div>
+                <div className="mt-3 flex max-w-[220px] flex-col items-center">
+                  <h4 className="font-semibold text-base text-[#111111] text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                    {activeDirector.name}
+                  </h4>
+                  <p className="text-sm text-neutral-500 text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                    {activeDirector.role}
+                  </p>
+                </div>
               </div>
-              <button
-                type="button"
-                onClick={showNextDirector}
-                aria-label="Next director"
-                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-[#EE334E] text-[#EE334E] transition-colors hover:bg-[#EE334E] hover:text-white sm:h-10 sm:w-10 cursor-pointer"
-              >
-                <Icon name="lucide:chevron-right" size={20} />
-              </button>
+            )}
+
+            {/* Desktop Grid */}
+            <div className="hidden lg:grid grid-cols-3 xl:grid-cols-5 justify-items-center gap-[32px] mb-[60px]">
+              {previewDirectors.map((dir) => (
+                <div key={dir.id} className="flex flex-col items-center max-w-[200px]">
+                  <div className="w-[180px] h-[180px] rounded-full overflow-hidden mb-3 relative group cursor-pointer bg-[#EEEEEE]">
+                    <Image
+                      src={dir.avatarUrl || '/images/home/about/ambassador-2.jpg'}
+                      alt={dir.name}
+                      preview={false}
+                      className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50"
+                    />
+                  </div>
+                  <h4 className="font-semibold text-[clamp(0.875rem,1.04vw,1rem)] text-[#111111] text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                    {dir.name}
+                  </h4>
+                  <p className="text-[clamp(0.8125rem,0.91vw,0.875rem)] text-neutral-500 text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
+                    {dir.role}
+                  </p>
+                </div>
+              ))}
             </div>
-            <div className="mt-3 flex max-w-[220px] flex-col items-center">
-              <h4 className="font-semibold text-base text-[#111111] text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                {activeDirector.name}
-              </h4>
-              <p className="text-sm text-neutral-500 text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                {activeDirector.role}
-              </p>
+
+            <div className="flex justify-center">
+              <ViewAllButton to={ROUTES.LEADERSHIP} />
             </div>
-          </div>
+          </>
         )}
-
-        {/* Desktop Grid */}
-        <div className="hidden lg:grid grid-cols-3 xl:grid-cols-5 justify-items-center gap-[32px] mb-[60px]">
-          {previewDirectors.map((dir) => (
-            <div key={dir.id} className="flex flex-col items-center max-w-[200px]">
-              <div className="w-[180px] h-[180px] rounded-full overflow-hidden mb-3 relative group cursor-pointer bg-[#EEEEEE]">
-                <Image
-                  src={dir.avatarUrl || '/images/home/about/ambassador-2.jpg'}
-                  alt={dir.name}
-                  preview={false}
-                  className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50"
-                />
-              </div>
-              <h4 className="font-semibold text-[clamp(0.875rem,1.04vw,1rem)] text-[#111111] text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                {dir.name}
-              </h4>
-              <p className="text-[clamp(0.8125rem,0.91vw,0.875rem)] text-neutral-500 text-center" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-                {dir.role}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex justify-center">
-          <ViewAllButton to={ROUTES.LEADERSHIP} />
-        </div>
       </Container>
     </section>
   );
