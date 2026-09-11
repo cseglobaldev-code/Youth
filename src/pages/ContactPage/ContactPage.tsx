@@ -36,12 +36,19 @@ export function ContactPage() {
 
     const phoneNumber = String(formData.get('phone') ?? '').trim();
 
+    const messageContent = String(formData.get('message') ?? '').trim();
+    const wordCount = messageContent.split(/\s+/).filter(Boolean).length;
+    if (wordCount > 1000) {
+      message.error('Message exceeds maximum limit of 1000 words.');
+      return;
+    }
+
     const inquiry: Inquiry = {
       name: String(formData.get('name')),
       email: String(formData.get('email')),
       phone: phoneNumber ? `${dialCode} ${phoneNumber}` : '',
       reason: String(formData.get('reason')),
-      message: String(formData.get('message')),
+      message: messageContent,
     };
 
     try {
@@ -157,9 +164,12 @@ export function ContactPage() {
             </div>
 
             <div>
-              <label htmlFor="contact-message" className={labelClasses}>
+              <label htmlFor="contact-message" className="mb-1 block text-[16px] font-normal leading-[140%] text-[#151515]">
                 Your message <span className="text-[#EE334E]">*</span>
               </label>
+              <p className="mb-3 text-[13px] italic font-normal text-neutral-500">
+                Maximum 1000 words
+              </p>
               <textarea
                 id="contact-message"
                 name="message"
