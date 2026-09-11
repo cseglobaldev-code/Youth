@@ -74,7 +74,7 @@ export function GeneralSettingsPage() {
             <Divider>Contact &amp; Operations</Divider>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Form.Item label="Official Email" name="email" rules={[{ required: true, type: 'email' }]}>
-                <Input placeholder="info@youthorgunion.org" />
+                <Input placeholder="youthorgunion@gmail.com" />
               </Form.Item>
               <Form.Item label="Hotline Phone" name="hotline">
                 <Input placeholder="(+84) 98.242.1109" />
@@ -82,7 +82,7 @@ export function GeneralSettingsPage() {
             </div>
 
             <Form.Item label="Office Address" name="address" rules={[{ required: true }]}>
-              <Input placeholder="e.g. Tầng 5, Tòa nhà Y.O.U Global, Hà Nội, Việt Nam" />
+              <Input placeholder="e.g. Global" />
             </Form.Item>
 
             <Form.Item label="Operating Hours / Response Time" name="operatingTime">

@@ -86,10 +86,8 @@ export interface StrapiSocialLink {
 const VALID_SOCIAL_PLATFORMS = new Set([
   'youtube',
   'facebook',
-  'twitter',
   'instagram',
   'linkedin',
-  'tiktok',
 ]);
 
 export function mapSocialLinks(value: StrapiSocialLink[] | null | undefined): SocialLink[] {

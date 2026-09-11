@@ -36,6 +36,8 @@ const FALLBACK_EXECUTIVES: TeamMember[] = [
   },
 ];
 
+const ALLOWED_SOCIAL_PLATFORMS = new Set(['facebook', 'instagram', 'linkedin', 'youtube']);
+
 export function TeamSection() {
   const [leadership, setLeadership] = useState<LeadershipRoster>({
     executives: FALLBACK_EXECUTIVES,
@@ -95,7 +97,10 @@ export function TeamSection() {
 
         <div className="mx-auto grid grid-cols-2 lg:grid-cols-3 justify-items-center gap-x-4 gap-y-8 sm:gap-x-8 lg:max-w-[860px] lg:gap-[24px] mb-8 lg:mb-[40px]">
           {leaders.map((leader) => {
-            const hasSocial = leader.socialLinks && leader.socialLinks.length > 0;
+            const allowedSocialLinks = leader.socialLinks?.filter((link) =>
+              ALLOWED_SOCIAL_PLATFORMS.has(link.platform)
+            );
+            const hasSocial = Boolean(allowedSocialLinks && allowedSocialLinks.length > 0);
             const isPresident = /president/i.test(leader.role) && !/vice/i.test(leader.role);
             return (
               <div
@@ -121,7 +126,7 @@ export function TeamSection() {
                     {hasSocial && (
                       <div className="absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="flex gap-3">
-                          {leader.socialLinks!.map((link) => (
+                          {allowedSocialLinks!.map((link) => (
                             <a
                               key={link.platform}
                               href={link.url}
