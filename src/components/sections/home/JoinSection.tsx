@@ -47,7 +47,7 @@ export function JoinSection() {
             </span>
           </h2>
           <p className="text-neutral-600 text-[clamp(1rem,1.30vw,1.25rem)] font-normal" style={{ fontFamily: 'Open Sans, sans-serif' }}>
-            Two pathways to become part of the Youth Organization Union.
+            Two pathways to become an official part of the Youth Organization Union.
           </p>
         </div>
 

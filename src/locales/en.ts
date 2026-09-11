@@ -50,7 +50,7 @@ export const en: LocaleDictionary = {
     visionTitle2: 'Youth-Led Impact',
     joinMovementTitle: 'Join the',
     joinMovementHighlight: 'Movement',
-    joinMovementSubtitle: 'Two pathways to become part of the Youth Organization Union.',
+    joinMovementSubtitle: 'Two pathways to become an official part of the Youth Organization Union.',
     forOrgs: 'For Organizations',
     orgMembershipTitle: 'Join as Organizational Member',
     orgMembershipDesc: 'Register your youth-led organization as an official Y.O.U membership and gain access to a global network, joint programs, and shared resources.',
@@ -74,7 +74,7 @@ export const en: LocaleDictionary = {
   modals: {
     joinChoice: {
       title: 'Join The Movement',
-      subtitle: 'Two pathways to become part of the Youth Organization Union',
+      subtitle: 'Two pathways to become an official part of the Youth Organization Union',
       asOrg: 'Join as Organization',
       asIndiv: 'Join as Individual',
       next: 'Next',

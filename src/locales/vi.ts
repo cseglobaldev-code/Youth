@@ -50,7 +50,7 @@ export const vi: LocaleDictionary = {
     visionTitle2: 'Tác động của Thanh niên',
     joinMovementTitle: 'Tham gia',
     joinMovementHighlight: 'Hành trình',
-    joinMovementSubtitle: 'Hai phương thức để trở thành một phần của Liên minh Tổ chức Thanh niên.',
+    joinMovementSubtitle: 'Hai phương thức để trở thành một phần chính thức của Liên minh Tổ chức Thanh niên.',
     forOrgs: 'Dành cho Tổ chức',
     orgMembershipTitle: 'Gia nhập với tư cách Thành viên Tổ chức',
     orgMembershipDesc: 'Đăng ký tổ chức thanh niên của bạn để nhận tư cách thành viên chính thức của Y.O.U nhằm tiếp cận mạng lưới toàn cầu, các chương trình chung và nguồn lực chia sẻ.',
@@ -74,7 +74,7 @@ export const vi: LocaleDictionary = {
   modals: {
     joinChoice: {
       title: 'Tham gia Phong trào',
-      subtitle: 'Hai phương thức để trở thành một phần của Liên minh Y.O.U',
+      subtitle: 'Hai phương thức để trở thành một phần chính thức của Liên minh Y.O.U',
       asOrg: 'Gia nhập với tư cách Tổ chức',
       asIndiv: 'Gia nhập với tư cách Cá nhân',
       next: 'Tiếp theo',
