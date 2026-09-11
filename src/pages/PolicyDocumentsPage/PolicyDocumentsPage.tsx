@@ -59,7 +59,7 @@ export function PolicyDocumentsPage() {
     <div className="py-section-sm lg:py-section">
       <Container>
         <SectionHeading
-          title="Policy & Documents"
+          title="Documents"
           description="All official Y.O.U governance documents, membership agreements, policy frameworks, and annual reports are available here for full transparency."
         />
 
