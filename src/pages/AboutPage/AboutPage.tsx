@@ -11,7 +11,7 @@ import { updatePageSEO } from '@/lib/utils/seo';
 import type { PageDetailItem } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
 const STATS = [
-  { label: 'Member Organizations', value: 50 },
+  { label: 'Organizational Members', value: 20 },
   { label: 'Continents', value: 6 },
   { label: 'Countries', value: 30 },
   { label: 'Volunteers from Global', value: 1500 },

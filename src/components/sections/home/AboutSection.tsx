@@ -20,11 +20,11 @@ const ABOUT_ITEMS: AboutItem[] = [
   { id: 'vision', title: 'Our Vision', color: '#F4F4F4', description: 'A world where every young person has the platform and tools to lead positive change in their community and beyond.' },
   { id: 'mission', title: 'Our Mission', color: '#F4F4F4', description: 'To connect, support, and amplify youth-led organizations globally through collaboration, capacity building, and shared resources for sustainable development.' },
   { id: 'approach', title: 'Our Approach', color: '#F4F4F4', description: 'We build bridges across borders, cultures, and generations by facilitating partnerships, joint programs, and knowledge exchange between youth organizations worldwide.' },
-  { id: 'why', title: 'Why join us', color: '#F4F4F4', description: 'Join a global network of 50+ organizations across 30 countries, access funding opportunities, leadership training, and collaborative projects aligned with the UN SDGs.' },
+  { id: 'why', title: 'Why join us', color: '#F4F4F4', description: 'Join a global network of 20+ organizations across 30 countries, access funding opportunities, leadership training, and collaborative projects aligned with the UN SDGs.' },
 ];
 
 const STATS = [
-  { label: 'Member Organizations', value: 50 },
+  { label: 'Organizational Members', value: 20 },
   { label: 'Continents', value: 6 },
   { label: 'Countries', value: 30 },
   { label: 'Volunteers from Global', value: 1500 },
