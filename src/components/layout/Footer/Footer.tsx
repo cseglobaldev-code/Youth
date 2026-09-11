@@ -27,7 +27,9 @@ export function Footer({ className }: FooterProps) {
     return () => controller.abort();
   }, []);
 
-  const socialLinks = settings.socialLinks && settings.socialLinks.length > 0 ? settings.socialLinks : SOCIAL_LINKS;
+  const ALLOWED_SOCIAL_PLATFORMS = new Set(['facebook', 'instagram', 'linkedin', 'youtube']);
+  const rawSocialLinks = settings.socialLinks && settings.socialLinks.length > 0 ? settings.socialLinks : SOCIAL_LINKS;
+  const socialLinks = rawSocialLinks.filter((link) => ALLOWED_SOCIAL_PLATFORMS.has(link.platform));
 
   const discoverLinks = [
     { to: ROUTES.ABOUT, label: t.nav.about },
@@ -59,9 +61,9 @@ export function Footer({ className }: FooterProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white transition-opacity hover:opacity-75"
-                  aria-label={link.platform === 'twitter' ? 'X' : link.platform}
+                  aria-label={link.platform}
                 >
-                  <Icon name={link.platform === 'twitter' ? 'fa6-brands:x-twitter' : ICONS[link.platform]} size={18} />
+                  <Icon name={ICONS[link.platform]} size={18} />
                 </a>
               ))}
             </div>

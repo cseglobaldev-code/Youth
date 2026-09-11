@@ -11,9 +11,8 @@ export const NAV_ITEMS: NavItem[] = [
 ];
 
 export const SOCIAL_LINKS: SocialLink[] = [
-  { platform: 'youtube', url: 'https://youtube.com/@you-alliance' },
-  { platform: 'facebook', url: 'https://facebook.com/you.alliance' },
-  { platform: 'twitter', url: 'https://x.com/you_alliance' },
-  { platform: 'instagram', url: 'https://instagram.com/you.alliance' },
-  { platform: 'linkedin', url: 'https://linkedin.com/company/you-alliance' },
+  { platform: 'facebook', url: 'https://www.facebook.com/UnionofYouth' },
+  { platform: 'instagram', url: 'https://www.instagram.com/youthorgunion/' },
+  { platform: 'linkedin', url: 'https://www.linkedin.com/company/unionofyouth/posts/?feedView=all' },
+  { platform: 'youtube', url: 'https://www.youtube.com/channel/UCddzJhzZYX8A30H_dDYrYog' },
 ];

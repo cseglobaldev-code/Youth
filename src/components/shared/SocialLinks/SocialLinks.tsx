@@ -9,10 +9,13 @@ export interface SocialLinksProps {
   className?: string;
 }
 
+const ALLOWED_SOCIAL_PLATFORMS = new Set(['facebook', 'instagram', 'linkedin', 'youtube']);
+
 export function SocialLinks({ links, size = 20, className }: SocialLinksProps) {
+  const allowedLinks = links.filter((link) => ALLOWED_SOCIAL_PLATFORMS.has(link.platform));
   return (
     <div className={cn('flex items-center gap-3', className)}>
-      {links.map((link) => (
+      {allowedLinks.map((link) => (
         <a
           key={link.platform}
           href={link.url}

@@ -4,13 +4,13 @@ export const siteConfig = {
   description: 'A global alliance for youth-led activities',
   tagline: 'Empowering Youth, Transforming Communities',
   socialLinks: {
-    youtube: 'https://youtube.com/@you-alliance',
-    facebook: 'https://facebook.com/you.alliance',
-    twitter: 'https://twitter.com/you_alliance',
-    instagram: 'https://instagram.com/you.alliance',
-    linkedin: 'https://linkedin.com/company/you-alliance',
+    facebook: 'https://www.facebook.com/UnionofYouth',
+    instagram: 'https://www.instagram.com/youthorgunion/',
+    linkedin: 'https://www.linkedin.com/company/unionofyouth/posts/?feedView=all',
+    youtube: 'https://www.youtube.com/channel/UCddzJhzZYX8A30H_dDYrYog',
   },
   contact: {
-    email: 'info@you-alliance.org',
+    email: 'youthorgunion@gmail.com',
+    address: 'Global',
   },
 } as const;
