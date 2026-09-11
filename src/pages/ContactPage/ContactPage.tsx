@@ -11,7 +11,7 @@ import { countryFlagEmoji } from '@/lib/utils';
 const CONTACT_REASONS = [
   'Partnership',
   'Recognition',
-  'Investment & Sponsor',
+  'Investment & Sponsorship',
   'Application for a role',
   'Suggestion',
   'Complaint',
@@ -28,7 +28,7 @@ const labelClasses = 'mb-3 block text-[16px] font-normal leading-[140%] text-[#1
 export function ContactPage() {
   const formRef = useRef<HTMLFormElement>(null);
   const [loading, setLoading] = useState(false);
-  const [dialCode, setDialCode] = useState(DIAL_CODES[0].code);
+  const [dialCode, setDialCode] = useState('');
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -46,7 +46,7 @@ export function ContactPage() {
     const inquiry: Inquiry = {
       name: String(formData.get('name')),
       email: String(formData.get('email')),
-      phone: phoneNumber ? `${dialCode} ${phoneNumber}` : '',
+      phone: phoneNumber ? `${dialCode} ${phoneNumber}`.trim() : '',
       reason: String(formData.get('reason')),
       message: messageContent,
     };
@@ -56,7 +56,7 @@ export function ContactPage() {
       await submitInquiry(inquiry);
       message.success('Thank you! Your inquiry has been submitted.');
       formRef.current?.reset();
-      setDialCode(DIAL_CODES[0].code);
+      setDialCode('');
     } catch (error) {
       message.error('Failed to submit inquiry. Please try again.');
       console.error(error);
@@ -118,6 +118,7 @@ export function ContactPage() {
                       onChange={(e) => setDialCode(e.target.value)}
                       className={`${inputClasses} w-full appearance-none !pl-3 !pr-8`}
                     >
+                      <option value="">--</option>
                       {DIAL_CODES.map((d) => (
                         <option key={d.country} value={d.code} title={d.country}>
                           {countryFlagEmoji(d.country)} {d.code}

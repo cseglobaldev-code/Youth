@@ -3,10 +3,8 @@ export interface DialCode {
   code: string;
 }
 
-// Sorted alphabetically by country name; Vietnam is the default selection on
-// the contact form since Y.O.U is headquartered in Hanoi.
+// Sorted alphabetically by country name.
 export const DIAL_CODES: DialCode[] = [
-  { country: 'Vietnam', code: '+84' },
   { country: 'Afghanistan', code: '+93' },
   { country: 'Albania', code: '+355' },
   { country: 'Algeria', code: '+213' },
@@ -103,6 +101,7 @@ export const DIAL_CODES: DialCode[] = [
   { country: 'United Kingdom', code: '+44' },
   { country: 'United States', code: '+1' },
   { country: 'Uzbekistan', code: '+998' },
+  { country: 'Vietnam', code: '+84' },
   { country: 'Zambia', code: '+260' },
   { country: 'Zimbabwe', code: '+263' },
 ];
