@@ -79,7 +79,7 @@ export const SECTION_CATALOG: CatalogSection[] = [
       variant: 'home',
       animated: true,
       items: [
-        { label: 'Member Organizations', value: 50, prefix: '+' },
+        { label: 'Organizational Members', value: 20, prefix: '+' },
         { label: 'Continents', value: 6, prefix: '+' },
         { label: 'Countries', value: 30, prefix: '+' },
         { label: 'Volunteers', value: 1500, prefix: '+' },
