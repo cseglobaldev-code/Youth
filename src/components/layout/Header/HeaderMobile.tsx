@@ -37,7 +37,7 @@ export function HeaderMobile() {
       label: (
         <div className="flex items-center justify-between gap-4 py-1.5 px-2">
           <span className="flex items-center gap-2">
-            <span>🇬🇧</span> English
+            <span className="font-semibold text-[13px] text-neutral-700">EN</span> English
           </span>
           {language === 'en' && <CheckOutlined className="text-[#005D9A]" />}
         </div>
@@ -49,7 +49,7 @@ export function HeaderMobile() {
       label: (
         <div className="flex items-center justify-between gap-4 py-1.5 px-2">
           <span className="flex items-center gap-2">
-            <span>🇻🇳</span> Tiếng Việt
+            <span className="font-semibold text-[13px] text-neutral-700">VN</span> Tiếng Việt
           </span>
           {language === 'vi' && <CheckOutlined className="text-[#005D9A]" />}
         </div>
