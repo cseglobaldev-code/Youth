@@ -241,11 +241,10 @@ export function RegisterOrganizationModal({
                 { required: true, message: 'Please enter organization description' },
                 maxWordsRule(60, 'Please keep the description within 60 words'),
               ]}
-              extra={<span className="italic text-[13px]" style={FONT}>Maximum 60 words</span>}
             >
               <Input.TextArea
                 rows={3}
-                placeholder="Describe your organization"
+                placeholder="Describe your organization (Maximum 60 words)"
                 style={FONT}
               />
             </Form.Item>
