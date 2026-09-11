@@ -95,22 +95,19 @@ export function JoinSection() {
               {INDIVIDUAL_ROLES.map((role) => (
                 <li key={role.title} className="flex items-center gap-3 text-[clamp(1rem,1.30vw,1.25rem)] font-medium text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                   <img src="/images/common/decor/group.svg" alt="" className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span>{role.title}</span>
-                    <a
-                      href={role.jdUrl}
-                      target={role.jdUrl !== '#' ? '_blank' : undefined}
-                      rel={role.jdUrl !== '#' ? 'noopener noreferrer' : undefined}
-                      className="text-sm font-semibold text-[#005D9A] hover:underline"
-                      onClick={(e) => {
-                        if (role.jdUrl === '#') {
-                          e.preventDefault();
-                        }
-                      }}
-                    >
-                      [Link JD]
-                    </a>
-                  </div>
+                  <a
+                    href={role.jdUrl}
+                    target={role.jdUrl !== '#' ? '_blank' : undefined}
+                    rel={role.jdUrl !== '#' ? 'noopener noreferrer' : undefined}
+                    className="text-[#111111] hover:text-[#005D9A] hover:underline transition-colors"
+                    onClick={(e) => {
+                      if (role.jdUrl === '#') {
+                        e.preventDefault();
+                      }
+                    }}
+                  >
+                    {role.title}
+                  </a>
                 </li>
               ))}
             </ul>
