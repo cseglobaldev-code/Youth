@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Image } from 'antd';
 import { Icon } from '@/components/ui/Icon';
+import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { ICONS, SOCIAL_COLORS } from '@/config/icons';
 import { ViewAllButton } from '@/components/shared/ViewAllButton';
 import { Container } from '@/components/ui/Container';
@@ -13,24 +13,24 @@ const FALLBACK_EXECUTIVES: TeamMember[] = [
   {
     id: 'exec-1',
     name: 'Safin Hussein Mohammed',
-    role: 'President & Chair',
-    avatarUrl: '/images/home/about/ambassador-1.jpg',
+    role: 'Chair/ President',
+    avatarUrl: '/images/home/team/exec-safin.png',
     continent: 'Africa',
     socialLinks: [{ platform: 'linkedin', url: 'https://linkedin.com' }],
   },
   {
     id: 'exec-2',
     name: 'Thuy Linh Nguyen T. (Emily)',
-    role: 'Vice President & Chair',
-    avatarUrl: '/images/home/about/ambassador-4.jpg',
+    role: 'Chair/ Vice President',
+    avatarUrl: '/images/home/team/exec-linh.png',
     continent: 'Asia',
     socialLinks: [{ platform: 'linkedin', url: 'https://linkedin.com' }],
   },
   {
     id: 'exec-3',
     name: 'Theodora Abena Yeboah',
-    role: 'Vice President & Chair',
-    avatarUrl: '/images/home/about/ambassador-3.jpg',
+    role: 'Chair/ Vice President',
+    avatarUrl: '/images/home/team/exec-theodora.png',
     continent: 'Africa',
     socialLinks: [{ platform: 'linkedin', url: 'https://linkedin.com' }],
   },
@@ -111,18 +111,19 @@ export function TeamSection() {
               >
                 <div className="mb-4 flex items-end justify-center w-44 h-44 sm:w-60 sm:h-60 lg:w-[280px] lg:h-[280px]">
                   <div
-                    className={`rounded-full overflow-hidden relative group cursor-pointer ${
+                    className={`relative flex-shrink-0 group cursor-pointer ${
                       isPresident
                         ? 'w-44 h-44 sm:w-60 sm:h-60 lg:w-[280px] lg:h-[280px]'
                         : 'w-40 h-40 sm:w-52 sm:h-52 lg:w-[240px] lg:h-[240px]'
                     }`}
                   >
-                    <Image
-                      src={leader.avatarUrl || '/images/home/about/ambassador-1.jpg'}
-                      alt={leader.name}
-                      preview={false}
-                      className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50"
-                    />
+                    <div className="w-full h-full rounded-full overflow-hidden bg-[#EEEEEE]">
+                      <ImageWithFallback
+                        src={leader.avatarUrl || '/images/home/team/exec-safin.png'}
+                        alt={leader.name}
+                        className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50"
+                      />
+                    </div>
                     {hasSocial && (
                       <div className="absolute inset-0 flex items-end justify-center pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="flex gap-3">
@@ -181,11 +182,10 @@ export function TeamSection() {
                   >
                     <Icon name="lucide:chevron-left" size={20} />
                   </button>
-                  <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden relative group cursor-pointer transition-all duration-300">
-                    <Image
+                  <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-[#EEEEEE] relative group cursor-pointer transition-all duration-300">
+                    <ImageWithFallback
                       src={activeDirector.avatarUrl || '/images/home/about/ambassador-2.jpg'}
                       alt={activeDirector.name}
-                      preview={false}
                       className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50"
                     />
                   </div>
@@ -214,10 +214,9 @@ export function TeamSection() {
               {previewDirectors.map((dir) => (
                 <div key={dir.id} className="flex flex-col items-center max-w-[200px]">
                   <div className="w-[180px] h-[180px] rounded-full overflow-hidden mb-3 relative group cursor-pointer bg-[#EEEEEE]">
-                    <Image
+                    <ImageWithFallback
                       src={dir.avatarUrl || '/images/home/about/ambassador-2.jpg'}
                       alt={dir.name}
-                      preview={false}
                       className="w-full h-full object-cover transition-all duration-300 group-hover:brightness-50"
                     />
                   </div>
