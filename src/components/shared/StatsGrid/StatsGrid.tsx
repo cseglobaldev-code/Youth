@@ -77,7 +77,7 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
           {stats.map((stat, index) => (
             <div key={stat.label} className="flex items-center">
               <div className="flex w-full flex-col items-center text-center">
-                <span className="text-[clamp(0.875rem,1.2vw,1.125rem)] text-neutral-700">{stat.label}</span>
+                <span className="text-[clamp(0.875rem,1.2vw,1.125rem)] text-neutral-700 whitespace-nowrap">{stat.label}</span>
                 <span className="mt-2 text-[clamp(1.875rem,2.5vw,2.25rem)] font-semibold text-black">
                   {formatStatValue(values[index], stat.prefix ?? '+', stat.suffix ?? '')}
                 </span>
@@ -108,7 +108,7 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
           <div key={stat.label} className="flex items-center min-w-0">
             <div className="flex flex-col items-center text-center w-full py-2">
               <span
-                className="text-neutral-500 text-[clamp(0.875rem,1.56vw,1.5rem)] font-normal"
+                className="text-neutral-500 text-[clamp(0.75rem,1.15vw,1.25rem)] xl:text-[clamp(0.875rem,1.35vw,1.5rem)] font-normal whitespace-nowrap"
                 style={{ fontFamily: 'Open Sans, sans-serif' }}
               >
                 {stat.label}
