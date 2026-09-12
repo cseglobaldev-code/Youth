@@ -7,7 +7,6 @@ const AUTO_ADVANCE_INTERVAL_MS = 5_000;
 const BANNER_IMAGES = [
   { id: 'ambassador-1', src: '/images/home/about/ambassador-1.jpg', alt: 'Y.O.U Ambassador of Unity — Mr. Hon Abdalla Said, Youth Leader' },
   { id: 'ambassador-2', src: '/images/home/about/ambassador-2.jpg', alt: 'Y.O.U Ambassador of Unity — Ms. Minh Anh Nguyen (Winnie), Youth Leader / International Delegate' },
-  { id: 'ambassador-3', src: '/images/home/about/ambassador-3.jpg', alt: 'Y.O.U Ambassador of Unity — Ms. Theodora Abena Yeboah, Vice President of Y.O.U / Founder of Education Hub Ghana' },
   { id: 'ambassador-4', src: '/images/home/about/ambassador-4.jpg', alt: 'Y.O.U Ambassador of Unity — Ms. Thuy Linh Nguyen (Emily), Vice President of Y.O.U / Founder of CSE Global' },
   { id: 'ambassador-5', src: '/images/home/about/ambassador-5.jpg', alt: 'Y.O.U Ambassador of Unity — Mr. Hai Nguyen, Founder of Unikorn' },
   { id: 'ambassador-6', src: '/images/home/about/ambassador-6.jpg', alt: 'Y.O.U Ambassador of Unity — Mr. Ahmad Raza, Youth Leader Driving Peace, Climate Action & Community Unity' },
