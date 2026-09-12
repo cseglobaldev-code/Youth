@@ -262,11 +262,12 @@ export function ProjectsPage() {
                     <div
                       key={`${activeFilter}-${project.id}`}
                       className={cn(
+                        'h-full flex flex-col',
                         cardsVisible ? 'animate-fade-in-up' : 'opacity-0'
                       )}
                       style={{ animationDelay: `${index * 80}ms` }}
                     >
-                      <ProjectCard project={project} ledBy={project.ledBy} />
+                      <ProjectCard project={project} ledBy={project.ledBy} className="h-full" />
                     </div>
                   ))}
                 </div>

@@ -177,7 +177,11 @@ function mapContentBlock(raw: Record<string, any>, baseUrl: string, index: numbe
         title: text(raw.title) || 'Featured Projects',
         subtitle: text(raw.subtitle) || undefined,
         projects: Array.isArray(raw.projects)
-          ? raw.projects.map((p: StrapiProject) => mapProject(p, baseUrl))
+          ? raw.projects.map((p: StrapiProject) => {
+              const mapped = mapProject(p, baseUrl);
+              const memberName = text((p as any).member?.name);
+              return memberName ? { ...mapped, ledBy: memberName } : mapped;
+            })
           : [],
         limit: typeof raw.limit === 'number' ? raw.limit : 3,
         showViewAll: raw.showViewAll ?? true,
