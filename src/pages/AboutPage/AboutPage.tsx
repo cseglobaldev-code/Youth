@@ -43,9 +43,9 @@ const MISSIONS = [
 
 const ACTIVITIES = [
   {
-    title: 'Education & Training',
-    description: 'Organizing programs to enhance knowledge and skills for the community.',
-    image: '/images/about/activities/education-training.png',
+    title: 'Networking & Collaboration',
+    description: 'Building a network of partners and promoting multi-faceted cooperation.',
+    image: '/images/about/activities/networking-collaboration.png',
   },
   {
     title: 'Volunteering & Community Service',
@@ -53,9 +53,9 @@ const ACTIVITIES = [
     image: '/images/about/activities/volunteering-community.png',
   },
   {
-    title: 'Networking & Collaboration',
-    description: 'Building a network of partners and promoting multi-faceted cooperation.',
-    image: '/images/about/activities/networking-collaboration.png',
+    title: 'Education & Training',
+    description: 'Organizing programs to enhance knowledge and skills for the community.',
+    image: '/images/about/activities/education-training.png',
   },
   {
     title: 'Research & Development',
