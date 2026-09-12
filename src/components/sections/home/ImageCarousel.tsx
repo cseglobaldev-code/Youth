@@ -59,7 +59,9 @@ export function ImageCarousel() {
           key={activeImage.id}
           src={activeImage.src}
           alt={activeImage.alt}
-          className="h-full w-full object-cover"
+          className={`h-full w-full object-cover ${
+            activeImage.id === 'ambassador-6' ? 'object-right md:object-center' : 'object-center'
+          }`}
           loading={activeIndex === 0 ? 'eager' : 'lazy'}
         />
       </div>
