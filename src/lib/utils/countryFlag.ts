@@ -50,11 +50,24 @@ const COUNTRY_ISO_CODES: Record<string, string> = {
   vietnam: 'VN', 'viet nam': 'VN', yemen: 'YE', zambia: 'ZM', zimbabwe: 'ZW',
 };
 
+/** 2-letter ISO 3166-1 alpha-2 country code, or '' if not recognized. */
+export function countryIsoCode(country: string): string {
+  if (!country) return '';
+  return COUNTRY_ISO_CODES[country.trim().toLowerCase()] || '';
+}
+
 /** Flag emoji for a country name, or '' when the name isn't recognized. */
 export function countryFlagEmoji(country: string): string {
-  const code = COUNTRY_ISO_CODES[country.trim().toLowerCase()];
+  const code = countryIsoCode(country);
   if (!code) return '';
   return Array.from(code.toUpperCase())
     .map((char) => String.fromCodePoint(char.charCodeAt(0) + REGIONAL_INDICATOR_OFFSET))
     .join('');
+}
+
+/** Vector SVG flag image URL from FlagCDN, or '' if not recognized. */
+export function countryFlagUrl(country: string): string {
+  const code = countryIsoCode(country)?.toLowerCase();
+  if (!code) return '';
+  return `https://flagcdn.com/${code}.svg`;
 }
