@@ -484,8 +484,8 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                       optionFilterProp="label"
                       style={FONT}
                       options={DIAL_CODES.map((d) => ({
-                        value: d.dial_code,
-                        label: `${countryFlagEmoji(d.code)} ${d.dial_code}`,
+                        value: d.code,
+                        label: `${countryFlagEmoji(d.country)} ${d.code}`,
                       }))}
                     />
                   </Form.Item>
