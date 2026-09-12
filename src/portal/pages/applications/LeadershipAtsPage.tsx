@@ -38,6 +38,71 @@ const PIPELINE_STATUSES: { key: string; label: string; color: string }[] = [
   { key: 'rejected', label: 'Rejected', color: 'error' },
 ];
 
+const ASSESSMENT_SECTION_GROUPS = [
+  {
+    title: '(2) Organizational Leadership',
+    items: [
+      { key: 'orgName', label: 'Organization Name' },
+      { key: 'positionHeld', label: 'Position Held' },
+      { key: 'isLegallyRegistered', label: 'Legally Registered' },
+      { key: 'yearsLed', label: 'Years Led Organization' },
+      { key: 'orgWebsiteSocial', label: 'Website / Social Media' },
+      { key: 'activeMembers', label: 'Number of Active Members' },
+      { key: 'missionActivities', label: 'Mission & Primary Activities' },
+    ],
+  },
+  {
+    title: '(3) Impact & Experience',
+    items: [
+      { key: 'majorAchievements', label: 'Three Major Achievements' },
+      { key: 'positiveImpact', label: 'Positive Community Impact' },
+      { key: 'projectScales', label: 'Project Scales Led' },
+      { key: 'projectExamples', label: 'Examples of Projects Led' },
+      { key: 'partneredWithOrgs', label: 'Partnered with Other Organizations' },
+      { key: 'partneredExplanation', label: 'Partnership Details' },
+    ],
+  },
+  {
+    title: '(4) Leadership & Skills',
+    items: [
+      { key: 'motivation', label: 'Motivation to Apply' },
+      { key: 'leadershipQualities', label: 'Leadership Qualities' },
+      { key: 'teamSituation', label: 'Team Management Situation' },
+      { key: 'recruitmentPlan', label: 'Recruitment & Coordination Plan' },
+      { key: 'conflictResolution', label: 'Cross-Cultural Conflict Resolution' },
+      { key: 'rateCommunication', label: 'Communication Skills (1-10)' },
+      { key: 'rateTeamManagement', label: 'Team Management Skills (1-10)' },
+      { key: 'rateInternationalCoordination', label: 'International Coordination (1-10)' },
+    ],
+  },
+  {
+    title: "(5) Alignment with Y.O.U's Vision",
+    items: [
+      { key: 'youthEmpowerment', label: 'Youth Empowerment Definition' },
+      { key: 'inclusionDiversity', label: 'Promoting Inclusion & Diversity' },
+      { key: 'regionalYouthVision', label: 'Vision for Youth in Region' },
+      { key: 'contributionToYou', label: 'Contribution to Y.O.U' },
+    ],
+  },
+  {
+    title: '(6) Commitment',
+    items: [
+      { key: 'commitHours', label: 'Dedicate 5-10 Hours/Month' },
+      { key: 'commitVirtualMeetings', label: 'Participate in Virtual Meetings' },
+      { key: 'commitRecruitMentor', label: 'Recruit & Mentor Youth Leaders' },
+      { key: 'commitUpholdValues', label: 'Uphold Values and Mission' },
+      { key: 'resideInRegion', label: 'Reside in Region Represented' },
+    ],
+  },
+  {
+    title: '(8) Declaration',
+    items: [
+      { key: 'declarationAgreed', label: 'Declaration Statement Accepted' },
+      { key: 'declarationSignature', label: 'Digital Signature (Full Legal Name)' },
+    ],
+  },
+];
+
 const ASSESSMENT_LABELS: Record<string, string> = {
   q1: 'Q1. Personality & Working Style (Behavioral)',
   q2: 'Q2. Strategic Vision & Commitments',
@@ -476,21 +541,57 @@ export function LeadershipAtsPage() {
               items={[
                 {
                   key: 'assessment',
-                  label: 'Assessment Questions (9/9)',
+                  label: 'Assessment Details',
                   children: (
-                    <div className="space-y-4 pt-2">
-                      {Object.entries(ASSESSMENT_LABELS).map(([qKey, label]) => {
-                        const answer = selectedCandidate.assessment?.[qKey];
+                    <div className="space-y-6 pt-2">
+                      {ASSESSMENT_SECTION_GROUPS.some((grp) =>
+                        grp.items.some((it) => selectedCandidate.assessment?.[it.key] !== undefined)
+                      ) ? (
+                        ASSESSMENT_SECTION_GROUPS.map((group) => (
+                          <div key={group.title} className="rounded-2xl border border-neutral-200 overflow-hidden bg-white shadow-sm">
+                            <div className="bg-neutral-100 px-4 py-2.5 font-bold text-sm text-[#005D9A] border-b border-neutral-200">
+                              {group.title}
+                            </div>
+                            <div className="p-4 space-y-3">
+                              {group.items.map((item) => {
+                                const rawVal = selectedCandidate.assessment?.[item.key];
+                                const displayVal = Array.isArray(rawVal)
+                                  ? rawVal.join(', ')
+                                  : typeof rawVal === 'boolean'
+                                  ? rawVal ? 'Yes' : 'No'
+                                  : rawVal;
 
-                        return (
-                          <div key={qKey} className="rounded-xl border border-neutral-200 p-4 bg-white">
-                            <h5 className="font-semibold text-sm text-neutral-900 mb-2">{label}</h5>
-                            <p className="text-sm text-neutral-700 whitespace-pre-line leading-relaxed m-0 bg-neutral-50 p-3 rounded-lg">
-                              {answer || <span className="italic text-neutral-400">No answer provided</span>}
-                            </p>
+                                return (
+                                  <div key={item.key} className="border-b border-neutral-100 pb-2.5 last:border-b-0 last:pb-0">
+                                    <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">
+                                      {item.label}
+                                    </div>
+                                    <div className="text-sm text-neutral-800 whitespace-pre-line bg-neutral-50 p-2.5 rounded-lg">
+                                      {displayVal !== undefined && displayVal !== '' ? (
+                                        String(displayVal)
+                                      ) : (
+                                        <span className="italic text-neutral-400">Not provided</span>
+                                      )}
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </div>
-                        );
-                      })}
+                        ))
+                      ) : (
+                        Object.entries(ASSESSMENT_LABELS).map(([qKey, label]) => {
+                          const answer = selectedCandidate.assessment?.[qKey];
+                          return (
+                            <div key={qKey} className="rounded-xl border border-neutral-200 p-4 bg-white">
+                              <h5 className="font-semibold text-sm text-neutral-900 mb-2">{label}</h5>
+                              <p className="text-sm text-neutral-700 whitespace-pre-line leading-relaxed m-0 bg-neutral-50 p-3 rounded-lg">
+                                {answer || <span className="italic text-neutral-400">No answer provided</span>}
+                              </p>
+                            </div>
+                          );
+                        })
+                      )}
                     </div>
                   ),
                 },

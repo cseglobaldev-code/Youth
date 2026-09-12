@@ -70,6 +70,9 @@ export async function submitLeadershipApplication(
   const profilePhotoIds = await uploadAntdFiles(values.profilePhoto, baseUrl, token, options.signal);
   const activityPhotoIds = await uploadAntdFiles(values.activityPhotos, baseUrl, token, options.signal);
   const resumeCvIds = await uploadAntdFiles(values.resumeCv, baseUrl, token, options.signal);
+  const orgProfileDocIds = await uploadAntdFiles(values.orgProfileDoc, baseUrl, token, options.signal);
+  const leadershipProofDocIds = await uploadAntdFiles(values.leadershipProofDoc, baseUrl, token, options.signal);
+  const additionalDocsIds = await uploadAntdFiles(values.additionalDocs, baseUrl, token, options.signal);
 
   const payload = {
     data: {
@@ -93,6 +96,9 @@ export async function submitLeadershipApplication(
       ...(profilePhotoIds.length > 0 ? { profilePhoto: profilePhotoIds[0] } : {}),
       ...(activityPhotoIds.length > 0 ? { activityPhotos: activityPhotoIds } : {}),
       ...(resumeCvIds.length > 0 ? { resumeCv: resumeCvIds } : {}),
+      ...(orgProfileDocIds.length > 0 ? { orgProfileDoc: orgProfileDocIds } : {}),
+      ...(leadershipProofDocIds.length > 0 ? { leadershipProofDoc: leadershipProofDocIds } : {}),
+      ...(additionalDocsIds.length > 0 ? { additionalDocs: additionalDocsIds } : {}),
     },
   };
 
