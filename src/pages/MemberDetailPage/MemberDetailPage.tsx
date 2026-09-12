@@ -179,9 +179,9 @@ export function MemberDetailPage() {
         {relatedProjects.length > 0 && (
           <div className="mb-10">
             <SectionHeading title="Our Projects" align="left" />
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 items-stretch">
               {relatedProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} ledBy={member.name} />
+                <ProjectCard key={project.id} project={project} ledBy={member.name} className="h-full" />
               ))}
             </div>
           </div>

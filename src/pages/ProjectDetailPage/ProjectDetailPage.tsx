@@ -369,11 +369,12 @@ export function ProjectDetailPage() {
                   <div
                     key={p.id}
                     className={cn(
+                      'h-full flex flex-col',
                       otherVisible ? 'animate-fade-in-up' : 'opacity-0'
                     )}
                     style={{ animationDelay: `${index * 80}ms` }}
                   >
-                    <ProjectCard project={p} ledBy={p.ledBy} />
+                    <ProjectCard project={p} ledBy={p.ledBy} className="h-full" />
                   </div>
                 ))}
               </div>
