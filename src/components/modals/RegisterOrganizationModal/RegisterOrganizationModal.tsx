@@ -38,7 +38,7 @@ export interface RegisterOrganizationFormValues {
   projectFocusSdgs: number[];        
   projectStatus: 'ongoing' | 'completed' | 'planned';
   projectImages?: unknown[];
-  projectSocialProfile: string;
+  projectSocialProfile?: string;
 }
 
 export interface RegisterOrganizationModalProps {
@@ -336,30 +336,33 @@ export function RegisterOrganizationModal({
             </div>
 
             <Form.Item
-              label={labelText('Website')}
+              label={labelText('Website (Optional)')}
               name="website"
               rules={[urlRule()]}
             >
               <Input placeholder="Enter website URL" style={FONT} />
             </Form.Item>
 
+            <p className="mb-3 text-[15px] font-semibold text-[#111111]" style={FONT}>
+              Social Media Profiles (Optional)
+            </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5">
               <Form.Item
-                label={labelText('Facebook')}
+                label={labelText('Facebook (Optional)')}
                 name="facebookUrl"
                 rules={[urlRule()]}
               >
                 <Input placeholder="Enter Facebook profile URL" style={FONT} />
               </Form.Item>
               <Form.Item
-                label={labelText('Instagram')}
+                label={labelText('Instagram (Optional)')}
                 name="instagramUrl"
                 rules={[urlRule()]}
               >
                 <Input placeholder="Enter Instagram profile URL" style={FONT} />
               </Form.Item>
               <Form.Item
-                label={labelText('LinkedIn')}
+                label={labelText('LinkedIn (Optional)')}
                 name="linkedinUrl"
                 rules={[urlRule()]}
               >
@@ -607,12 +610,9 @@ export function RegisterOrganizationModal({
             </Form.Item>
 
             <Form.Item
-              label={labelText('Website or Social Media Profile')}
+              label={labelText('Website or Social Media Profile (Optional)')}
               name="projectSocialProfile"
-              rules={[
-                { required: true, message: 'Please enter a website or social media profile' },
-                urlRule(),
-              ]}
+              rules={[urlRule()]}
             >
               <Input placeholder="Enter link" style={FONT} />
             </Form.Item>
