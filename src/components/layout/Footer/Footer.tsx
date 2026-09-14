@@ -114,7 +114,7 @@ export function Footer({ className }: FooterProps) {
             >
               {t.footer.discoverTitle}
             </h4>
-            <nav className="grid w-fit grid-cols-2 gap-x-10 gap-y-3">
+            <nav className="grid w-fit grid-flow-row grid-cols-2 gap-x-10 gap-y-3">
               {discoverLinks.map(({ to, label }) => (
                 <Link
                   key={to}
