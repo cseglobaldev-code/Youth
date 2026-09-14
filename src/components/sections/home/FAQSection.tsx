@@ -59,7 +59,7 @@ export function FAQSection() {
           )}
           items={faqs.map((faq) => ({
             key: faq.id,
-            label: <span className="font-medium text-[clamp(1.125rem,1.43vw,1.375rem)] text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.question}</span>,
+            label: <span className="font-medium text-[clamp(1.125rem,1.43vw,1.375rem)] text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.question.replace(/^\s*\d+[.)]\s*/, '')}</span>,
             children: <p className="pb-5 text-[clamp(0.875rem,1.04vw,1rem)] text-neutral-600 font-normal leading-relaxed" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.answer}</p>,
             style: { borderBottom: '1px solid #E5E7EB' },
           }))}

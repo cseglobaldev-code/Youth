@@ -48,7 +48,7 @@ export function FaqSectionBlock({ data }: { data: FaqSectionBlockData }) {
           )}
           items={items.map((faq) => ({
             key: faq.id,
-            label: <span className="font-medium text-lg text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.question}</span>,
+            label: <span className="font-medium text-lg text-[#111111] pr-8" style={{ fontFamily: 'Open Sans, sans-serif' }}>{faq.question.replace(/^\s*\d+[.)]\s*/, '')}</span>,
             children: <p className="pb-4 text-base text-neutral-600 leading-relaxed">{faq.answer}</p>,
             style: { borderBottom: '1px solid #E5E7EB' },
           }))}
