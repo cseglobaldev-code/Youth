@@ -127,8 +127,9 @@ export async function submitOrganizationApplication(
 ): Promise<void> {
   const { baseUrl, token } = resolveConfig(options);
 
-  const orgImageIds = await uploadAntdFiles(values.organizationImage, baseUrl, token, options.signal);
+  const orgCoverIds = await uploadAntdFiles(values.organizationCardCover, baseUrl, token, options.signal);
   const orgLogoIds = await uploadAntdFiles(values.organizationLogo, baseUrl, token, options.signal);
+  const orgActivityPhotoIds = await uploadAntdFiles(values.organizationActivityPhotos, baseUrl, token, options.signal);
   const projectImageIds = await uploadAntdFiles(values.projectImages, baseUrl, token, options.signal);
 
   // Normalize SDG array values to numbers or string arrays
@@ -162,7 +163,9 @@ export async function submitOrganizationApplication(
       projectFocusSdgs: rawProjectSdgs.map(String),       
       projectStatus: values.projectStatus || 'ongoing',
       projectSocialProfile: values.projectSocialProfile,
-      ...(orgImageIds.length > 0 ? { organizationImage: orgImageIds } : {}),
+      ...(orgCoverIds.length > 0 || orgActivityPhotoIds.length > 0
+        ? { organizationImage: [...orgCoverIds, ...orgActivityPhotoIds] }
+        : {}),
       ...(orgLogoIds.length > 0 ? { organizationLogo: orgLogoIds } : {}),
       ...(projectImageIds.length > 0 ? { projectImages: projectImageIds } : {}),
     },

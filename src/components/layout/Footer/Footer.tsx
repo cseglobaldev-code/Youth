@@ -33,8 +33,8 @@ export function Footer({ className }: FooterProps) {
 
   const discoverLinks = [
     { to: ROUTES.ABOUT, label: t.nav.about },
-    { to: ROUTES.LEADERSHIP, label: t.nav.leadership },
     { to: ROUTES.MEMBERS, label: t.nav.members },
+    { to: ROUTES.LEADERSHIP, label: t.nav.leadership },
     { to: ROUTES.PROJECTS, label: t.nav.projects },
     { to: ROUTES.POLICY_DOCUMENTS, label: t.nav.documents },
     { to: ROUTES.CONTACT, label: t.nav.contact },
@@ -114,7 +114,7 @@ export function Footer({ className }: FooterProps) {
             >
               {t.footer.discoverTitle}
             </h4>
-            <nav className="grid w-fit grid-cols-2 gap-x-10 gap-y-3">
+            <nav className="grid w-fit grid-flow-row grid-cols-2 gap-x-10 gap-y-3">
               {discoverLinks.map(({ to, label }) => (
                 <Link
                   key={to}

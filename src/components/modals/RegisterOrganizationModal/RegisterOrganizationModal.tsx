@@ -24,8 +24,9 @@ export interface RegisterOrganizationFormValues {
   facebookUrl?: string;
   instagramUrl?: string;
   linkedinUrl?: string;
-  organizationImage?: unknown[];
+  organizationCardCover?: unknown[];
   organizationLogo?: unknown[];
+  organizationActivityPhotos?: unknown[];
   // Step 2 — Project Information
   projectName: string;
   projectOrganizationName: string;
@@ -100,8 +101,9 @@ const STEP_FIELDS: Record<1 | 2, (keyof RegisterOrganizationFormValues)[]> = {
     'linkedinUrl',
     'focusArea',
     'focusSdgs',                    
-    'organizationImage',
+    'organizationCardCover',
     'organizationLogo',
+    'organizationActivityPhotos',
   ],
   2: [
     'projectName',
@@ -400,18 +402,14 @@ export function RegisterOrganizationModal({
             </Form.Item>
 
             <Form.Item
-              label={labelText('Organization Image')}
-              name="organizationImage"
+              label={labelText('Organization Card Cover')}
+              name="organizationCardCover"
               valuePropName="fileList"
               getValueFromEvent={normFile}
-              rules={[{ required: true, message: 'Please upload an image' }]}
-              extra={
-                <span className="italic text-[13px]" style={FONT}>
-                  Upload up to 10 supported files. Each file can be up to 100 MB.
-                </span>
-              }
+              rules={[{ required: true, message: 'Please upload an organization card cover' }]}
+              extra={<span className="italic text-[13px]" style={FONT}>Landscape image, approximately 2.13:1 aspect ratio. Recommended dimensions: 1280×600 px or 1067×500 px.</span>}
             >
-              <Upload beforeUpload={() => false} maxCount={10} multiple listType="text">
+              <Upload beforeUpload={() => false} maxCount={1} listType="text">
                 <button
                   type="button"
                   className="inline-flex items-center gap-2 rounded-full border border-[#EE334E] px-5 py-2 text-[#EE334E] text-[15px] font-semibold"
@@ -428,11 +426,26 @@ export function RegisterOrganizationModal({
               valuePropName="fileList"
               getValueFromEvent={normFile}
               rules={[{ required: true, message: 'Please upload a logo' }]}
-              extra={
-                <span className="italic text-[13px]" style={FONT}>
-                  Upload up to 10 supported files. Each file can be up to 100 MB.
-                </span>
-              }
+              extra={<span className="italic text-[13px]" style={FONT}>Square image, 1:1 aspect ratio. Recommended dimensions: 256×256 px or 512×512 px.</span>}
+            >
+              <Upload beforeUpload={() => false} maxCount={1} listType="text">
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 rounded-full border border-[#EE334E] px-5 py-2 text-[#EE334E] text-[15px] font-semibold"
+                  style={FONT}
+                >
+                  <UploadOutlined /> Upload file
+                </button>
+              </Upload>
+            </Form.Item>
+
+            <Form.Item
+              label={labelText('Photos of Organizational Activities')}
+              name="organizationActivityPhotos"
+              valuePropName="fileList"
+              getValueFromEvent={normFile}
+              rules={[{ required: true, message: 'Please upload at least one activity photo' }]}
+              extra={<span className="italic text-[13px]" style={FONT}>For all three image uploads: the system uses a cover display mode; non-standard aspect ratios will still upload successfully but may be cropped. To avoid unwanted cropping, please follow the recommended aspect ratios above.</span>}
             >
               <Upload beforeUpload={() => false} maxCount={10} multiple listType="text">
                 <button
