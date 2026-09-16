@@ -4,3 +4,14 @@
 STRAPI_API_URL=http://localhost:1337
 STRAPI_API_TOKEN=<strapi-read-only-api-token>
 PREVIEW_SECRET=<same-value-as-youth-cms>
+
+# Hosted payment pages. Leave blank to keep the method visible but disabled.
+# Replace these URLs with the approved Visa/acquirer, international bank transfer,
+# and optional PayPal checkout endpoints. Only HTTPS URLs are accepted.
+DONATION_CARD_CHECKOUT_URL=
+DONATION_BANK_TRANSFER_URL=
+DONATION_PAYPAL_URL=
+
+# Optional percentage shown for "Cover transaction fees". Keep 0 until the
+# acquiring agreement confirms the exact fee.
+DONATION_FEE_PERCENT=0

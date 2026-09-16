@@ -7,12 +7,14 @@ import { cn } from '@/lib/utils';
 import { Logo } from '@/components/layout/Logo';
 import { Icon } from '@/components/ui/Icon';
 import { useJoinModal } from '@/components/modals/JoinModal';
+import { useDonationModal } from '@/components/modals/DonationModal';
 import { useLanguage } from '@/context/LanguageContext';
 import { ROUTES } from '@/routes/paths';
 
 export function HeaderDesktop() {
   const { pathname } = useLocation();
   const { openJoin } = useJoinModal();
+  const { openDonation } = useDonationModal();
   const { language, setLanguage, t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
 
@@ -108,6 +110,20 @@ export function HeaderDesktop() {
           className="flex shrink-0 items-center"
           style={{ gap: 'clamp(0.5rem, 1.2vw, 1.5rem)' }}
         >
+          <button
+            type="button"
+            onClick={openDonation}
+            className="whitespace-nowrap rounded-full bg-[#1771B9] font-semibold text-white transition-all duration-200 hover:bg-[#125A94] active:scale-[0.98]"
+            style={{
+              fontFamily: 'Open Sans, sans-serif',
+              fontSize: 'clamp(0.75rem, 0.45vw + 0.5rem, 1.125rem)',
+              paddingInline: 'clamp(0.75rem, 1.4vw, 1.75rem)',
+              paddingBlock: 'clamp(0.4rem, 0.7vw, 0.75rem)',
+            }}
+          >
+            {t.nav.donateCta}
+          </button>
+
           <button
             type="button"
             onClick={openJoin}
