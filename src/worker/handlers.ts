@@ -1,7 +1,9 @@
 import { draftStatus, isAllowedCmsPath } from '../../functions/lib/cms';
 import { isAllowedPreviewPath, isPreviewStatus, sameSecret } from '../../functions/lib/preview';
 
-export type Env = Cloudflare.Env;
+import type { DonationEnv } from './donations';
+
+export type Env = Cloudflare.Env & DonationEnv;
 
 const PREVIEW_COOKIE = 'you_preview';
 const PREVIEW_MAX_AGE_SECONDS = 60 * 60;

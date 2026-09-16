@@ -1,4 +1,5 @@
 import { handleCms, handlePreview, type Env } from './handlers';
+import { handleDonationConfig, handleDonationSession } from './donations';
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -7,6 +8,9 @@ export default {
     // Order matters: isAllowedCmsPath() rejects /api/preview, so it must be
     // matched before the generic /api/ branch or it would 404.
     if (pathname === '/api/preview') return handlePreview(request, env);
+
+    if (pathname === '/api/donations/config') return handleDonationConfig(request, env);
+    if (pathname === '/api/donations/session') return handleDonationSession(request, env);
 
     // Any /api/* request stays inside the proxy. Falling through to ASSETS
     // would serve index.html with status 200, and the client would then

@@ -4,6 +4,7 @@ import { Footer } from './Footer';
 import { useScrollToTop } from '@/hooks/useScrollToTop';
 import { JoinModalProvider } from '@/components/modals/JoinModal';
 import { SupportModalProvider } from '@/components/modals/SupportModal';
+import { DonationModalProvider } from '@/components/modals/DonationModal';
 
 export function RootLayout() {
   useScrollToTop();
@@ -11,22 +12,24 @@ export function RootLayout() {
   return (
     <JoinModalProvider>
       <SupportModalProvider>
-        <div className="flex flex-col min-h-screen">
-          <Header />
-          {/* Shared page background: white + decorative blur ellipses on every page */}
-          <main className="flex-1 bg-white relative overflow-x-hidden">
-            <div
-              className="absolute top-0 left-0 w-[458px] h-[336px] rounded-full pointer-events-none"
-              style={{ background: '#2980B9', filter: 'blur(600px)', opacity: 0.43 }}
-            />
-            <div
-              className="absolute top-0 right-0 w-[570px] h-[205px] rounded-full pointer-events-none"
-              style={{ background: '#EE334E', filter: 'blur(600px)', opacity: 0.43 }}
-            />
-            <Outlet />
-          </main>
-          <Footer />
-        </div>
+        <DonationModalProvider>
+          <div className="flex flex-col min-h-screen">
+            <Header />
+            {/* Shared page background: white + decorative blur ellipses on every page */}
+            <main className="flex-1 bg-white relative overflow-x-hidden">
+              <div
+                className="absolute top-0 left-0 w-[458px] h-[336px] rounded-full pointer-events-none"
+                style={{ background: '#2980B9', filter: 'blur(600px)', opacity: 0.43 }}
+              />
+              <div
+                className="absolute top-0 right-0 w-[570px] h-[205px] rounded-full pointer-events-none"
+                style={{ background: '#EE334E', filter: 'blur(600px)', opacity: 0.43 }}
+              />
+              <Outlet />
+            </main>
+            <Footer />
+          </div>
+        </DonationModalProvider>
       </SupportModalProvider>
     </JoinModalProvider>
   );

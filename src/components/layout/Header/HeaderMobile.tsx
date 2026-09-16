@@ -8,6 +8,7 @@ import { Icon } from '@/components/ui/Icon';
 import { ICONS } from '@/config/icons';
 import { useDisclosure } from '@/hooks';
 import { useJoinModal } from '@/components/modals/JoinModal';
+import { useDonationModal } from '@/components/modals/DonationModal';
 import { useLanguage } from '@/context/LanguageContext';
 import { ROUTES } from '@/routes/paths';
 
@@ -15,11 +16,17 @@ export function HeaderMobile() {
   const { pathname } = useLocation();
   const { isOpen, open, close } = useDisclosure();
   const { openJoin } = useJoinModal();
+  const { openDonation } = useDonationModal();
   const { language, setLanguage, t } = useLanguage();
 
   const handleDrawerJoinClick = () => {
     close();
     openJoin();
+  };
+
+  const handleDrawerDonationClick = () => {
+    close();
+    openDonation();
   };
 
   const navItems = [
@@ -87,14 +94,24 @@ export function HeaderMobile() {
           </div>
         </div>
 
-        <button
-          type="button"
-          onClick={openJoin}
-          className="mt-2 w-full whitespace-nowrap rounded-full bg-[#EE334E] px-4 py-3 text-[15px] font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98] sm:text-base"
-          style={{ fontFamily: 'Open Sans, sans-serif' }}
-        >
-          {t.nav.joinCta}
-        </button>
+        <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+          <button
+            type="button"
+            onClick={openJoin}
+            className="min-w-0 truncate whitespace-nowrap rounded-full bg-[#EE334E] px-4 py-3 text-[14px] font-semibold text-white transition-all duration-200 hover:opacity-90 active:scale-[0.98] sm:text-base"
+            style={{ fontFamily: 'Open Sans, sans-serif' }}
+          >
+            {t.nav.joinCta}
+          </button>
+          <button
+            type="button"
+            onClick={openDonation}
+            className="whitespace-nowrap rounded-full bg-[#1771B9] px-5 py-3 text-[14px] font-semibold text-white transition-all duration-200 hover:bg-[#125A94] active:scale-[0.98] sm:text-base"
+            style={{ fontFamily: 'Open Sans, sans-serif' }}
+          >
+            {t.nav.donateCta}
+          </button>
+        </div>
       </div>
 
       <Drawer
@@ -129,6 +146,14 @@ export function HeaderMobile() {
         </nav>
 
         <div className="mt-6 border-t border-neutral-100 pt-4">
+          <button
+            type="button"
+            onClick={handleDrawerDonationClick}
+            className="mb-3 w-full rounded-full bg-[#1771B9] px-4 py-3 text-[15px] font-semibold text-white transition-all duration-200 hover:bg-[#125A94] active:scale-[0.98] sm:text-[16px]"
+            style={{ fontFamily: 'Open Sans, sans-serif' }}
+          >
+            {t.nav.donateCta}
+          </button>
           <button
             type="button"
             onClick={handleDrawerJoinClick}

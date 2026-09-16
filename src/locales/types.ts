@@ -8,6 +8,7 @@ export interface LocaleDictionary {
     contact: string;
     joinCta: string;
     joinCtaShort: string;
+    donateCta: string;
     language: string;
   };
   common: {
@@ -100,6 +101,37 @@ export interface LocaleDictionary {
       justOnce: string;
       thankYouTitle: string;
       thankYouDesc: string;
+    };
+    donate: {
+      title: string;
+      subtitle: string;
+      donorDetails: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      phoneNumber: string;
+      phoneOptional: string;
+      amountTitle: string;
+      customAmount: string;
+      currency: string;
+      coverFees: string;
+      secureNote: string;
+      choosePayment: string;
+      card: string;
+      cardDescription: string;
+      bankTransfer: string;
+      bankDescription: string;
+      paypal: string;
+      paypalDescription: string;
+      unavailable: string;
+      configurationNote: string;
+      processing: string;
+      continue: string;
+      editDetails: string;
+      oneTimeDonation: string;
+      total: string;
+      invalidAmount: string;
+      paymentError: string;
     };
     applyRole: {
       title: string;
