@@ -10,7 +10,7 @@ export const vi: LocaleDictionary = {
     contact: 'Liên hệ',
     joinCta: 'Gia nhập khối Đoàn kết Toàn cầu',
     joinCtaShort: 'Gia nhập Y.O.U',
-    donateCta: 'Quyên góp',
+    donateCta: 'Donate',
     language: 'Tiếng Việt',
   },
   common: {
