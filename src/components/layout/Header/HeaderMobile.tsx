@@ -106,10 +106,19 @@ export function HeaderMobile() {
           <button
             type="button"
             onClick={openDonation}
-            className="whitespace-nowrap rounded-full bg-[#1771B9] px-5 py-3 text-[14px] font-semibold text-white transition-all duration-200 hover:bg-[#125A94] active:scale-[0.98] sm:text-base"
+            className="inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-white border border-neutral-200 px-4 py-3 text-[14px] font-bold text-[#005D9A] shadow-sm transition-all duration-200 hover:bg-[#005D9A]/5 hover:border-[#005D9A] active:scale-[0.98] sm:text-base"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
+            aria-label={t.nav.donateCta}
           >
-            {t.nav.donateCta}
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-4 h-4 shrink-0 text-[#005D9A]"
+              aria-hidden="true"
+            >
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+            <span>{t.nav.donateCta}</span>
           </button>
         </div>
       </div>
@@ -149,10 +158,19 @@ export function HeaderMobile() {
           <button
             type="button"
             onClick={handleDrawerDonationClick}
-            className="mb-3 w-full rounded-full bg-[#1771B9] px-4 py-3 text-[15px] font-semibold text-white transition-all duration-200 hover:bg-[#125A94] active:scale-[0.98] sm:text-[16px]"
+            className="mb-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-white border border-neutral-200 px-4 py-3 text-[15px] font-bold text-[#005D9A] shadow-sm transition-all duration-200 hover:bg-[#005D9A]/5 hover:border-[#005D9A] active:scale-[0.98] sm:text-[16px]"
             style={{ fontFamily: 'Open Sans, sans-serif' }}
+            aria-label={t.nav.donateCta}
           >
-            {t.nav.donateCta}
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              className="w-4 h-4 shrink-0 text-[#005D9A]"
+              aria-hidden="true"
+            >
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+            <span>{t.nav.donateCta}</span>
           </button>
           <button
             type="button"

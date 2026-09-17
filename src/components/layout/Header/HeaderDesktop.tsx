@@ -103,6 +103,29 @@ export function HeaderDesktop() {
                 </Link>
               );
             })}
+
+            <button
+              type="button"
+              onClick={openDonation}
+              className="inline-flex shrink-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-full bg-white font-bold text-[#005D9A] border border-neutral-200/90 shadow-sm transition-all duration-200 hover:bg-[#005D9A]/5 hover:border-[#005D9A] hover:shadow active:scale-[0.98]"
+              style={{
+                fontFamily: 'Open Sans, sans-serif',
+                fontSize: 'clamp(0.8125rem, 0.5vw + 0.5rem, 1.125rem)',
+                paddingInline: 'clamp(0.875rem, 1.2vw, 1.5rem)',
+                paddingBlock: 'clamp(0.35rem, 0.55vw, 0.6rem)',
+              }}
+              aria-label={t.nav.donateCta}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-[1.05em] h-[1.05em] shrink-0 text-[#005D9A]"
+                aria-hidden="true"
+              >
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+              </svg>
+              <span>{t.nav.donateCta}</span>
+            </button>
           </nav>
         </div>
 
@@ -110,20 +133,6 @@ export function HeaderDesktop() {
           className="flex shrink-0 items-center"
           style={{ gap: 'clamp(0.5rem, 1.2vw, 1.5rem)' }}
         >
-          <button
-            type="button"
-            onClick={openDonation}
-            className="whitespace-nowrap rounded-full bg-[#1771B9] font-semibold text-white transition-all duration-200 hover:bg-[#125A94] active:scale-[0.98]"
-            style={{
-              fontFamily: 'Open Sans, sans-serif',
-              fontSize: 'clamp(0.75rem, 0.45vw + 0.5rem, 1.125rem)',
-              paddingInline: 'clamp(0.75rem, 1.4vw, 1.75rem)',
-              paddingBlock: 'clamp(0.4rem, 0.7vw, 0.75rem)',
-            }}
-          >
-            {t.nav.donateCta}
-          </button>
-
           <button
             type="button"
             onClick={openJoin}
