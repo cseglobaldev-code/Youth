@@ -121,25 +121,20 @@
   outline: none !important;
 }
 
-/* ── Homepage stats: brushed-chrome number treatment ── */
-.you-stat-metallic {
+/* ── Stats: match the multicolor gradient used in the hero heading ── */
+.you-stat-gradient {
   background-image: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    #4f88cd 16%,
-    #4f88cd 32%,
-    #4f88cd 48%,
-    #4f88cd 64%,
-    #ffffff 84%,
-    #66daff 100%
+    90deg,
+    #e42c27 0%,
+    #fbab1a 33%,
+    #a4be2f 62%,
+    #10984f 100%
   );
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.7))
-    drop-shadow(0 3px 3px rgba(15, 40, 80, 0.35))
-    drop-shadow(0 0 20px rgba(79, 136, 205, 0.4));
+  filter: drop-shadow(0 2px 3px rgba(15, 34, 51, 0.16));
 }
 
 .ant-image-preview-img {
