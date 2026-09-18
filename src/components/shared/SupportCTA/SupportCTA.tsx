@@ -7,6 +7,7 @@ type SupportCTAButtonProps = {
   title?: string;
   /** Optional accessibility text for the CTA. */
   description?: string;
+  compact?: boolean;
   className?: string;
   /** Greys out the button (e.g. a completed project) while keeping onClick wired — the caller decides what happens on click. */
   disabled?: boolean;
@@ -19,6 +20,7 @@ type SupportCTALinkProps = {
   title?: string;
   /** Optional accessibility text for the CTA. */
   description?: string;
+  compact?: boolean;
   className?: string;
   /** Not applicable to the link variant — always renders active. */
   disabled?: never;
@@ -31,6 +33,7 @@ export function SupportCTA({
   onClick,
   title = 'Support our Mission',
   description = 'Send your spiritual or financial support to this organization',
+  compact = false,
   className,
   disabled = false,
 }: SupportCTAProps) {
@@ -42,22 +45,26 @@ export function SupportCTA({
 
   return (
     <div
-      className={['relative flex-shrink-0 pb-0 sm:pb-[54px]', className].filter(Boolean).join(' ')}
+      className={['relative flex-shrink-0', compact ? '' : 'pb-0 sm:pb-[54px]', className]
+        .filter(Boolean)
+        .join(' ')}
     >
       <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-[18px]">
-        <span
-          className="block max-w-[280px] text-center sm:text-right text-black"
-          style={{
-            fontFamily: 'Open Sans, sans-serif',
-            fontSize: '18px',
-            fontStyle: 'italic',
-            fontWeight: 400,
-            lineHeight: '150%',
-            letterSpacing: '0px',
-          }}
-        >
-          {description}
-        </span>
+        {!compact && (
+          <span
+            className="block max-w-[280px] text-center sm:text-right text-black"
+            style={{
+              fontFamily: 'Open Sans, sans-serif',
+              fontSize: '18px',
+              fontStyle: 'italic',
+              fontWeight: 400,
+              lineHeight: '150%',
+              letterSpacing: '0px',
+            }}
+          >
+            {description}
+          </span>
+        )}
 
         {onClick ? (
           <button
@@ -81,14 +88,16 @@ export function SupportCTA({
       </div>
 
       {/* Decorative arrow under the caption, pointing up to the CTA button — only fits the row layout used from sm and up. */}
-      <div className="hidden sm:block absolute pointer-events-none left-[116px] top-[70px] h-[51px] w-[270.188px] opacity-100">
-        <img
-          src={supportCtaArrowUrl}
-          alt=""
-          aria-hidden="true"
-          className="block h-full w-full"
-        />
-      </div>
+      {!compact && (
+        <div className="hidden sm:block absolute pointer-events-none left-[116px] top-[70px] h-[51px] w-[270.188px] opacity-100">
+          <img
+            src={supportCtaArrowUrl}
+            alt=""
+            aria-hidden="true"
+            className="block h-full w-full"
+          />
+        </div>
+      )}
     </div>
   );
 }

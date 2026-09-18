@@ -121,14 +121,14 @@ export function ProjectDetailPage() {
   return (
     <div>
       {/* ── Hero: title (left) + Support CTA & Share (right) ── */}
-      <Container>
-        <div className="pt-10 lg:pt-[120px] flex flex-col md:flex-row md:items-start md:justify-between gap-4 lg:gap-8 xl:gap-10">
-          <div className="flex flex-col gap-4 lg:gap-6 min-w-0 flex-1 animate-fade-in-up">
+      <Container className="py-section-sm lg:py-section">
+        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 lg:gap-8">
+          <div className="min-w-0 flex-1 animate-fade-in-up">
             <h1
               className="font-semibold text-black"
               style={{
                 fontFamily: 'Open Sans, sans-serif',
-                fontSize: 'clamp(2rem, 4.17vw, 5rem)',
+                fontSize: 'clamp(2.5rem, 4.17vw, 5rem)',
                 lineHeight: '110%',
               }}
             >
@@ -137,10 +137,11 @@ export function ProjectDetailPage() {
 
             <div className="flex flex-col gap-3 lg:gap-4">
               <p
+                className="mt-5 text-[#151515] whitespace-nowrap overflow-x-auto"
                 style={{
                   fontFamily: 'Open Sans, sans-serif',
                   fontWeight: 400,
-                  fontSize: 'clamp(0.9375rem, 1.25vw, 1.5rem)',
+                  fontSize: 'clamp(0.75rem, 1.9vw, 1rem)',
                   lineHeight: '140%',
                   color: '#151515',
                 }}
@@ -160,7 +161,7 @@ export function ProjectDetailPage() {
                   project.ledBy
                 )}
               </p>
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="mt-4 flex flex-wrap items-center gap-3">
                 <div className="flex flex-wrap gap-2">
                   {project.focusSdgs.map((sdgId) => (
                     <SDGTag
@@ -200,17 +201,17 @@ export function ProjectDetailPage() {
                   </div>
                 }
               >
-                <SupportCTA onClick={() => {}} disabled />
+                <SupportCTA onClick={() => {}} disabled compact />
               </Popover>
             ) : (
-              <SupportCTA onClick={openSupport} />
+              <SupportCTA onClick={openSupport} compact />
             )}
           </div>
         </div>
       </Container>
 
       {/* ── Hero image ── */}
-      <Container className="mt-6 lg:mt-[74px] mb-8 lg:mb-[120px]">
+      <Container className="mt-10 mb-8 lg:mb-[80px]">
         <div
           className="rounded-[20px] lg:rounded-[40px] overflow-hidden"
           style={{
