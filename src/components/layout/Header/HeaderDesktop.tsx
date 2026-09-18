@@ -26,6 +26,7 @@ export function HeaderDesktop() {
 
   const navItems = [
     { label: t.nav.about, path: ROUTES.ABOUT },
+    { label: t.nav.leadership, path: ROUTES.LEADERSHIP },
     { label: t.nav.members, path: ROUTES.MEMBERS },
     { label: t.nav.projects, path: ROUTES.PROJECTS },
     { label: t.nav.documents, path: ROUTES.POLICY_DOCUMENTS },
