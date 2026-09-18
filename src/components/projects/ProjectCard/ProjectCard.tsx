@@ -4,7 +4,13 @@ import { Icon } from '@/components/ui/Icon';
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/routes/paths';
-import type { Project } from '@/types';
+import type { Project, ProjectStatus } from '@/types';
+
+const PROJECT_STATUS_LABELS: Record<ProjectStatus, string> = {
+  ongoing: 'Ongoing',
+  completed: 'Completed',
+  planned: 'Inactive',
+};
 
 export interface ProjectCardProps {
   project: Project;
@@ -109,6 +115,35 @@ export function ProjectCard({ project, ledBy, className }: ProjectCardProps) {
                 }}
               >
                 {project.region}
+              </span>
+            </div>
+
+            {/* Keep status off narrow screens so the card stays readable. */}
+            <div className="hidden md:flex items-baseline gap-1.5 min-w-0">
+              <span
+                className="flex-shrink-0"
+                style={{
+                  fontSize: 'clamp(0.75rem, 0.83vw, 0.9375rem)',
+                  fontFamily: 'Open Sans, sans-serif',
+                  fontWeight: 400,
+                  color: '#6B7280',
+                  lineHeight: '140%',
+                }}
+              >
+                Status
+              </span>
+              <span
+                className="truncate"
+                title={PROJECT_STATUS_LABELS[project.status]}
+                style={{
+                  fontSize: 'clamp(0.75rem, 0.83vw, 0.9375rem)',
+                  fontFamily: 'Open Sans, sans-serif',
+                  fontWeight: 400,
+                  color: '#000000',
+                  lineHeight: '140%',
+                }}
+              >
+                {PROJECT_STATUS_LABELS[project.status]}
               </span>
             </div>
           </div>
