@@ -16,6 +16,7 @@ const HERO_GRADIENT =
   'linear-gradient(90deg, #EE334E 0%, #FCB131 33%, #00A651 67%, #0081C8 100%)';
 const SEPARATOR_GRADIENT =
   'linear-gradient(90deg, rgba(194,211,239,0) 0%, rgba(194,211,239,1) 20%, rgba(194,211,239,1) 80%, rgba(194,211,239,0) 100%)';
+const SHOW_CONTINENTAL_DIRECTORS = false;
 
 export function LeadershipPage() {
   const [activeContinent, setActiveContinent] = useState<Continent>('Asia');
@@ -189,7 +190,7 @@ export function LeadershipPage() {
         </div>
       </Container>
 
-      {/* Continental Directors */}
+      {SHOW_CONTINENTAL_DIRECTORS && (
       <div
         ref={directorsRef}
         className={cn(
@@ -316,6 +317,7 @@ export function LeadershipPage() {
           </p>
         )}
       </div>
+      )}
 
       <CTABanner
         title="Ready to Make an Impact?"
