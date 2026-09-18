@@ -80,8 +80,6 @@ export function MemberCardLarge({
               sdgId={sdgId}
               variant="solid"
               size="sm"
-              className="!rounded-full !text-[11px] !px-3 !py-1"
-              style={{ fontFamily: 'Open Sans, sans-serif' }}
             />
           ))}
         </div>

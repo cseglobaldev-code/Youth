@@ -168,12 +168,8 @@ export function ProjectDetailPage() {
                       key={sdgId}
                       sdgId={sdgId}
                       variant="solid"
-                      size="md"
-                      className="!rounded-[6px] transition-transform duration-200 hover:scale-105"
-                      style={{
-                        padding: 'clamp(6px,0.5vw,10px) clamp(12px,1.25vw,24px)',
-                        fontSize: 'clamp(0.75rem, 1.04vw, 1.25rem)',
-                      }}
+                      size="sm"
+                      className="transition-transform duration-200 hover:scale-105"
                     />
                   ))}
                 </div>
@@ -317,8 +313,7 @@ export function ProjectDetailPage() {
                     key={sdgId}
                     sdgId={sdgId}
                     variant="solid"
-                    size="md"
-                    className="!rounded-[6px] !py-1.5 !px-4"
+                    size="sm"
                   />
                 ))}
               </div>

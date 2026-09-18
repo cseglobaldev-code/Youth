@@ -103,7 +103,7 @@ export function LeaderMemberModal({ member, open, onClose }: LeaderMemberModalPr
             {member.focusSdgs && member.focusSdgs.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {member.focusSdgs.map((sdgId) => (
-                  <SDGTag key={sdgId} sdgId={sdgId} variant="solid" size="md" />
+                  <SDGTag key={sdgId} sdgId={sdgId} variant="solid" size="sm" />
                 ))}
               </div>
             )}

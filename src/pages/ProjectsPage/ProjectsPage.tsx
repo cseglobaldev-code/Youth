@@ -177,11 +177,7 @@ export function ProjectsPage() {
                       <SDGTag
                         sdgId={item.sdgId}
                         variant={activeFilter === item.key ? 'solid' : 'soft'}
-                        size="md"
-                        style={{
-                          fontSize: 'clamp(0.8rem, 1.04vw, 1.25rem)',
-                          padding: 'clamp(8px,0.8vw,10px) clamp(14px,1.25vw,24px)',
-                        }}
+                        size="sm"
                       />
                     </button>
                   </Tooltip>
