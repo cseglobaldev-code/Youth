@@ -98,14 +98,14 @@ const normFile = (e: unknown): UploadFile[] => {
 
 function ScaleRating({ value, onChange }: { value?: number; onChange?: (val: number) => void }) {
   return (
-    <div className="flex flex-col gap-1.5 pt-1 pb-1">
-      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+    <div className="w-full space-y-2 pt-1 pb-1">
+      <div className="grid w-full grid-cols-10 gap-1.5 sm:gap-2">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
           <button
             key={num}
             type="button"
             onClick={() => onChange?.(num)}
-            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full font-bold text-xs sm:text-sm transition-all border ${
+            className={`mx-auto aspect-square w-full max-w-10 rounded-full font-bold text-xs sm:text-sm transition-all border ${
               value === num
                 ? 'bg-[#005D9A] text-white border-[#005D9A] shadow-md scale-105'
                 : 'bg-white text-neutral-700 border-neutral-300 hover:border-[#005D9A] hover:text-[#005D9A]'
@@ -116,10 +116,10 @@ function ScaleRating({ value, onChange }: { value?: number; onChange?: (val: num
           </button>
         ))}
       </div>
-      <div className="flex justify-between text-[12px] text-neutral-500 max-w-[440px] px-1" style={FONT}>
-        <span>1 (Poor)</span>
-        <span>5 (Average)</span>
-        <span>10 (Excellent)</span>
+      <div className="grid w-full grid-cols-10 gap-1.5 text-center text-[12px] text-neutral-500 sm:gap-2" style={FONT}>
+        <span className="col-start-1">Poor</span>
+        <span className="col-start-5">Average</span>
+        <span className="col-start-10">Excellent</span>
       </div>
     </div>
   );
