@@ -34,6 +34,7 @@ export function Footer({ className }: FooterProps) {
   const discoverLinks = [
     { to: ROUTES.ABOUT, label: t.nav.about },
     { to: ROUTES.MEMBERS, label: t.nav.members },
+    { to: ROUTES.LEADERSHIP, label: t.nav.leadership },
     { to: ROUTES.PROJECTS, label: t.nav.projects },
     { to: ROUTES.POLICY_DOCUMENTS, label: t.nav.documents },
     { to: ROUTES.CONTACT, label: t.nav.contact },
