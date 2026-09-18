@@ -653,12 +653,12 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
             {/* STEP 4: ASSESSMENT CENTER (7 SECTIONS) */}
             <div className={step === 4 ? 'block' : 'hidden'}>
               
-              {/* SECTION 1: (2) ORGANIZATIONAL LEADERSHIP */}
+              {/* SECTION 1: (1) ORGANIZATIONAL LEADERSHIP */}
               {assessmentSection === 1 && (
                 <div className="space-y-4">
                   <div className="border-b border-neutral-200 pb-3 mb-4">
                     <h4 className="font-bold text-[18px] sm:text-[20px] text-[#111111]" style={FONT}>
-                      (2) Organizational Leadership
+                      (1) Organizational Leadership
                     </h4>
                     <p className="text-neutral-500 text-[14px]" style={FONT}>
                       Demonstrate your leadership roles and active organization experience.
@@ -666,7 +666,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </div>
 
                   <Form.Item
-                    label={<FieldLabel text="2.1 Name of Your Youth Organization" required />}
+                    label={<FieldLabel text="1.1 Name of Your Youth Organization" required />}
                     name={['assessment', 'orgName']}
                     rules={[{ required: true, message: 'Please enter your organization name' }]}
                   >
@@ -674,7 +674,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="2.2 Position Held" required />}
+                    label={<FieldLabel text="1.2 Position Held" required />}
                     name={['assessment', 'positionHeld']}
                     rules={[{ required: true, message: 'Please enter your position' }]}
                   >
@@ -682,7 +682,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="2.3 Is your organization legally registered?" required />}
+                    label={<FieldLabel text="1.3 Is your organization legally registered?" required />}
                     name={['assessment', 'isLegallyRegistered']}
                     rules={[{ required: true, message: 'Please select an option' }]}
                   >
@@ -694,7 +694,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="2.4 How many years have you led your organization?" required />}
+                    label={<FieldLabel text="1.4 How many years have you led your organization?" required />}
                     name={['assessment', 'yearsLed']}
                     rules={[{ required: true, message: 'Please select years of leadership' }]}
                   >
@@ -707,7 +707,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="2.5 Organization Website/Social Media Link" required />}
+                    label={<FieldLabel text="1.5 Organization Website/Social Media Link" required />}
                     name={['assessment', 'orgWebsiteSocial']}
                     rules={[
                       { required: true, message: 'Please enter website or social media link' },
@@ -718,7 +718,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="2.6 Number of Active Members in Your Organization" required />}
+                    label={<FieldLabel text="1.6 Number of Active Members in Your Organization" required />}
                     name={['assessment', 'activeMembers']}
                     rules={[{ required: true, message: 'Please enter number of active members' }]}
                   >
@@ -726,7 +726,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="2.7 Describe your organization's mission and primary activities." required />}
+                    label={<FieldLabel text="1.7 Describe your organization's mission and primary activities." required />}
                     name={['assessment', 'missionActivities']}
                     rules={[{ required: true, message: 'Please describe mission and activities' }]}
                   >
@@ -739,12 +739,12 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                 </div>
               )}
 
-              {/* SECTION 2: (3) IMPACT & EXPERIENCE */}
+              {/* SECTION 2: (2) IMPACT & EXPERIENCE */}
               {assessmentSection === 2 && (
                 <div className="space-y-4">
                   <div className="border-b border-neutral-200 pb-3 mb-4">
                     <h4 className="font-bold text-[18px] sm:text-[20px] text-[#111111]" style={FONT}>
-                      (3) Impact &amp; Experience
+                      (2) Impact &amp; Experience
                     </h4>
                     <p className="text-neutral-500 text-[14px]" style={FONT}>
                       Share your track record and community impact. Respect word limits noted.
@@ -752,7 +752,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </div>
 
                   <Form.Item
-                    label={<FieldLabel text="3.1 Describe three major achievements of your organization." required hint="Maximum 300 words" />}
+                    label={<FieldLabel text="2.1 Describe three major achievements of your organization." required hint="Maximum 300 words" />}
                     name={['assessment', 'majorAchievements']}
                     rules={[
                       { required: true, message: 'Please describe three major achievements' },
@@ -767,7 +767,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="3.2 How has your organization positively impacted youth or communities?" required hint="Maximum 300 words" />}
+                    label={<FieldLabel text="2.2 How has your organization positively impacted youth or communities?" required hint="Maximum 300 words" />}
                     name={['assessment', 'positiveImpact']}
                     rules={[
                       { required: true, message: 'Please describe your community impact' },
@@ -782,7 +782,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="3.3 Have you led regional, national, or international projects?" required />}
+                    label={<FieldLabel text="2.3 Have you led regional, national, or international projects?" required />}
                     name={['assessment', 'projectScales']}
                     rules={[{ required: true, message: 'Please select at least one project scale' }]}
                   >
@@ -795,7 +795,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="3.4 Please provide examples of projects you have led." required hint="Maximum 300 words" />}
+                    label={<FieldLabel text="2.4 Please provide examples of projects you have led." required hint="Maximum 300 words" />}
                     name={['assessment', 'projectExamples']}
                     rules={[
                       { required: true, message: 'Please provide project examples' },
@@ -810,7 +810,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="3.5 Have you partnered with other organizations?" required />}
+                    label={<FieldLabel text="2.5 Have you partnered with other organizations?" required />}
                     name={['assessment', 'partneredWithOrgs']}
                     rules={[{ required: true, message: 'Please select Yes or No' }]}
                   >
@@ -822,7 +822,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
 
                   {partnered === 'Yes' && (
                     <Form.Item
-                      label={<FieldLabel text="3.6 If yes, please explain." hint="Maximum 200 words" />}
+                      label={<FieldLabel text="2.6 If yes, please explain." hint="Maximum 200 words" />}
                       name={['assessment', 'partneredExplanation']}
                       rules={[maxWordsRule(200)]}
                     >
@@ -836,12 +836,12 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                 </div>
               )}
 
-              {/* SECTION 3: (4) LEADERSHIP & SKILLS */}
+              {/* SECTION 3: (3) LEADERSHIP & SKILLS */}
               {assessmentSection === 3 && (
                 <div className="space-y-4">
                   <div className="border-b border-neutral-200 pb-3 mb-4">
                     <h4 className="font-bold text-[18px] sm:text-[20px] text-[#111111]" style={FONT}>
-                      (4) Leadership &amp; Skills
+                      (3) Leadership &amp; Skills
                     </h4>
                     <p className="text-neutral-500 text-[14px]" style={FONT}>
                       Assess your leadership competencies, conflict resolution, and self-ratings.
@@ -849,7 +849,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </div>
 
                   <Form.Item
-                    label={<FieldLabel text="4.1 What motivates you to apply for this position?" required hint="Maximum 300 words" />}
+                    label={<FieldLabel text="3.1 What motivates you to apply for this position?" required hint="Maximum 300 words" />}
                     name={['assessment', 'motivation']}
                     rules={[
                       { required: true, message: 'Please describe your motivation' },
@@ -864,7 +864,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="4.2 What leadership qualities make you suitable for this role?" required hint="Maximum 150 words" />}
+                    label={<FieldLabel text="3.2 What leadership qualities make you suitable for this role?" required hint="Maximum 150 words" />}
                     name={['assessment', 'leadershipQualities']}
                     rules={[
                       { required: true, message: 'Please highlight your qualities' },
@@ -879,7 +879,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="4.3 Describe a situation where you successfully managed a team." required hint="Maximum 150 words" />}
+                    label={<FieldLabel text="3.3 Describe a situation where you successfully managed a team." required hint="Maximum 150 words" />}
                     name={['assessment', 'teamSituation']}
                     rules={[
                       { required: true, message: 'Please describe a team management situation' },
@@ -894,7 +894,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="4.4 How would you recruit and coordinate youth organizations within your region?" required hint="Maximum 150 words" />}
+                    label={<FieldLabel text="3.4 How would you recruit and coordinate youth organizations within your region?" required hint="Maximum 150 words" />}
                     name={['assessment', 'recruitmentPlan']}
                     rules={[
                       { required: true, message: 'Please describe your coordination plan' },
@@ -909,7 +909,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="4.5 How would you handle conflicts among members from different cultures or countries?" required hint="Maximum 150 words" />}
+                    label={<FieldLabel text="3.5 How would you handle conflicts among members from different cultures or countries?" required hint="Maximum 150 words" />}
                     name={['assessment', 'conflictResolution']}
                     rules={[
                       { required: true, message: 'Please explain conflict resolution strategy' },
@@ -924,7 +924,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="4.6 Rate your communication skills." required hint="Linear scale 1 to 10" />}
+                    label={<FieldLabel text="3.6 Rate your communication skills." required hint="Linear scale 1 to 10" />}
                     name={['assessment', 'rateCommunication']}
                     rules={[{ required: true, message: 'Please rate your communication skills' }]}
                   >
@@ -932,7 +932,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="4.7 Rate your team management skills." required hint="Linear scale 1 to 10" />}
+                    label={<FieldLabel text="3.7 Rate your team management skills." required hint="Linear scale 1 to 10" />}
                     name={['assessment', 'rateTeamManagement']}
                     rules={[{ required: true, message: 'Please rate your team management skills' }]}
                   >
@@ -940,7 +940,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="4.8 Rate your ability to coordinate international activities." required hint="Linear scale 1 to 10" />}
+                    label={<FieldLabel text="3.8 Rate your ability to coordinate international activities." required hint="Linear scale 1 to 10" />}
                     name={['assessment', 'rateInternationalCoordination']}
                     rules={[{ required: true, message: 'Please rate your international coordination ability' }]}
                   >
@@ -949,12 +949,12 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                 </div>
               )}
 
-              {/* SECTION 4: (5) Y.O.U'S VISION */}
+              {/* SECTION 4: (4) Y.O.U'S VISION */}
               {assessmentSection === 4 && (
                 <div className="space-y-4">
                   <div className="border-b border-neutral-200 pb-3 mb-4">
                     <h4 className="font-bold text-[18px] sm:text-[20px] text-[#111111]" style={FONT}>
-                      (5) Alignment with Y.O.U's Vision
+                      (4) Alignment with Y.O.U's Vision
                     </h4>
                     <p className="text-neutral-500 text-[14px]" style={FONT}>
                       Share your perspectives on empowerment, diversity, and collective growth. Maximum 100 words each.
@@ -962,7 +962,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </div>
 
                   <Form.Item
-                    label={<FieldLabel text="5.1 What does youth empowerment mean to you?" required hint="Maximum 100 words" />}
+                    label={<FieldLabel text="4.1 What does youth empowerment mean to you?" required hint="Maximum 100 words" />}
                     name={['assessment', 'youthEmpowerment']}
                     rules={[
                       { required: true, message: 'Please answer this question' },
@@ -977,7 +977,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="5.2 How do you promote inclusion, diversity, and cultural understanding?" required hint="Maximum 100 words" />}
+                    label={<FieldLabel text="4.2 How do you promote inclusion, diversity, and cultural understanding?" required hint="Maximum 100 words" />}
                     name={['assessment', 'inclusionDiversity']}
                     rules={[
                       { required: true, message: 'Please answer this question' },
@@ -992,7 +992,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="5.3 What vision do you have for youth development in your region?" required hint="Maximum 100 words" />}
+                    label={<FieldLabel text="4.3 What vision do you have for youth development in your region?" required hint="Maximum 100 words" />}
                     name={['assessment', 'regionalYouthVision']}
                     rules={[
                       { required: true, message: 'Please answer this question' },
@@ -1007,7 +1007,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="5.4 What contribution will you bring to the Youth Organization Union?" required hint="Maximum 100 words" />}
+                    label={<FieldLabel text="4.4 What contribution will you bring to the Youth Organization Union?" required hint="Maximum 100 words" />}
                     name={['assessment', 'contributionToYou']}
                     rules={[
                       { required: true, message: 'Please answer this question' },
@@ -1023,12 +1023,12 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                 </div>
               )}
 
-              {/* SECTION 5: (6) COMMITMENT */}
+              {/* SECTION 5: (5) COMMITMENT */}
               {assessmentSection === 5 && (
                 <div className="space-y-4">
                   <div className="border-b border-neutral-200 pb-3 mb-4">
                     <h4 className="font-bold text-[18px] sm:text-[20px] text-[#111111]" style={FONT}>
-                      (6) Commitment
+                      (5) Commitment
                     </h4>
                     <p className="text-neutral-500 text-[14px]" style={FONT}>
                       Confirm your availability, engagement willingness, and adherence to Y.O.U's mission.
@@ -1036,7 +1036,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </div>
 
                   <Form.Item
-                    label={<FieldLabel text="6.1 Can you dedicate at least 5-10 hours per month to this role?" required />}
+                    label={<FieldLabel text="5.1 Can you dedicate at least 5-10 hours per month to this role?" required />}
                     name={['assessment', 'commitHours']}
                     rules={[{ required: true, message: 'Please select an option' }]}
                   >
@@ -1047,7 +1047,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="6.2 Are you willing to participate in virtual meetings and continental coordination activities?" required />}
+                    label={<FieldLabel text="5.2 Are you willing to participate in virtual meetings and continental coordination activities?" required />}
                     name={['assessment', 'commitVirtualMeetings']}
                     rules={[{ required: true, message: 'Please select an option' }]}
                   >
@@ -1058,7 +1058,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="6.3 Are you willing to recruit and mentor youth leaders within your region?" required />}
+                    label={<FieldLabel text="5.3 Are you willing to recruit and mentor youth leaders within your region?" required />}
                     name={['assessment', 'commitRecruitMentor']}
                     rules={[{ required: true, message: 'Please select an option' }]}
                   >
@@ -1069,7 +1069,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="6.4 Are you willing to uphold the values and mission of the Youth Organization Union?" required />}
+                    label={<FieldLabel text="5.4 Are you willing to uphold the values and mission of the Youth Organization Union?" required />}
                     name={['assessment', 'commitUpholdValues']}
                     rules={[{ required: true, message: 'Please select an option' }]}
                   >
@@ -1080,7 +1080,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="6.5 Do you currently reside in the region you wish to represent?" required />}
+                    label={<FieldLabel text="5.5 Do you currently reside in the region you wish to represent?" required />}
                     name={['assessment', 'resideInRegion']}
                     rules={[{ required: true, message: 'Please select an option' }]}
                   >
@@ -1092,12 +1092,12 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                 </div>
               )}
 
-              {/* SECTION 6: (7) SUPPORTING DOCUMENTS */}
+              {/* SECTION 6: (6) SUPPORTING DOCUMENTS */}
               {assessmentSection === 6 && (
                 <div className="space-y-4">
                   <div className="border-b border-neutral-200 pb-3 mb-4">
                     <h4 className="font-bold text-[18px] sm:text-[20px] text-[#111111]" style={FONT}>
-                      (7) Supporting Documents
+                      (6) Supporting Documents
                     </h4>
                     <p className="text-neutral-500 text-[14px]" style={FONT}>
                       Please attach necessary documentation. CV/Resume is required.
@@ -1105,7 +1105,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </div>
 
                   <Form.Item
-                    label={<FieldLabel text="7.1 Upload CV / Resume" required hint="Your updated Curriculum Vitae." />}
+                    label={<FieldLabel text="6.1 Upload CV / Resume" required hint="Your updated Curriculum Vitae." />}
                     name="resumeCv"
                     valuePropName="fileList"
                     getValueFromEvent={normFile}
@@ -1118,7 +1118,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="7.2 Upload Organization Profile" hint="Capability deck or overview document (if applicable)." />}
+                    label={<FieldLabel text="6.2 Upload Organization Profile" hint="Capability deck or overview document (if applicable)." />}
                     name="orgProfileDoc"
                     valuePropName="fileList"
                     getValueFromEvent={normFile}
@@ -1130,7 +1130,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="7.3 Upload Proof of Leadership Experience" hint="Certificates, letters of appointment, or recognition." />}
+                    label={<FieldLabel text="6.3 Upload Proof of Leadership Experience" hint="Certificates, letters of appointment, or recognition." />}
                     name="leadershipProofDoc"
                     valuePropName="fileList"
                     getValueFromEvent={normFile}
@@ -1142,7 +1142,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </Form.Item>
 
                   <Form.Item
-                    label={<FieldLabel text="7.4 Upload Any Additional Supporting Documents" hint="Articles, news coverage, portfolio materials." />}
+                    label={<FieldLabel text="6.4 Upload Any Additional Supporting Documents" hint="Articles, news coverage, portfolio materials." />}
                     name="additionalDocs"
                     valuePropName="fileList"
                     getValueFromEvent={normFile}
@@ -1155,12 +1155,12 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                 </div>
               )}
 
-              {/* SECTION 7: (8) DECLARATION */}
+              {/* SECTION 7: (7) DECLARATION */}
               {assessmentSection === 7 && (
                 <div className="space-y-4">
                   <div className="border-b border-neutral-200 pb-3 mb-4">
                     <h4 className="font-bold text-[18px] sm:text-[20px] text-[#111111]" style={FONT}>
-                      (8) Declaration
+                      (7) Declaration
                     </h4>
                     <p className="text-neutral-500 text-[14px]" style={FONT}>
                       Please certify the authenticity of your application before submission.
