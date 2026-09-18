@@ -1173,10 +1173,6 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                       submission of this application does not guarantee appointment and that successful
                       candidates may be invited for an interview.&rdquo;
                     </p>
-                    <p className="text-[13px] text-neutral-500 mt-2 italic" style={FONT}>
-                      (Tôi cam đoan mọi thông tin khai báo là trung thực và chính xác. Tôi hiểu rằng việc nộp
-                      đơn không đảm bảo việc bổ nhiệm và các ứng viên đạt tiêu chuẩn có thể được mời phỏng vấn).
-                    </p>
                   </div>
 
                   <Form.Item
