@@ -37,6 +37,7 @@ const FALLBACK_EXECUTIVES: TeamMember[] = [
 ];
 
 const ALLOWED_SOCIAL_PLATFORMS = new Set(['facebook', 'instagram', 'linkedin', 'youtube']);
+const SHOW_CONTINENTAL_DIRECTORS = false;
 
 export function TeamSection() {
   const [leadership, setLeadership] = useState<LeadershipRoster>({
@@ -156,7 +157,7 @@ export function TeamSection() {
           })}
         </div>
 
-        {directors.length > 0 && (
+        {SHOW_CONTINENTAL_DIRECTORS && directors.length > 0 && (
           <>
             <hr className="border-neutral-200 my-10 lg:my-[60px]" />
 

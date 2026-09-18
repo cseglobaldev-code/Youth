@@ -194,6 +194,8 @@ export function OrganizationReviewPage() {
             <Descriptions title="Organization Details" bordered size="small" column={2}>
               <Descriptions.Item label="Representative">{selectedOrg.representativeFullName}</Descriptions.Item>
               <Descriptions.Item label="Phone">{selectedOrg.representativePhoneCode} {selectedOrg.representativePhone}</Descriptions.Item>
+              <Descriptions.Item label="Contact Person">{selectedOrg.contactPersonFullName}</Descriptions.Item>
+              <Descriptions.Item label="Contact Phone">{selectedOrg.contactPersonPhoneCode} {selectedOrg.contactPersonPhone}</Descriptions.Item>
               <Descriptions.Item label="Email">{selectedOrg.email}</Descriptions.Item>
               <Descriptions.Item label="Est. Year">{selectedOrg.yearOfEstablishment}</Descriptions.Item>
               <Descriptions.Item label="Country">{selectedOrg.country}</Descriptions.Item>
