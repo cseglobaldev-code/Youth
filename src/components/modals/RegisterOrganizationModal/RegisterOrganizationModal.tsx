@@ -14,6 +14,9 @@ export interface RegisterOrganizationFormValues {
   representativeFullName: string;
   representativePhone: string;
   representativePhoneCode: string;
+  contactPersonFullName: string;
+  contactPersonPhone: string;
+  contactPersonPhoneCode: string;
   yearOfEstablishment: number;
   country: string;
   address: string;
@@ -91,6 +94,8 @@ const STEP_FIELDS: Record<1 | 2, (keyof RegisterOrganizationFormValues)[]> = {
     'organizationDescription',
     'representativeFullName',
     'representativePhone',
+    'contactPersonFullName',
+    'contactPersonPhone',
     'yearOfEstablishment',
     'country',
     'address',
@@ -273,6 +278,42 @@ export function RegisterOrganizationModal({
                 placeholder="Enter phone number"
                 addonBefore={
                   <Form.Item name="representativePhoneCode" noStyle initialValue="+84">
+                    <Select
+                      showSearch
+                      style={{ width: 120 }}
+                      optionFilterProp="title"
+                      options={DIAL_CODES.map((d) => ({
+                        value: d.code,
+                        label: `${countryFlagEmoji(d.country)} ${d.code}`,
+                        title: `${d.country} ${d.code}`,
+                      }))}
+                    />
+                  </Form.Item>
+                }
+                style={FONT}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label={labelText("Contact Person's Full Name")}
+              name="contactPersonFullName"
+              rules={[{ required: true, message: 'Please enter contact person full name' }]}
+            >
+              <Input placeholder="Enter full name" style={FONT} />
+            </Form.Item>
+
+            <Form.Item
+              label={labelText("Contact Person's Phone Number")}
+              name="contactPersonPhone"
+              rules={[
+                { required: true, message: 'Please enter contact person phone number' },
+                phoneRule(),
+              ]}
+            >
+              <Input
+                placeholder="Enter phone number"
+                addonBefore={
+                  <Form.Item name="contactPersonPhoneCode" noStyle initialValue="+84">
                     <Select
                       showSearch
                       style={{ width: 120 }}
