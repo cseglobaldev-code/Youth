@@ -2,7 +2,6 @@ import { Routes, Route } from 'react-router-dom';
 import { RootLayout } from '@/components/layout/RootLayout';
 import { HomePage } from '@/pages/HomePage';
 import { AboutPage } from '@/pages/AboutPage';
-import { LeadershipPage } from '@/pages/LeadershipPage';
 import { MembersPage } from '@/pages/MembersPage';
 import { MemberDetailPage } from '@/pages/MemberDetailPage';
 import { ProjectsPage } from '@/pages/ProjectsPage';
@@ -26,7 +25,6 @@ export function AppRouter() {
       <Route element={<RootLayout />}>
         <Route index element={<HomePage />} />
         <Route path="about-us" element={<AboutPage />} />
-        <Route path="leadership" element={<LeadershipPage />} />
         <Route path="members" element={<MembersPage />} />
         <Route path="members/:memberId" element={<MemberDetailPage />} />
         <Route path="projects" element={<ProjectsPage />} />

@@ -3,7 +3,6 @@ import { ROUTES } from '@/routes/paths';
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'About us', path: ROUTES.ABOUT },
-  { label: 'Leadership', path: ROUTES.LEADERSHIP },
   { label: 'Members', path: ROUTES.MEMBERS },
   { label: 'Projects', path: ROUTES.PROJECTS },
   { label: 'Document', path: ROUTES.POLICY_DOCUMENTS },
