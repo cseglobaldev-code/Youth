@@ -44,11 +44,11 @@ export function AboutSection() {
             {/* Left: SDG logo */}
             <div className="flex-shrink-0">
               <Image
-                src="/images/home/about/sdg-goals-logo.png"
+                src="/images/home/about/sdg-goals-logo-hq.jpg"
                 alt="UN Sustainable Development Goals"
                 preview={false}
-                className="!h-16 sm:!h-[87px] !w-auto !max-w-none object-contain"
-                style={{ height: 64, width: 'auto', objectFit: 'contain' }}
+                className="!h-20 sm:!h-[120px] !w-auto !max-w-none object-contain"
+                style={{ height: 80, width: 'auto', objectFit: 'contain' }}
               />
             </div>
             {/* Right: text + CTA */}
