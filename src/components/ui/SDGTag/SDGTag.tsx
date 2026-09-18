@@ -26,16 +26,18 @@ export function SDGTag({ sdgId, variant = 'soft', size = 'sm', className, style:
           borderColor: `${color}30`, // Slightly more visible border
         };
 
-  const sizeStyle = size === 'sm' 
+  const sizeStyle = size === 'sm'
     ? {
-        padding: '2px 10px',
+        padding: '3px 11px',
         fontSize: '12px',
         fontWeight: 500,
+        lineHeight: '16px',
       }
     : {
-        padding: '4px 14px',
-        fontSize: '14px',
+        padding: '4px 12px',
+        fontSize: '13px',
         fontWeight: 500,
+        lineHeight: '18px',
       };
 
   return (

@@ -101,8 +101,7 @@ export function MemberDetailPage() {
                       key={sdgId}
                       sdgId={sdgId}
                       variant="solid"
-                      size="md"
-                      className="!rounded-[6px]"
+                      size="sm"
                     />
                   ))}
                 </div>

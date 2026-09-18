@@ -222,7 +222,7 @@ export function OrganizationReviewPage() {
                 <h4 className="font-semibold text-sm mb-2">Focus SDGs</h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedOrg.focusSdgs.map((sdg: any) => (
-                    <SDGTag key={sdg} sdgId={Number(sdg)} variant="solid" size="md" />
+                    <SDGTag key={sdg} sdgId={Number(sdg)} variant="solid" size="sm" />
                   ))}
                 </div>
               </div>
