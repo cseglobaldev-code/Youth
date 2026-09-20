@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { draftStatus, isAllowedCmsPath } from './cms';
+import { draftStatus, isAllowedCmsPath, isPublicFormSubmission } from './cms';
 
 describe('CMS proxy helpers', () => {
   it('allows read-only content and upload/form paths', () => {
@@ -28,5 +28,11 @@ describe('CMS proxy helpers', () => {
     expect(draftStatus('you_preview=draft')).toBe('draft');
     expect(draftStatus('you_preview=published')).toBe('published');
     expect(draftStatus('other=value')).toBe('published');
+  });
+
+  it('limits the write token to public form POST endpoints', () => {
+    expect(isPublicFormSubmission('/api/organization-applications', 'POST')).toBe(true);
+    expect(isPublicFormSubmission('/api/support-submissions', 'GET')).toBe(false);
+    expect(isPublicFormSubmission('/api/projects', 'POST')).toBe(false);
   });
 });

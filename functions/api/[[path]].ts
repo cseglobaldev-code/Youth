@@ -1,8 +1,9 @@
-import { draftStatus, isAllowedCmsPath } from '../lib/cms';
+import { draftStatus, isAllowedCmsPath, isPublicFormSubmission } from '../lib/cms';
 
 interface CmsEnv {
   STRAPI_API_URL?: string;
   STRAPI_API_TOKEN?: string;
+  STRAPI_FORM_API_TOKEN?: string;
 }
 
 interface PagesContext {
@@ -54,10 +55,15 @@ export async function onRequest(context: PagesContext): Promise<Response> {
   
   //  Preserve Admin JWT for Portal, or inject Public Token for visitors
   const clientAuth = request.headers.get('Authorization');
+  const isPublicForm = isPublicFormSubmission(pathname, request.method);
+  if (!clientAuth && isPublicForm && !context.env.STRAPI_FORM_API_TOKEN) {
+    return new Response('Form submission is not configured', { status: 503 });
+  }
   if (clientAuth) {
     headers.set('Authorization', clientAuth);
   } else {
-    headers.set('Authorization', `Bearer ${context.env.STRAPI_API_TOKEN}`);
+    const apiToken = isPublicForm ? context.env.STRAPI_FORM_API_TOKEN : context.env.STRAPI_API_TOKEN;
+    if (apiToken) headers.set('Authorization', `Bearer ${apiToken}`);
   }
 
   const accept = request.headers.get('Accept');

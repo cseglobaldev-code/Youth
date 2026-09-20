@@ -1,9 +1,9 @@
-import { draftStatus, isAllowedCmsPath } from '../../functions/lib/cms';
+import { draftStatus, isAllowedCmsPath, isPublicFormSubmission } from '../../functions/lib/cms';
 import { isAllowedPreviewPath, isPreviewStatus, sameSecret } from '../../functions/lib/preview';
 
 import type { DonationEnv } from './donations';
 
-export type Env = Cloudflare.Env & DonationEnv;
+export type Env = Cloudflare.Env & DonationEnv & { STRAPI_FORM_API_TOKEN?: string };
 
 const PREVIEW_COOKIE = 'you_preview';
 const PREVIEW_MAX_AGE_SECONDS = 60 * 60;
@@ -82,10 +82,15 @@ export async function handleCms(request: Request, env: Env): Promise<Response> {
   
   // 👈 THE FIX: Preserve the user's JWT if present; otherwise fallback to public API token
   const clientAuth = request.headers.get('Authorization');
+  const isPublicForm = isPublicFormSubmission(requestUrl.pathname, request.method);
+  if (!clientAuth && isPublicForm && !env.STRAPI_FORM_API_TOKEN) {
+    return new Response('Form submission is not configured', { status: 503 });
+  }
   if (clientAuth) {
     headers.set('Authorization', clientAuth);
-  } else if (env.STRAPI_API_TOKEN) {
-    headers.set('Authorization', `Bearer ${env.STRAPI_API_TOKEN}`);
+  } else {
+    const apiToken = isPublicForm ? env.STRAPI_FORM_API_TOKEN : env.STRAPI_API_TOKEN;
+    if (apiToken) headers.set('Authorization', `Bearer ${apiToken}`);
   }
 
   const accept = request.headers.get('Accept');

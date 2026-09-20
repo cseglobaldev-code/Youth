@@ -3,6 +3,8 @@
 # Production Strapi origin: https://admin.youthorgonion.com
 STRAPI_API_URL=http://localhost:1337
 STRAPI_API_TOKEN=<strapi-read-only-api-token>
+# Strapi API token with create permission for public forms and upload.
+STRAPI_FORM_API_TOKEN=<strapi-form-write-api-token>
 PREVIEW_SECRET=<same-value-as-youth-cms>
 
 # Hosted payment pages. Leave blank to keep the method visible but disabled.

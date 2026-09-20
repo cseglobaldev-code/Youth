@@ -120,7 +120,7 @@ src/
    - File `src/worker/handlers.ts` chặn các request này trên Edge:
      - **Xử lý CORS Preflight:** Trả về HTTP `204 No Content` ngay lập tức cho các request `OPTIONS`.
      - **Bảo toàn Phiên Quản trị:** Nếu request có `Authorization: Bearer <jwt>`, proxy sẽ giữ nguyên token này để chuyển tiếp lên Strapi (đảm bảo phiên của Portal không bị hạ quyền).
-     - **Bảo vệ Khách vãng lai:** Nếu request không có header xác thực, proxy sẽ tự động bổ sung token đọc công khai (`STRAPI_API_TOKEN` lưu trong Cloudflare Secret) trước khi gửi tới backend.
+     - **Bảo vệ Khách vãng lai:** Request đọc nội dung dùng token công khai (`STRAPI_API_TOKEN`); request gửi form dùng token riêng (`STRAPI_FORM_API_TOKEN`) có quyền `create` tối thiểu trên các collection form và upload.
      - **Cho phép đầy đủ các phương thức:** Hỗ trợ `GET`, `HEAD`, `POST`, `PUT`, `DELETE`.
 
 ```typescript

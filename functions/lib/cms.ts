@@ -21,6 +21,14 @@ const ALLOWED_PREFIXES = [
   '/api/users-permissions',
 ];
 
+const PUBLIC_FORM_PATHS = new Set([
+  '/api/inquiries',
+  '/api/leadership-applications',
+  '/api/organization-applications',
+  '/api/support-submissions',
+  '/api/upload',
+]);
+
 export function isAllowedCmsPath(pathname: string): boolean {
   let decodedPathname: string;
   try {
@@ -36,6 +44,11 @@ export function isAllowedCmsPath(pathname: string): boolean {
   return ALLOWED_PREFIXES.some(
     (prefix) => decodedPathname === prefix || decodedPathname.startsWith(`${prefix}/`)
   );
+}
+
+/** Public visitors may only write to the explicitly listed form endpoints. */
+export function isPublicFormSubmission(pathname: string, method: string): boolean {
+  return method === 'POST' && PUBLIC_FORM_PATHS.has(pathname);
 }
 
 export function draftStatus(cookieHeader: string | null): 'draft' | 'published' {
