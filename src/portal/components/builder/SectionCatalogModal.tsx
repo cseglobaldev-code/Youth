@@ -173,13 +173,12 @@ export const SECTION_CATALOG: CatalogSection[] = [
     defaultData: {
       title: 'Mission of Y.O.U',
       highlightTitle: 'Y.O.U',
-      subtitle: 'Connect – Share – Create opportunities – Develop sustainably',
-      columns: 4,
+      subtitle: 'A globally connected youth ecosystem collaborating for sustainable social, empowering responsible global citizens through',
+      columns: 3,
       items: [
-        { icon: 'lucide:badge-check', title: 'Community Connection', description: 'Connecting people, organizations, and positive ideas.', active: true },
-        { icon: 'lucide:graduation-cap', title: 'Education', description: 'Enhancing knowledge and developing capabilities.' },
-        { icon: 'lucide:globe-2', title: 'International Cooperation', description: 'Building collaborative networks for common development.' },
-        { icon: 'lucide:orbit', title: 'Sustainable Development', description: 'Towards a prosperous and sustainable community.' },
+        { icon: 'lucide:orbit', title: 'Interconnectivity', description: 'Repositioning the importance of youth-led initiatives on the global stage' },
+        { icon: 'lucide:graduation-cap', title: 'Capacity Building', description: 'Empowering youth through multidisciplinary skills' },
+        { icon: 'lucide:globe-2', title: 'Shared Resources', description: 'Reallocating inclusive supply ecosystem for glocalization' },
       ],
     },
   },
