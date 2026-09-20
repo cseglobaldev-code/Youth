@@ -19,25 +19,19 @@ const STATS = [
 
 const MISSIONS = [
   {
-    title: 'Community Connection',
-    description: 'Connecting people, organizations, and positive ideas.',
-    icon: 'lucide:badge-check',
-    active: true,
+    title: 'Interconnectivity',
+    description: 'Repositioning the importance of youth-led initiatives on the global stage',
+    icon: 'lucide:orbit',
   },
   {
-    title: 'Education',
-    description: 'Enhancing knowledge and developing capabilities.',
+    title: 'Capacity Building',
+    description: 'Empowering youth through multidisciplinary skills',
     icon: 'lucide:graduation-cap',
   },
   {
-    title: 'International Cooperation',
-    description: 'Building collaborative networks for common development.',
+    title: 'Shared Resources',
+    description: 'Reallocating inclusive supply ecosystem for glocalization',
     icon: 'lucide:globe-2',
-  },
-  {
-    title: 'Sustainable Development',
-    description: 'Towards a prosperous and sustainable community.',
-    icon: 'lucide:orbit',
   },
 ];
 
@@ -158,16 +152,14 @@ function StaticAboutFallback() {
             </span>
           </h2>
           <p className="mt-3 text-base text-neutral-700 md:text-xl">
-            Connect – Share – Create opportunities – Develop sustainably
+            A globally connected youth ecosystem collaborating for sustainable social, empowering responsible global citizens through
           </p>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
             {MISSIONS.map((mission) => (
               <article
                 key={mission.title}
-                className={`rounded-2xl border border-neutral-100 bg-white px-5 py-8 shadow-[0_8px_24px_rgba(15,23,42,0.08)] ${
-                  mission.active ? 'bg-[#F2F7FF]' : ''
-                }`}
+                className="rounded-2xl border border-neutral-100 bg-white px-5 py-8 shadow-[0_8px_24px_rgba(15,23,42,0.08)]"
               >
                 <div className="mx-auto mb-8 flex h-16 w-16 items-center justify-center rounded-full bg-white text-[#2998FF] shadow-sm">
                   <Icon name={mission.icon} size={30} />

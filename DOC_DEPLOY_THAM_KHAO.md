@@ -64,7 +64,8 @@ Frontend có sự phân tách tuyệt đối giữa **Client Bundle** (chạy tr
 |---|:---:|---|---|---|
 | `VITE_STRAPI_API_URL` | Client (Trình duyệt) | `http://localhost:1337` | *(Bỏ trống / Xóa)* | Khi ở Production, client gọi `/api/*` cùng origin. Biến này chỉ dùng cho local dev. |
 | `STRAPI_API_URL` | Edge Worker | `http://localhost:1337` | `https://admin.youthorgunion.com` | Địa chỉ máy chủ Strapi thực tế mà Worker proxy sẽ chuyển tiếp yêu cầu tới. |
-| `STRAPI_API_TOKEN` | Edge Worker | *(Token đọc local)* | *(Encrypted Secret từ Strapi Admin)* | API Token bí mật có quyền đọc công khai. Worker tự động gắn vào Header `Authorization`. |
+| `STRAPI_API_TOKEN` | Edge Worker | *(Token đọc local)* | *(Encrypted Secret từ Strapi Admin)* | API Token bí mật chỉ đọc nội dung công khai. Worker tự động gắn vào Header `Authorization`. |
+| `STRAPI_FORM_API_TOKEN` | Edge Worker | *(Token có quyền tạo form)* | *(Encrypted Secret từ Strapi Admin)* | API Token riêng có quyền `create` cho `inquiries`, `leadership-applications`, `organization-applications`, `support-submissions` và `upload`. |
 | `PREVIEW_SECRET` | Edge Worker | *(Chuỗi ngẫu nhiên sha256)* | *(Encrypted Secret trùng khớp Backend)* | Khóa bí mật dùng để bắt tay xác thực khi Strapi Admin kích hoạt luồng Live Preview. |
 
 > **CẢNH BÁO BẢO MẬT:** Tuyệt đối **KHÔNG** đặt tên biến có tiền tố `VITE_` cho các mã bí mật (như `VITE_STRAPI_API_TOKEN`). Vite sẽ tự động nhúng toàn bộ giá trị này dưới dạng chuỗi thô (hardcoded string) vào tệp `.js` biên dịch, làm lộ quyền quản trị cho bất kỳ ai inspect mã nguồn website.
@@ -164,7 +165,11 @@ npx wrangler login
 npx wrangler secret put STRAPI_API_TOKEN
 # Paste token đã sinh trong Strapi Admin vào đây
 
-# 2. Khai báo Secret dùng cho Preview
+# 2. Khai báo API Token riêng cho các form public
+npx wrangler secret put STRAPI_FORM_API_TOKEN
+# Paste token Strapi có quyền create cho các collection form và upload
+
+# 3. Khai báo Secret dùng cho Preview
 npx wrangler secret put PREVIEW_SECRET
 # Paste chuỗi secret trùng với backend vào đây
 ```

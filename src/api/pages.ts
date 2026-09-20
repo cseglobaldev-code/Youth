@@ -243,24 +243,59 @@ function mapContentBlock(raw: Record<string, any>, baseUrl: string, index: numbe
       } as EmbedBlockData;
 
     case 'sections.feature-grid':
+      {
+        const rawItems = Array.isArray(raw.items) ? raw.items : [];
+        const missionHeading = `${text(raw.title)} ${text(raw.highlightTitle)}`.trim();
+        const isLegacyMission =
+          /Mission of\s+Y\.O\.U/i.test(missionHeading) &&
+          (text(raw.subtitle).includes('Connect – Share') ||
+            rawItems.some((item: any) =>
+              ['Community Connection', 'Education', 'International Cooperation', 'Sustainable Development'].includes(
+                text(item.title)
+              )
+            ));
+        const items = isLegacyMission
+          ? [
+              {
+                icon: 'lucide:orbit',
+                title: 'Interconnectivity',
+                description: 'Repositioning the importance of youth-led initiatives on the global stage',
+                active: false,
+              },
+              {
+                icon: 'lucide:graduation-cap',
+                title: 'Capacity Building',
+                description: 'Empowering youth through multidisciplinary skills',
+                active: false,
+              },
+              {
+                icon: 'lucide:globe-2',
+                title: 'Shared Resources',
+                description: 'Reallocating inclusive supply ecosystem for glocalization',
+                active: false,
+              },
+            ]
+          : rawItems.map((item: any) => ({
+              icon: text(item.icon) || 'lucide:badge-check',
+              title: text(item.title),
+              description: text(item.description),
+              active: Boolean(item.active),
+            }));
+
       return {
         __component: 'sections.feature-grid',
         id,
         eyebrow: text(raw.eyebrow) || undefined,
         title: text(raw.title),
         highlightTitle: text(raw.highlightTitle) || undefined,
-        subtitle: text(raw.subtitle) || undefined,
-        columns: typeof raw.columns === 'number' ? raw.columns : 4,
-        items: Array.isArray(raw.items)
-          ? raw.items.map((item: any) => ({
-              icon: text(item.icon) || 'lucide:badge-check',
-              title: text(item.title),
-              description: text(item.description),
-              active: Boolean(item.active),
-            }))
-          : [],
+        subtitle: isLegacyMission
+          ? 'A globally connected youth ecosystem collaborating for sustainable social, empowering responsible global citizens through'
+          : text(raw.subtitle) || undefined,
+        columns: isLegacyMission ? 3 : typeof raw.columns === 'number' ? raw.columns : 4,
+        items,
         style,
       } as FeatureGridBlockData;
+      }
 
     case 'sections.image-text-grid':
       return {
