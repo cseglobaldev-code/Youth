@@ -81,7 +81,7 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
           {stats.map((stat, index) => (
             <div key={stat.label} className="relative flex min-w-0 items-center">
               <div className="relative z-10 flex w-full flex-col items-center text-center">
-                <span className="you-stat-gradient whitespace-nowrap text-[clamp(0.875rem,1.2vw,1.125rem)]">{stat.label}</span>
+                <span className="text-[#111111] whitespace-nowrap text-[clamp(0.875rem,1.2vw,1.125rem)]">{stat.label}</span>
                 <span className="you-stat-gradient mt-2 text-[clamp(1.875rem,2.5vw,2.25rem)] font-semibold">
                   {formatStatValue(values[index], stat.prefix ?? '+', stat.suffix ?? '')}
                 </span>
@@ -110,7 +110,7 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
           <div key={stat.label} className="relative flex min-w-0 items-center">
             <div className="relative z-10 flex flex-col items-center text-center w-full py-2">
               <span
-                className="you-stat-gradient text-[clamp(0.75rem,1.15vw,1.25rem)] xl:text-[clamp(0.875rem,1.35vw,1.5rem)] font-normal whitespace-nowrap"
+                className="text-[#111111] text-[clamp(0.75rem,1.15vw,1.25rem)] xl:text-[clamp(0.875rem,1.35vw,1.5rem)] font-normal whitespace-nowrap"
                 style={{ fontFamily: 'Open Sans, sans-serif' }}
               >
                 {stat.label}

@@ -24,7 +24,7 @@ export function Logo({ variant = 'full', to = ROUTES.HOME, className, invert = f
       <img
         src="/images/common/brand/logo.svg"
         alt="Y.O.U"
-        className={cn('h-full w-auto object-contain', invert && 'brightness-0 invert')}
+        className={cn('block h-full w-auto max-w-full object-contain', invert && 'brightness-0 invert')}
       />
     </Link>
   );

@@ -69,7 +69,7 @@ export function HeaderMobile() {
     <header className="lg:hidden sticky top-0 z-50 bg-white border-b border-neutral-100">
       <div className="px-4 pb-3 pt-2 sm:px-6">
         <div className="flex h-12 items-center justify-between gap-3">
-          <Logo className="max-w-[132px] flex-shrink-0 sm:max-w-[148px]" />
+          <Logo className="h-10 w-[clamp(118px,36vw,148px)] max-w-[42vw] flex-shrink-0 sm:h-11 sm:w-[148px]" />
           <div className="flex flex-shrink-0 items-center gap-2 sm:gap-3">
             <Dropdown menu={{ items: languageMenuItems }} trigger={['click']} placement="bottomRight">
               <button
