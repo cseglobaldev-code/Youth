@@ -80,8 +80,8 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-0">
           {stats.map((stat, index) => (
             <div key={stat.label} className="relative flex min-w-0 items-center">
-              <div className="relative z-10 flex w-full flex-col items-center text-center">
-                <span className="text-[#111111] whitespace-nowrap text-[clamp(0.875rem,1.2vw,1.125rem)]">{stat.label}</span>
+              <div className="relative z-10 flex w-full flex-col items-center px-2 text-center lg:px-4">
+                <span className="text-[#111111] max-w-full whitespace-normal leading-tight text-[clamp(0.875rem,1.2vw,1.125rem)]">{stat.label}</span>
                 <span className="you-stat-gradient mt-2 text-[clamp(1.875rem,2.5vw,2.25rem)] font-semibold">
                   {formatStatValue(values[index], stat.prefix ?? '+', stat.suffix ?? '')}
                 </span>
