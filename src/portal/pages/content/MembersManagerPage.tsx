@@ -45,7 +45,7 @@ export function MembersManagerPage() {
           pageSize,
           search,
           searchField: 'name',
-          populate: ['logo', 'cover'],
+          populate: ['logo', 'cover', 'representative', 'contactPerson'],
         },
         token
       );
@@ -76,7 +76,8 @@ export function MembersManagerPage() {
       description: item.description,
       country: item.country,
       continent: item.continent,
-      leader: item.leader,
+      representative: item.representative,
+      contactPerson: item.contactPerson,
       period: item.period || '2021 → present',
       focusSdgs: Array.isArray(item.focusSdgs)
         ? item.focusSdgs.map(Number)
@@ -147,9 +148,10 @@ export function MembersManagerPage() {
     },
     {
       title: 'Representative',
-      dataIndex: 'leader',
-      key: 'leader',
-      render: (leader: string) => leader || '—',
+      dataIndex: 'representative',
+      key: 'representative',
+      render: (representative: any) =>
+        [representative?.prefix, representative?.fullName].filter(Boolean).join(' ') || '—',
     },
     {
       title: 'Actions',
@@ -237,11 +239,47 @@ export function MembersManagerPage() {
             </Form.Item>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Form.Item label="Representative / Leader Name" name="leader">
-              <Input placeholder="Full name of organization lead" />
-            </Form.Item>
+          <div className="rounded-xl border border-neutral-200 p-4">
+            <p className="mb-3 font-semibold text-neutral-900">Representative</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <Form.Item label="Prefix" name={['representative', 'prefix']}>
+                <Input placeholder="Ms" />
+              </Form.Item>
+              <Form.Item label="Full Name" name={['representative', 'fullName']}>
+                <Input placeholder="Full name" />
+              </Form.Item>
+              <Form.Item label="Title" name={['representative', 'title']}>
+                <Input placeholder="CEO" />
+              </Form.Item>
+            </div>
+          </div>
 
+          <div className="mt-4 rounded-xl border border-neutral-200 p-4">
+            <p className="mb-3 font-semibold text-neutral-900">Contact Person</p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <Form.Item label="Prefix" name={['contactPerson', 'prefix']}>
+                <Input placeholder="Ms" />
+              </Form.Item>
+              <Form.Item label="Full Name" name={['contactPerson', 'fullName']}>
+                <Input placeholder="Full name" />
+              </Form.Item>
+              <Form.Item label="Title" name={['contactPerson', 'title']}>
+                <Input placeholder="Coordinator" />
+              </Form.Item>
+              <Form.Item
+                label="Email"
+                name={['contactPerson', 'email']}
+                rules={[{ type: 'email', required: true, message: 'Enter a valid contact email' }]}
+              >
+                <Input type="email" placeholder="contact@example.com" />
+              </Form.Item>
+              <Form.Item label="Phone Number" name={['contactPerson', 'phoneNumber']}>
+                <Input placeholder="+84..." />
+              </Form.Item>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
             <Form.Item label="Operating Period" name="period" initialValue="2021 → present">
               <Input placeholder="e.g. 2019 → present" />
             </Form.Item>
