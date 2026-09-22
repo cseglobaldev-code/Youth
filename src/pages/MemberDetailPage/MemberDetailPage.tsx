@@ -13,7 +13,8 @@ import { SectionHeading } from '@/components/shared/SectionHeading';
 import { ShareButton } from '@/components/shared/ShareButton/ShareButton';
 import { useSupportModal } from '@/components/modals/SupportModal';
 import { fetchMemberById, type MemberDetailItem } from '@/api/members';
-import { cn, countryFlagEmoji, formatJoinDate } from '@/lib/utils';
+import { CountryFlag } from '@/components/ui/CountryFlag';
+import { cn, formatJoinDate } from '@/lib/utils';
 import { formatMemberPerson } from '@/types';
 
 export function MemberDetailPage() {
@@ -95,8 +96,8 @@ export function MemberDetailPage() {
                   lineHeight: '140%',
                 }}
               >
-                Originated in {countryFlagEmoji(member.country)} {member.country} &nbsp;|&nbsp; Since{' '}
-                {cleanPeriodYear} &nbsp;|&nbsp; Join Union from:{' '}
+                Originated from <CountryFlag country={member.country} className="mx-1.5" />{member.country} &nbsp;|&nbsp; Since{' '}
+                {cleanPeriodYear} &nbsp;|&nbsp; Join Union from{' '}
                 {formatJoinDate(member.createdAt) ?? '—'}
               </p>
               <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -200,9 +201,9 @@ export function MemberDetailPage() {
         {relatedProjects.length > 0 && (
           <div className="mb-10">
             <SectionHeading title="Our Projects" align="left" />
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 items-stretch">
               {relatedProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} ledBy={member.name} />
+                <ProjectCard key={project.id} project={project} ledBy={member.name} className="h-full" />
               ))}
             </div>
           </div>
