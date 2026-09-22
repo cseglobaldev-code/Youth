@@ -87,10 +87,11 @@ export function mapMemberPerson(value: unknown): MemberPerson | undefined {
     : undefined;
   const mapped: MemberPerson = {
     prefix: text(person.prefix) || undefined,
-    fullName: text(person.fullName) || undefined,
+    fullName: text(person.fullName) || text(person.name) || undefined,
     title: text(person.title) || undefined,
     email: text(person.email) || undefined,
     phone,
+    phoneCountryCode: phoneCountryCode || undefined,
   };
 
   return Object.values(mapped).some(Boolean) ? mapped : undefined;

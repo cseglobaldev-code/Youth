@@ -260,7 +260,7 @@ export function MembersManagerPage() {
               <Form.Item label="Prefix" name={['contactPerson', 'prefix']}>
                 <Input placeholder="Ms" />
               </Form.Item>
-              <Form.Item label="Full Name" name={['contactPerson', 'fullName']}>
+              <Form.Item label="Full Name" name={['contactPerson', 'name']}>
                 <Input placeholder="Full name" />
               </Form.Item>
               <Form.Item label="Title" name={['contactPerson', 'title']}>
@@ -272,6 +272,9 @@ export function MembersManagerPage() {
                 rules={[{ type: 'email', required: true, message: 'Enter a valid contact email' }]}
               >
                 <Input type="email" placeholder="contact@example.com" />
+              </Form.Item>
+              <Form.Item label="Phone Country Code" name={['contactPerson', 'phoneCountryCode']}>
+                <Input placeholder="+84" />
               </Form.Item>
               <Form.Item label="Phone Number" name={['contactPerson', 'phoneNumber']}>
                 <Input placeholder="+84..." />

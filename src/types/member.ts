@@ -13,6 +13,7 @@ export interface MemberPerson {
   title?: string;
   email?: string;
   phone?: string;
+  phoneCountryCode?: string;
 }
 
 export function formatMemberPerson(person?: MemberPerson): string {
