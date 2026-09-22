@@ -29,6 +29,7 @@ import {
   type StrapiProject,
   type StrapiRequestOptions,
 } from './strapi';
+import { mapMemberPerson } from './members';
 
 interface StrapiRawPage {
   id?: unknown;
@@ -200,7 +201,8 @@ function mapContentBlock(raw: Record<string, any>, baseUrl: string, index: numbe
               name: text(m.name),
               country: text(m.country),
               period: text(m.period) || undefined,
-              leader: text(m.leader) || undefined,
+              representative: mapMemberPerson(m.representative),
+              contactPerson: mapMemberPerson(m.contactPerson),
               focusSdgs: parseSdgIds(m.focusSdgs),
               coverUrl: mediaUrl(m.cover, baseUrl) || undefined,
               logoUrl: mediaUrl(m.logo, baseUrl),

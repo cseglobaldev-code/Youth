@@ -1,4 +1,5 @@
 import type { SocialLink, Project } from '@/types';
+import type { MemberPerson } from '@/types';
 import {
   cacheGet,
   cacheSet,
@@ -19,7 +20,8 @@ export interface MemberListItem {
   name: string;
   country: string;
   period?: string;
-  leader?: string;
+  representative?: MemberPerson;
+  contactPerson?: MemberPerson;
   focusSdgs: number[];
   coverUrl?: string;
   logoUrl: string;
@@ -34,9 +36,6 @@ export interface MemberDetailItem extends MemberListItem {
   gallery: { id: string; src: string; alt: string }[];
   donationQrUrl?: string;
   projects: Project[];
-  leaderRole?: string;
-  leaderEmail: string;
-  leaderPhone?: string;
 }
 
 interface StrapiMember {
@@ -45,7 +44,8 @@ interface StrapiMember {
   name?: unknown;
   country?: unknown;
   period?: unknown;
-  leader?: unknown;
+  representative?: unknown;
+  contactPerson?: unknown;
   focusSdgs?: unknown;
   cover?: StrapiMedia | null;
   logo?: StrapiMedia | null;
@@ -59,9 +59,6 @@ interface StrapiMemberDetail extends StrapiMember {
   socialLinks?: StrapiSocialLink[] | null;
   gallery?: StrapiMedia[] | null;
   donationQr?: StrapiMedia | null;
-  leaderRole?: unknown;
-  leaderEmail?: unknown;
-  leaderPhone?: unknown;
   projects?: StrapiProject[] | null;
 }
 
@@ -73,13 +70,41 @@ interface StrapiMemberDetailResponse {
   data?: unknown;
 }
 
+export function mapMemberPerson(value: unknown): MemberPerson | undefined {
+  const raw = value && typeof value === 'object' && 'data' in value
+    ? (value as { data?: unknown }).data
+    : value;
+  const entry = Array.isArray(raw) ? raw[0] : raw;
+  if (!entry || typeof entry !== 'object') return undefined;
+
+  const person = entry as Record<string, unknown>;
+  const phoneNumber = text(person.phoneNumber) || text(person.phone);
+  const phoneCountryCode = text(person.phoneCountryCode);
+  const phone = phoneNumber
+    ? phoneCountryCode && !phoneNumber.startsWith('+')
+      ? `${phoneCountryCode} ${phoneNumber}`
+      : phoneNumber
+    : undefined;
+  const mapped: MemberPerson = {
+    prefix: text(person.prefix) || undefined,
+    fullName: text(person.fullName) || text(person.name) || undefined,
+    title: text(person.title) || undefined,
+    email: text(person.email) || undefined,
+    phone,
+    phoneCountryCode: phoneCountryCode || undefined,
+  };
+
+  return Object.values(mapped).some(Boolean) ? mapped : undefined;
+}
+
 function mapMember(entry: StrapiMember, baseUrl: string): MemberListItem {
   return {
     id: text(entry.documentId) || String(entry.id ?? ''),
     name: text(entry.name),
     country: text(entry.country),
     period: text(entry.period) || undefined,
-    leader: text(entry.leader) || undefined,
+    representative: mapMemberPerson(entry.representative),
+    contactPerson: mapMemberPerson(entry.contactPerson),
     focusSdgs: parseSdgIds(entry.focusSdgs),
     coverUrl: mediaUrl(entry.cover, baseUrl) || undefined,
     logoUrl: mediaUrl(entry.logo, baseUrl),
@@ -106,9 +131,6 @@ function mapMemberDetail(entry: StrapiMemberDetail, baseUrl: string): MemberDeta
     socialLinks: mapSocialLinks(entry.socialLinks),
     gallery: mapGallery(entry.gallery, baseUrl),
     donationQrUrl: mediaUrl(entry.donationQr, baseUrl) || undefined,
-    leaderRole: text(entry.leaderRole) || undefined,
-    leaderEmail: text(entry.leaderEmail),
-    leaderPhone: text(entry.leaderPhone) || undefined,
     projects: Array.isArray(entry.projects)
       ? entry.projects.map((project) => mapProject(project, baseUrl, base.id))
       : [],
@@ -124,6 +146,8 @@ export async function fetchMembers(options: StrapiRequestOptions = {}): Promise<
   const query = new URLSearchParams();
   query.append('populate[0]', 'cover');
   query.append('populate[1]', 'logo');
+  query.append('populate[representative]', '*');
+  query.append('populate[contactPerson]', '*');
   query.append('pagination[pageSize]', '100');
   query.append('pagination[withCount]', 'false');
   query.append('sort[0]', 'createdAt:desc');
@@ -163,6 +187,8 @@ export async function fetchMemberById(
   query.append('populate[gallery]', 'true');
   query.append('populate[socialLinks]', 'true');
   query.append('populate[donationQr]', 'true');
+  query.append('populate[representative]', '*');
+  query.append('populate[contactPerson]', '*');
   query.append('populate[projects][populate][0]', 'outstandingImage');
   if (isPreview) query.append('status', 'draft');
 
@@ -195,7 +221,7 @@ if (import.meta.vitest) {
       vi.unstubAllGlobals();
     });
 
-    it('maps flattened Strapi 5 members to the existing card shape', async () => {
+    it('maps member contacts from Strapi', async () => {
       const fetchMock = vi.fn().mockResolvedValue({
         ok: true,
         json: async () => ({
@@ -206,7 +232,15 @@ if (import.meta.vitest) {
               name: 'YouthBridge PH',
               country: 'Philippines',
               period: '2021 → present',
-              leader: 'Maria Santos',
+              representative: { prefix: 'Ms', fullName: 'Maria Santos', title: 'CEO' },
+              contactPerson: {
+                prefix: 'Mr',
+                fullName: 'John Doe',
+                title: 'Coordinator',
+                email: 'john@example.com',
+                phoneCountryCode: '+1',
+                phoneNumber: '23456789',
+              },
               focusSdgs: '[1, 4, 8]',
               cover: { url: '/uploads/cover.png' },
               logo: { url: 'https://res.cloudinary.com/demo/logo.png' },
@@ -223,7 +257,7 @@ if (import.meta.vitest) {
       });
 
       expect(fetchMock).toHaveBeenCalledWith(
-        'http://localhost:1337/api/members?populate%5B0%5D=cover&populate%5B1%5D=logo&pagination%5BpageSize%5D=100&pagination%5BwithCount%5D=false&sort%5B0%5D=createdAt%3Adesc',
+        'http://localhost:1337/api/members?populate%5B0%5D=cover&populate%5B1%5D=logo&populate%5Brepresentative%5D=*&populate%5BcontactPerson%5D=*&pagination%5BpageSize%5D=100&pagination%5BwithCount%5D=false&sort%5B0%5D=createdAt%3Adesc',
         expect.objectContaining({
           headers: { Authorization: 'Bearer read-token' },
         })
@@ -234,7 +268,14 @@ if (import.meta.vitest) {
           name: 'YouthBridge PH',
           country: 'Philippines',
           period: '2021 → present',
-          leader: 'Maria Santos',
+          representative: { prefix: 'Ms', fullName: 'Maria Santos', title: 'CEO' },
+          contactPerson: {
+            prefix: 'Mr',
+            fullName: 'John Doe',
+            title: 'Coordinator',
+            email: 'john@example.com',
+            phone: '+1 23456789',
+          },
           focusSdgs: [1, 4, 8],
           coverUrl: 'http://localhost:1337/uploads/cover.png',
           logoUrl: 'https://res.cloudinary.com/demo/logo.png',

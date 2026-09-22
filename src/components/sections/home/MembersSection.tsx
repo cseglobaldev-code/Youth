@@ -60,7 +60,7 @@ export function MembersSection() {
                   name: member.name,
                   country: member.country,
                   period: member.period || '2020 → present',
-                  leader: member.leader || 'TBD',
+                  representative: member.representative,
                   focusSdgs: member.focusSdgs,
                   coverUrl: member.coverUrl || '',
                   logoUrl: member.logoUrl,

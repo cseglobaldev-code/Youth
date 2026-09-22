@@ -15,6 +15,7 @@ import { useSupportModal } from '@/components/modals/SupportModal';
 import { fetchMemberById, type MemberDetailItem } from '@/api/members';
 import { CountryFlag } from '@/components/ui/CountryFlag';
 import { cn, formatJoinDate } from '@/lib/utils';
+import { formatMemberPerson } from '@/types';
 
 export function MemberDetailPage() {
   const { memberId } = useParams<{ memberId: string }>();
@@ -60,8 +61,12 @@ export function MemberDetailPage() {
 
   const relatedProjects = member.projects.slice(0, 3);
   const hasRepresentative = Boolean(
-    member.leader || member.leaderRole || member.leaderEmail || member.leaderPhone
+    member.representative && Object.values(member.representative).some(Boolean)
   );
+  const hasContactPerson = Boolean(
+    member.contactPerson && Object.values(member.contactPerson).some(Boolean)
+  );
+  const hasPeople = hasRepresentative || hasContactPerson;
 
   const cleanPeriodYear = member.period
     ? member.period.replace(/^since\s+/i, '').split(' ')[0]
@@ -123,7 +128,7 @@ export function MemberDetailPage() {
         </div>
 
         <div className="mb-14 grid gap-10 lg:grid-cols-2 lg:gap-24">
-          <div className={cn(!hasRepresentative && 'lg:col-span-2')}>
+          <div className={cn(!hasPeople && 'lg:col-span-2')}>
             <h2
               className="mb-6 font-semibold text-black"
               style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(1.5rem, 2.29vw, 2.75rem)', lineHeight: '140%' }}
@@ -146,32 +151,49 @@ export function MemberDetailPage() {
             </div>
           </div>
 
-          {hasRepresentative && (
+          {hasPeople && (
             <div>
-              <h2
-                className="mb-6 font-semibold text-black"
-                style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(1.5rem, 2.29vw, 2.75rem)', lineHeight: '140%' }}
-              >
-                Representative
-              </h2>
-              <div className="flex flex-col gap-2 leading-relaxed text-neutral-700">
-                {member.leader && <p className="font-semibold text-black">{member.leader}</p>}
-                {member.leaderRole && <p>{member.leaderRole}</p>}
-                {member.leaderEmail && (
-                  <p>
-                    <a href={`mailto:${member.leaderEmail}`} className="text-[#005D9A] hover:underline">
-                      {member.leaderEmail}
-                    </a>
+              {hasRepresentative && (
+                <div>
+                  <h2
+                    className="mb-6 font-semibold text-black"
+                    style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(1.5rem, 2.29vw, 2.75rem)', lineHeight: '140%' }}
+                  >
+                    Representative
+                  </h2>
+                  <p className="font-semibold leading-relaxed text-black">
+                    {formatMemberPerson(member.representative)}
                   </p>
-                )}
-                {member.leaderPhone && (
-                  <p>
-                    <a href={`tel:${member.leaderPhone}`} className="text-[#005D9A] hover:underline">
-                      {member.leaderPhone}
-                    </a>
-                  </p>
-                )}
-              </div>
+                </div>
+              )}
+
+              {hasContactPerson && (
+                <div className={cn(hasRepresentative && 'mt-8')}>
+                  <h2
+                    className="mb-4 font-semibold text-black"
+                    style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(1.5rem, 2.29vw, 2.75rem)', lineHeight: '140%' }}
+                  >
+                    Contact
+                  </h2>
+                  <div className="flex flex-col gap-2 leading-relaxed text-neutral-700">
+                    <p className="font-semibold text-black">
+                      {formatMemberPerson(member.contactPerson)}
+                    </p>
+                    {member.contactPerson?.email && (
+                      <a href={`mailto:${member.contactPerson.email}`} className="flex items-center gap-2 text-[#005D9A] hover:underline">
+                        <span aria-hidden="true">✉</span>
+                        <span>{member.contactPerson.email}</span>
+                      </a>
+                    )}
+                    {member.contactPerson?.phone && (
+                      <a href={`tel:${member.contactPerson.phone.replace(/\s+/g, '')}`} className="flex items-center gap-2 text-[#005D9A] hover:underline">
+                        <span aria-hidden="true">📞</span>
+                        <span>{member.contactPerson.phone}</span>
+                      </a>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>

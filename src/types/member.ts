@@ -7,6 +7,24 @@ export type Continent =
   | 'Australia'
   | 'Europe';
 
+export interface MemberPerson {
+  prefix?: string;
+  fullName?: string;
+  title?: string;
+  email?: string;
+  phone?: string;
+  phoneCountryCode?: string;
+}
+
+export function formatMemberPerson(person?: MemberPerson): string {
+  if (!person) return '';
+  const prefix = person.prefix?.trim();
+  const prefixText = prefix ? `${prefix.replace(/\.+$/, '')}.` : '';
+  const name = [prefixText, person.fullName?.trim()].filter(Boolean).join(' ');
+  const title = person.title?.trim() || '';
+  return name && title ? `${name}, ${title}` : name || title;
+}
+
 export interface Member {
   id: string;
   name: string;
@@ -22,5 +40,8 @@ export interface Member {
   gallery: GalleryImage[];
   donationQrUrl?: string;
   period?: string;
+  /** Local fixture compatibility; CMS members use representative. */
   leader?: string;
+  representative?: MemberPerson;
+  contactPerson?: MemberPerson;
 }
