@@ -144,10 +144,10 @@ export async function fetchMembers(options: StrapiRequestOptions = {}): Promise<
     (typeof window !== 'undefined' && window.location.search.includes('preview=1'));
 
   const query = new URLSearchParams();
-  query.append('populate[0]', 'cover');
-  query.append('populate[1]', 'logo');
-  query.append('populate[2]', 'representative');
-  query.append('populate[3]', 'contactPerson');
+  query.append('populate[cover]', 'true');
+  query.append('populate[logo]', 'true');
+  query.append('populate[representative]', '*');
+  query.append('populate[contactPerson]', '*');
   query.append('pagination[pageSize]', '100');
   query.append('pagination[withCount]', 'false');
   query.append('sort[0]', 'createdAt:desc');
@@ -257,7 +257,7 @@ if (import.meta.vitest) {
       });
 
       expect(fetchMock).toHaveBeenCalledWith(
-        'http://localhost:1337/api/members?populate%5B0%5D=cover&populate%5B1%5D=logo&populate%5B2%5D=representative&populate%5B3%5D=contactPerson&pagination%5BpageSize%5D=100&pagination%5BwithCount%5D=false&sort%5B0%5D=createdAt%3Adesc',
+        'http://localhost:1337/api/members?populate%5Bcover%5D=true&populate%5Blogo%5D=true&populate%5Brepresentative%5D=*&populate%5BcontactPerson%5D=*&pagination%5BpageSize%5D=100&pagination%5BwithCount%5D=false&sort%5B0%5D=createdAt%3Adesc',
         expect.objectContaining({
           headers: { Authorization: 'Bearer read-token' },
         })
@@ -268,13 +268,21 @@ if (import.meta.vitest) {
           name: 'YouthBridge PH',
           country: 'Philippines',
           period: '2021 → present',
-          representative: { prefix: 'Ms', fullName: 'Maria Santos', title: 'CEO' },
+          representative: {
+            prefix: 'Ms',
+            fullName: 'Maria Santos',
+            title: 'CEO',
+            email: undefined,
+            phone: undefined,
+            phoneCountryCode: undefined,
+          },
           contactPerson: {
             prefix: 'Mr',
             fullName: 'John Doe',
             title: 'Coordinator',
             email: 'john@example.com',
             phone: '+1 23456789',
+            phoneCountryCode: '+1',
           },
           focusSdgs: [1, 4, 8],
           coverUrl: 'http://localhost:1337/uploads/cover.png',
