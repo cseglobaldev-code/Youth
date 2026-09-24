@@ -2,8 +2,6 @@ import { useRef, type FormEvent, useState } from 'react';
 import { message } from 'antd';
 import { Container } from '@/components/ui/Container';
 import { PillButton } from '@/components/ui/PillButton';
-import { Icon } from '@/components/ui/Icon';
-import { ICONS } from '@/config/icons';
 import { submitInquiry, type Inquiry } from '@/api/inquiries';
 import { DIAL_CODES } from '@/data/dialCodes';
 import { countryFlagEmoji } from '@/lib/utils';
@@ -34,6 +32,8 @@ export function ContactPage() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
+    const prefix = String(formData.get('prefix') ?? '').trim();
+    const name = String(formData.get('name') ?? '').trim();
     const phoneNumber = String(formData.get('phone') ?? '').trim();
 
     const messageContent = String(formData.get('message') ?? '').trim();
@@ -44,7 +44,7 @@ export function ContactPage() {
     }
 
     const inquiry: Inquiry = {
-      name: String(formData.get('name')),
+      name: [prefix, name].filter(Boolean).join(' '),
       email: String(formData.get('email')),
       phone: phoneNumber ? `${dialCode} ${phoneNumber}`.trim() : '',
       reason: String(formData.get('reason')),
@@ -86,10 +86,20 @@ export function ContactPage() {
           <form ref={formRef} onSubmit={handleSubmit} className="space-y-6 md:space-y-7">
             <div className="grid grid-cols-1 gap-5 md:grid-cols-2 md:gap-6">
               <div>
-                <label htmlFor="contact-name" className={labelClasses}>
-                  Your Name <span className="text-[#EE334E]">*</span>
-                </label>
-                <input id="contact-name" name="name" autoComplete="name" required className={inputClasses} />
+                <div className="grid grid-cols-[112px_1fr] gap-2">
+                  <div>
+                    <label htmlFor="contact-prefix" className={labelClasses}>
+                      Prefix
+                    </label>
+                    <input id="contact-prefix" name="prefix" autoComplete="honorific-prefix" className={inputClasses} />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-name" className={labelClasses}>
+                      Your Name <span className="text-[#EE334E]">*</span>
+                    </label>
+                    <input id="contact-name" name="name" autoComplete="name" required className={inputClasses} />
+                  </div>
+                </div>
               </div>
 
               <div>
@@ -111,25 +121,20 @@ export function ContactPage() {
                   Phone number
                 </label>
                 <div className="flex gap-2">
-                  <div className="relative w-[112px] shrink-0">
-                    <select
+                  <div className="w-[112px] shrink-0">
+                    <input
                       aria-label="Country code"
+                      list="contact-country-codes"
                       value={dialCode}
                       onChange={(e) => setDialCode(e.target.value)}
-                      className={`${inputClasses} w-full appearance-none !pl-3 !pr-8`}
-                    >
-                      <option value="">--</option>
-                      {DIAL_CODES.map((d) => (
-                        <option key={d.country} value={d.code} title={d.country}>
-                          {countryFlagEmoji(d.country)} {d.code}
-                        </option>
-                      ))}
-                    </select>
-                    <Icon
-                      name={ICONS.chevronDown}
-                      size={16}
-                      className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500"
+                      placeholder="__"
+                      className={`${inputClasses} w-full !px-3`}
                     />
+                    <datalist id="contact-country-codes">
+                      {DIAL_CODES.map((d) => (
+                        <option key={d.country} value={d.code} label={`${countryFlagEmoji(d.country)} ${d.country}`} />
+                      ))}
+                    </datalist>
                   </div>
                   <input
                     id="contact-phone"
