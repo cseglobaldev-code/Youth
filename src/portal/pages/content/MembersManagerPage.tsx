@@ -147,7 +147,7 @@ export function MembersManagerPage() {
       key: 'continent',
     },
     {
-      title: 'Representative',
+      title: 'Head of Organization',
       dataIndex: 'representative',
       key: 'representative',
       render: (representative: any) =>
@@ -240,7 +240,7 @@ export function MembersManagerPage() {
           </div>
 
           <div className="rounded-xl border border-neutral-200 p-4">
-            <p className="mb-3 font-semibold text-neutral-900">Representative</p>
+            <p className="mb-3 font-semibold text-neutral-900">Head of Organization</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Form.Item label="Prefix" name={['representative', 'prefix']}>
                 <Input placeholder="Ms" />
