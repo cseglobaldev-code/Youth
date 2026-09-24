@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal, Form, Input, Select, Checkbox, Radio, Upload, ConfigProvider, Alert } from 'antd';
+import { Modal, Form, Input, Select, AutoComplete, Checkbox, Radio, Upload, ConfigProvider, Alert } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { PillButton } from '@/components/ui/PillButton';
 import { urlRule, phoneRule, maxWordsRule, countryFlagEmoji } from '@/lib/utils';
@@ -13,10 +13,12 @@ export interface RegisterOrganizationFormValues {
   organizationDescription: string;
   representativeFullName: string;
   representativePhone: string;
-  representativePhoneCode: string;
-  contactPersonFullName: string;
-  contactPersonPhone: string;
-  contactPersonPhoneCode: string;
+  representativePhoneCode?: string;
+  isPrimaryContact: 'yes' | 'no';
+  contactPersonFullName?: string;
+  contactPersonEmail?: string;
+  contactPersonPhone?: string;
+  contactPersonPhoneCode?: string;
   yearOfEstablishment: number;
   country: string;
   address: string;
@@ -94,8 +96,7 @@ const STEP_FIELDS: Record<1 | 2, (keyof RegisterOrganizationFormValues)[]> = {
     'organizationDescription',
     'representativeFullName',
     'representativePhone',
-    'contactPersonFullName',
-    'contactPersonPhone',
+    'isPrimaryContact',
     'yearOfEstablishment',
     'country',
     'address',
@@ -127,6 +128,11 @@ const STEP_FIELDS: Record<1 | 2, (keyof RegisterOrganizationFormValues)[]> = {
 
 const labelText = (text: string) => <span style={FONT}>{text}</span>;
 
+const PHONE_CODE_OPTIONS = DIAL_CODES.map((dialCode) => ({
+  value: dialCode.code,
+  label: `${countryFlagEmoji(dialCode.country)} ${dialCode.code} ${dialCode.country}`,
+}));
+
 const normFile = (e: unknown) => {
   if (Array.isArray(e)) return e;
   return (e as { fileList?: unknown[] })?.fileList;
@@ -142,6 +148,7 @@ export function RegisterOrganizationModal({
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const isPrimaryContact = Form.useWatch('isPrimaryContact', form);
 
   const close = () => {
     if (submitting) return;
@@ -257,7 +264,7 @@ export function RegisterOrganizationModal({
             </Form.Item>
 
             <Form.Item
-              label={labelText("Representative's Full Name")}
+              label={labelText("Head of Organization's Full Name")}
               name="representativeFullName"
               rules={[{ required: true, message: 'Please enter full name' }]}
             >
@@ -265,7 +272,7 @@ export function RegisterOrganizationModal({
             </Form.Item>
 
             <Form.Item
-              label={labelText("Representative's Phone Number")}
+              label={labelText("Head of Organization's Phone Number")}
               name="representativePhone"
               rules={[
                 { required: true, message: 'Please enter phone number' },
@@ -275,16 +282,18 @@ export function RegisterOrganizationModal({
               <Input
                 placeholder="Enter phone number"
                 addonBefore={
-                  <Form.Item name="representativePhoneCode" noStyle initialValue="+84">
-                    <Select
+                  <Form.Item name="representativePhoneCode" noStyle>
+                    <AutoComplete
                       showSearch
+                      allowClear
+                      placeholder="__"
                       style={{ width: 120 }}
-                      optionFilterProp="title"
-                      options={DIAL_CODES.map((d) => ({
-                        value: d.code,
-                        label: `${countryFlagEmoji(d.country)} ${d.code}`,
-                        title: `${d.country} ${d.code}`,
-                      }))}
+                      options={PHONE_CODE_OPTIONS}
+                      filterOption={(inputValue, option) =>
+                        `${option?.value ?? ''} ${option?.label ?? ''}`
+                          .toLowerCase()
+                          .includes(inputValue.toLowerCase())
+                      }
                     />
                   </Form.Item>
                 }
@@ -293,40 +302,67 @@ export function RegisterOrganizationModal({
             </Form.Item>
 
             <Form.Item
-              label={labelText("Contact Person's Full Name")}
-              name="contactPersonFullName"
-              rules={[{ required: true, message: 'Please enter contact person full name' }]}
+              label={labelText('Are you also the primary point of contact?')}
+              name="isPrimaryContact"
+              rules={[{ required: true, message: 'Please select an option' }]}
             >
-              <Input placeholder="Enter full name" style={FONT} />
+              <Radio.Group
+                onChange={(event) => {
+                  if (event.target.value === 'yes') {
+                    form.resetFields([
+                      'contactPersonFullName',
+                      'contactPersonEmail',
+                      'contactPersonPhone',
+                      'contactPersonPhoneCode',
+                    ]);
+                  }
+                }}
+              >
+                <div className="flex flex-col gap-2">
+                  <Radio value="yes" style={FONT}>Yes</Radio>
+                  <Radio value="no" style={FONT}>No, register a different contact</Radio>
+                </div>
+              </Radio.Group>
             </Form.Item>
 
-            <Form.Item
-              label={labelText("Contact Person's Phone Number")}
-              name="contactPersonPhone"
-              rules={[
-                { required: true, message: 'Please enter contact person phone number' },
-                phoneRule(),
-              ]}
-            >
-              <Input
-                placeholder="Enter phone number"
-                addonBefore={
-                  <Form.Item name="contactPersonPhoneCode" noStyle initialValue="+84">
-                    <Select
-                      showSearch
-                      style={{ width: 120 }}
-                      optionFilterProp="title"
-                      options={DIAL_CODES.map((d) => ({
-                        value: d.code,
-                        label: `${countryFlagEmoji(d.country)} ${d.code}`,
-                        title: `${d.country} ${d.code}`,
-                      }))}
-                    />
-                  </Form.Item>
-                }
-                style={FONT}
-              />
-            </Form.Item>
+            {isPrimaryContact === 'no' && (
+              <>
+                <Form.Item label={labelText("Contact Person's Full Name")} name="contactPersonFullName">
+                  <Input placeholder="Enter full name" style={FONT} />
+                </Form.Item>
+
+                <Form.Item
+                  label={labelText("Contact Person's Email")}
+                  name="contactPersonEmail"
+                  rules={[{ type: 'email', message: 'Invalid email' }]}
+                >
+                  <Input placeholder="Enter email address" style={FONT} />
+                </Form.Item>
+
+                <Form.Item label={labelText("Contact Person's Phone Number")} name="contactPersonPhone" rules={[phoneRule()]}>
+                  <Input
+                    placeholder="Enter phone number"
+                    addonBefore={
+                      <Form.Item name="contactPersonPhoneCode" noStyle>
+                        <AutoComplete
+                          showSearch
+                          allowClear
+                          placeholder="__"
+                          style={{ width: 120 }}
+                          options={PHONE_CODE_OPTIONS}
+                          filterOption={(inputValue, option) =>
+                            `${option?.value ?? ''} ${option?.label ?? ''}`
+                              .toLowerCase()
+                              .includes(inputValue.toLowerCase())
+                          }
+                        />
+                      </Form.Item>
+                    }
+                    style={FONT}
+                  />
+                </Form.Item>
+              </>
+            )}
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5">
               <Form.Item
@@ -377,7 +413,7 @@ export function RegisterOrganizationModal({
             </div>
 
             <Form.Item
-              label={labelText('Website (Optional)')}
+              label={labelText('Website')}
               name="website"
               rules={[urlRule()]}
             >
@@ -385,25 +421,25 @@ export function RegisterOrganizationModal({
             </Form.Item>
 
             <p className="mb-3 text-[15px] font-semibold text-[#111111]" style={FONT}>
-              Social Media Profiles (Optional)
+              Social Media Profiles
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-5">
               <Form.Item
-                label={labelText('Facebook (Optional)')}
+                label={labelText('Facebook')}
                 name="facebookUrl"
                 rules={[urlRule()]}
               >
                 <Input placeholder="Enter Facebook profile URL" style={FONT} />
               </Form.Item>
               <Form.Item
-                label={labelText('Instagram (Optional)')}
+                label={labelText('Instagram')}
                 name="instagramUrl"
                 rules={[urlRule()]}
               >
                 <Input placeholder="Enter Instagram profile URL" style={FONT} />
               </Form.Item>
               <Form.Item
-                label={labelText('LinkedIn (Optional)')}
+                label={labelText('LinkedIn')}
                 name="linkedinUrl"
                 rules={[urlRule()]}
               >
@@ -489,7 +525,13 @@ export function RegisterOrganizationModal({
               valuePropName="fileList"
               getValueFromEvent={normFile}
               rules={[{ required: true, message: 'Please upload at least one activity photo' }]}
-              extra={<span className="italic text-[13px]" style={FONT}>For all three image uploads: the system uses a cover display mode; non-standard aspect ratios will still upload successfully but may be cropped. To avoid unwanted cropping, please follow the recommended aspect ratios above.</span>}
+              extra={
+                <span className="italic text-[13px]" style={FONT}>
+                  Maximum 10 photos.
+                  <br />
+                  For all three image uploads: the system uses a cover display mode; non-standard aspect ratios will still upload successfully but may be cropped. To avoid unwanted cropping, please follow the recommended aspect ratios above.
+                </span>
+              }
             >
               <Upload beforeUpload={() => false} maxCount={10} multiple listType="text">
                 <button
@@ -651,7 +693,7 @@ export function RegisterOrganizationModal({
             </Form.Item>
 
             <Form.Item
-              label={labelText('Website or Social Media Profile (Optional)')}
+              label={labelText('Website or Social Media Profile')}
               name="projectSocialProfile"
               rules={[urlRule()]}
             >

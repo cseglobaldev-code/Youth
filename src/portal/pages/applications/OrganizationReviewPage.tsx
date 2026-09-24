@@ -111,7 +111,7 @@ export function OrganizationReviewPage() {
       ),
     },
     { title: 'Country', dataIndex: 'country', key: 'country' },
-    { title: 'Representative', dataIndex: 'representativeFullName', key: 'rep' },
+    { title: 'Head of Organization', dataIndex: 'representativeFullName', key: 'rep' },
     { title: 'Email', dataIndex: 'email', key: 'email' },
     {
       title: 'Status',
@@ -192,9 +192,11 @@ export function OrganizationReviewPage() {
 
             {/* Organization Overview */}
             <Descriptions title="Organization Details" bordered size="small" column={2}>
-              <Descriptions.Item label="Representative">{selectedOrg.representativeFullName}</Descriptions.Item>
+              <Descriptions.Item label="Head of Organization">{selectedOrg.representativeFullName}</Descriptions.Item>
               <Descriptions.Item label="Phone">{selectedOrg.representativePhoneCode} {selectedOrg.representativePhone}</Descriptions.Item>
+              <Descriptions.Item label="Primary Contact">{selectedOrg.isPrimaryContact === 'yes' ? 'Yes' : 'No'}</Descriptions.Item>
               <Descriptions.Item label="Contact Person">{selectedOrg.contactPersonFullName}</Descriptions.Item>
+              <Descriptions.Item label="Contact Email">{selectedOrg.contactPersonEmail || '—'}</Descriptions.Item>
               <Descriptions.Item label="Contact Phone">{selectedOrg.contactPersonPhoneCode} {selectedOrg.contactPersonPhone}</Descriptions.Item>
               <Descriptions.Item label="Email">{selectedOrg.email}</Descriptions.Item>
               <Descriptions.Item label="Est. Year">{selectedOrg.yearOfEstablishment}</Descriptions.Item>

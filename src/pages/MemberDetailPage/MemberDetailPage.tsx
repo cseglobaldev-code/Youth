@@ -159,7 +159,7 @@ export function MemberDetailPage() {
                     className="mb-6 font-semibold text-black"
                     style={{ fontFamily: 'Open Sans, sans-serif', fontSize: 'clamp(1.5rem, 2.29vw, 2.75rem)', lineHeight: '140%' }}
                   >
-                    Representative
+                    Head of Organization
                   </h2>
                   <p className="font-semibold leading-relaxed text-black">
                     {formatMemberPerson(member.representative)}
