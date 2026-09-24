@@ -97,8 +97,8 @@ export function MemberDetailPage() {
                 }}
               >
                 Originated from <CountryFlag country={member.country} className="mx-1.5" />{member.country} &nbsp;|&nbsp; Since{' '}
-                {cleanPeriodYear} &nbsp;|&nbsp; Join Union from{' '}
-                {formatJoinDate(member.createdAt) ?? '—'}
+                {cleanPeriodYear} &nbsp;|&nbsp; Joined from{' '}
+                {formatJoinDate(member.createdAt)?.replace(/\b(\d{4})$/, (_, year) => year.slice(-2)) ?? '—'}
               </p>
               <div className="mt-4 flex flex-wrap items-center gap-3">
                 <div className="flex flex-wrap gap-2">
