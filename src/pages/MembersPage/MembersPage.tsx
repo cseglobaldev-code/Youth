@@ -15,6 +15,10 @@ const SORT_OPTIONS = [
   { label: 'Oldest - newest', value: 'oldest' },
 ];
 
+const FILTER_ICON_MASK = `url("data:image/svg+xml,${encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M22 3H2l8 9.46V19l4 2v-8.54z"/></svg>'
+)}")`;
+
 export function MembersPage() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -302,9 +306,30 @@ export function MembersPage() {
           >
             <button
               type="button"
+              aria-label={`Filter${activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}`}
               className="flex h-[48px] w-full items-center justify-between rounded-full border border-[#E7E7E7] bg-white px-5 text-[15px] text-[#111111] shadow-none transition hover:bg-white md:w-[302px] md:max-w-full"
             >
-              <span>Filter{activeFilterCount > 0 ? ` (${activeFilterCount})` : ''}</span>
+              <span className="flex items-center gap-2">
+                <span
+                  aria-hidden="true"
+                  className="inline-block h-5 w-5 shrink-0 bg-[linear-gradient(90deg,#EE334E_0%,#FCB131_33%,#00A651_67%,#0081C8_100%)]"
+                  style={{
+                    maskImage: FILTER_ICON_MASK,
+                    WebkitMaskImage: FILTER_ICON_MASK,
+                    maskPosition: 'center',
+                    WebkitMaskPosition: 'center',
+                    maskRepeat: 'no-repeat',
+                    WebkitMaskRepeat: 'no-repeat',
+                    maskSize: 'contain',
+                    WebkitMaskSize: 'contain',
+                  }}
+                />
+                {activeFilterCount > 0 && (
+                  <span className="rounded-full bg-[#F4F4F4] px-2 py-0.5 text-xs font-medium text-[#111111]">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </span>
               <DownOutlined className="text-[14px] text-[#1F2A44]" />
             </button>
           </Popover>
