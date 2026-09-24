@@ -176,8 +176,9 @@ export function ProjectsPage() {
                     >
                       <SDGTag
                         sdgId={item.sdgId}
-                        variant={activeFilter === item.key ? 'solid' : 'soft'}
+                        variant="solid"
                         size="sm"
+                        className={activeFilter === item.key ? 'ring-2 ring-black ring-offset-2' : undefined}
                       />
                     </button>
                   </Tooltip>
