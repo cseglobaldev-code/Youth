@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal, Form, Input, Radio, DatePicker, Upload, ConfigProvider, Alert, Select, Checkbox } from 'antd';
+import { Modal, Form, Input, Radio, DatePicker, Upload, ConfigProvider, Alert, Select, AutoComplete, Checkbox } from 'antd';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import type { UploadFile } from 'antd';
@@ -21,8 +21,8 @@ export interface ApplyRoleFormValues {
   countryOfResidence: string;
   cityTown: string;
   email: string;
-  whatsappCode: string;
-  whatsappNumber: string;
+  whatsappCode?: string;
+  whatsappNumber?: string;
   profilePhoto: UploadFile[];
   activityPhotos?: UploadFile[];
   facebookUrl?: string;
@@ -65,6 +65,10 @@ export interface ApplyRoleModalProps {
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
 const UPLOAD_HINT = 'Upload supported files (PDF, DOCX, JPG, PNG, up to 100 MB).';
+const PHONE_CODE_OPTIONS = DIAL_CODES.map((dialCode) => ({
+  value: dialCode.code,
+  label: `${countryFlagEmoji(dialCode.country)} ${dialCode.code} ${dialCode.country}`,
+}));
 
 function FieldLabel({ text, required, hint }: { text: string; required?: boolean; hint?: string }) {
   return (
@@ -173,7 +177,6 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
       'countryOfResidence',
       'cityTown',
       'email',
-      'whatsappNumber',
       'profilePhoto',
     ]);
     setStep(2);
@@ -474,28 +477,27 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
               </Form.Item>
 
               <Form.Item
-                label={<FieldLabel text="WhatsApp Number" required hint="Include your country dial code." />}
-                required
+                label={<FieldLabel text="WhatsApp Number" hint="Include your country dial code." />}
               >
                 <div className="grid grid-cols-[140px_1fr] gap-2">
-                  <Form.Item name="whatsappCode" noStyle initialValue="+84">
-                    <Select
+                  <Form.Item name="whatsappCode" noStyle>
+                    <AutoComplete
                       showSearch
-                      optionFilterProp="label"
+                      allowClear
+                      placeholder="__"
                       style={FONT}
-                      options={DIAL_CODES.map((d) => ({
-                        value: d.code,
-                        label: `${countryFlagEmoji(d.country)} ${d.code}`,
-                      }))}
+                      options={PHONE_CODE_OPTIONS}
+                      filterOption={(inputValue, option) =>
+                        `${option?.value ?? ''} ${option?.label ?? ''}`
+                          .toLowerCase()
+                          .includes(inputValue.toLowerCase())
+                      }
                     />
                   </Form.Item>
                   <Form.Item
                     name="whatsappNumber"
                     noStyle
-                    rules={[
-                      { required: true, message: 'Please enter WhatsApp number' },
-                      phoneRule('Please enter a valid phone number (6-15 digits)'),
-                    ]}
+                    rules={[phoneRule('Please enter a valid phone number (6-15 digits)')]}
                   >
                     <Input placeholder="Phone number" style={FONT} />
                   </Form.Item>
@@ -543,24 +545,13 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   <Input placeholder="Enter Instagram profile URL" style={FONT} />
                 </Form.Item>
                 <Form.Item
-                  label={<FieldLabel text="LinkedIn" required />}
+                  label={<FieldLabel text="LinkedIn" />}
                   name="linkedinUrl"
-                  rules={[
-                    { required: true, message: 'Please enter your LinkedIn profile URL' },
-                    urlRule('Please enter a valid URL'),
-                  ]}
+                  rules={[urlRule('Please enter a valid URL')]}
                 >
                   <Input placeholder="Enter LinkedIn profile URL" style={FONT} />
                 </Form.Item>
               </div>
-
-              <Form.Item
-                label={<FieldLabel text="Website or Social Media Profile" hint="Link to personal portfolio or social account." />}
-                name="portfolio"
-                rules={[urlRule('Please enter a valid URL')]}
-              >
-                <Input placeholder="https://..." style={FONT} />
-              </Form.Item>
 
               <button
                 type="button"
