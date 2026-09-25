@@ -54,7 +54,7 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
       return;
     }
 
-    const duration = 1200;
+    const duration = 1800;
     const startTime = performance.now();
     let frameId = 0;
 
