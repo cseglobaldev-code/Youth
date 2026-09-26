@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Alert, Checkbox, Form, Input, Modal, Select, Space } from 'antd';
+import { Alert, AutoComplete, Checkbox, Form, Input, Modal, Select, Space } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { DIAL_CODES } from '@/data/dialCodes';
 import { useLanguage } from '@/context/LanguageContext';
@@ -86,7 +86,6 @@ export function DonationModal({ open, onClose }: DonationModalProps) {
         setConfig(nextConfig);
         form.setFieldsValue({
           currency: nextConfig.currency,
-          phoneCode: nextConfig.country === 'VN' ? '+84' : '+1',
           amount: presetsFor(nextConfig.currency)[1],
           coverFees: false,
         });
@@ -271,13 +270,14 @@ export function DonationModal({ open, onClose }: DonationModalProps) {
                 <Input size="large" type="email" autoComplete="email" className="rounded-xl" />
               </Form.Item>
               <Form.Item
-                label={<span className="font-semibold">{copy.phoneNumber} <span className="font-normal text-neutral-400">({copy.phoneOptional})</span></span>}
+                label={<span className="font-semibold">{copy.phoneNumber}</span>}
               >
                 <Space.Compact block>
                   <Form.Item name="phoneCode" noStyle>
-                    <Select
+                    <AutoComplete
                       showSearch
-                      optionFilterProp="label"
+                      allowClear
+                      placeholder="__"
                       popupMatchSelectWidth={260}
                       size="large"
                       style={{ width: 150 }}
@@ -285,6 +285,11 @@ export function DonationModal({ open, onClose }: DonationModalProps) {
                         value: item.code,
                         label: `${item.code} ${item.country}`,
                       }))}
+                      filterOption={(inputValue, option) =>
+                        `${option?.value ?? ''} ${option?.label ?? ''}`
+                          .toLowerCase()
+                          .includes(inputValue.toLowerCase())
+                      }
                     />
                   </Form.Item>
                   <Form.Item
