@@ -50,7 +50,6 @@ const CONTINENTS: { value: Continent; label: string }[] = [
 
 const RECRUITING_POSITIONS = [
   { label: 'Continental Director', value: 'Continental Director' },
-  { label: 'Sub-Representative', value: 'Sub-Representative' },
   { label: 'General Member', value: 'General Member' },
   { label: 'Marketing & Communication Member', value: 'Marketing & Communication Member' },
   { label: 'Secretary & Assistant', value: 'Secretary & Assistant' },
