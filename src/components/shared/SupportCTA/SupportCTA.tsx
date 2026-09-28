@@ -31,26 +31,30 @@ export type SupportCTAProps = SupportCTAButtonProps | SupportCTALinkProps;
 export function SupportCTA({
   href,
   onClick,
-  title = 'Support our Mission',
-  description = 'Send your spiritual or financial support to this organization',
+  title = 'Sow a Seed',
+  description = '',
   compact = false,
   className,
   disabled = false,
 }: SupportCTAProps) {
   const buttonClasses = disabled
     ? 'inline-flex h-[50px] min-w-[220px] items-center justify-center rounded-full border border-[#CDCED7] bg-transparent px-8 text-[16px] font-normal leading-none text-[#8A8B94] whitespace-nowrap sm:h-[58px] sm:min-w-[270px] sm:px-10 sm:text-[18px] lg:h-[64px] lg:min-w-[300px] lg:text-[20px]'
-    : 'inline-flex h-[50px] min-w-[220px] items-center justify-center rounded-full border border-[#EE334E] bg-transparent px-8 text-[16px] font-normal leading-none text-[#EE334E] transition-colors duration-200 hover:bg-[#EE334E] hover:text-white active:scale-[0.99] whitespace-nowrap sm:h-[58px] sm:min-w-[270px] sm:px-10 sm:text-[18px] lg:h-[64px] lg:min-w-[300px] lg:text-[20px]';
+    : 'support-cta-button inline-flex h-[50px] min-w-[220px] items-center justify-center rounded-full px-8 text-[16px] font-normal leading-none whitespace-nowrap sm:h-[58px] sm:min-w-[270px] sm:px-10 sm:text-[18px] lg:h-[64px] lg:min-w-[300px] lg:text-[20px]';
 
   const buttonContent = <span style={{ fontFamily: 'Open Sans, sans-serif' }}>{title}</span>;
 
   return (
     <div
-      className={['relative flex-shrink-0', compact ? '' : 'pb-0 sm:pb-[54px]', className]
+      className={[
+        'relative flex-shrink-0',
+        compact || !description ? '' : 'pb-0 sm:pb-[54px]',
+        className,
+      ]
         .filter(Boolean)
         .join(' ')}
     >
       <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-center sm:gap-[18px]">
-        {!compact && (
+        {!compact && description && (
           <span
             className="block max-w-[280px] text-center sm:text-right text-black"
             style={{
@@ -88,7 +92,7 @@ export function SupportCTA({
       </div>
 
       {/* Decorative arrow under the caption, pointing up to the CTA button — only fits the row layout used from sm and up. */}
-      {!compact && (
+      {!compact && description && (
         <div className="hidden sm:block absolute pointer-events-none left-[116px] top-[70px] h-[51px] w-[270.188px] opacity-100">
           <img
             src={supportCtaArrowUrl}

@@ -4,7 +4,6 @@ import { Container } from '@/components/ui/Container';
 import { PillButton } from '@/components/ui/PillButton';
 import { submitInquiry, type Inquiry } from '@/api/inquiries';
 import { DIAL_CODES } from '@/data/dialCodes';
-import { countryFlagEmoji } from '@/lib/utils';
 
 const CONTACT_REASONS = [
   'Partnership',
@@ -132,7 +131,7 @@ export function ContactPage() {
                     />
                     <datalist id="contact-country-codes">
                       {DIAL_CODES.map((d) => (
-                        <option key={d.country} value={d.code} label={`${countryFlagEmoji(d.country)} ${d.country}`} />
+                        <option key={d.country} value={d.code} label={`${d.code} ${d.country}`} />
                       ))}
                     </datalist>
                   </div>

@@ -2,7 +2,6 @@ import { Icon } from '@/components/ui/Icon';
 import { ImageWithFallback } from '@/components/ui/ImageWithFallback';
 import { SDGTag } from '@/components/ui/SDGTag';
 import { cn } from '@/lib/utils';
-import { formatMemberPerson } from '@/types';
 import type { MemberPerson } from '@/types';
 
 export interface MemberCardLargeProps {
@@ -28,7 +27,6 @@ export function MemberCardLarge({
     name,
     country,
     period = '2020 → present',
-    representative,
     focusSdgs,
     coverUrl = '',
     logoUrl = '',
@@ -69,12 +67,6 @@ export function MemberCardLarge({
             <Icon name="iconoir:clock" size={16} className="flex-shrink-0" />
             <span className="truncate">{period}</span>
           </div>
-          {formatMemberPerson(representative) && (
-            <div className="flex items-center gap-2">
-              <Icon name="solar:user-linear" size={16} className="flex-shrink-0" />
-              <span className="truncate">{formatMemberPerson(representative)}</span>
-            </div>
-          )}
         </div>
 
         <div className="flex flex-wrap gap-2 pt-2 mt-auto">
