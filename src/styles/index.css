@@ -155,3 +155,60 @@
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
 }
+
+/* Donation CTA: reveal the Y.O.U. color spectrum on interaction. */
+.support-cta-button {
+  border: 1px solid #ee334e;
+  background: transparent;
+  color: #ee334e;
+  transition:
+    color 200ms ease,
+    border-color 200ms ease,
+    transform 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.support-cta-button:hover,
+.support-cta-button:focus,
+.support-cta-button:active {
+  border-color: transparent;
+  background-image: linear-gradient(
+    115deg,
+    #ee334e 0%,
+    #fcb131 32%,
+    #00a651 67%,
+    #0081c8 100%
+  );
+  background-size: 280% 100%;
+  color: #ffffff;
+  animation: support-cta-gradient 4s ease infinite;
+  box-shadow: 0 12px 30px rgba(0, 93, 154, 0.24);
+}
+
+.support-cta-button:focus-visible {
+  outline: 3px solid rgba(0, 129, 200, 0.3);
+  outline-offset: 4px;
+}
+
+.support-cta-button:active {
+  transform: scale(0.98);
+}
+
+@keyframes support-cta-gradient {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .support-cta-button:hover,
+  .support-cta-button:focus,
+  .support-cta-button:active {
+    animation: none;
+  }
+}

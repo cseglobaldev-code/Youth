@@ -5,7 +5,7 @@ import type { Dayjs } from 'dayjs';
 import type { UploadFile } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { PillButton } from '@/components/ui/PillButton';
-import { urlRule, phoneRule, maxWordsRule, countryFlagEmoji } from '@/lib/utils';
+import { urlRule, phoneRule, maxWordsRule } from '@/lib/utils';
 import { submitLeadershipApplication } from '@/api/applications';
 import { CONTINENT_REGIONS } from '@/api/leadership';
 import { DIAL_CODES } from '@/data/dialCodes';
@@ -66,7 +66,7 @@ const FONT = { fontFamily: 'Open Sans, sans-serif' };
 const UPLOAD_HINT = 'Upload supported files (PDF, DOCX, JPG, PNG, up to 100 MB).';
 const PHONE_CODE_OPTIONS = DIAL_CODES.map((dialCode) => ({
   value: dialCode.code,
-  label: `${countryFlagEmoji(dialCode.country)} ${dialCode.code} ${dialCode.country}`,
+  label: `${dialCode.code} ${dialCode.country}`,
 }));
 
 function FieldLabel({ text, required, hint }: { text: string; required?: boolean; hint?: string }) {

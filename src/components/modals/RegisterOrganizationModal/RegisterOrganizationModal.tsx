@@ -130,7 +130,7 @@ const labelText = (text: string) => <span style={FONT}>{text}</span>;
 
 const PHONE_CODE_OPTIONS = DIAL_CODES.map((dialCode) => ({
   value: dialCode.code,
-  label: `${countryFlagEmoji(dialCode.country)} ${dialCode.code} ${dialCode.country}`,
+  label: `${dialCode.code} ${dialCode.country}`,
 }));
 
 const normFile = (e: unknown) => {
