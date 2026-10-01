@@ -5,7 +5,6 @@ import { SectionHeading } from '@/components/shared/SectionHeading';
 import { DocumentRow } from '@/components/documents/DocumentRow';
 import { cn } from '@/lib/utils';
 import { fetchDocuments } from '@/api/documents';
-import { MEMBERSHIP_DOCUMENTS } from '@/data/membershipDocuments';
 import type { DocCategory, DocumentItem } from '@/types';
 
 const CATEGORIES: { key: DocCategory | 'all'; label: string }[] = [
@@ -17,7 +16,7 @@ const CATEGORIES: { key: DocCategory | 'all'; label: string }[] = [
 
 export function PolicyDocumentsPage() {
   const [activeCategory, setActiveCategory] = useState<DocCategory | 'all'>('all');
-  const [docs, setDocs] = useState<DocumentItem[]>(MEMBERSHIP_DOCUMENTS);
+  const [docs, setDocs] = useState<DocumentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +27,7 @@ export function PolicyDocumentsPage() {
     fetchDocuments({ signal: controller.signal })
       .then((data) => {
         if (!ignore) {
-          setDocs([...data.filter((doc) => !MEMBERSHIP_DOCUMENTS.some((local) => local.fileUrl === doc.fileUrl)), ...MEMBERSHIP_DOCUMENTS]);
+          setDocs(data);
         }
       })
       .catch((err) => {
@@ -96,24 +95,11 @@ export function PolicyDocumentsPage() {
           {/* Document list */}
           <div className="min-w-0 divide-y divide-neutral-200">
             {loading && <Spin className="py-8" />}
-            {error && <p className="py-4 text-neutral-500">Additional documents are temporarily unavailable.</p>}
+            {error && <Empty description={`Error: ${error}`} className="py-8" />}
             {!loading && !error && filteredDocs.length === 0 && (
               <Empty description="No documents in this category." className="py-8" />
             )}
-            {!loading && activeCategory === 'membership' && (['organizations', 'individuals'] as const).map((audience) => (
-              <details key={audience} open className="mb-6 rounded-xl border border-neutral-200 p-4">
-                <summary className="cursor-pointer text-lg font-semibold" style={{ color: audience === 'organizations' ? '#FF4D4F' : '#005D9A' }}>
-                  {audience === 'organizations' ? 'For Organizations' : 'For Individuals'}
-                </summary>
-                <div className="mt-4 space-y-3">
-                  {filteredDocs.filter((doc) => (doc.audience ?? 'organizations') === audience).map((doc) => (
-                    <DocumentRow key={doc.id} document={{ ...doc, audience }} />
-                  ))}
-                  {!filteredDocs.some((doc) => (doc.audience ?? 'organizations') === audience) && <p className="text-sm text-neutral-500">No documents available yet.</p>}
-                </div>
-              </details>
-            ))}
-            {!loading && activeCategory !== 'membership' && filteredDocs.map((doc) => (
+            {!loading && !error && filteredDocs.map((doc) => (
               <DocumentRow key={doc.id} document={doc} />
             ))}
           </div>

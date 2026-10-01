@@ -9,7 +9,7 @@ import type { Project, ProjectStatus } from '@/types';
 const PROJECT_STATUS_LABELS: Record<ProjectStatus, string> = {
   ongoing: 'Ongoing',
   completed: 'Completed',
-  planned: 'Planning',
+  planned: 'Inactive',
 };
 
 export interface ProjectCardProps {

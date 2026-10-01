@@ -1,7 +1,6 @@
 import { Button } from 'antd';
 import { useJoinModal } from '@/components/modals/JoinModal';
 import { Container } from '@/components/ui/Container';
-import { CONTINENTAL_DIRECTORS_JD_URL } from '@/data/membershipDocuments';
 
 const ORG_BENEFITS = [
   'Official Y.O.U membership status & certification',
@@ -13,7 +12,7 @@ const ORG_BENEFITS = [
 const INDIVIDUAL_ROLES = [
   {
     title: 'Continent Director',
-    jdUrl: CONTINENTAL_DIRECTORS_JD_URL,
+    jdUrl: 'https://docs.google.com/document/d/1pyn77tCjnGVH7xVnMfh6VxrdT3S3dU0YSRqUPGjN-fo/edit?usp=sharing',
   },
   {
     title: 'Sub-Representative',
