@@ -9,4 +9,6 @@ export interface DocumentItem {
   fileUrl: string;
   fileSize?: string;
   updatedAt?: string;
+  audience?: 'organizations' | 'individuals';
+  revision?: string;
 }

@@ -9,6 +9,7 @@ import { urlRule, phoneRule, maxWordsRule } from '@/lib/utils';
 import { submitLeadershipApplication } from '@/api/applications';
 import { CONTINENT_REGIONS } from '@/api/leadership';
 import { DIAL_CODES } from '@/data/dialCodes';
+import { CONTINENTAL_DIRECTORS_JD_URL } from '@/data/membershipDocuments';
 import type { Continent } from '@/types';
 
 export interface ApplyRoleFormValues {
@@ -382,6 +383,9 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
             
             {/* STEP 1: PERSONAL DETAILS */}
             <div className={step === 1 ? 'block' : 'hidden'}>
+              <a href={CONTINENTAL_DIRECTORS_JD_URL} target="_blank" rel="noopener noreferrer" className="mb-4 inline-block text-[#005D9A] underline underline-offset-4">
+                Job Description for Continental Directors (PDF)
+              </a>
               <Form.Item
                 label={<FieldLabel text="Position" required />}
                 name="position"
