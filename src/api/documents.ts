@@ -18,6 +18,8 @@ interface StrapiPolicyDocument {
   file?: StrapiMedia | null;
   fileSize?: unknown;
   updatedAt?: unknown;
+  audience?: unknown;
+  revision?: unknown;
 }
 
 interface StrapiPolicyDocumentsResponse {
@@ -43,6 +45,8 @@ function mapPolicyDocument(entry: StrapiPolicyDocument, baseUrl: string): Docume
     fileUrl,
     fileSize: text(entry.fileSize) || undefined,
     updatedAt,
+    audience: entry.audience === 'individuals' || entry.audience === 'organizations' ? entry.audience : undefined,
+    revision: text(entry.revision) || undefined,
   };
 }
 
