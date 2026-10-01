@@ -34,7 +34,9 @@ function formatDate(iso?: string): string {
 }
 
 export function DocumentRow({ document, onDownload, className }: DocumentRowProps) {
-  const meta = [document.fileSize, formatDate(document.updatedAt)]
+  const meta = document.revision !== undefined
+    ? `Revision ${document.revision} - ${new Intl.DateTimeFormat('en-US', { month: 'long', day: '2-digit', year: 'numeric', timeZone: 'UTC' }).format(new Date(document.updatedAt!))}`
+    : [document.fileSize, formatDate(document.updatedAt)]
     .filter(Boolean)
     .join('  ·  ');
 
@@ -44,6 +46,7 @@ export function DocumentRow({ document, onDownload, className }: DocumentRowProp
         'group flex items-center gap-4 sm:gap-5 py-5 transition-colors',
         className
       )}
+      style={document.audience ? { backgroundColor: document.audience === 'organizations' ? '#FEF2F2' : '#D4EDFF', paddingLeft: 16, paddingRight: 16, borderRadius: 12 } : undefined}
     >
       {/* File-type badge */}
       <div
