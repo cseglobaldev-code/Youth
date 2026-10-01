@@ -188,8 +188,8 @@ export function ProjectDetailPage() {
                 trigger="click"
                 content={
                   <div style={{ maxWidth: 280, fontFamily: 'Open Sans, sans-serif' }}>
-                    This project has been completed / is no longer active. You can support this
-                    organization&apos;s other projects{' '}
+                    This project has been completed / is temporarily paused. You can donate to
+                    this organization&apos;s other projects{' '}
                     <Link to={ROUTES.MEMBER_DETAIL(project.memberId)} className="text-[#005D9A] underline">
                       here
                     </Link>
@@ -197,7 +197,7 @@ export function ProjectDetailPage() {
                   </div>
                 }
               >
-                <SupportCTA onClick={() => {}} disabled compact />
+                <SupportCTA onClick={() => {}} title="Inactive" disabled compact />
               </Popover>
             ) : (
               <SupportCTA onClick={openSupport} compact />
