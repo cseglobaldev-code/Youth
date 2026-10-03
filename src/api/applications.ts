@@ -76,7 +76,6 @@ export async function submitLeadershipApplication(
 
   const payload = {
     data: {
-      ...(values.position ? { position: values.position } : {}),
       fullName: values.fullName,
       sex: values.sex,
       sexOther: values.sexOther || undefined,
@@ -92,7 +91,10 @@ export async function submitLeadershipApplication(
       portfolio: values.portfolio || undefined,
       continent: values.continent,
       region: values.region,
-      assessment: values.assessment,
+      assessment: {
+        ...values.assessment,
+        ...(values.position ? { appliedPosition: values.position } : {}),
+      },
       ...(profilePhotoIds.length > 0 ? { profilePhoto: profilePhotoIds[0] } : {}),
       ...(activityPhotoIds.length > 0 ? { activityPhotos: activityPhotoIds } : {}),
       ...(resumeCvIds.length > 0 ? { resumeCv: resumeCvIds } : {}),
@@ -143,9 +145,7 @@ export async function submitOrganizationApplication(
       representativeFullName: values.representativeFullName,
       representativePhone: values.representativePhone,
       representativePhoneCode: values.representativePhoneCode || undefined,
-      isPrimaryContact: values.isPrimaryContact,
       contactPersonFullName: values.contactPersonFullName || undefined,
-      contactPersonEmail: values.contactPersonEmail || undefined,
       contactPersonPhone: values.contactPersonPhone || undefined,
       contactPersonPhoneCode: values.contactPersonPhoneCode || undefined,
       yearOfEstablishment: Number(values.yearOfEstablishment),
