@@ -1,4 +1,9 @@
-import { draftStatus, isAllowedCmsPath, isPublicFormSubmission } from '../../functions/lib/cms';
+import {
+  cmsRequestBody,
+  draftStatus,
+  isAllowedCmsPath,
+  isPublicFormSubmission,
+} from '../../functions/lib/cms';
 import { isAllowedPreviewPath, isPreviewStatus, sameSecret } from '../../functions/lib/preview';
 
 import type { DonationEnv } from './donations';
@@ -99,10 +104,12 @@ export async function handleCms(request: Request, env: Env): Promise<Response> {
   const contentType = request.headers.get('Content-Type');
   if (contentType) headers.set('Content-Type', contentType);
 
+  const body = await cmsRequestBody(request, requestUrl.pathname);
+
   const upstreamResponse = await fetch(upstreamUrl, {
     method: request.method,
     headers,
-    body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined,
+    body,
   });
 
   const responseHeaders = new Headers(upstreamResponse.headers);

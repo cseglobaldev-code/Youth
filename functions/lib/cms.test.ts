@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { draftStatus, isAllowedCmsPath, isPublicFormSubmission } from './cms';
+import {
+  cmsRequestBody,
+  draftStatus,
+  isAllowedCmsPath,
+  isPublicFormSubmission,
+  sanitizePublicFormPayload,
+} from './cms';
 
 describe('CMS proxy helpers', () => {
   it('allows read-only content and upload/form paths', () => {
@@ -34,5 +40,52 @@ describe('CMS proxy helpers', () => {
     expect(isPublicFormSubmission('/api/organization-applications', 'POST')).toBe(true);
     expect(isPublicFormSubmission('/api/support-submissions', 'GET')).toBe(false);
     expect(isPublicFormSubmission('/api/projects', 'POST')).toBe(false);
+  });
+
+  it('removes legacy organization fields rejected by Strapi', () => {
+    expect(
+      sanitizePublicFormPayload('/api/organization-applications', {
+        data: {
+          organizationName: 'Youth Org',
+          isPrimaryContact: 'no',
+          contactPersonEmail: 'contact@example.com',
+          contactPersonFullName: 'Contact Person',
+        },
+      })
+    ).toEqual({
+      data: {
+        organizationName: 'Youth Org',
+        contactPersonFullName: 'Contact Person',
+      },
+    });
+  });
+
+  it('removes the legacy leadership position but preserves the assessment', () => {
+    expect(
+      sanitizePublicFormPayload('/api/leadership-applications', {
+        data: {
+          fullName: 'Member',
+          position: 'continent-director',
+          assessment: { appliedPosition: 'continent-director' },
+        },
+      })
+    ).toEqual({
+      data: {
+        fullName: 'Member',
+        assessment: { appliedPosition: 'continent-director' },
+      },
+    });
+  });
+
+  it('sanitizes JSON request bodies before forwarding them', async () => {
+    const request = new Request('https://example.com/api/organization-applications', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: { organizationName: 'Youth Org', isPrimaryContact: 'yes' } }),
+    });
+
+    const body = await cmsRequestBody(request, '/api/organization-applications');
+
+    expect(JSON.parse(String(body))).toEqual({ data: { organizationName: 'Youth Org' } });
   });
 });
