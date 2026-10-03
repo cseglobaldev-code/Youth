@@ -43,7 +43,7 @@ export interface RegisterOrganizationFormValues {
   projectFocusSdgs: number[];        
   projectStatus: 'ongoing' | 'completed' | 'planned';
   projectImages?: unknown[];
-  projectSocialProfile?: string;
+  projectSocialProfile: string;
 }
 
 export interface RegisterOrganizationModalProps {
@@ -695,7 +695,10 @@ export function RegisterOrganizationModal({
             <Form.Item
               label={labelText('Website or Social Media Profile')}
               name="projectSocialProfile"
-              rules={[urlRule()]}
+              rules={[
+                { required: true, whitespace: true, message: 'Please enter a website or social media profile' },
+                urlRule(),
+              ]}
             >
               <Input placeholder="Enter link" style={FONT} />
             </Form.Item>
