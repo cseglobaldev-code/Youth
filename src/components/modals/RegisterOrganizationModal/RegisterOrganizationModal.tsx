@@ -12,6 +12,7 @@ export interface RegisterOrganizationFormValues {
   organizationName: string;
   organizationDescription: string;
   representativeFullName: string;
+  representativeEmail: string;
   representativePhone: string;
   representativePhoneCode?: string;
   isPrimaryContact: 'yes' | 'no';
@@ -95,6 +96,7 @@ const STEP_FIELDS: Record<1 | 2, (keyof RegisterOrganizationFormValues)[]> = {
     'organizationName',
     'organizationDescription',
     'representativeFullName',
+    'representativeEmail',
     'representativePhone',
     'isPrimaryContact',
     'yearOfEstablishment',
@@ -132,6 +134,8 @@ const PHONE_CODE_OPTIONS = DIAL_CODES.map((dialCode) => ({
   value: dialCode.code,
   label: `${dialCode.code} ${dialCode.country}`,
 }));
+
+const SDG_COLUMNS = [SDGS_DATA.slice(0, 9), SDGS_DATA.slice(9)];
 
 const normFile = (e: unknown) => {
   if (Array.isArray(e)) return e;
@@ -269,6 +273,17 @@ export function RegisterOrganizationModal({
               rules={[{ required: true, message: 'Please enter full name' }]}
             >
               <Input placeholder="Enter full name" style={FONT} />
+            </Form.Item>
+
+            <Form.Item
+              label={labelText("Head of Organization's Email")}
+              name="representativeEmail"
+              rules={[
+                { required: true, message: 'Please enter Head of Organization email' },
+                { type: 'email', message: 'Invalid email' },
+              ]}
+            >
+              <Input placeholder="Enter email address" style={FONT} />
             </Form.Item>
 
             <Form.Item
@@ -471,11 +486,15 @@ export function RegisterOrganizationModal({
               extra={<span className="italic" style={FONT}>Maximum 3 SDGs that best align with your organization.</span>}
             >
               <Checkbox.Group className="w-full">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {SDGS_DATA.map((sdg) => (
-                    <Checkbox key={sdg.id} value={sdg.id} style={FONT}>
-                      SDG {sdg.id} – {sdg.title}
-                    </Checkbox>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-x-6">
+                  {SDG_COLUMNS.map((column, columnIndex) => (
+                    <div key={columnIndex} className="flex flex-col gap-2">
+                      {column.map((sdg) => (
+                        <Checkbox key={sdg.id} value={sdg.id} style={FONT}>
+                          SDG {sdg.id} – {sdg.title}
+                        </Checkbox>
+                      ))}
+                    </div>
                   ))}
                 </div>
               </Checkbox.Group>
@@ -643,11 +662,15 @@ export function RegisterOrganizationModal({
               extra={<span className="italic" style={FONT}>Maximum 3 SDGs that best align with your project.</span>}
             >
               <Checkbox.Group className="w-full">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {SDGS_DATA.map((sdg) => (
-                    <Checkbox key={sdg.id} value={sdg.id} style={FONT}>
-                      SDG {sdg.id} – {sdg.title}
-                    </Checkbox>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-x-6">
+                  {SDG_COLUMNS.map((column, columnIndex) => (
+                    <div key={columnIndex} className="flex flex-col gap-2">
+                      {column.map((sdg) => (
+                        <Checkbox key={sdg.id} value={sdg.id} style={FONT}>
+                          SDG {sdg.id} – {sdg.title}
+                        </Checkbox>
+                      ))}
+                    </div>
                   ))}
                 </div>
               </Checkbox.Group>
