@@ -29,6 +29,11 @@ const PUBLIC_FORM_PATHS = new Set([
   '/api/upload',
 ]);
 
+const LEGACY_FORM_FIELDS: Record<string, readonly string[]> = {
+  '/api/organization-applications': ['isPrimaryContact', 'contactPersonEmail'],
+  '/api/leadership-applications': ['position'],
+};
+
 export function isAllowedCmsPath(pathname: string): boolean {
   let decodedPathname: string;
   try {
@@ -49,6 +54,46 @@ export function isAllowedCmsPath(pathname: string): boolean {
 /** Public visitors may only write to the explicitly listed form endpoints. */
 export function isPublicFormSubmission(pathname: string, method: string): boolean {
   return method === 'POST' && PUBLIC_FORM_PATHS.has(pathname);
+}
+
+/**
+ * Older frontend bundles may still submit fields that were removed from the
+ * corresponding Strapi content type. Strapi rejects the entire request when
+ * one unknown key is present, so strip only those known legacy keys at the
+ * proxy boundary while leaving every current field untouched.
+ */
+export function sanitizePublicFormPayload(pathname: string, payload: unknown): unknown {
+  const legacyFields = LEGACY_FORM_FIELDS[pathname];
+  if (!legacyFields || typeof payload !== 'object' || payload === null) return payload;
+
+  const envelope = payload as Record<string, unknown>;
+  if (typeof envelope.data !== 'object' || envelope.data === null || Array.isArray(envelope.data)) {
+    return payload;
+  }
+
+  const sanitizedData = { ...(envelope.data as Record<string, unknown>) };
+  for (const field of legacyFields) delete sanitizedData[field];
+
+  return { ...envelope, data: sanitizedData };
+}
+
+export async function cmsRequestBody(request: Request, pathname: string): Promise<BodyInit | undefined> {
+  if (request.method === 'GET' || request.method === 'HEAD') return undefined;
+
+  const shouldSanitize =
+    request.method === 'POST' &&
+    Boolean(LEGACY_FORM_FIELDS[pathname]) &&
+    request.headers.get('Content-Type')?.toLowerCase().includes('application/json');
+
+  if (!shouldSanitize) return request.body ?? undefined;
+
+  const rawBody = await request.text();
+  try {
+    return JSON.stringify(sanitizePublicFormPayload(pathname, JSON.parse(rawBody)));
+  } catch {
+    // Preserve malformed JSON so Strapi can return its normal validation error.
+    return rawBody;
+  }
 }
 
 export function draftStatus(cookieHeader: string | null): 'draft' | 'published' {

@@ -1,4 +1,4 @@
-import { draftStatus, isAllowedCmsPath, isPublicFormSubmission } from '../lib/cms';
+import { cmsRequestBody, draftStatus, isAllowedCmsPath, isPublicFormSubmission } from '../lib/cms';
 
 interface CmsEnv {
   STRAPI_API_URL?: string;
@@ -72,10 +72,12 @@ export async function onRequest(context: PagesContext): Promise<Response> {
   const contentType = request.headers.get('Content-Type');
   if (contentType) headers.set('Content-Type', contentType);
 
+  const body = await cmsRequestBody(request, pathname);
+
   const upstreamResponse = await fetch(upstreamUrl, {
     method: request.method,
     headers,
-    body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined,
+    body,
   });
 
   const responseHeaders = new Headers(upstreamResponse.headers);
