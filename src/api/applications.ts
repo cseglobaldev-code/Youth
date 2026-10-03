@@ -143,6 +143,7 @@ export async function submitOrganizationApplication(
       organizationName: values.organizationName,
       organizationDescription: values.organizationDescription,
       representativeFullName: values.representativeFullName,
+      representativeEmail: values.representativeEmail,
       representativePhone: values.representativePhone,
       representativePhoneCode: values.representativePhoneCode || undefined,
       yearOfEstablishment: Number(values.yearOfEstablishment),
