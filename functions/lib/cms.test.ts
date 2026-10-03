@@ -46,16 +46,17 @@ describe('CMS proxy helpers', () => {
     expect(
       sanitizePublicFormPayload('/api/organization-applications', {
         data: {
-          organizationName: 'Youth Org',
-          isPrimaryContact: 'no',
-          contactPersonEmail: 'contact@example.com',
-          contactPersonFullName: 'Contact Person',
+        organizationName: 'Youth Org',
+        isPrimaryContact: 'no',
+        contactPersonFullName: 'Contact Person',
+        contactPersonEmail: 'contact@example.com',
+        contactPersonPhone: '0900000000',
+        contactPersonPhoneCode: '+84',
         },
       })
     ).toEqual({
       data: {
         organizationName: 'Youth Org',
-        contactPersonFullName: 'Contact Person',
       },
     });
   });
