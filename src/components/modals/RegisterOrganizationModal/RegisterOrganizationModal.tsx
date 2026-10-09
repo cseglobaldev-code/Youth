@@ -99,6 +99,9 @@ const STEP_FIELDS: Record<1 | 2, (keyof RegisterOrganizationFormValues)[]> = {
     'representativeEmail',
     'representativePhone',
     'isPrimaryContact',
+    'contactPersonFullName',
+    'contactPersonEmail',
+    'contactPersonPhone',
     'yearOfEstablishment',
     'country',
     'address',
@@ -342,19 +345,19 @@ export function RegisterOrganizationModal({
 
             {isPrimaryContact === 'no' && (
               <>
-                <Form.Item label={labelText("Contact Person's Full Name")} name="contactPersonFullName">
+                <Form.Item label={labelText("Contact Person's Full Name")} name="contactPersonFullName" rules={[{ required: true, whitespace: true, message: 'Please enter the contact person\'s full name' }]}>
                   <Input placeholder="Enter full name" style={FONT} />
                 </Form.Item>
 
                 <Form.Item
                   label={labelText("Contact Person's Email")}
                   name="contactPersonEmail"
-                  rules={[{ type: 'email', message: 'Invalid email' }]}
+                  rules={[{ required: true, message: 'Please enter the contact person\'s email' }, { type: 'email', message: 'Invalid email' }]}
                 >
                   <Input placeholder="Enter email address" style={FONT} />
                 </Form.Item>
 
-                <Form.Item label={labelText("Contact Person's Phone Number")} name="contactPersonPhone" rules={[phoneRule()]}>
+                <Form.Item label={labelText("Contact Person's Phone Number")} name="contactPersonPhone" rules={[{ required: true, message: 'Please enter the contact person\'s phone number' }, phoneRule()]}>
                   <Input
                     placeholder="Enter phone number"
                     addonBefore={

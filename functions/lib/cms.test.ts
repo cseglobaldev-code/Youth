@@ -42,7 +42,7 @@ describe('CMS proxy helpers', () => {
     expect(isPublicFormSubmission('/api/projects', 'POST')).toBe(false);
   });
 
-  it('removes legacy organization fields rejected by Strapi', () => {
+  it('preserves organization contact fields for Strapi', () => {
     expect(
       sanitizePublicFormPayload('/api/organization-applications', {
         data: {
@@ -57,6 +57,11 @@ describe('CMS proxy helpers', () => {
     ).toEqual({
       data: {
         organizationName: 'Youth Org',
+        isPrimaryContact: 'no',
+        contactPersonFullName: 'Contact Person',
+        contactPersonEmail: 'contact@example.com',
+        contactPersonPhone: '0900000000',
+        contactPersonPhoneCode: '+84',
       },
     });
   });
@@ -78,7 +83,7 @@ describe('CMS proxy helpers', () => {
     });
   });
 
-  it('sanitizes JSON request bodies before forwarding them', async () => {
+  it('forwards organization primary-contact data without removing it', async () => {
     const request = new Request('https://example.com/api/organization-applications', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -87,6 +92,8 @@ describe('CMS proxy helpers', () => {
 
     const body = await cmsRequestBody(request, '/api/organization-applications');
 
-    expect(JSON.parse(String(body))).toEqual({ data: { organizationName: 'Youth Org' } });
+    expect(JSON.parse(await new Response(body).text())).toEqual({
+      data: { organizationName: 'Youth Org', isPrimaryContact: 'yes' },
+    });
   });
 });
