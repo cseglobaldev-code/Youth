@@ -146,6 +146,15 @@ export async function submitOrganizationApplication(
       representativeEmail: values.representativeEmail,
       representativePhone: values.representativePhone,
       representativePhoneCode: values.representativePhoneCode || undefined,
+      isPrimaryContact: values.isPrimaryContact,
+      contactPersonFullName: values.isPrimaryContact === 'yes'
+        ? values.representativeFullName : values.contactPersonFullName,
+      contactPersonEmail: values.isPrimaryContact === 'yes'
+        ? values.representativeEmail : values.contactPersonEmail,
+      contactPersonPhone: values.isPrimaryContact === 'yes'
+        ? values.representativePhone : values.contactPersonPhone,
+      contactPersonPhoneCode: values.isPrimaryContact === 'yes'
+        ? values.representativePhoneCode || '+84' : values.contactPersonPhoneCode || undefined,
       yearOfEstablishment: Number(values.yearOfEstablishment),
       country: values.country,
       address: values.address,

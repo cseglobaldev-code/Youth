@@ -30,13 +30,6 @@ const PUBLIC_FORM_PATHS = new Set([
 ]);
 
 const LEGACY_FORM_FIELDS: Record<string, readonly string[]> = {
-  '/api/organization-applications': [
-    'isPrimaryContact',
-    'contactPersonFullName',
-    'contactPersonEmail',
-    'contactPersonPhone',
-    'contactPersonPhoneCode',
-  ],
   '/api/leadership-applications': ['position'],
 };
 

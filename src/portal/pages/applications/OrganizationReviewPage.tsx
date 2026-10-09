@@ -193,9 +193,10 @@ export function OrganizationReviewPage() {
             {/* Organization Overview */}
             <Descriptions title="Organization Details" bordered size="small" column={2}>
               <Descriptions.Item label="Head of Organization">{selectedOrg.representativeFullName}</Descriptions.Item>
-              <Descriptions.Item label="Phone">{selectedOrg.representativePhoneCode} {selectedOrg.representativePhone}</Descriptions.Item>
-              <Descriptions.Item label="Primary Contact">{selectedOrg.isPrimaryContact === 'yes' ? 'Yes' : 'No'}</Descriptions.Item>
-              <Descriptions.Item label="Contact Person">{selectedOrg.contactPersonFullName}</Descriptions.Item>
+              <Descriptions.Item label="Head Email">{selectedOrg.representativeEmail || '—'}</Descriptions.Item>
+              <Descriptions.Item label="Head Phone">{selectedOrg.representativePhoneCode} {selectedOrg.representativePhone}</Descriptions.Item>
+              <Descriptions.Item label="Head Is Primary Contact">{selectedOrg.isPrimaryContact === 'yes' ? 'Yes' : selectedOrg.isPrimaryContact === 'no' ? 'No' : 'Not recorded'}</Descriptions.Item>
+              <Descriptions.Item label="Contact Person">{selectedOrg.contactPersonFullName || '—'}</Descriptions.Item>
               <Descriptions.Item label="Contact Email">{selectedOrg.contactPersonEmail || '—'}</Descriptions.Item>
               <Descriptions.Item label="Contact Phone">{selectedOrg.contactPersonPhoneCode} {selectedOrg.contactPersonPhone}</Descriptions.Item>
               <Descriptions.Item label="Email">{selectedOrg.email}</Descriptions.Item>
