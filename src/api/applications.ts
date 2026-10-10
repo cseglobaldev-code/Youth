@@ -40,21 +40,23 @@ async function uploadAntdFiles(
 
     if (!response.ok) {
       const errorDetail = await response.text();
-      console.warn(`File upload returned status ${response.status}:`, errorDetail);
-      return [];
+      throw new Error(`File upload failed (${response.status}): ${errorDetail}`);
     }
 
     const data = await response.json();
     if (Array.isArray(data)) {
-      return data
+      const ids = data
         .map((item: any) => item.id)
         .filter((id: any): id is number => typeof id === 'number');
+      if (ids.length !== rawFiles.length) throw new Error('File upload did not return all uploaded files. Please retry.');
+      return ids;
     }
   } catch (error) {
     console.error('Failed to upload files to Strapi:', error);
+    throw error;
   }
 
-  return [];
+  throw new Error('Invalid file upload response. Please retry.');
 }
 
 /**
@@ -77,6 +79,7 @@ export async function submitLeadershipApplication(
   const payload = {
     data: {
       fullName: values.fullName,
+      position: values.position,
       sex: values.sex,
       sexOther: values.sexOther || undefined,
       dateOfBirth: values.dateOfBirth ? values.dateOfBirth.format('YYYY-MM-DD') : undefined,
@@ -175,9 +178,8 @@ export async function submitOrganizationApplication(
       projectFocusSdgs: rawProjectSdgs.map(String),       
       projectStatus: values.projectStatus || 'ongoing',
       projectSocialProfile: values.projectSocialProfile,
-      ...(orgCoverIds.length > 0 || orgActivityPhotoIds.length > 0
-        ? { organizationImage: [...orgCoverIds, ...orgActivityPhotoIds] }
-        : {}),
+      ...(orgCoverIds.length > 0 ? { organizationImage: orgCoverIds } : {}),
+      ...(orgActivityPhotoIds.length > 0 ? { organizationActivityPhotos: orgActivityPhotoIds } : {}),
       ...(orgLogoIds.length > 0 ? { organizationLogo: orgLogoIds } : {}),
       ...(projectImageIds.length > 0 ? { projectImages: projectImageIds } : {}),
     },

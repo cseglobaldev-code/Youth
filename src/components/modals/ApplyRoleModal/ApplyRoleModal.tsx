@@ -11,6 +11,7 @@ import { CONTINENT_REGIONS } from '@/api/leadership';
 import { DIAL_CODES } from '@/data/dialCodes';
 import { CONTINENTAL_DIRECTORS_JD_URL } from '@/data/membershipDocuments';
 import type { Continent } from '@/types';
+import { preservedFormSnapshot } from '@/lib/utils/formSnapshot';
 
 export interface ApplyRoleFormValues {
   position?: string;
@@ -169,6 +170,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
 
   const handleNextFromDetails = async () => {
     await form.validateFields([
+      'position',
       'fullName',
       'sex',
       ...(form.getFieldValue('sex') === 'other' ? (['sexOther'] as const) : []),
@@ -249,6 +251,9 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
   };
 
   const handleFinish = async (values: ApplyRoleFormValues) => {
+    // Ant Design onFinish includes mounted fields only; earlier assessment
+    // sections and document uploads are unmounted when Declaration is submitted.
+    values = preservedFormSnapshot(form);
     try {
       setSubmitting(true);
       setErrorMessage(null);
@@ -1094,20 +1099,20 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                       (6) Supporting Documents
                     </h4>
                     <p className="text-neutral-500 text-[14px]" style={FONT}>
-                      Please attach necessary documentation. CV/Resume is required.
+                      Please attach necessary documentation. CV / Portfolio is required.
                     </p>
                   </div>
 
                   <Form.Item
-                    label={<FieldLabel text="6.1 Upload CV / Resume" required hint="Your updated Curriculum Vitae." />}
+                    label={<FieldLabel text="6.1 Upload CV / Portfolio" required hint="Your updated CV or portfolio document." />}
                     name="resumeCv"
                     valuePropName="fileList"
                     getValueFromEvent={normFile}
-                    rules={[{ required: true, message: 'Please upload your resume/CV' }]}
+                    rules={[{ required: true, message: 'Please upload your CV / Portfolio' }]}
                     extra={<span className="text-[13px] italic text-[#EE334E]">{UPLOAD_HINT}</span>}
                   >
                     <Upload beforeUpload={() => false} maxCount={1} listType="text">
-                      <UploadButton label="Upload CV/Resume" />
+                      <UploadButton label="Upload CV / Portfolio" />
                     </Upload>
                   </Form.Item>
 
