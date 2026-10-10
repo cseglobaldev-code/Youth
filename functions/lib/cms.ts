@@ -30,7 +30,6 @@ const PUBLIC_FORM_PATHS = new Set([
 ]);
 
 const LEGACY_FORM_FIELDS: Record<string, readonly string[]> = {
-  '/api/leadership-applications': ['position'],
 };
 
 export function isAllowedCmsPath(pathname: string): boolean {

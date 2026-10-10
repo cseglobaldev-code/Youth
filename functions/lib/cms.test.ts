@@ -66,7 +66,7 @@ describe('CMS proxy helpers', () => {
     });
   });
 
-  it('removes the legacy leadership position but preserves the assessment', () => {
+  it('preserves the leadership position and assessment', () => {
     expect(
       sanitizePublicFormPayload('/api/leadership-applications', {
         data: {
@@ -78,6 +78,7 @@ describe('CMS proxy helpers', () => {
     ).toEqual({
       data: {
         fullName: 'Member',
+        position: 'continent-director',
         assessment: { appliedPosition: 'continent-director' },
       },
     });

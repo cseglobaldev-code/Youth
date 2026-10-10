@@ -44,7 +44,7 @@ export function OrganizationReviewPage() {
         {
           pageSize: 100,
           sort: 'createdAt:desc',
-          populate: ['organizationLogo', 'organizationImage', 'projectImages'],
+          populate: ['organizationLogo', 'organizationImage', 'organizationActivityPhotos', 'projectImages'],
         },
         token
       );
@@ -210,6 +210,23 @@ export function OrganizationReviewPage() {
             </Descriptions>
 
             {/* Project Details */}
+            <Descriptions title="Social Media Profiles" bordered size="small" column={1}>
+              {(['facebookUrl', 'instagramUrl', 'linkedinUrl'] as const).map((field) => (
+                <Descriptions.Item key={field} label={field === 'facebookUrl' ? 'Facebook' : field === 'instagramUrl' ? 'Instagram' : 'LinkedIn'}>
+                  {selectedOrg[field] ? <a href={selectedOrg[field]} target="_blank" rel="noreferrer">{selectedOrg[field]}</a> : '—'}
+                </Descriptions.Item>
+              ))}
+            </Descriptions>
+            {(['organizationImage', 'organizationLogo', 'organizationActivityPhotos'] as const).map((field) => (
+              <div key={field}>
+                <h4>{field === 'organizationImage' ? 'Organization Cover / Legacy Images' : field === 'organizationLogo' ? 'Organization Logo' : 'Photos of Organizational Activities'}</h4>
+                <div className="flex flex-wrap gap-3">
+                  {(selectedOrg[field] || []).map((file: any) => (
+                    <a key={file.id} href={file.url} target="_blank" rel="noreferrer"><img src={file.url} alt={file.name || 'Organization photo'} className="h-24 w-32 rounded object-cover" /></a>
+                  ))}
+                </div>
+              </div>
+            ))}
             <Descriptions title="Featured Project" bordered size="small" column={2}>
               <Descriptions.Item label="Project Name" span={2}>{selectedOrg.projectName}</Descriptions.Item>
               <Descriptions.Item label="Led By">{selectedOrg.projectLedBy}</Descriptions.Item>

@@ -136,7 +136,7 @@ export function LeadershipAtsPage() {
         {
           pageSize: 100,
           sort: 'createdAt:desc',
-          populate: ['profilePhoto', 'resumeCv', 'activityPhotos'],
+          populate: ['profilePhoto', 'resumeCv', 'activityPhotos', 'orgProfileDoc', 'leadershipProofDoc', 'additionalDocs'],
         },
         token
       );
@@ -492,6 +492,7 @@ export function LeadershipAtsPage() {
 
             <Descriptions bordered size="small" column={{ xs: 1, sm: 2, md: 3 }}>
               <Descriptions.Item label="Sex">{selectedCandidate.sex}</Descriptions.Item>
+              <Descriptions.Item label="Position">{selectedCandidate.position || selectedCandidate.assessment?.appliedPosition || '—'}</Descriptions.Item>
               <Descriptions.Item label="Date of Birth">{selectedCandidate.dateOfBirth}</Descriptions.Item>
               <Descriptions.Item label="Nationality">{selectedCandidate.nationality}</Descriptions.Item>
               <Descriptions.Item label="Residence">{selectedCandidate.countryOfResidence}</Descriptions.Item>
@@ -597,9 +598,18 @@ export function LeadershipAtsPage() {
                 },
                 {
                   key: 'resume',
-                  label: 'Resume / CV Document',
+                  label: 'CV / Portfolio & Documents',
                   children: (
                     <div className="pt-2">
+                      {(['orgProfileDoc', 'leadershipProofDoc', 'additionalDocs'] as const).map((field) => (
+                        <div key={field} className="mb-3">
+                          <h5>{field === 'orgProfileDoc' ? 'Organization Profile' : field === 'leadershipProofDoc' ? 'Proof of Leadership' : 'Additional Documents'}</h5>
+                          {(selectedCandidate[field] || []).map((file: any) => (
+                            <a key={file.id} href={file.url} target="_blank" rel="noreferrer" className="mr-3 text-[#005D9A] underline">{file.name}</a>
+                          ))}
+                        </div>
+                      ))}
+                      {selectedCandidate.portfolio && <a href={selectedCandidate.portfolio} target="_blank" rel="noreferrer">Legacy Portfolio URL</a>}
                       {resumeFile?.url ? (
                         <div className="space-y-4">
                           <div className="flex items-center justify-between p-3 bg-neutral-100 rounded-xl">
