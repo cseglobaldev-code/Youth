@@ -12,7 +12,7 @@ const ORG_BENEFITS = [
 
 const INDIVIDUAL_ROLES = [
   {
-    title: 'Continent Director',
+    title: 'Continental Director',
     jdUrl: CONTINENTAL_DIRECTORS_JD_URL,
   },
   {
