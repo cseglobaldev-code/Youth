@@ -90,7 +90,12 @@ export function ContactPage() {
                     <label htmlFor="contact-prefix" className={labelClasses}>
                       Prefix
                     </label>
-                    <input id="contact-prefix" name="prefix" autoComplete="honorific-prefix" className={inputClasses} />
+                    <select id="contact-prefix" name="prefix" autoComplete="honorific-prefix" defaultValue="" className={inputClasses}>
+                      <option value="">Select</option>
+                      {['Mr.', 'Ms.', 'Mrs.', 'Miss', 'Dr.', 'Prof.'].map((prefix) => (
+                        <option key={prefix} value={prefix}>{prefix}</option>
+                      ))}
+                    </select>
                   </div>
                   <div>
                     <label htmlFor="contact-name" className={labelClasses}>
