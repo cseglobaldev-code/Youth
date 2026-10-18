@@ -36,7 +36,7 @@ export function HeroSection() {
 
       {/* Banner image carousel */}
       <div className="mx-auto mt-8 mb-10 w-full max-w-[95%] px-[30px] md:mt-12 md:mb-14 lg:mt-[80px] lg:mb-0">
-        <div className="aspect-[344/148] w-full overflow-hidden rounded-[16px] md:aspect-[1740/693] md:rounded-[30px] lg:rounded-[40px]">
+        <div className="aspect-[5/2] w-full overflow-hidden rounded-[16px] md:rounded-[30px] lg:rounded-[40px]">
           <ImageCarousel />
         </div>
       </div>

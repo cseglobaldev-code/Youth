@@ -1,16 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Icon } from '@/components/ui/Icon';
 import { useMediaQuery } from '@/hooks';
+import { HOME_AMBASSADORS as BANNER_IMAGES } from '@/data/homeAmbassadors';
 
 const AUTO_ADVANCE_INTERVAL_MS = 5_000;
-
-const BANNER_IMAGES = [
-  { id: 'ambassador-1', src: '/images/home/about/ambassador-1.jpg', alt: 'Y.O.U Ambassador of Unity — Mr. Hon Abdalla Said, Youth Leader' },
-  { id: 'ambassador-2', src: '/images/home/about/ambassador-2.jpg', alt: 'Y.O.U Ambassador of Unity — Ms. Minh Anh Nguyen (Winnie), Youth Leader / International Delegate' },
-  { id: 'ambassador-4', src: '/images/home/about/ambassador-4.jpg', alt: 'Y.O.U Ambassador of Unity — Ms. Thuy Linh Nguyen (Emily), Vice President of Y.O.U / Founder of CSE Global' },
-  { id: 'ambassador-5', src: '/images/home/about/ambassador-5.jpg', alt: 'Y.O.U Ambassador of Unity — Mr. Hai Nguyen, Founder of Unikorn' },
-  { id: 'ambassador-6', src: '/images/home/about/ambassador-6.jpg', alt: 'Y.O.U Ambassador of Unity — Mr. Ahmad Raza, Youth Leader Driving Peace, Climate Action & Community Unity' },
-] as const;
 
 export function ImageCarousel() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -55,15 +48,15 @@ export function ImageCarousel() {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div aria-label={`Slide ${activeIndex + 1} of ${BANNER_IMAGES.length}`} role="group" className="h-full w-full">
-        <img
-          key={activeImage.id}
-          src={activeImage.src}
-          alt={activeImage.alt}
-          className={`h-full w-full object-cover ${
-            activeImage.id === 'ambassador-6' ? 'object-right md:object-center' : 'object-center'
-          }`}
-          loading={activeIndex === 0 ? 'eager' : 'lazy'}
-        />
+        <a href={activeImage.instagramUrl} target="_blank" rel="noopener noreferrer" className="block h-full w-full focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-[#005D9A]" aria-label={`${activeImage.alt} — view Instagram post (opens in a new tab)`}>
+          <img
+            key={activeImage.id}
+            src={activeImage.src}
+            alt={activeImage.alt}
+            className="h-full w-full object-contain"
+            loading="eager"
+          />
+        </a>
       </div>
 
       <div className="absolute right-3 bottom-3 z-10 flex items-center gap-2 rounded-full bg-neutral-900/65 px-3 py-2 text-white md:right-6 md:bottom-6">
