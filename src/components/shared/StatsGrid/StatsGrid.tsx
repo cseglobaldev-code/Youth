@@ -21,54 +21,60 @@ function formatStatValue(value: number, prefix = '+', suffix = '') {
 }
 
 export function StatsGrid({ stats, variant = 'home', animated = false, className }: StatsGridProps) {
-  const [hasStarted, setHasStarted] = useState(!animated);
+  const [isVisible, setIsVisible] = useState(false);
   const [values, setValues] = useState(() => (animated ? stats.map(() => 0) : stats.map((stat) => stat.value)));
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!animated) return;
     const element = containerRef.current;
-    if (!element || hasStarted) return;
+    if (!element) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      setIsVisible(true);
+      return;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setHasStarted(true);
-          observer.disconnect();
-        }
+        setIsVisible(entry.isIntersecting && entry.intersectionRatio >= 0.25);
       },
       { threshold: 0.25 },
     );
 
     observer.observe(element);
     return () => observer.disconnect();
-  }, [animated, hasStarted]);
+  }, [animated]);
 
   useEffect(() => {
-    if (!animated || !hasStarted) return;
-
     const targets = stats.map((stat) => stat.value);
+    if (!animated) {
+      setValues(targets);
+      return;
+    }
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) {
       setValues(targets);
       return;
     }
 
-    const duration = 1800;
+    // Start each viewport entry from zero and stop when scrolled away.
+    setValues(targets.map(() => 0));
+    if (!isVisible) return;
+
+    const duration = 3000;
     const startTime = performance.now();
     let frameId = 0;
 
     const animate = (now: number) => {
       const progress = Math.min((now - startTime) / duration, 1);
-      const easedProgress = 1 - (1 - progress) ** 3;
-      setValues(targets.map((target) => Math.round(target * easedProgress)));
+      setValues(targets.map((target) => Math.round(target * progress)));
 
       if (progress < 1) frameId = window.requestAnimationFrame(animate);
     };
 
     frameId = window.requestAnimationFrame(animate);
     return () => window.cancelAnimationFrame(frameId);
-  }, [animated, hasStarted, stats]);
+  }, [animated, isVisible, stats]);
 
   if (variant === 'about') {
     return (
