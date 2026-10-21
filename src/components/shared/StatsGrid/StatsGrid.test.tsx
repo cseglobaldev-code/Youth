@@ -75,3 +75,19 @@ it('respects reduced motion and shows final values immediately', () => {
   expect(screen.getByLabelText('1500 Volunteers')).toHaveTextContent('+1 500');
   expect(frames.size).toBe(0);
 });
+
+it.each(['home', 'about'] as const)('keeps long labels wrappable with consistent spacing in the %s layout', (variant) => {
+  render(<StatsGrid variant={variant} stats={[
+    { label: 'Organizational Members', value: 20 },
+    { label: 'Continents', value: 6 },
+    { label: 'Countries', value: 30 },
+    { label: 'Volunteers from Global', value: 1500 },
+  ]} />);
+  for (const label of ['Organizational Members', 'Continents', 'Countries', 'Volunteers from Global']) {
+    const element = screen.getByText(label);
+    expect(element).toHaveClass('whitespace-normal', 'max-w-full', 'min-h-[2.8em]');
+    expect(element).not.toHaveClass('whitespace-nowrap');
+    expect(element.parentElement).toHaveClass('lg:px-4');
+  }
+  expect(screen.getByLabelText('1500 Volunteers from Global')).toHaveTextContent('+1 500');
+});
