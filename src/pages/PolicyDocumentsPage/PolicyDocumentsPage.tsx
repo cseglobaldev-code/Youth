@@ -83,8 +83,8 @@ export function PolicyDocumentsPage() {
                     className={cn(
                       'h-0.5 rounded-full transition-all duration-200',
                       active
-                        ? 'w-6 bg-brand'
-                        : 'w-0 bg-brand group-hover:w-6'
+                        ? 'w-6 bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F]'
+                        : 'w-0 bg-gradient-to-r from-[#E42C27] via-[#FBAB1A] to-[#10984F] group-hover:w-6'
                     )}
                   />
                   {cat.label}
@@ -94,18 +94,18 @@ export function PolicyDocumentsPage() {
           </aside>
 
           {/* Document list */}
-          <div className="min-w-0 divide-y divide-neutral-200">
+          <div className="min-w-0">
             {loading && <Spin className="py-8" />}
             {error && <p className="py-4 text-neutral-500">Additional documents are temporarily unavailable.</p>}
             {!loading && !error && filteredDocs.length === 0 && (
               <Empty description="No documents in this category." className="py-8" />
             )}
             {!loading && activeCategory === 'membership' && (['organizations', 'individuals'] as const).map((audience) => (
-              <details key={audience} open className="mb-6 rounded-xl border border-neutral-200 p-4">
+              <details key={audience} open className="mb-8">
                 <summary className="cursor-pointer text-lg font-semibold" style={{ color: audience === 'organizations' ? '#FF4D4F' : '#005D9A' }}>
                   {audience === 'organizations' ? 'For Organizations' : 'For Individuals'}
                 </summary>
-                <div className="mt-4 space-y-3">
+                <div className="mt-2">
                   {filteredDocs.filter((doc) => (doc.audience ?? 'organizations') === audience).map((doc) => (
                     <DocumentRow key={doc.id} document={{ ...doc, audience }} />
                   ))}

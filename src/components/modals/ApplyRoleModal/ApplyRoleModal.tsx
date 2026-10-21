@@ -12,6 +12,7 @@ import { DIAL_CODES } from '@/data/dialCodes';
 import { CONTINENTAL_DIRECTORS_JD_URL } from '@/data/membershipDocuments';
 import type { Continent } from '@/types';
 import { preservedFormSnapshot } from '@/lib/utils/formSnapshot';
+import { RECRUITING_POSITIONS, requiresIndividualAssessment } from '@/data/individualRoles';
 
 export interface ApplyRoleFormValues {
   position?: string;
@@ -34,12 +35,12 @@ export interface ApplyRoleFormValues {
   continent: Continent;
   region: string;
   // Supporting Documents
-  resumeCv: UploadFile[];
+  resumeCv?: UploadFile[];
   orgProfileDoc?: UploadFile[];
   leadershipProofDoc?: UploadFile[];
   additionalDocs?: UploadFile[];
   // Assessment answers
-  assessment: Record<string, any>;
+  assessment?: Record<string, any>;
 }
 
 const CONTINENTS: { value: Continent; label: string }[] = [
@@ -48,14 +49,6 @@ const CONTINENTS: { value: Continent; label: string }[] = [
   { value: 'Asia', label: 'Asia' },
   { value: 'Australia', label: 'Australia' },
   { value: 'Europe', label: 'Europe' },
-];
-
-const RECRUITING_POSITIONS = [
-  { label: 'Continental Director', value: 'Continental Director' },
-  { label: 'General Member', value: 'General Member' },
-  { label: 'Marketing & Communication Member', value: 'Marketing & Communication Member' },
-  { label: 'Secretary & Assistant', value: 'Secretary & Assistant' },
-  { label: 'Undefined', value: 'Undefined' },
 ];
 
 export interface ApplyRoleModalProps {
@@ -144,6 +137,8 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
   const [form] = Form.useForm<ApplyRoleFormValues>();
   const sex = Form.useWatch('sex', form);
   const continent = Form.useWatch('continent', form);
+  const position = Form.useWatch('position', form);
+  const needsAssessment = requiresIndividualAssessment(position);
   const partnered = Form.useWatch(['assessment', 'partneredWithOrgs'], form);
   
   const [step, setStep] = useState(1);
@@ -192,6 +187,10 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
 
   const handleNextFromRegion = async () => {
     await form.validateFields(['region']);
+    if (!needsAssessment) {
+      form.submit();
+      return;
+    }
     setStep(4);
     setAssessmentSection(1);
   };
@@ -257,9 +256,9 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
     try {
       setSubmitting(true);
       setErrorMessage(null);
-      const fullWhatsAppNumber = values.whatsappCode
-        ? `${values.whatsappCode} ${values.whatsappNumber}`
-        : values.whatsappNumber;
+      const fullWhatsAppNumber = values.whatsappNumber
+        ? [values.whatsappCode, values.whatsappNumber].filter(Boolean).join(' ')
+        : undefined;
 
       await submitLeadershipApplication({
         ...values,
@@ -641,16 +640,17 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                 <button
                   type="button"
                   onClick={handleNextFromRegion}
+                  disabled={submitting}
                   className="w-2/3 px-8 py-3.5 bg-[#005D9A] text-white text-[17px] font-semibold rounded-full hover:opacity-90 transition-opacity"
                   style={FONT}
                 >
-                  Next: Assessment Center
+                  {submitting ? 'Submitting Application…' : needsAssessment ? 'Next: Assessment Center' : 'Submit Application'}
                 </button>
               </div>
             </div>
 
             {/* STEP 4: ASSESSMENT CENTER (7 SECTIONS) */}
-            <div className={step === 4 ? 'block' : 'hidden'}>
+            {needsAssessment && <div className={step === 4 ? 'block' : 'hidden'}>
               
               {/* SECTION 1: (1) ORGANIZATIONAL LEADERSHIP */}
               {assessmentSection === 1 && (
@@ -1244,7 +1244,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   </button>
                 )}
               </div>
-            </div>
+            </div>}
 
           </Form>
         </ConfigProvider>

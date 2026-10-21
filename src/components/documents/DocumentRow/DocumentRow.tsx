@@ -34,19 +34,21 @@ function formatDate(iso?: string): string {
 }
 
 export function DocumentRow({ document, onDownload, className }: DocumentRowProps) {
+  const date = document.updatedAt ? new Date(document.updatedAt) : null;
+  const revisionDate = date && !Number.isNaN(date.getTime())
+    ? new Intl.DateTimeFormat('en-US', { month: 'long', day: '2-digit', year: 'numeric', timeZone: 'UTC' }).format(date) : '';
   const meta = document.revision !== undefined
-    ? `Revision ${document.revision} - ${new Intl.DateTimeFormat('en-US', { month: 'long', day: '2-digit', year: 'numeric', timeZone: 'UTC' }).format(new Date(document.updatedAt!))}`
-    : [document.fileSize, formatDate(document.updatedAt)]
+    ? [`Revision ${document.revision}`, revisionDate].filter(Boolean).join(' - ')
+    : [document.fileType.toUpperCase(), document.fileSize, formatDate(document.updatedAt)]
     .filter(Boolean)
     .join('  ·  ');
 
   return (
     <div
       className={cn(
-        'group flex items-center gap-4 sm:gap-5 py-5 transition-colors',
+        'group relative flex items-center gap-3 sm:gap-5 py-5 transition-colors after:pointer-events-none after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-gradient-to-r after:from-[#E42C27]/40 after:via-[#FBAB1A]/40 after:to-[#10984F]/40',
         className
       )}
-      style={document.audience ? { backgroundColor: document.audience === 'organizations' ? '#FEF2F2' : '#D4EDFF', paddingLeft: 16, paddingRight: 16, borderRadius: 12 } : undefined}
     >
       {/* File-type badge */}
       <div
@@ -64,7 +66,7 @@ export function DocumentRow({ document, onDownload, className }: DocumentRowProp
 
       {/* Title + meta */}
       <div className="flex-1 min-w-0">
-        <h4 className="font-semibold text-neutral-900 text-base sm:text-lg truncate">
+        <h4 className="font-semibold text-neutral-900 text-base sm:text-lg break-words">
           {document.title}
         </h4>
         {meta && <p className="text-sm text-neutral-500 mt-1">{meta}</p>}
