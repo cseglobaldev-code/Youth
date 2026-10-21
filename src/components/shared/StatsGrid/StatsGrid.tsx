@@ -61,13 +61,15 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
     setValues(targets.map(() => 0));
     if (!isVisible) return;
 
-    const duration = 3000;
+    const duration = 3500;
     const startTime = performance.now();
     let frameId = 0;
 
     const animate = (now: number) => {
       const progress = Math.min((now - startTime) / duration, 1);
-      setValues(targets.map((target) => Math.round(target * progress)));
+      // Gently slow near the target, without rushing through the small counters.
+      const easedProgress = Math.sin((progress * Math.PI) / 2);
+      setValues(targets.map((target) => Math.floor(target * easedProgress)));
 
       if (progress < 1) frameId = window.requestAnimationFrame(animate);
     };

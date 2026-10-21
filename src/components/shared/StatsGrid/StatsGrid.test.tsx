@@ -33,14 +33,17 @@ function tick(time: number) {
   act(() => callbacks.forEach(callback => callback(now)));
 }
 
-it('waits until visible, counts over three seconds and reaches the exact targets', () => {
+it('waits until visible, eases over 3.5 seconds and reaches the exact targets', () => {
   render(<StatsGrid stats={stats} animated />);
   expect(frames.size).toBe(0);
   visible(true);
-  tick(1500);
-  expect(screen.getByLabelText('20 Organizations')).toHaveTextContent('+10');
-  expect(screen.getByLabelText('1500 Volunteers')).toHaveTextContent('+750');
-  tick(3000);
+  tick(1750);
+  expect(screen.getByLabelText('20 Organizations')).toHaveTextContent('+14');
+  expect(screen.getByLabelText('1500 Volunteers')).toHaveTextContent('+1 060');
+  tick(3400);
+  expect(screen.getByLabelText('20 Organizations')).toHaveTextContent('+19');
+  expect(screen.getByLabelText('1500 Volunteers')).toHaveTextContent('+1 498');
+  tick(3500);
   expect(screen.getByLabelText('20 Organizations')).toHaveTextContent('+20');
   expect(screen.getByLabelText('1500 Volunteers')).toHaveTextContent('+1 500');
   expect(frames.size).toBe(0);
@@ -49,14 +52,14 @@ it('waits until visible, counts over three seconds and reaches the exact targets
 it('replays after scrolling away and back, including the About variant', () => {
   render(<StatsGrid stats={stats} variant="about" animated />);
   visible(true);
-  tick(3000);
+  tick(3500);
   expect(screen.getByText('+1 500')).toBeInTheDocument();
   visible(false);
   expect(screen.queryByText('+1 500')).not.toBeInTheDocument();
   visible(true);
-  tick(4500);
-  expect(screen.getByText('+750')).toBeInTheDocument();
-  tick(6000);
+  tick(5250);
+  expect(screen.getByText('+1 060')).toBeInTheDocument();
+  tick(7000);
   expect(screen.getByText('+1 500')).toBeInTheDocument();
 });
 
