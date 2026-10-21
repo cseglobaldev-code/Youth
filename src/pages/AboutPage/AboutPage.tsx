@@ -69,7 +69,7 @@ const ABOUT_SECTION_TITLE_CLASS = 'font-heading text-[clamp(1.75rem,3vw,3rem)] f
 function StaticAboutFallback() {
   const { t } = useLanguage();
   return (
-    <div className="relative z-10 bg-white">
+    <div className="about-page relative z-10 bg-white">
       <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
         <Container className={ABOUT_CONTAINER_CLASS}>
           <div className="grid gap-6 md:gap-8 lg:grid-cols-[260px_1fr] lg:gap-[191px]">
@@ -138,7 +138,7 @@ function StaticAboutFallback() {
       </section>
 
       <section className="pb-0 pt-12 md:pt-16 lg:pt-[7.5rem]">
-        <Container size="narrow" className="lg:max-w-[1080px]">
+        <Container className="max-w-[95%] sm:max-w-[85%]">
           <StatsGrid stats={STATS} variant="home" animated className="mt-0" />
         </Container>
       </section>
@@ -254,7 +254,7 @@ export function AboutPage() {
 
   if (page && page.contentBlocks && page.contentBlocks.length > 0) {
     return (
-      <div className="relative w-full">
+      <div className="about-page relative w-full">
         {isPreview && (
           <div className="sticky top-[clamp(3.75rem,5.5vw,5.25rem)] z-40 flex items-center justify-between bg-amber-500 px-4 py-2 text-white shadow-md">
             <div className="mx-auto flex items-center gap-2 text-sm font-medium">

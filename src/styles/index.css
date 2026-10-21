@@ -121,6 +121,21 @@
   outline: none !important;
 }
 
+/* About stats share Home's wide frame. Size labels by their actual frame,
+   not viewport width, so desktop labels stay on one line without touching dividers.
+   This also covers Stats blocks loaded from the About page's CMS content. */
+.about-page .you-stats-grid {
+  container-type: inline-size;
+}
+
+@media (min-width: 1024px) {
+  .about-page .you-stats-grid .you-stat-label {
+    font-size: clamp(0.75rem, 1.6cqw, 1.5rem);
+    white-space: nowrap;
+    text-wrap: nowrap;
+  }
+}
+
 /* ── Stats: match the multicolor gradient used in the hero heading ── */
 .you-stat-gradient {
   background-image: linear-gradient(
