@@ -21,7 +21,7 @@ function formatStatValue(value: number, prefix = '+', suffix = '') {
 }
 
 // Reserve two label lines and an inset from the tilted dividers in both layouts.
-const STAT_LABEL_LAYOUT = 'flex flex-1 min-h-[2.8em] max-w-full items-center justify-center whitespace-normal break-words text-balance leading-snug';
+const STAT_LABEL_LAYOUT = 'you-stat-label flex flex-1 min-h-[2.8em] max-w-full items-center justify-center whitespace-normal break-words text-balance leading-snug';
 
 export function StatsGrid({ stats, variant = 'home', animated = false, className }: StatsGridProps) {
   const [isVisible, setIsVisible] = useState(false);
@@ -85,7 +85,7 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
     return (
       <div
         ref={containerRef}
-        className={cn('rounded-2xl px-4 py-6 md:px-8 lg:px-10', className)}
+        className={cn('you-stats-grid rounded-2xl px-4 py-6 md:px-8 lg:px-10', className)}
         style={{ background: 'linear-gradient(180deg, #FBFDFF 0%, #EAF2FF 55%, #DCEAFF 100%)' }}
       >
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-0">
@@ -111,7 +111,7 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
     <div
       ref={containerRef}
       className={cn(
-        'rounded-3xl lg:rounded-[40px] px-4 sm:px-6 lg:px-10 py-6 lg:py-10 mt-10 lg:mt-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]',
+        'you-stats-grid rounded-3xl lg:rounded-[40px] px-4 sm:px-6 lg:px-10 py-6 lg:py-10 mt-10 lg:mt-0 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]',
         className
       )}
       style={{ background: 'linear-gradient(180deg, #FBFDFF 0%, #EAF2FF 55%, #DCEAFF 100%)' }}
