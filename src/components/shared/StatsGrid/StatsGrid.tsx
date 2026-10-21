@@ -20,6 +20,9 @@ function formatStatValue(value: number, prefix = '+', suffix = '') {
   return `${prefix}${formatted}${suffix}`;
 }
 
+// Reserve two label lines and an inset from the tilted dividers in both layouts.
+const STAT_LABEL_LAYOUT = 'flex flex-1 min-h-[2.8em] max-w-full items-center justify-center whitespace-normal break-words text-balance leading-snug';
+
 export function StatsGrid({ stats, variant = 'home', animated = false, className }: StatsGridProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [values, setValues] = useState(() => (animated ? stats.map(() => 0) : stats.map((stat) => stat.value)));
@@ -87,10 +90,10 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
       >
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-0">
           {stats.map((stat, index) => (
-            <div key={stat.label} className="relative flex min-w-0 items-center">
+            <div key={stat.label} className="relative flex min-w-0 items-stretch">
               <div className="relative z-10 flex w-full flex-col items-center px-2 text-center lg:px-4">
-                <span className="text-[#111111] max-w-full whitespace-normal leading-tight text-[clamp(0.875rem,1.2vw,1.125rem)]">{stat.label}</span>
-                <span className="you-stat-gradient mt-2 text-[clamp(1.875rem,2.5vw,2.25rem)] font-semibold">
+                <span className={cn(STAT_LABEL_LAYOUT, 'text-[#111111] text-[clamp(0.875rem,1.2vw,1.125rem)]')}>{stat.label}</span>
+                <span className="you-stat-gradient mt-2 max-w-full whitespace-nowrap text-[clamp(1.875rem,2.5vw,2.25rem)] font-semibold" aria-label={`${stat.value} ${stat.label}`}>
                   {formatStatValue(values[index], stat.prefix ?? '+', stat.suffix ?? '')}
                 </span>
               </div>
@@ -115,16 +118,16 @@ export function StatsGrid({ stats, variant = 'home', animated = false, className
     >
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-0">
         {stats.map((stat, index) => (
-          <div key={stat.label} className="relative flex min-w-0 items-center">
-            <div className="relative z-10 flex flex-col items-center text-center w-full py-2">
+          <div key={stat.label} className="relative flex min-w-0 items-stretch">
+            <div className="relative z-10 flex min-w-0 flex-col items-center text-center w-full px-3 py-2 lg:px-4">
               <span
-                className="text-[#111111] text-[clamp(0.75rem,1.15vw,1.25rem)] xl:text-[clamp(0.875rem,1.35vw,1.5rem)] font-normal whitespace-nowrap"
+                className={cn(STAT_LABEL_LAYOUT, 'text-[#111111] text-[clamp(0.75rem,1.15vw,1.25rem)] xl:text-[clamp(0.875rem,1.35vw,1.5rem)] font-normal')}
                 style={{ fontFamily: 'Open Sans, sans-serif' }}
               >
                 {stat.label}
               </span>
               <span
-                className="you-stat-gradient font-extrabold text-[clamp(2rem,3.6vw,3.5rem)] tracking-tight"
+                className="you-stat-gradient max-w-full whitespace-nowrap font-extrabold text-[clamp(2rem,3.6vw,3.5rem)] tracking-tight"
                 aria-label={`${stat.value} ${stat.label}`}
                 style={{ fontFamily: 'Open Sans, sans-serif' }}
               >
