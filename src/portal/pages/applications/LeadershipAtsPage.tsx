@@ -29,6 +29,7 @@ import { PortalDataTable } from '../../components/shared/PortalDataTable';
 import { fetchCollection, updateEntry } from '../../api/content';
 import { usePortalAuth } from '../../context/PortalAuthContext';
 import { useRolePermissions } from '../../hooks/useRolePermissions';
+import { requiresIndividualAssessment } from '@/data/individualRoles';
 
 const PIPELINE_STATUSES: { key: string; label: string; color: string }[] = [
   { key: 'pending', label: 'Pending', color: 'default' },
@@ -439,7 +440,7 @@ export function LeadershipAtsPage() {
                   {selectedCandidate?.fullName}
                 </h3>
                 <span className="text-xs text-neutral-500">
-                  Applied for Continental Director ({selectedCandidate?.continent} — {selectedCandidate?.region})
+                  Applied for {selectedCandidate?.position || selectedCandidate?.assessment?.appliedPosition || 'Continental Director'} ({selectedCandidate?.continent} — {selectedCandidate?.region})
                 </span>
               </div>
             </div>
@@ -545,7 +546,10 @@ export function LeadershipAtsPage() {
                   label: 'Assessment Details',
                   children: (
                     <div className="space-y-6 pt-2">
-                      {ASSESSMENT_SECTION_GROUPS.some((grp) =>
+                      {!requiresIndividualAssessment(selectedCandidate.position || selectedCandidate.assessment?.appliedPosition)
+                        && !Object.keys(selectedCandidate.assessment ?? {}).some(key => key !== 'appliedPosition') ? (
+                        <Empty description="Assessment Center is not required for this position." />
+                      ) : ASSESSMENT_SECTION_GROUPS.some((grp) =>
                         grp.items.some((it) => selectedCandidate.assessment?.[it.key] !== undefined)
                       ) ? (
                         ASSESSMENT_SECTION_GROUPS.map((group) => (
@@ -635,7 +639,8 @@ export function LeadershipAtsPage() {
                           </div>
                         </div>
                       ) : (
-                        <Empty description="No resume uploaded" />
+                        <Empty description={requiresIndividualAssessment(selectedCandidate.position || selectedCandidate.assessment?.appliedPosition)
+                          ? 'No resume uploaded' : 'CV / Portfolio is not required for this position.'} />
                       )}
                     </div>
                   ),

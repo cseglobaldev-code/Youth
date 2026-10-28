@@ -2,6 +2,7 @@ import type { ApplyRoleFormValues } from '@/components/modals/ApplyRoleModal';
 import type { RegisterOrganizationFormValues } from '@/components/modals/RegisterOrganizationModal';
 import type { SupportFormValues } from '@/components/modals/SupportModal';
 import { resolveConfig, type StrapiRequestOptions } from './strapi';
+import { requiresIndividualAssessment } from '@/data/individualRoles';
 
 /**
  * Trích xuất các đối tượng native File từ Ant Design Upload component
@@ -69,12 +70,13 @@ export async function submitLeadershipApplication(
   const { baseUrl, token } = resolveConfig(options);
 
   // Upload file tuần tự để tránh nghẽn SQLite Database
+  const needsAssessment = requiresIndividualAssessment(values.position);
   const profilePhotoIds = await uploadAntdFiles(values.profilePhoto, baseUrl, token, options.signal);
   const activityPhotoIds = await uploadAntdFiles(values.activityPhotos, baseUrl, token, options.signal);
-  const resumeCvIds = await uploadAntdFiles(values.resumeCv, baseUrl, token, options.signal);
-  const orgProfileDocIds = await uploadAntdFiles(values.orgProfileDoc, baseUrl, token, options.signal);
-  const leadershipProofDocIds = await uploadAntdFiles(values.leadershipProofDoc, baseUrl, token, options.signal);
-  const additionalDocsIds = await uploadAntdFiles(values.additionalDocs, baseUrl, token, options.signal);
+  const resumeCvIds = needsAssessment ? await uploadAntdFiles(values.resumeCv, baseUrl, token, options.signal) : [];
+  const orgProfileDocIds = needsAssessment ? await uploadAntdFiles(values.orgProfileDoc, baseUrl, token, options.signal) : [];
+  const leadershipProofDocIds = needsAssessment ? await uploadAntdFiles(values.leadershipProofDoc, baseUrl, token, options.signal) : [];
+  const additionalDocsIds = needsAssessment ? await uploadAntdFiles(values.additionalDocs, baseUrl, token, options.signal) : [];
 
   const payload = {
     data: {
@@ -91,13 +93,13 @@ export async function submitLeadershipApplication(
       facebookUrl: values.facebookUrl || undefined,
       instagramUrl: values.instagramUrl || undefined,
       linkedinUrl: values.linkedinUrl || undefined,
-      portfolio: values.portfolio || undefined,
+      portfolio: needsAssessment ? values.portfolio || undefined : undefined,
       continent: values.continent,
       region: values.region,
-      assessment: {
+      ...(needsAssessment ? { assessment: {
         ...values.assessment,
         ...(values.position ? { appliedPosition: values.position } : {}),
-      },
+      } } : {}),
       ...(profilePhotoIds.length > 0 ? { profilePhoto: profilePhotoIds[0] } : {}),
       ...(activityPhotoIds.length > 0 ? { activityPhotos: activityPhotoIds } : {}),
       ...(resumeCvIds.length > 0 ? { resumeCv: resumeCvIds } : {}),

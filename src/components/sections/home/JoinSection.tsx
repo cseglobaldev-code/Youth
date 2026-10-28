@@ -1,36 +1,13 @@
 import { Button } from 'antd';
 import { useJoinModal } from '@/components/modals/JoinModal';
 import { Container } from '@/components/ui/Container';
-import { CONTINENTAL_DIRECTORS_JD_URL } from '@/data/membershipDocuments';
+import { INDIVIDUAL_HERO_ROLES } from '@/data/individualRoles';
 
 const ORG_BENEFITS = [
   'Official Y.O.U membership status & certification',
   'Access to global partnership network',
   'Joint project opportunities',
   'Invitation to Annual Summit & events',
-];
-
-const INDIVIDUAL_ROLES = [
-  {
-    title: 'Continental Director',
-    jdUrl: CONTINENTAL_DIRECTORS_JD_URL,
-  },
-  {
-    title: 'Sub-Representative',
-    jdUrl: '#',
-  },
-  {
-    title: 'General Member',
-    jdUrl: '#',
-  },
-  {
-    title: 'Marketing & Communication Member',
-    jdUrl: '#',
-  },
-  {
-    title: 'Secretary & Assistant',
-    jdUrl: '#',
-  },
 ];
 
 export function JoinSection() {
@@ -93,7 +70,7 @@ export function JoinSection() {
             </p>
 
             <ul className="space-y-3 mb-8 flex-1">
-              {INDIVIDUAL_ROLES.map((role) => (
+              {INDIVIDUAL_HERO_ROLES.map((role) => (
                 <li key={role.title} className="flex items-center gap-3 text-[clamp(1rem,1.30vw,1.25rem)] font-medium text-[#111111]" style={{ fontFamily: 'Open Sans, sans-serif' }}>
                   <img src="/images/common/decor/group.svg" alt="" className="w-5 h-5 flex-shrink-0" aria-hidden="true" />
                   <a

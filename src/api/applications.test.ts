@@ -107,4 +107,29 @@ describe('organization contact submission', () => {
       assessment: { ...assessment, appliedPosition: 'Continental Director' },
       profilePhoto: 1, resumeCv: [2], orgProfileDoc: [3], leadershipProofDoc: [4], additionalDocs: [5] });
   });
+
+  it.each(['Marketing & Communication Member', 'Secretary & Assistant'])(
+    'submits %s without uploading or sending stale assessment documents', async (position) => {
+      let uploadId = 0;
+      const fetchMock = vi.fn().mockImplementation(async (url) => new Response(
+        JSON.stringify(String(url).endsWith('/upload') ? [{ id: ++uploadId }] : {}), { status: 201 }
+      ));
+      vi.stubGlobal('fetch', fetchMock);
+      const file = [new File(['test'], 'test.pdf')];
+      await submitLeadershipApplication({
+        position, fullName: 'Applicant', sex: 'male', dateOfBirth: dayjs('2000-01-01'),
+        nationality: 'Vietnam', countryOfResidence: 'Vietnam', cityTown: 'Hanoi', email: 'test@example.com',
+        whatsappNumber: '+84901234567', continent: 'Asia', region: 'Southeast Asia',
+        profilePhoto: file, activityPhotos: file, resumeCv: file, orgProfileDoc: file,
+        leadershipProofDoc: file, additionalDocs: file, portfolio: 'https://example.com/old',
+        assessment: { orgName: 'Stale organization', declarationSignature: 'Old signature' },
+      } as unknown as ApplyRoleFormValues, { baseUrl: 'https://example.com' });
+      expect(fetchMock).toHaveBeenCalledTimes(3); // Profile, activities, application only.
+      const data = JSON.parse(fetchMock.mock.calls.at(-1)![1].body).data;
+      expect(data).toMatchObject({ position, continent: 'Asia', region: 'Southeast Asia', profilePhoto: 1, activityPhotos: [2] });
+      for (const field of ['assessment', 'resumeCv', 'orgProfileDoc', 'leadershipProofDoc', 'additionalDocs', 'portfolio']) {
+        expect(data).not.toHaveProperty(field);
+      }
+    }
+  );
 });
