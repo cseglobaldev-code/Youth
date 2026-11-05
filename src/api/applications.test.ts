@@ -109,7 +109,7 @@ describe('organization contact submission', () => {
   });
 
   it.each(['Marketing & Communication Member', 'Secretary & Assistant'])(
-    'submits %s without uploading or sending stale assessment documents', async (position) => {
+    'submits %s with CV / Portfolio but without stale assessment documents', async (position) => {
       let uploadId = 0;
       const fetchMock = vi.fn().mockImplementation(async (url) => new Response(
         JSON.stringify(String(url).endsWith('/upload') ? [{ id: ++uploadId }] : {}), { status: 201 }
@@ -124,12 +124,29 @@ describe('organization contact submission', () => {
         leadershipProofDoc: file, additionalDocs: file, portfolio: 'https://example.com/old',
         assessment: { orgName: 'Stale organization', declarationSignature: 'Old signature' },
       } as unknown as ApplyRoleFormValues, { baseUrl: 'https://example.com' });
-      expect(fetchMock).toHaveBeenCalledTimes(3); // Profile, activities, application only.
+      expect(fetchMock).toHaveBeenCalledTimes(4); // Profile, activities, CV, application.
       const data = JSON.parse(fetchMock.mock.calls.at(-1)![1].body).data;
-      expect(data).toMatchObject({ position, continent: 'Asia', region: 'Southeast Asia', profilePhoto: 1, activityPhotos: [2] });
-      for (const field of ['assessment', 'resumeCv', 'orgProfileDoc', 'leadershipProofDoc', 'additionalDocs', 'portfolio']) {
+      expect(data).toMatchObject({ position, continent: 'Asia', region: 'Southeast Asia', profilePhoto: 1, activityPhotos: [2], resumeCv: [3] });
+      for (const field of ['assessment', 'orgProfileDoc', 'leadershipProofDoc', 'additionalDocs', 'portfolio']) {
         expect(data).not.toHaveProperty(field);
       }
+    }
+  );
+
+  it.each(['Marketing & Communication Member', 'Secretary & Assistant'])(
+    'keeps CV / Portfolio optional for %s', async (position) => {
+      const fetchMock = vi.fn().mockResolvedValue(new Response('{}', { status: 201 }));
+      vi.stubGlobal('fetch', fetchMock);
+      await submitLeadershipApplication({
+        position, fullName: 'Applicant', sex: 'male', dateOfBirth: dayjs('2000-01-01'),
+        nationality: 'Vietnam', countryOfResidence: 'Vietnam', cityTown: 'Hanoi', email: 'test@example.com',
+        whatsappNumber: '+84901234567', continent: 'Asia', region: 'Southeast Asia', profilePhoto: [],
+      }, { baseUrl: 'https://example.com' });
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      const data = JSON.parse(fetchMock.mock.calls[0][1].body).data;
+      expect(data.position).toBe(position);
+      expect(data).not.toHaveProperty('resumeCv');
+      expect(data).not.toHaveProperty('assessment');
     }
   );
 });

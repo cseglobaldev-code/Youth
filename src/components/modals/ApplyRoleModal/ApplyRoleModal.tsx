@@ -511,6 +511,20 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                 </div>
               </Form.Item>
 
+              {!needsAssessment && (
+                <Form.Item
+                  label={<FieldLabel text="CV/Portfolio" hint="Your updated CV or portfolio document (optional)." />}
+                  name="resumeCv"
+                  valuePropName="fileList"
+                  getValueFromEvent={normFile}
+                  extra={<span className="text-[13px] italic text-[#EE334E]">{UPLOAD_HINT}</span>}
+                >
+                  <Upload beforeUpload={() => false} maxCount={1} listType="text">
+                    <UploadButton label="Upload CV / Portfolio" />
+                  </Upload>
+                </Form.Item>
+              )}
+
               <Form.Item
                 label={<FieldLabel text="Profile Photo" required hint="Clear portrait image of applicant." />}
                 name="profilePhoto"
