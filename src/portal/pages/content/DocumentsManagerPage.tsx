@@ -1,278 +1,469 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Tag, Button, Modal, Form, Input, Select, Popconfirm, message, Space, Tooltip, Empty } from 'antd';
 import {
-  EditOutlined,
-  DeleteOutlined,
-  FilePdfOutlined,
-  EyeOutlined,
-  DownloadOutlined,
-  UploadOutlined,
-} from '@ant-design/icons';
-import type { TableColumnsType } from 'antd';
+  Button,
+  Modal,
+  Form,
+  Input,
+  Select,
+  Popconfirm,
+  message,
+  Space,
+  Alert,
+} from 'antd';
 import { PortalDataTable } from '../../components/shared/PortalDataTable';
 import { MediaPicker } from '../../components/shared/MediaPicker';
-import { fetchCollection, createEntry, updateEntry, deleteEntry } from '../../api/content';
+import {
+  fetchCollection,
+  createEntry,
+  updateEntry,
+  deleteEntry,
+} from '../../api/content';
 import { usePortalAuth } from '../../context/PortalAuthContext';
 import { useRolePermissions } from '../../hooks/useRolePermissions';
+import { DOCUMENT_CATALOG, CAREER_CONTINENTS } from '@/data/documentCatalog';
+import { DocumentBlocksEditor } from '../../components/shared/DocumentBlocksEditor';
+import { safeDocumentUrl } from '@/lib/utils/documentLinks';
 
-const CATEGORIES = [
-  { value: 'governance', label: 'Governance Documents' },
-  { value: 'membership', label: 'Membership Documents' },
-  { value: 'annual-reports', label: 'Annual Reports' },
+const SECTIONS = [
+  ...DOCUMENT_CATALOG.map((item) => ({ value: item.key, label: item.title })),
+  { value: 'annual-report', label: 'Annual Reports' },
+  { value: 'terms-of-service', label: 'Terms of Service' },
+  { value: 'privacy-policy', label: 'Privacy Policy' },
 ];
-
-const FILE_TYPES = ['pdf', 'xls', 'doc', 'ppt'];
+const httpsRule = {
+  validator: (_: unknown, value: string) =>
+    !value || (safeDocumentUrl(value) && value.startsWith('https://'))
+      ? Promise.resolve()
+      : Promise.reject(
+          new Error('Enter a public HTTPS link, not iframe HTML.'),
+        ),
+};
 
 export function DocumentsManagerPage() {
   const { token } = usePortalAuth();
-  const { canManageContent, isReadOnly } = useRolePermissions();
+  const { canManageContent } = useRolePermissions();
   const [documents, setDocuments] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-
-  // Modal / Viewer states
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<any | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [previewDoc, setPreviewDoc] = useState<any | null>(null);
+  const [open, setOpen] = useState(false);
+  const [editing, setEditing] = useState<any>(null);
+  const [saving, setSaving] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [search, setSearch] = useState('');
   const [form] = Form.useForm();
-
-  const loadData = useCallback(async () => {
+  const section = Form.useWatch('section', form);
+  const load = useCallback(async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await fetchCollection('policy-documents', { pageSize: 100, populate: ['file'] }, token);
-      setDocuments(res.data || []);
-    } catch (err: any) {
+      const all: any[] = [];
+      let page = 1,
+        total = 1;
+      do {
+        const result = await fetchCollection(
+          'policy-documents',
+          {
+            page,
+            pageSize: 100,
+            status: 'draft',
+            populate: ['file', 'coverImage', 'slideImages', 'archives'],
+          },
+          token,
+        );
+        all.push(...result.data);
+        total = result.meta.pagination.total;
+        page++;
+      } while (all.length < total);
+      setDocuments(all);
+    } catch {
       message.error('Failed to load documents');
     } finally {
       setLoading(false);
     }
   }, [token]);
-
   useEffect(() => {
-    loadData();
-  }, [loadData]);
-
-  const handleOpenCreate = () => {
-    setEditingItem(null);
+    void load();
+  }, [load]);
+  const edit = (item: any = null) => {
+    setEditing(item);
     form.resetFields();
-    setIsModalOpen(true);
+    if (item)
+      form.setFieldsValue({
+        ...item,
+        file: item.file?.id,
+        coverImage: item.coverImage?.id,
+        slideImages: item.slideImages?.map((image: any) => ({ id: image.id })),
+      });
+    setOpen(true);
   };
-
-  const handleOpenEdit = (item: any) => {
-    setEditingItem(item);
-    form.setFieldsValue({
-      title: item.title,
-      category: item.category,
-      fileType: item.fileType || 'pdf',
-      fileSize: item.fileSize,
-      file: item.file?.id,
-    });
-    setIsModalOpen(true);
-  };
-
-  const handleDelete = async (item: any) => {
+  const save = async (status: 'draft' | 'published') => {
+    if (!canManageContent) return;
     try {
-      const id = item.documentId || item.id;
-      await deleteEntry('policy-documents', id, token);
-      message.success('Document deleted');
-      loadData();
-    } catch (err: any) {
-      message.error('Delete failed');
-    }
-  };
-
-  const handleFormFinish = async (values: any) => {
-    try {
-      setSubmitting(true);
-      if (editingItem) {
-        const id = editingItem.documentId || editingItem.id;
-        await updateEntry('policy-documents', id, values, token);
-        message.success('Document updated');
-      } else {
-        await createEntry('policy-documents', values, token);
-        message.success('Document created');
-      }
-      setIsModalOpen(false);
-      loadData();
-    } catch (err: any) {
-      message.error('Save failed');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const getFileUrl = (item: any): string => {
-    if (!item) return '';
-    return item.file?.url || item.fileUrl || '';
-  };
-
-  const columns: TableColumnsType<any> = [
-    {
-      title: 'Document Title',
-      dataIndex: 'title',
-      key: 'title',
-      render: (t: string, r: any) => (
-        <span
-          className="font-semibold text-neutral-900 cursor-pointer flex items-center gap-2 hover:text-[#005D9A] transition"
-          onClick={() => setPreviewDoc(r)}
-        >
-          <FilePdfOutlined className="text-red-500 text-base" /> {t}
-        </span>
-      ),
-    },
-    {
-      title: 'Category',
-      dataIndex: 'category',
-      key: 'cat',
-      render: (cat: string) => <Tag color="blue">{cat?.toUpperCase()}</Tag>,
-    },
-    {
-      title: 'Format',
-      dataIndex: 'fileType',
-      key: 'type',
-      render: (t: string) => <Tag>{t?.toUpperCase()}</Tag>,
-    },
-    {
-      title: 'File Size',
-      dataIndex: 'fileSize',
-      key: 'size',
-      render: (s: string) => s || '—',
-    },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_: any, record: any) => {
-        const fileUrl = getFileUrl(record);
-
-        return (
-          <Space>
-            <Tooltip title="View Document">
-            <Button type="text" icon={<EyeOutlined className="text-[#005D9A]" />} onClick={() => setPreviewDoc(record)} />
-            </Tooltip>
-            {fileUrl && (
-            <Tooltip title="Download File">
-                <Button type="text" icon={<DownloadOutlined />} href={fileUrl} target="_blank" download />
-            </Tooltip>
-            )}
-            <Tooltip title={isReadOnly ? 'Inspect Metadata' : 'Edit Metadata'}>
-            <Button type="text" icon={<EditOutlined />} onClick={() => handleOpenEdit(record)} />
-            </Tooltip>
-            {!isReadOnly && canManageContent && (
-            <Popconfirm title="Delete document?" onConfirm={() => handleDelete(record)}>
-                <Button type="text" danger icon={<DeleteOutlined />} />
-            </Popconfirm>
-            )}
-          </Space>
+      const values = await form.validateFields();
+      setSaving(true);
+      const selected = DOCUMENT_CATALOG.find(
+        (item) => item.key === values.section,
+      );
+      const legal = ['terms-of-service', 'privacy-policy'].includes(
+        values.section,
+      );
+      const data = {
+        ...values,
+        category: selected?.category || (legal ? 'legal' : 'annual-reports'),
+        displayMode: selected?.mode || (legal ? 'legal' : 'annual-report'),
+        continent:
+          values.section === 'careers' ? values.continent || null : null,
+        displayOrder: Number(values.displayOrder) || 0,
+        effectiveDate: values.effectiveDate || null,
+        slideImages:
+          (values.slideImages ?? editing?.slideImages)
+            ?.map((image: any) => image.id)
+            .filter(Boolean) || [],
+        archives: (values.archives ?? editing?.archives ?? []).map(
+          (item: any) => ({
+            ...item,
+            label: item.label || null,
+            embedUrl: item.embedUrl || null,
+          }),
+        ),
+      };
+      // Legal permalinks are stable even when their titles are edited.
+      if (legal) data.slug = values.section;
+      if (editing)
+        await updateEntry(
+          'policy-documents',
+          editing.documentId || editing.id,
+          data,
+          token,
+          status,
         );
-      },
-    },
-  ];
-
+      else await createEntry('policy-documents', data, token, status);
+      message.success(
+        status === 'published'
+          ? 'Published. Website updates on refresh or within 30 seconds.'
+          : 'Draft saved. Publish to update the website.',
+      );
+      setOpen(false);
+      void load();
+    } catch (err: any) {
+      if (!err.errorFields) message.error(err.message || 'Save failed');
+    } finally {
+      setSaving(false);
+    }
+  };
   return (
     <div>
-      <PortalDataTable
-        title="Official Policy & Governance Documents"
-        columns={columns}
-        dataSource={documents}
-        loading={loading}
-        total={documents.length}
-        onAddNew={canManageContent ? handleOpenCreate : undefined}
-        onRefresh={loadData}
+      <Alert
+        className="mb-5"
+        type="info"
+        showIcon
+        title="Documents are managed here and in Strapi → Content Manager → Documents."
+        description="Save draft keeps changes off the website. Save & Publish makes them public. To remove a published version without deleting its history, use Unpublish in Strapi. Rich text, links and images can also be edited with the full Strapi Blocks editor."
       />
-
-      {/* Edit / Upload Modal */}
+      <PortalDataTable
+        title="Documents & Legal Pages"
+        dataSource={documents
+          .filter((item) =>
+            `${item.title} ${item.section} ${item.continent || ''}`
+              .toLowerCase()
+              .includes(search.toLowerCase()),
+          )
+          .slice((page - 1) * pageSize, page * pageSize)}
+        loading={loading}
+        total={
+          documents.filter((item) =>
+            `${item.title} ${item.section} ${item.continent || ''}`
+              .toLowerCase()
+              .includes(search.toLowerCase()),
+          ).length
+        }
+        currentPage={page}
+        pageSize={pageSize}
+        onPageChange={(value, size) => {
+          setPage(value);
+          setPageSize(size);
+        }}
+        onSearch={(value) => {
+          setSearch(value);
+          setPage(1);
+        }}
+        onRefresh={load}
+        onAddNew={canManageContent ? () => edit() : undefined}
+        columns={[
+          { title: 'Title', dataIndex: 'title' },
+          { title: 'Section', dataIndex: 'section' },
+          { title: 'Continent', dataIndex: 'continent' },
+          { title: 'Version', dataIndex: 'revision' },
+          {
+            title: 'Actions',
+            render: (_: unknown, item: any) => (
+              <Space>
+                <Button onClick={() => edit(item)}>
+                  {canManageContent ? 'Edit draft' : 'View'}
+                </Button>
+                {canManageContent && (
+                  <Popconfirm
+                    title="Delete this document and all its versions?"
+                    onConfirm={async () => {
+                      try {
+                        await deleteEntry(
+                          'policy-documents',
+                          item.documentId || item.id,
+                          token,
+                        );
+                        void load();
+                      } catch {
+                        message.error('Delete failed');
+                      }
+                    }}
+                  >
+                    <Button danger>Delete</Button>
+                  </Popconfirm>
+                )}
+              </Space>
+            ),
+          },
+        ]}
+      />
       <Modal
-        title={editingItem ? 'Edit Policy Document' : 'Upload Document'}
-        open={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-        onOk={() => form.submit()}
-        confirmLoading={submitting}
+        title={editing ? 'Edit document' : 'Create document'}
+        open={open}
+        onCancel={() => setOpen(false)}
+        width={850}
         destroyOnHidden
-        width={650}
-      >
-        <Form form={form} layout="vertical" onFinish={handleFormFinish}>
-          <Form.Item label="Document Title" name="title" rules={[{ required: true }]}>
-            <Input placeholder="e.g. Y.O.U Constitution & Bylaws 2026" />
-          </Form.Item>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <Form.Item label="Category" name="category" initialValue="governance">
-              <Select options={CATEGORIES} />
-            </Form.Item>
-
-            <Form.Item label="Format" name="fileType" initialValue="pdf">
-              <Select options={FILE_TYPES.map((t) => ({ value: t, label: t.toUpperCase() }))} />
-            </Form.Item>
-          </div>
-
-          <Form.Item label="Display File Size" name="fileSize">
-            <Input placeholder="e.g. 2.4 MB" />
-          </Form.Item>
-
-          <Form.Item label="Attached Document File (PDF / Word / Excel)" name="file">
-            <MediaPicker
-              previewUrl={editingItem?.file?.url}
-              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      {/* In-Browser Document Preview Modal */}
-      <Modal
-        title={
-          <div className="flex items-center justify-between pr-8">
-            <span className="font-bold text-neutral-900">{previewDoc?.title}</span>
-            {getFileUrl(previewDoc) && (
+        footer={
+          canManageContent ? (
+            <Space>
+              <Button onClick={() => setOpen(false)}>Cancel</Button>
+              <Button loading={saving} onClick={() => void save('draft')}>
+                Save draft
+              </Button>
               <Button
                 type="primary"
-                icon={<DownloadOutlined />}
-                href={getFileUrl(previewDoc)}
-                target="_blank"
-                download
-                size="small"
-                className="!bg-[#005D9A]"
+                loading={saving}
+                onClick={() => void save('published')}
               >
-                Download File
+                Save & Publish
               </Button>
-            )}
-          </div>
+            </Space>
+          ) : null
         }
-        open={Boolean(previewDoc)}
-        onCancel={() => setPreviewDoc(null)}
-        footer={null}
-        width="min(900px, 94vw)"
-        destroyOnHidden
       >
-        {previewDoc && (
-          <div className="mt-4">
-            {getFileUrl(previewDoc) ? (
-              <div className="w-full h-[650px] border border-neutral-300 rounded-2xl overflow-hidden bg-neutral-100">
-                <iframe
-                  src={getFileUrl(previewDoc)}
-                  title={previewDoc.title}
-                  className="w-full h-full border-0"
-                />
-              </div>
-            ) : (
-              <div className="text-center py-16">
-                <Empty description="No document file attached to this record yet." />
-                <Button
-                  type="primary"
-                  icon={<UploadOutlined />}
-                  onClick={() => {
-                    const docToEdit = previewDoc;
-                    setPreviewDoc(null);
-                    handleOpenEdit(docToEdit);
-                  }}
-                  className="mt-4 !bg-[#005D9A] rounded-xl font-semibold"
-                >
-                  Attach Document File Now (PDF / XLS)
-                </Button>
-              </div>
-            )}
+        <Form
+          form={form}
+          layout="vertical"
+          disabled={!canManageContent}
+          initialValues={{ fileType: 'pdf', revision: '0.0', displayOrder: 0 }}
+        >
+          <Form.Item name="title" label="Title" rules={[{ required: true }]}>
+            <Input />
+          </Form.Item>
+          <div className="grid sm:grid-cols-2 gap-x-4">
+            <Form.Item
+              name="section"
+              label="Website section"
+              rules={[{ required: true }]}
+            >
+              <Select options={SECTIONS} />
+            </Form.Item>
+            <Form.Item
+              name="slug"
+              label="Page slug (keep stable after publishing)"
+            >
+              <Input placeholder="e.g. governance-policy" />
+            </Form.Item>
           </div>
-        )}
+          {section === 'careers' && (
+            <Form.Item
+              name="continent"
+              label="Continent (leave empty for shared career documents)"
+            >
+              <Select
+                allowClear
+                options={CAREER_CONTINENTS.map((value) => ({
+                  value,
+                  label: value,
+                }))}
+              />
+            </Form.Item>
+          )}
+          <div className="grid sm:grid-cols-3 gap-x-4">
+            <Form.Item
+              name="revision"
+              label="Version"
+              rules={[
+                { required: true },
+                { pattern: /^v?\d+\.\d+$/, message: 'Use 0.0, 1.0, etc.' },
+              ]}
+            >
+              <Input placeholder="0.0" />
+            </Form.Item>
+            <Form.Item name="effectiveDate" label="Effective / report date">
+              <Input type="date" />
+            </Form.Item>
+            <Form.Item name="displayOrder" label="Display order">
+              <Input type="number" />
+            </Form.Item>
+          </div>
+          {!['terms-of-service', 'privacy-policy'].includes(section) && (
+            <>
+              <Form.Item
+                name="externalUrl"
+                label="Public source link (preferred over file uploads)"
+                rules={[httpsRule]}
+              >
+                <Input placeholder="https://..." />
+              </Form.Item>
+              <Form.Item
+                name="embedUrl"
+                label="Optional preview / published embed URL"
+                rules={[httpsRule]}
+                extra="Google Docs/Slides: Publish to web, then paste the URL only. Folder links open in a new tab."
+              >
+                <Input placeholder="https://docs.google.com/..." />
+              </Form.Item>
+              <Form.Item name="file" label="Optional attached file">
+                <MediaPicker
+                  key={`file-${editing?.documentId || 'new'}`}
+                  previewUrl={editing?.file?.url}
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx"
+                />
+              </Form.Item>
+              <Form.Item name="fileType" label="File icon">
+                <Select
+                  options={['pdf', 'doc', 'xls', 'ppt'].map((value) => ({
+                    value,
+                    label: value.toUpperCase(),
+                  }))}
+                />
+              </Form.Item>
+            </>
+          )}
+          {section === 'annual-report' && (
+            <Form.Item name="coverImage" label="Annual report card image">
+              <MediaPicker
+                key={`cover-${editing?.documentId || 'new'}`}
+                previewUrl={editing?.coverImage?.url}
+                accept="image/*"
+              />
+            </Form.Item>
+          )}
+          {['protocol', 'bluebook'].includes(section) && (
+            <>
+              <p className="mb-3">
+                Display as slides. Use a published presentation link above, or
+                add slide images in order.
+              </p>
+              <Form.List name="slideImages">
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map((field) => (
+                      <div key={field.key} className="mb-4">
+                        <Form.Item
+                          name={[field.name, 'id']}
+                          label={`Slide ${field.name + 1}`}
+                        >
+                          <MediaPicker
+                            previewUrl={editing?.slideImages?.[field.name]?.url}
+                            accept="image/*"
+                          />
+                        </Form.Item>
+                        <Button
+                          disabled={!canManageContent}
+                          onClick={() => remove(field.name)}
+                        >
+                          Remove slide
+                        </Button>
+                      </div>
+                    ))}
+                    <Button disabled={!canManageContent} onClick={() => add()}>
+                      Add slide
+                    </Button>
+                  </>
+                )}
+              </Form.List>
+            </>
+          )}
+          <Form.Item name="content" label="Page content">
+            <DocumentBlocksEditor disabled={!canManageContent} />
+          </Form.Item>
+          {!['protocol', 'bluebook'].includes(section) && (
+            <>
+              <h3 className="text-lg font-semibold my-4">Archived versions</h3>
+              <p className="mb-4 text-neutral-500">
+                Save a separate public copy for each historical version.
+                Changing the current source link does not freeze its old
+                content.
+              </p>
+              <Form.List name="archives">
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map((field) => (
+                      <div
+                        key={field.key}
+                        className="border rounded-xl p-4 mb-4"
+                      >
+                        <Form.Item name={[field.name, 'id']} hidden>
+                          <Input />
+                        </Form.Item>
+                        <Form.Item
+                          name={[field.name, 'label']}
+                          label="Optional label"
+                        >
+                          <Input />
+                        </Form.Item>
+                        <div className="grid sm:grid-cols-2 gap-x-4">
+                          <Form.Item
+                            name={[field.name, 'revision']}
+                            label="Version"
+                            rules={[
+                              { required: true },
+                              { pattern: /^v?\d+\.\d+$/, message: 'Use 0.0' },
+                            ]}
+                          >
+                            <Input />
+                          </Form.Item>
+                          <Form.Item
+                            name={[field.name, 'effectiveDate']}
+                            label="Date"
+                            rules={[{ required: true }]}
+                          >
+                            <Input type="date" />
+                          </Form.Item>
+                        </div>
+                        <Form.Item
+                          name={[field.name, 'url']}
+                          label="Archived public link"
+                          rules={[{ required: true }, httpsRule]}
+                        >
+                          <Input />
+                        </Form.Item>
+                        <Form.Item
+                          name={[field.name, 'embedUrl']}
+                          label="Optional embed URL"
+                          rules={[httpsRule]}
+                        >
+                          <Input />
+                        </Form.Item>
+                        <Button
+                          disabled={!canManageContent}
+                          onClick={() => remove(field.name)}
+                        >
+                          Remove archive entry
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      disabled={!canManageContent}
+                      onClick={() => add({ revision: '0.0' })}
+                    >
+                      Add archived version
+                    </Button>
+                  </>
+                )}
+              </Form.List>
+            </>
+          )}
+        </Form>
       </Modal>
     </div>
   );

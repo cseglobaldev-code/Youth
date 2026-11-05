@@ -10,6 +10,7 @@ import { ProjectDetailPage } from '@/pages/ProjectDetailPage';
 import { NewsPage } from '@/pages/NewsPage/NewsPage';
 import { NewsDetailPage } from '@/pages/NewsDetailPage/NewsDetailPage';
 import { PolicyDocumentsPage } from '@/pages/PolicyDocumentsPage';
+import { DocumentDetailPage } from '@/pages/DocumentDetailPage/DocumentDetailPage';
 import { ContactPage } from '@/pages/ContactPage';
 import { DynamicPage } from '@/pages/DynamicPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
@@ -34,6 +35,9 @@ export function AppRouter() {
         <Route path="news" element={<NewsPage />} />
         <Route path="news/:newsId" element={<NewsDetailPage />} />
         <Route path="policy-documents" element={<PolicyDocumentsPage />} />
+        <Route path="policy-documents/:slug" element={<DocumentDetailPage />} />
+        <Route path="terms-of-service" element={<DocumentDetailPage slug="terms-of-service" />} />
+        <Route path="privacy-policy" element={<DocumentDetailPage slug="privacy-policy" />} />
         <Route path="contact" element={<ContactPage />} />
         <Route path="pages/:slug" element={<DynamicPage />} />
         <Route path="*" element={<NotFoundPage />} />

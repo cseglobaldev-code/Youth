@@ -79,8 +79,8 @@ export async function handleCms(request: Request, env: Env): Promise<Response> {
   const upstreamUrl = new URL(requestUrl.pathname, (env.STRAPI_API_URL || '').replace(/\/$/, ''));
   upstreamUrl.search = requestUrl.search;
 
-  if (request.method === 'GET' || request.method === 'HEAD') {
-    upstreamUrl.searchParams.set('status', draftStatus(request.headers.get('Cookie')));
+  if ((request.method === 'GET' || request.method === 'HEAD') && !request.headers.get('Authorization')) {
+    upstreamUrl.searchParams.set('status', requestUrl.pathname.startsWith('/api/policy-documents') ? 'published' : draftStatus(request.headers.get('Cookie')));
   }
 
   const headers = new Headers();

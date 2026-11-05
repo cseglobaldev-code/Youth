@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, Form, Input, Button, message, Divider, Spin } from 'antd';
 import { SaveOutlined } from '@ant-design/icons';
 import { MediaPicker } from '../../components/shared/MediaPicker';
@@ -117,14 +118,7 @@ export function GeneralSettingsPage() {
             </Form.Item>
 
             <Divider>Legal &amp; Policies</Divider>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Form.Item label="Terms of Service URL" name="termsOfServiceUrl">
-                <Input placeholder="https://... or /terms" />
-              </Form.Item>
-              <Form.Item label="Privacy Policy URL" name="privacyPolicyUrl">
-                <Input placeholder="https://... or /privacy" />
-              </Form.Item>
-            </div>
+            <p className="text-neutral-600">Footer links use /terms-of-service and /privacy-policy. Edit and publish their page content in <Link to="/portal/documents" className="text-brand underline">Documents</Link>.</p>
           </Form>
         </Card>
       </Spin>

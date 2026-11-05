@@ -141,22 +141,18 @@ export function Footer({ className }: FooterProps) {
             © {new Date().getFullYear()} Youth Organization Union · {t.footer.rights}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:justify-end lg:gap-6">
-            <a
-              href={settings.termsOfServiceUrl || '#'}
-              target={settings.termsOfServiceUrl?.startsWith('http') ? '_blank' : undefined}
-              rel={settings.termsOfServiceUrl?.startsWith('http') ? 'noopener noreferrer' : undefined}
+            <Link
+              to={ROUTES.TERMS}
               className="text-xs text-white transition-colors hover:text-[#005D9A]"
             >
               {t.footer.terms}
-            </a>
-            <a
-              href={settings.privacyPolicyUrl || '#'}
-              target={settings.privacyPolicyUrl?.startsWith('http') ? '_blank' : undefined}
-              rel={settings.privacyPolicyUrl?.startsWith('http') ? 'noopener noreferrer' : undefined}
+            </Link>
+            <Link
+              to={ROUTES.PRIVACY}
               className="text-xs text-white transition-colors hover:text-[#005D9A]"
             >
               {t.footer.privacy}
-            </a>
+            </Link>
           </div>
         </div>
       </Container>
