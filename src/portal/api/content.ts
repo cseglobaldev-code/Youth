@@ -68,9 +68,10 @@ export async function fetchCollection<T = any>(
 export async function createEntry<T = any>(
   endpoint: string,
   data: Record<string, any>,
-  token?: string | null
+  token?: string | null,
+  status?: 'draft' | 'published'
 ): Promise<T> {
-  const res = await fetch(`${getBaseUrl()}/api/${endpoint}`, {
+  const res = await fetch(`${getBaseUrl()}/api/${endpoint}${status ? `?status=${status}` : ''}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -92,12 +93,13 @@ export async function updateEntry<T = any>(
   endpoint: string,
   id: string | number,
   data: Record<string, any>,
-  token?: string | null
+  token?: string | null,
+  status?: 'draft' | 'published'
 ): Promise<T> {
   const authToken =
     token || (typeof window !== 'undefined' ? localStorage.getItem('you_portal_jwt') : null);
 
-  const res = await fetch(`${getBaseUrl()}/api/${endpoint}/${id}`, {
+  const res = await fetch(`${getBaseUrl()}/api/${endpoint}/${id}${status ? `?status=${status}` : ''}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',

@@ -9,6 +9,9 @@ export const ROUTES = {
   NEWS: '/news',
   NEWS_DETAIL: (id: string = ':newsId') => `/news/${id}`,
   POLICY_DOCUMENTS: '/policy-documents',
+  DOCUMENT_DETAIL: (slug: string = ':slug') => `/policy-documents/${encodeURIComponent(slug)}`,
+  TERMS: '/terms-of-service',
+  PRIVACY: '/privacy-policy',
   CONTACT: '/contact',
   PAGE_DETAIL: (slug: string = ':slug') => `/pages/${slug}`,
   // Portal Management Routes
