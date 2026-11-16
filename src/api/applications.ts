@@ -73,7 +73,7 @@ export async function submitLeadershipApplication(
   const needsAssessment = requiresIndividualAssessment(values.position);
   const profilePhotoIds = await uploadAntdFiles(values.profilePhoto, baseUrl, token, options.signal);
   const activityPhotoIds = await uploadAntdFiles(values.activityPhotos, baseUrl, token, options.signal);
-  const resumeCvIds = needsAssessment ? await uploadAntdFiles(values.resumeCv, baseUrl, token, options.signal) : [];
+  const resumeCvIds = await uploadAntdFiles(values.resumeCv, baseUrl, token, options.signal);
   const orgProfileDocIds = needsAssessment ? await uploadAntdFiles(values.orgProfileDoc, baseUrl, token, options.signal) : [];
   const leadershipProofDocIds = needsAssessment ? await uploadAntdFiles(values.leadershipProofDoc, baseUrl, token, options.signal) : [];
   const additionalDocsIds = needsAssessment ? await uploadAntdFiles(values.additionalDocs, baseUrl, token, options.signal) : [];
