@@ -1,18 +1,19 @@
 import { useState } from 'react';
-import { Modal, Form, Input, Radio, DatePicker, Upload, ConfigProvider, Alert, Select, AutoComplete, Checkbox } from 'antd';
+import { Modal, Form, Input, Radio, DatePicker, Upload, ConfigProvider, Alert, Select, AutoComplete, Checkbox, Space } from 'antd';
 import dayjs from 'dayjs';
 import type { Dayjs } from 'dayjs';
 import type { UploadFile } from 'antd';
 import { Icon } from '@/components/ui/Icon';
 import { PillButton } from '@/components/ui/PillButton';
 import { urlRule, phoneRule, maxWordsRule } from '@/lib/utils';
+import { countryFlagEmoji } from '@/lib/utils/countryFlag';
 import { submitLeadershipApplication } from '@/api/applications';
 import { CONTINENT_REGIONS } from '@/api/leadership';
 import { DIAL_CODES } from '@/data/dialCodes';
 import { CONTINENTAL_DIRECTORS_JD_URL } from '@/data/membershipDocuments';
 import type { Continent } from '@/types';
 import { preservedFormSnapshot } from '@/lib/utils/formSnapshot';
-import { RECRUITING_POSITIONS, requiresIndividualAssessment } from '@/data/individualRoles';
+import { RECRUITING_POSITIONS, acceptsOptionalCv, requiresIndividualAssessment } from '@/data/individualRoles';
 
 export interface ApplyRoleFormValues {
   position?: string;
@@ -59,9 +60,22 @@ export interface ApplyRoleModalProps {
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
 const UPLOAD_HINT = 'Upload supported files (PDF, DOCX, JPG, PNG, up to 100 MB).';
+const CV_PORTFOLIO_ACCEPT = '.pdf,.doc,.docx';
+const CV_PORTFOLIO_MAX_BYTES = 100 * 1024 * 1024;
+
+// Upload `accept` is only a picker hint, so re-check extension and size before submission.
+const cvPortfolioRule = {
+  validator: async (_: unknown, files?: UploadFile[]) => {
+    for (const file of files ?? []) {
+      const extension = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+      if (!CV_PORTFOLIO_ACCEPT.split(',').includes(extension)) throw new Error('Please upload a PDF, DOC or DOCX file');
+      if ((file.size ?? file.originFileObj?.size ?? 0) > CV_PORTFOLIO_MAX_BYTES) throw new Error('File must be 100 MB or smaller');
+    }
+  },
+};
 const PHONE_CODE_OPTIONS = DIAL_CODES.map((dialCode) => ({
   value: dialCode.code,
-  label: `${dialCode.code} ${dialCode.country}`,
+  label: `${countryFlagEmoji(dialCode.country)} ${dialCode.code} ${dialCode.country}`.trim(),
 }));
 
 function FieldLabel({ text, required, hint }: { text: string; required?: boolean; hint?: string }) {
@@ -139,6 +153,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
   const continent = Form.useWatch('continent', form);
   const position = Form.useWatch('position', form);
   const needsAssessment = requiresIndividualAssessment(position);
+  const showOptionalCv = acceptsOptionalCv(position);
   const partnered = Form.useWatch(['assessment', 'partneredWithOrgs'], form);
   
   const [step, setStep] = useState(1);
@@ -175,6 +190,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
       'cityTown',
       'email',
       'profilePhoto',
+      ...(showOptionalCv ? (['resumeCv'] as const) : []),
     ]);
     setStep(2);
   };
@@ -486,13 +502,14 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
               <Form.Item
                 label={<FieldLabel text="WhatsApp Number" hint="Include your country dial code." />}
               >
-                <div className="grid grid-cols-[140px_1fr] gap-2">
+                <Space.Compact block>
                   <Form.Item name="whatsappCode" noStyle>
                     <AutoComplete
                       showSearch
                       allowClear
-                      placeholder="__"
-                      style={FONT}
+                      placeholder="+84"
+                      style={{ ...FONT, width: 120, flexShrink: 0 }}
+                      popupMatchSelectWidth={280}
                       options={PHONE_CODE_OPTIONS}
                       filterOption={(inputValue, option) =>
                         `${option?.value ?? ''} ${option?.label ?? ''}`
@@ -506,9 +523,9 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                     noStyle
                     rules={[phoneRule('Please enter a valid phone number (6-15 digits)')]}
                   >
-                    <Input placeholder="Phone number" style={FONT} />
+                    <Input placeholder="e.g. 912 345 678" inputMode="tel" style={FONT} />
                   </Form.Item>
-                </div>
+                </Space.Compact>
               </Form.Item>
 
               <Form.Item
@@ -523,6 +540,21 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                   <UploadButton label="Upload photo" />
                 </Upload>
               </Form.Item>
+
+              {showOptionalCv && (
+                <Form.Item
+                  label={<FieldLabel text="CV/Portfolio" hint="Your updated CV or portfolio document." />}
+                  name="resumeCv"
+                  valuePropName="fileList"
+                  getValueFromEvent={normFile}
+                  rules={[cvPortfolioRule]}
+                  extra={<span className="text-[13px] italic text-[#EE334E]">PDF, DOC or DOCX, up to 100 MB.</span>}
+                >
+                  <Upload beforeUpload={() => false} maxCount={1} listType="text" accept={CV_PORTFOLIO_ACCEPT}>
+                    <UploadButton label="Upload CV / Portfolio" />
+                  </Upload>
+                </Form.Item>
+              )}
 
               <Form.Item
                 label={<FieldLabel text="Activity Photos" hint="Upload photos from past events or activities." />}

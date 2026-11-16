@@ -640,7 +640,7 @@ export function LeadershipAtsPage() {
                         </div>
                       ) : (
                         <Empty description={requiresIndividualAssessment(selectedCandidate.position || selectedCandidate.assessment?.appliedPosition)
-                          ? 'No resume uploaded' : 'CV / Portfolio is not required for this position.'} />
+                          ? 'No resume uploaded' : 'No CV / Portfolio uploaded'} />
                       )}
                     </div>
                   ),
