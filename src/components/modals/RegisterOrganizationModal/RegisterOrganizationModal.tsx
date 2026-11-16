@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal, Form, Input, Select, AutoComplete, Checkbox, Radio, Upload, ConfigProvider, Alert } from 'antd';
+import { Modal, Form, Input, Select, AutoComplete, Checkbox, Radio, Space, Upload, ConfigProvider, Alert } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { PillButton } from '@/components/ui/PillButton';
 import { urlRule, phoneRule, maxWordsRule, countryFlagEmoji } from '@/lib/utils';
@@ -289,34 +289,27 @@ export function RegisterOrganizationModal({
               <Input placeholder="Enter email address" style={FONT} />
             </Form.Item>
 
-            <Form.Item
-              label={labelText("Head of Organization's Phone Number")}
-              name="representativePhone"
-              rules={[
-                { required: true, message: 'Please enter phone number' },
-                phoneRule(),
-              ]}
-            >
-              <Input
-                placeholder="Enter phone number"
-                addonBefore={
-                  <Form.Item name="representativePhoneCode" noStyle>
-                    <AutoComplete
-                      showSearch
-                      allowClear
-                      placeholder="__"
-                      style={{ width: 120 }}
-                      options={PHONE_CODE_OPTIONS}
-                      filterOption={(inputValue, option) =>
-                        `${option?.value ?? ''} ${option?.label ?? ''}`
-                          .toLowerCase()
-                          .includes(inputValue.toLowerCase())
-                      }
-                    />
-                  </Form.Item>
-                }
-                style={FONT}
-              />
+            <Form.Item label={labelText("Head of Organization's Phone Number")} required>
+              <Space.Compact block>
+                <Form.Item name="representativePhoneCode" noStyle>
+                  <AutoComplete
+                    showSearch
+                    allowClear
+                    placeholder="+84"
+                    style={{ ...FONT, width: 120, flexShrink: 0 }}
+                    popupMatchSelectWidth={280}
+                    options={PHONE_CODE_OPTIONS}
+                    filterOption={(inputValue, option) =>
+                      `${option?.value ?? ''} ${option?.label ?? ''}`
+                        .toLowerCase()
+                        .includes(inputValue.toLowerCase())
+                    }
+                  />
+                </Form.Item>
+                <Form.Item name="representativePhone" noStyle rules={[{ required: true, message: 'Please enter phone number' }, phoneRule()]}>
+                  <Input placeholder="Enter phone number" inputMode="tel" style={FONT} />
+                </Form.Item>
+              </Space.Compact>
             </Form.Item>
 
             <Form.Item
@@ -357,27 +350,27 @@ export function RegisterOrganizationModal({
                   <Input placeholder="Enter email address" style={FONT} />
                 </Form.Item>
 
-                <Form.Item label={labelText("Contact Person's Phone Number")} name="contactPersonPhone" rules={[{ required: true, message: 'Please enter the contact person\'s phone number' }, phoneRule()]}>
-                  <Input
-                    placeholder="Enter phone number"
-                    addonBefore={
-                      <Form.Item name="contactPersonPhoneCode" noStyle>
-                        <AutoComplete
-                          showSearch
-                          allowClear
-                          placeholder="__"
-                          style={{ width: 120 }}
-                          options={PHONE_CODE_OPTIONS}
-                          filterOption={(inputValue, option) =>
-                            `${option?.value ?? ''} ${option?.label ?? ''}`
-                              .toLowerCase()
-                              .includes(inputValue.toLowerCase())
-                          }
-                        />
-                      </Form.Item>
-                    }
-                    style={FONT}
-                  />
+                <Form.Item label={labelText("Contact Person's Phone Number")} required>
+                  <Space.Compact block>
+                    <Form.Item name="contactPersonPhoneCode" noStyle>
+                      <AutoComplete
+                        showSearch
+                        allowClear
+                        placeholder="+84"
+                        style={{ ...FONT, width: 120, flexShrink: 0 }}
+                        popupMatchSelectWidth={280}
+                        options={PHONE_CODE_OPTIONS}
+                        filterOption={(inputValue, option) =>
+                          `${option?.value ?? ''} ${option?.label ?? ''}`
+                            .toLowerCase()
+                            .includes(inputValue.toLowerCase())
+                        }
+                      />
+                    </Form.Item>
+                    <Form.Item name="contactPersonPhone" noStyle rules={[{ required: true, message: 'Please enter the contact person\'s phone number' }, phoneRule()]}>
+                      <Input placeholder="Enter phone number" inputMode="tel" style={FONT} />
+                    </Form.Item>
+                  </Space.Compact>
                 </Form.Item>
               </>
             )}
