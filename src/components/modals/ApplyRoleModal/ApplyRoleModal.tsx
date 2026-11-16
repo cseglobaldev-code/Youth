@@ -13,7 +13,7 @@ import { DIAL_CODES } from '@/data/dialCodes';
 import { CONTINENTAL_DIRECTORS_JD_URL } from '@/data/membershipDocuments';
 import type { Continent } from '@/types';
 import { preservedFormSnapshot } from '@/lib/utils/formSnapshot';
-import { RECRUITING_POSITIONS, requiresIndividualAssessment } from '@/data/individualRoles';
+import { RECRUITING_POSITIONS, acceptsOptionalCv, requiresIndividualAssessment } from '@/data/individualRoles';
 
 export interface ApplyRoleFormValues {
   position?: string;
@@ -60,6 +60,19 @@ export interface ApplyRoleModalProps {
 
 const FONT = { fontFamily: 'Open Sans, sans-serif' };
 const UPLOAD_HINT = 'Upload supported files (PDF, DOCX, JPG, PNG, up to 100 MB).';
+const CV_PORTFOLIO_ACCEPT = '.pdf,.doc,.docx';
+const CV_PORTFOLIO_MAX_BYTES = 100 * 1024 * 1024;
+
+// Upload `accept` is only a picker hint, so re-check extension and size before submission.
+const cvPortfolioRule = {
+  validator: async (_: unknown, files?: UploadFile[]) => {
+    for (const file of files ?? []) {
+      const extension = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+      if (!CV_PORTFOLIO_ACCEPT.split(',').includes(extension)) throw new Error('Please upload a PDF, DOC or DOCX file');
+      if ((file.size ?? file.originFileObj?.size ?? 0) > CV_PORTFOLIO_MAX_BYTES) throw new Error('File must be 100 MB or smaller');
+    }
+  },
+};
 const PHONE_CODE_OPTIONS = DIAL_CODES.map((dialCode) => ({
   value: dialCode.code,
   label: `${countryFlagEmoji(dialCode.country)} ${dialCode.code} ${dialCode.country}`.trim(),
@@ -140,6 +153,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
   const continent = Form.useWatch('continent', form);
   const position = Form.useWatch('position', form);
   const needsAssessment = requiresIndividualAssessment(position);
+  const showOptionalCv = acceptsOptionalCv(position);
   const partnered = Form.useWatch(['assessment', 'partneredWithOrgs'], form);
   
   const [step, setStep] = useState(1);
@@ -176,7 +190,7 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
       'cityTown',
       'email',
       'profilePhoto',
-      ...(needsAssessment ? [] : (['resumeCv'] as const)),
+      ...(showOptionalCv ? (['resumeCv'] as const) : []),
     ]);
     setStep(2);
   };
@@ -527,16 +541,16 @@ export function ApplyRoleModal({ open, onClose, onSubmit }: ApplyRoleModalProps)
                 </Upload>
               </Form.Item>
 
-              {!needsAssessment && (
+              {showOptionalCv && (
                 <Form.Item
-                  label={<FieldLabel text="CV/Portfolio" required hint="Your updated CV or portfolio document." />}
+                  label={<FieldLabel text="CV/Portfolio" hint="Your updated CV or portfolio document." />}
                   name="resumeCv"
                   valuePropName="fileList"
                   getValueFromEvent={normFile}
-                  rules={[{ required: true, message: 'Please upload your CV / Portfolio' }]}
-                  extra={<span className="text-[13px] italic text-[#EE334E]">{UPLOAD_HINT}</span>}
+                  rules={[cvPortfolioRule]}
+                  extra={<span className="text-[13px] italic text-[#EE334E]">PDF, DOC or DOCX, up to 100 MB.</span>}
                 >
-                  <Upload beforeUpload={() => false} maxCount={1} listType="text">
+                  <Upload beforeUpload={() => false} maxCount={1} listType="text" accept={CV_PORTFOLIO_ACCEPT}>
                     <UploadButton label="Upload CV / Portfolio" />
                   </Upload>
                 </Form.Item>

@@ -134,4 +134,23 @@ describe('organization contact submission', () => {
       }
     }
   );
+
+  it.each(['Marketing & Communication Member', 'Secretary & Assistant'])(
+    'submits %s without the optional CV/Portfolio', async (position) => {
+      let uploadId = 0;
+      const fetchMock = vi.fn().mockImplementation(async (url) => new Response(
+        JSON.stringify(String(url).endsWith('/upload') ? [{ id: ++uploadId }] : {}), { status: 201 }
+      ));
+      vi.stubGlobal('fetch', fetchMock);
+      await submitLeadershipApplication({
+        position, fullName: 'Applicant', sex: 'male', dateOfBirth: dayjs('2000-01-01'),
+        nationality: 'Vietnam', countryOfResidence: 'Vietnam', cityTown: 'Hanoi', email: 'test@example.com',
+        continent: 'Asia', region: 'Southeast Asia', profilePhoto: [new File(['photo'], 'photo.jpg')], resumeCv: [],
+      } as unknown as ApplyRoleFormValues, { baseUrl: 'https://example.com' });
+      expect(fetchMock).toHaveBeenCalledTimes(2); // Profile, application.
+      const data = JSON.parse(fetchMock.mock.calls.at(-1)![1].body).data;
+      expect(data).toMatchObject({ position, profilePhoto: 1 });
+      expect(data).not.toHaveProperty('resumeCv');
+    }
+  );
 });
