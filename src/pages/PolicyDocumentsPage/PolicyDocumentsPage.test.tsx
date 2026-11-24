@@ -67,6 +67,28 @@ it('groups all requested sections and the five Careers continents, with editable
     screen.queryByRole('img', { name: 'Report 2026' }),
   ).not.toBeInTheDocument();
 });
+it('lists Media Library documents right after Annual Reports', async () => {
+  fetchDocuments.mockResolvedValue([
+    {
+      id: 'm',
+      title: 'Press Kit 2026',
+      category: 'media-library',
+      section: 'media-library',
+      fileType: 'pdf',
+      fileUrl: '',
+    },
+  ]);
+  render(
+    <MemoryRouter>
+      <PolicyDocumentsPage />
+    </MemoryRouter>,
+  );
+  const mediaLibrary = await screen.findByRole('region', { name: 'Media Library' });
+  expect(within(mediaLibrary).getByText('Press Kit 2026')).toBeInTheDocument();
+  const sidebar = screen.getByRole('navigation', { name: 'Document categories' });
+  const labels = within(sidebar).getAllByRole('button').map((button) => button.textContent);
+  expect(labels.slice(-2)).toEqual(['Annual Reports', 'Media Library']);
+});
 it('does not restore a bundled JD when no published documents remain', async () => {
   fetchDocuments.mockResolvedValue([]);
   render(

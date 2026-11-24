@@ -15,6 +15,7 @@ const CATEGORIES = [
   { key: 'governance', label: 'Governance Documents' },
   { key: 'membership', label: 'Membership Documents' },
   { key: 'annual-reports', label: 'Annual Reports' },
+  { key: 'media-library', label: 'Media Library' },
 ] as const;
 const EmptySection = () => (
   <p className="py-3 text-sm text-neutral-500">
@@ -40,7 +41,7 @@ export function PolicyDocumentsPage() {
       <Container>
         <SectionHeading
           title="Documents"
-          description="Explore Y.O.U governance documents, membership resources, careers, and annual reports."
+          description="Explore Y.O.U governance documents, membership resources, careers, annual reports, and media library."
         />
         <div className="grid lg:grid-cols-[250px_1fr] gap-8 lg:gap-14 mt-8">
           <aside>
@@ -115,6 +116,8 @@ export function PolicyDocumentsPage() {
                         <EmptySection />
                       )}
                     </div>
+                  ) : cat.key === 'media-library' ? (
+                    rows(docs.filter((doc) => doc.category === cat.key))
                   ) : (
                     <>
                       {DOCUMENT_CATALOG.filter(

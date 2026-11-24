@@ -1,5 +1,5 @@
 export type DocCategory =
-  'governance' | 'membership' | 'annual-reports' | 'legal';
+  'governance' | 'membership' | 'annual-reports' | 'media-library' | 'legal';
 export type FileType = 'pdf' | 'xls' | 'doc' | 'ppt';
 
 export interface DocumentItem {
