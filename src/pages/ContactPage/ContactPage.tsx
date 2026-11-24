@@ -9,6 +9,7 @@ const CONTACT_REASONS = [
   'Partnership',
   'Recognition',
   'Investment & Sponsorship',
+  'Press & Media',
   'Application for a role',
   'Suggestion',
   'Complaint',

@@ -24,6 +24,7 @@ describe('Contact page route', () => {
 
     expect(await screen.findByRole('heading', { name: /contact y\.o\.u/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/your name/i)).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'Press & Media' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument();
   }, 15000); 
 });
