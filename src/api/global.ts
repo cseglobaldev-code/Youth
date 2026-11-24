@@ -11,6 +11,7 @@ import {
   type StrapiRequestOptions,
   type StrapiSocialLink,
 } from './strapi';
+import { safeDocumentUrl } from '@/lib/utils/documentLinks';
 
 interface StrapiGlobalSetting {
   id?: unknown;
@@ -27,6 +28,8 @@ interface StrapiGlobalSetting {
   socialLinks?: StrapiSocialLink[] | null;
   termsOfServiceUrl?: unknown;
   privacyPolicyUrl?: unknown;
+  photoLibraryUrl?: unknown;
+  videoLibraryUrl?: unknown;
 }
 
 interface StrapiGlobalSettingResponse {
@@ -50,6 +53,7 @@ export const DEFAULT_GLOBAL_SETTINGS: GlobalSetting = {
   transferSyntaxNote: 'YOUPRJ26 - [Project Names].',
   termsOfServiceUrl: '#',
   privacyPolicyUrl: '#',
+  videoLibraryUrl: 'https://www.youtube.com/channel/UCddzJhzZYX8A30H_dDYrYog/playlists',
 };
 
 export async function fetchGlobalSettings(
@@ -103,6 +107,9 @@ export async function fetchGlobalSettings(
     qrCodeImageUrl: mediaUrl(raw.qrCodeImage, baseUrl) || undefined,
     termsOfServiceUrl: text(raw.termsOfServiceUrl) || DEFAULT_GLOBAL_SETTINGS.termsOfServiceUrl,
     privacyPolicyUrl: text(raw.privacyPolicyUrl) || DEFAULT_GLOBAL_SETTINGS.privacyPolicyUrl,
+    photoLibraryUrl: safeDocumentUrl(text(raw.photoLibraryUrl)) || undefined,
+    videoLibraryUrl:
+      safeDocumentUrl(text(raw.videoLibraryUrl)) || DEFAULT_GLOBAL_SETTINGS.videoLibraryUrl,
   };
 }
 
@@ -145,6 +152,23 @@ if (import.meta.vitest) {
       expect(settings.bankName).toBe('Vietcombank');
       expect(settings.qrCodeImageUrl).toBe('http://localhost:1337/uploads/custom-qr.png');
       expect(settings.socialLinks).toHaveLength(1);
+    });
+
+    it('keeps only safe media library links and falls back to the YouTube playlists', async () => {
+      vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({
+          data: {
+            photoLibraryUrl: 'https://www.flickr.com/photos/you/albums',
+            videoLibraryUrl: 'javascript:alert(1)',
+          },
+        }),
+      }));
+
+      const settings = await fetchGlobalSettings({ baseUrl: 'http://localhost:1337' });
+
+      expect(settings.photoLibraryUrl).toBe('https://www.flickr.com/photos/you/albums');
+      expect(settings.videoLibraryUrl).toBe(DEFAULT_GLOBAL_SETTINGS.videoLibraryUrl);
     });
 
     it('returns DEFAULT_GLOBAL_SETTINGS if API fails', async () => {

@@ -13,4 +13,6 @@ export interface GlobalSetting {
   qrCodeImageUrl?: string;
   termsOfServiceUrl?: string;
   privacyPolicyUrl?: string;
+  photoLibraryUrl?: string;
+  videoLibraryUrl?: string;
 }
