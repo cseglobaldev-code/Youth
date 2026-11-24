@@ -1,15 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Spin } from 'antd';
 import { Container } from '@/components/ui/Container';
+import { PillButton } from '@/components/ui/PillButton';
 import { SectionHeading } from '@/components/shared/SectionHeading';
 import { DocumentRow } from '@/components/documents/DocumentRow';
 import { fetchDocuments } from '@/api/documents';
+import { fetchGlobalSettings, DEFAULT_GLOBAL_SETTINGS } from '@/api/global';
 import { usePublishedDocuments } from '@/hooks/usePublishedDocuments';
 import { DOCUMENT_CATALOG, CAREER_CONTINENTS } from '@/data/documentCatalog';
 import { documentCaption } from '@/lib/utils/documentLinks';
 import { ROUTES } from '@/routes/paths';
-import type { DocCategory, DocumentItem } from '@/types';
+import type { DocumentItem, GlobalSetting } from '@/types';
 
 const CATEGORIES = [
   { key: 'governance', label: 'Governance Documents' },
@@ -23,8 +25,48 @@ const EmptySection = () => (
   </p>
 );
 
+function MediaLibrary() {
+  const [settings, setSettings] = useState<GlobalSetting>(DEFAULT_GLOBAL_SETTINGS);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetchGlobalSettings({ signal: controller.signal })
+      .then(setSettings)
+      .catch(() => setSettings(DEFAULT_GLOBAL_SETTINGS));
+
+    return () => controller.abort();
+  }, []);
+
+  const { photoLibraryUrl, videoLibraryUrl } = settings;
+  return (
+    <div>
+      <p className="text-neutral-700 max-w-2xl">
+        Browse photos and videos from Y.O.U and member organization events. Each
+        album is named after its event, so search for the event you joined to
+        find its recap.
+      </p>
+      {photoLibraryUrl || videoLibraryUrl ? (
+        <div className="flex flex-wrap gap-3 mt-6">
+          {photoLibraryUrl && (
+            <PillButton as="a" href={photoLibraryUrl} size="sm">
+              Visit the Photo Library
+            </PillButton>
+          )}
+          {videoLibraryUrl && (
+            <PillButton as="a" href={videoLibraryUrl} size="sm">
+              Visit the Video Library
+            </PillButton>
+          )}
+        </div>
+      ) : (
+        <EmptySection />
+      )}
+    </div>
+  );
+}
+
 export function PolicyDocumentsPage() {
-  const [active, setActive] = useState<DocCategory | 'all'>('all');
+  const [active, setActive] = useState<(typeof CATEGORIES)[number]['key'] | 'all'>('all');
   const { data, loading, error } = usePublishedDocuments(
     (signal) => fetchDocuments({ signal }),
     'library',
@@ -41,7 +83,7 @@ export function PolicyDocumentsPage() {
       <Container>
         <SectionHeading
           title="Documents"
-          description="Explore Y.O.U governance documents, membership resources, careers, annual reports, and media library."
+          description="Explore Y.O.U governance documents, membership resources, careers, annual reports, and event photos and videos."
         />
         <div className="grid lg:grid-cols-[250px_1fr] gap-8 lg:gap-14 mt-8">
           <aside>
@@ -117,7 +159,7 @@ export function PolicyDocumentsPage() {
                       )}
                     </div>
                   ) : cat.key === 'media-library' ? (
-                    rows(docs.filter((doc) => doc.category === cat.key))
+                    <MediaLibrary />
                   ) : (
                     <>
                       {DOCUMENT_CATALOG.filter(

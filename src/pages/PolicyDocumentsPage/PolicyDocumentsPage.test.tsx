@@ -6,10 +6,15 @@ import {
   within,
 } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { afterEach, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { PolicyDocumentsPage } from './PolicyDocumentsPage';
 const fetchDocuments = vi.hoisted(() => vi.fn());
 vi.mock('@/api/documents', () => ({ fetchDocuments }));
+const fetchGlobalSettings = vi.hoisted(() => vi.fn());
+vi.mock('@/api/global', () => ({ fetchGlobalSettings, DEFAULT_GLOBAL_SETTINGS: {} }));
+beforeEach(() => {
+  fetchGlobalSettings.mockResolvedValue({});
+});
 afterEach(() => {
   cleanup();
   vi.clearAllMocks();
@@ -67,24 +72,24 @@ it('groups all requested sections and the five Careers continents, with editable
     screen.queryByRole('img', { name: 'Report 2026' }),
   ).not.toBeInTheDocument();
 });
-it('lists Media Library documents right after Annual Reports', async () => {
-  fetchDocuments.mockResolvedValue([
-    {
-      id: 'm',
-      title: 'Press Kit 2026',
-      category: 'media-library',
-      section: 'media-library',
-      fileType: 'pdf',
-      fileUrl: '',
-    },
-  ]);
+it('links the Media Library right after Annual Reports to the external photo and video libraries', async () => {
+  fetchDocuments.mockResolvedValue([]);
+  fetchGlobalSettings.mockResolvedValue({
+    photoLibraryUrl: 'https://www.flickr.com/photos/you/albums',
+    videoLibraryUrl: 'https://www.youtube.com/@you/playlists',
+  });
   render(
     <MemoryRouter>
       <PolicyDocumentsPage />
     </MemoryRouter>,
   );
   const mediaLibrary = await screen.findByRole('region', { name: 'Media Library' });
-  expect(within(mediaLibrary).getByText('Press Kit 2026')).toBeInTheDocument();
+  expect(
+    await within(mediaLibrary).findByRole('link', { name: 'Visit the Photo Library' }),
+  ).toHaveAttribute('href', 'https://www.flickr.com/photos/you/albums');
+  expect(
+    within(mediaLibrary).getByRole('link', { name: 'Visit the Video Library' }),
+  ).toHaveAttribute('href', 'https://www.youtube.com/@you/playlists');
   const sidebar = screen.getByRole('navigation', { name: 'Document categories' });
   const labels = within(sidebar).getAllByRole('button').map((button) => button.textContent);
   expect(labels.slice(-2)).toEqual(['Annual Reports', 'Media Library']);

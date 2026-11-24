@@ -24,16 +24,9 @@ import { DOCUMENT_CATALOG, CAREER_CONTINENTS } from '@/data/documentCatalog';
 import { DocumentBlocksEditor } from '../../components/shared/DocumentBlocksEditor';
 import { safeDocumentUrl } from '@/lib/utils/documentLinks';
 
-const STANDALONE_SECTIONS: Record<string, { category: string; mode: string }> = {
-  'annual-report': { category: 'annual-reports', mode: 'annual-report' },
-  'media-library': { category: 'media-library', mode: 'archive' },
-  'terms-of-service': { category: 'legal', mode: 'legal' },
-  'privacy-policy': { category: 'legal', mode: 'legal' },
-};
 const SECTIONS = [
   ...DOCUMENT_CATALOG.map((item) => ({ value: item.key, label: item.title })),
   { value: 'annual-report', label: 'Annual Reports' },
-  { value: 'media-library', label: 'Media Library' },
   { value: 'terms-of-service', label: 'Terms of Service' },
   { value: 'privacy-policy', label: 'Privacy Policy' },
 ];
@@ -107,16 +100,16 @@ export function DocumentsManagerPage() {
     try {
       const values = await form.validateFields();
       setSaving(true);
-      const selected =
-        DOCUMENT_CATALOG.find((item) => item.key === values.section) ??
-        STANDALONE_SECTIONS[values.section];
+      const selected = DOCUMENT_CATALOG.find(
+        (item) => item.key === values.section,
+      );
       const legal = ['terms-of-service', 'privacy-policy'].includes(
         values.section,
       );
       const data = {
         ...values,
-        category: selected.category,
-        displayMode: selected.mode,
+        category: selected?.category || (legal ? 'legal' : 'annual-reports'),
+        displayMode: selected?.mode || (legal ? 'legal' : 'annual-report'),
         continent:
           values.section === 'careers' ? values.continent || null : null,
         displayOrder: Number(values.displayOrder) || 0,
